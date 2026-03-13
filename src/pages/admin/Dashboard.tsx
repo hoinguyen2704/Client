@@ -1,40 +1,49 @@
 import { useState } from 'react';
-import { FiTrendingUp, FiDollarSign, FiShoppingBag, FiUsers, FiActivity, FiBox, FiRefreshCcw, FiStar, FiChevronDown, FiMoreVertical, FiX } from 'react-icons/fi';
+import { FiTrendingUp, FiDollarSign, FiShoppingBag, FiUsers, FiActivity, FiBox, FiRefreshCcw, FiStar, FiChevronDown, FiMoreVertical, FiX, FiCalendar } from 'react-icons/fi';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Mock Data
 const revenue7Days = [
-  { name: 'T2', revenue: 4000, orders: 24 },
-  { name: 'T3', revenue: 3000, orders: 18 },
-  { name: 'T4', revenue: 5000, orders: 35 },
-  { name: 'T5', revenue: 2780, orders: 15 },
-  { name: 'T6', revenue: 6890, orders: 48 },
-  { name: 'T7', revenue: 8390, orders: 60 },
-  { name: 'CN', revenue: 9490, orders: 75 },
+  { name: 'T2', revenue: 4000, prevRevenue: 3200, orders: 24 },
+  { name: 'T3', revenue: 3000, prevRevenue: 3800, orders: 18 },
+  { name: 'T4', revenue: 5000, prevRevenue: 4200, orders: 35 },
+  { name: 'T5', revenue: 2780, prevRevenue: 3500, orders: 15 },
+  { name: 'T6', revenue: 6890, prevRevenue: 5100, orders: 48 },
+  { name: 'T7', revenue: 8390, prevRevenue: 7200, orders: 60 },
+  { name: 'CN', revenue: 9490, prevRevenue: 6800, orders: 75 },
 ];
 
 const revenueMonth = [
-  { name: 'T1', revenue: 24000, orders: 124 },
-  { name: 'T2', revenue: 33000, orders: 218 },
-  { name: 'T3', revenue: 45000, orders: 335 },
-  { name: 'T4', revenue: 37800, orders: 215 },
-  { name: 'T5', revenue: 42000, orders: 250 },
-  { name: 'T6', revenue: 55000, orders: 310 },
-  { name: 'T7', revenue: 48000, orders: 280 },
-  { name: 'T8', revenue: 61000, orders: 350 },
-  { name: 'T9', revenue: 59000, orders: 340 },
-  { name: 'T10', revenue: 72000, orders: 410 },
-  { name: 'T11', revenue: 85000, orders: 480 },
-  { name: 'T12', revenue: 105000, orders: 550 },
+  { name: 'T1', revenue: 24000, prevRevenue: 20000, orders: 124 },
+  { name: 'T2', revenue: 33000, prevRevenue: 28000, orders: 218 },
+  { name: 'T3', revenue: 45000, prevRevenue: 38000, orders: 335 },
+  { name: 'T4', revenue: 37800, prevRevenue: 35000, orders: 215 },
+  { name: 'T5', revenue: 42000, prevRevenue: 40000, orders: 250 },
+  { name: 'T6', revenue: 55000, prevRevenue: 45000, orders: 310 },
+  { name: 'T7', revenue: 48000, prevRevenue: 52000, orders: 280 },
+  { name: 'T8', revenue: 61000, prevRevenue: 50000, orders: 350 },
+  { name: 'T9', revenue: 59000, prevRevenue: 55000, orders: 340 },
+  { name: 'T10', revenue: 72000, prevRevenue: 60000, orders: 410 },
+  { name: 'T11', revenue: 85000, prevRevenue: 68000, orders: 480 },
+  { name: 'T12', revenue: 105000, prevRevenue: 78000, orders: 550 },
 ];
 
 const revenueQuarter = [
-  { name: 'Quý 1', revenue: 124000, orders: 1124 },
-  { name: 'Quý 2', revenue: 133000, orders: 1218 },
-  { name: 'Quý 3', revenue: 145000, orders: 1335 },
-  { name: 'Quý 4', revenue: 187800, orders: 1815 },
+  { name: 'Quý 1', revenue: 124000, prevRevenue: 98000, orders: 1124 },
+  { name: 'Quý 2', revenue: 133000, prevRevenue: 110000, orders: 1218 },
+  { name: 'Quý 3', revenue: 145000, prevRevenue: 125000, orders: 1335 },
+  { name: 'Quý 4', revenue: 187800, prevRevenue: 140000, orders: 1815 },
 ];
+
+// Helper: compute summary from chart data
+function getChartSummary(data: { name: string; revenue: number }[]) {
+  const total = data.reduce((s, d) => s + d.revenue, 0);
+  const avg = Math.round(total / data.length);
+  const max = data.reduce((m, d) => (d.revenue > m.revenue ? d : m), data[0]);
+  return { total, avg, maxDay: max.name, maxVal: max.revenue };
+}
+
 
 const pieData = [
   { name: 'Hoàn trả', value: 30 },
@@ -62,6 +71,59 @@ const topCategories = [
   { id: 3, name: 'Âm thanh', sold: 3210, percent: 15 },
   { id: 4, name: 'Phụ kiện', sold: 5412, percent: 15 },
 ];
+
+// ── Category Sales Mock Data ────────────────────────────────────
+const categorySalesDay = [
+  { name: 'Laptop', sold: 4 },
+  { name: 'Điện thoại', sold: 2 },
+  { name: 'Âm thanh', sold: 3 },
+  { name: 'Màn hình', sold: 1 },
+  { name: 'Phụ kiện', sold: 5 },
+  { name: 'Máy tính bảng', sold: 0 },
+];
+
+const categorySalesWeek = [
+  { name: 'Laptop', sold: 25 },
+  { name: 'Điện thoại', sold: 18 },
+  { name: 'Âm thanh', sold: 12 },
+  { name: 'Màn hình', sold: 6 },
+  { name: 'Phụ kiện', sold: 30 },
+  { name: 'Máy tính bảng', sold: 8 },
+];
+
+const categorySalesMonth = [
+  { name: 'Laptop', sold: 120 },
+  { name: 'Điện thoại', sold: 95 },
+  { name: 'Âm thanh', sold: 85 },
+  { name: 'Màn hình', sold: 22 },
+  { name: 'Phụ kiện', sold: 150 },
+  { name: 'Máy tính bảng', sold: 35 },
+];
+
+const categorySalesYear = [
+  { name: 'Laptop', sold: 1800 },
+  { name: 'Điện thoại', sold: 1450 },
+  { name: 'Âm thanh', sold: 1250 },
+  { name: 'Màn hình', sold: 390 },
+  { name: 'Phụ kiện', sold: 2100 },
+  { name: 'Máy tính bảng', sold: 560 },
+];
+
+const CATEGORY_COLORS = ['#3b82f6', '#f97316', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4'];
+
+type CategoryPeriod = 'day' | 'week' | 'month' | 'year';
+const categoryDataMap: Record<CategoryPeriod, typeof categorySalesDay> = {
+  day: categorySalesDay,
+  week: categorySalesWeek,
+  month: categorySalesMonth,
+  year: categorySalesYear,
+};
+const categoryPeriodLabels: Record<CategoryPeriod, string> = {
+  day: 'Theo ngày',
+  week: 'Theo tuần',
+  month: 'Theo tháng',
+  year: 'Theo năm',
+};
 
 const topCustomers = [
   { id: 1, name: 'Trần Đại Quang', spent: '156.450.000đ', orders: 12, avatar: 'https://picsum.photos/seed/u1/50/50' },
@@ -113,6 +175,11 @@ const CardTooltip = ({ children, content }: { children: React.ReactNode, content
 export default function Dashboard() {
   const [chartType, setChartType] = useState<'7days' | 'month' | 'quarter'>('7days');
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [catPeriod, setCatPeriod] = useState<CategoryPeriod>('day');
+  const [catDropdownOpen, setCatDropdownOpen] = useState(false);
+  const [catStartDate, setCatStartDate] = useState('2025-11-06');
+  const [catEndDate, setCatEndDate] = useState('2025-11-13');
+  const [showDateRange, setShowDateRange] = useState(false);
 
   return (
     <div className="space-y-6 pb-12">
@@ -271,8 +338,13 @@ export default function Dashboard() {
       </div>
 
       {/* Main Charts */}
+      {(() => {
+        const chartData = chartType === '7days' ? revenue7Days : chartType === 'month' ? revenueMonth : revenueQuarter;
+        const summary = getChartSummary(chartData);
+        const periodLabel = chartType === '7days' ? 'Tuần trước' : chartType === 'month' ? 'Năm trước' : 'Năm trước';
+        return (
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <h2 className="text-lg font-bold">Biểu đồ doanh thu</h2>
           <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
             <button 
@@ -295,16 +367,52 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 rounded-2xl p-4">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Tổng doanh thu</p>
+            <p className="text-lg font-bold text-purple-700 dark:text-purple-400">{(summary.total / 1000).toFixed(0)}M</p>
+          </div>
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-4">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Trung bình</p>
+            <p className="text-lg font-bold text-blue-700 dark:text-blue-400">{(summary.avg / 1000).toFixed(0)}M</p>
+          </div>
+          <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-4">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Cao nhất ({summary.maxDay})</p>
+            <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{(summary.maxVal / 1000).toFixed(0)}M</p>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center gap-5 mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-0.5 bg-purple-500 rounded"></div>
+            <span className="text-xs text-slate-500">Kỳ này</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-0.5 border-t-2 border-dashed border-amber-500 rounded"></div>
+            <span className="text-xs text-slate-400">{periodLabel}</span>
+          </div>
+        </div>
+
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             {chartType === '7days' ? (
-              <LineChart data={revenue7Days} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={revenue7Days} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRevWeek" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25}/>
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number) => [`${value.toLocaleString()}đ`, 'Doanh thu']} />
-                <Line type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-              </LineChart>
+                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Kỳ trước' : 'Doanh thu']} />
+                <Area type="monotone" dataKey="prevRevenue" stroke="#f59e0b" strokeWidth={2} strokeDasharray="12 6" fillOpacity={0} dot={false} />
+                <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevWeek)" dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+              </AreaChart>
             ) : chartType === 'month' ? (
               <AreaChart data={revenueMonth} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
@@ -316,18 +424,141 @@ export default function Dashboard() {
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number) => [`${value.toLocaleString()}đ`, 'Doanh thu']} />
-                <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Năm trước' : 'Doanh thu']} />
+                <Area type="monotone" dataKey="prevRevenue" stroke="#f59e0b" strokeWidth={2} strokeDasharray="12 6" fillOpacity={0} dot={false} />
+                <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
               </AreaChart>
             ) : (
               <BarChart data={revenueQuarter} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number) => [`${value.toLocaleString()}đ`, 'Doanh thu']} />
-                <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} barSize={40} />
+                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Năm trước' : 'Doanh thu']} />
+                <Bar dataKey="prevRevenue" fill="#e2e8f0" radius={[4, 4, 0, 0]} barSize={30} />
+                <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} barSize={30} />
               </BarChart>
             )}
+          </ResponsiveContainer>
+        </div>
+      </div>
+        );
+      })()}
+
+      {/* Category Sales Bar Chart */}
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <span className="text-xl">📦</span> Thống kê số lượng hàng hóa bán
+          </h2>
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Period Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => { setCatDropdownOpen(!catDropdownOpen); setShowDateRange(false); }}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors min-w-[130px] justify-between"
+              >
+                {categoryPeriodLabels[catPeriod]}
+                <FiChevronDown className={`transition-transform ${catDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {catDropdownOpen && (
+                <div className="absolute right-0 top-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-20 overflow-hidden min-w-[130px]">
+                  {(Object.keys(categoryPeriodLabels) as CategoryPeriod[]).map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => { setCatPeriod(key); setCatDropdownOpen(false); }}
+                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${
+                        catPeriod === key ? 'text-purple-600 dark:text-purple-400 font-semibold bg-purple-50 dark:bg-purple-900/20' : 'text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      {categoryPeriodLabels[key]}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Date Range */}
+            <div className="relative">
+              <button
+                onClick={() => { setShowDateRange(!showDateRange); setCatDropdownOpen(false); }}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <FiCalendar className="text-slate-500" />
+                <span>{new Date(catStartDate).toLocaleDateString('vi-VN')} - {new Date(catEndDate).toLocaleDateString('vi-VN')}</span>
+                {(catStartDate || catEndDate) && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setCatStartDate('2025-11-06'); setCatEndDate('2025-11-13'); }}
+                    className="ml-1 text-slate-400 hover:text-red-500"
+                  >
+                    <FiX className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </button>
+              {showDateRange && (
+                <div className="absolute right-0 top-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-20 p-4 min-w-[280px]">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs text-slate-500 mb-1 block">Từ ngày</label>
+                      <input
+                        type="date"
+                        value={catStartDate}
+                        onChange={(e) => setCatStartDate(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-500 mb-1 block">Đến ngày</label>
+                      <input
+                        type="date"
+                        value={catEndDate}
+                        onChange={(e) => setCatEndDate(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm"
+                      />
+                    </div>
+                    <button
+                      onClick={() => setShowDateRange(false)}
+                      className="w-full py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors"
+                    >
+                      Áp dụng
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-4 h-3 bg-blue-500 rounded-sm"></div>
+          <span className="text-sm text-slate-500">Số lượng bán</span>
+        </div>
+
+        {/* Bar Chart */}
+        <div className="h-96">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={categoryDataMap[catPeriod]} margin={{ top: 30, right: 10, left: -10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+              <XAxis
+                dataKey="name"
+                stroke="#94a3b8"
+                fontSize={13}
+                tickLine={false}
+                axisLine={false}
+                dy={8}
+              />
+              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+              <Tooltip
+                cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }}
+                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                formatter={(value: number) => [`${value} sản phẩm`, 'Số lượng bán']}
+              />
+              <Bar dataKey="sold" radius={[6, 6, 0, 0]} barSize={50} label={{ position: 'top', fontSize: 13, fontWeight: 600, fill: '#334155' }}>
+                {categoryDataMap[catPeriod].map((_entry, index) => (
+                  <Cell key={`cat-cell-${index}`} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
