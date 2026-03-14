@@ -1,24 +1,24 @@
 import { Route } from 'react-router-dom';
 
-import Home from '@/pages/public/Home';
-import Search from '@/pages/public/Search';
-import ProductsPage from '@/pages/public/Products';
-import Compare from '@/pages/public/Compare';
-import Wishlist from '@/pages/public/Wishlist';
-import Blog from '@/pages/public/Blog';
-import BlogDetail from '@/pages/public/BlogDetail';
-import ProductDetail from '@/pages/public/ProductDetail';
-import FlashSale from '@/pages/public/FlashSale';
-import Contact from '@/pages/public/Contact';
-import About from '@/pages/public/About';
-import Terms from '@/pages/public/Terms';
-import Privacy from '@/pages/public/Privacy';
-import Cart from '@/pages/public/Cart';
-import Checkout from '@/pages/public/Checkout';
-import Login from '@/pages/public/Login';
-import Register from '@/pages/public/Register';
-import ForgotPassword from '@/pages/public/ForgotPassword';
-import Forbidden from '@/pages/public/Forbidden';
+import Home from '@/views/pages/home/Home';
+import Search from '@/views/pages/catalogry/Search';
+import ProductsPage from '@/views/pages/product/Products';
+import Compare from '@/views/pages/product/Compare';
+import Wishlist from '@/views/pages/product/Wishlist';
+import Blog from '@/views/pages/blog/Blog';
+import BlogDetail from '@/views/pages/blog/BlogDetail';
+import ProductDetail from '@/views/pages/product/ProductDetail';
+import FlashSale from '@/views/pages/promotions/FlashSale';
+import Contact from '@/views/pages/contact/Contact';
+import About from '@/views/pages/about/About';
+import Terms from '@/views/pages/about/Terms';
+import Privacy from '@/views/pages/about/Privacy';
+import Cart from '@/views/pages/cart/Cart';
+import Checkout from '@/views/pages/payments/Checkout';
+import Login from '@/views/pages/auth/Login';
+import Register from '@/views/pages/auth/Register';
+import ForgotPassword from '@/views/pages/auth/ForgotPassword';
+import Forbidden from '@/views/pages/forbidden/Forbidden';
 
 export const publicRoutes = (
   <>

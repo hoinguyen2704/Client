@@ -1,17 +1,17 @@
 import { Route, Navigate } from 'react-router-dom';
 
 import UserLayout from '@/components/layout/UserLayout';
-import Profile from '@/pages/user/Profile';
-import AddressBook from '@/pages/user/AddressBook';
-import PaymentMethods from '@/pages/user/PaymentMethods';
-import Orders from '@/pages/user/Orders';
-import OrderTracking from '@/pages/user/OrderTracking';
-import Vouchers from '@/pages/user/Vouchers';
-import MyReviews from '@/pages/user/MyReviews';
-import RecentlyViewed from '@/pages/user/RecentlyViewed';
-import Notifications from '@/pages/user/Notifications';
-import Support from '@/pages/user/Support';
-import UserSettings from '@/pages/user/Settings';
+import Profile from '@/views/pages/account/Profile';
+import AddressBook from '@/views/pages/account/AddressBook';
+import PaymentMethods from '@/views/pages/account/PaymentMethods';
+import Orders from '@/views/pages/account/Orders';
+import OrderTracking from '@/views/pages/account/OrderTracking';
+import Vouchers from '@/views/pages/account/Vouchers';
+import MyReviews from '@/views/pages/account/MyReviews';
+import RecentlyViewed from '@/views/pages/account/RecentlyViewed';
+import Notifications from '@/views/pages/account/Notifications';
+import Support from '@/views/pages/account/Support';
+import UserSettings from '@/views/pages/account/Settings';
 
 export const userRoutes = (
   <Route path="user" element={<UserLayout />}>

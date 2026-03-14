@@ -1,21 +1,21 @@
 import { Route, Navigate } from 'react-router-dom';
 
 import AdminLayout from '@/components/layout/AdminLayout';
-import Dashboard from '@/pages/admin/Dashboard';
-import AdminOrders from '@/pages/admin/Orders';
-import OrderDetail from '@/pages/admin/OrderDetail';
-import Products from '@/pages/admin/Products';
-import ProductForm from '@/pages/admin/ProductForm';
-import Categories from '@/pages/admin/Categories';
-import Customers from '@/pages/admin/Customers';
-import CustomerDetail from '@/pages/admin/CustomerDetail';
-import Promotions from '@/pages/admin/Promotions';
-import AdminVouchers from '@/pages/admin/Vouchers';
-import Settings from '@/pages/admin/Settings';
-import Feedbacks from '@/pages/admin/Feedbacks';
-import AdminChatbot from '@/pages/admin/Chatbot';
-import CMS from '@/pages/admin/CMS';
-import Tickets from '@/pages/admin/Tickets';
+import Dashboard from '@/views/admin/dashboard/Dashboard';
+import AdminOrders from '@/views/admin/order/Orders';
+import OrderDetail from '@/views/admin/order/OrderDetail';
+import Products from '@/views/admin/product/Products';
+import ProductForm from '@/views/admin/product/ProductForm';
+import Categories from '@/views/admin/category/Categories';
+import Customers from '@/views/admin/user/Customers';
+import CustomerDetail from '@/views/admin/user/CustomerDetail';
+import Promotions from '@/views/admin/coupon/Promotions';
+import AdminVouchers from '@/views/admin/coupon/Vouchers';
+import Settings from '@/views/admin/setting/Settings';
+import Feedbacks from '@/views/admin/review/Feedbacks';
+import AdminChatbot from '@/views/admin/chatbot/Chatbot';
+import CMS from '@/views/admin/cms/CMS';
+import Tickets from '@/views/admin/ticket/Tickets';
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminLayout />}>
