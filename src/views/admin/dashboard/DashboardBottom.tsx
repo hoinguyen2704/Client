@@ -1,0 +1,82 @@
+import { FiStar } from 'react-icons/fi';
+import { recentOrders, reviewStats } from '@/utils/mockDashboard';
+
+export default function DashboardBottom() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Recent Orders */}
+      <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold">Đơn hàng gần đây</h2>
+          <button className="text-sm font-medium text-purple-600 hover:underline">Xem tất cả</button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                <th className="pb-3 font-medium">Mã đơn</th>
+                <th className="pb-3 font-medium">Khách hàng</th>
+                <th className="pb-3 font-medium">Ngày đặt</th>
+                <th className="pb-3 font-medium">Tổng tiền</th>
+                <th className="pb-3 font-medium">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentOrders.map((order, index) => (
+                <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td className="py-4 font-medium">{order.id}</td>
+                  <td className="py-4">{order.customer}</td>
+                  <td className="py-4 text-slate-500">{order.date}</td>
+                  <td className="py-4 font-bold">{order.amount}</td>
+                  <td className="py-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      order.status === 'completed' ? 'bg-green-100 text-green-600' :
+                      order.status === 'processing' ? 'bg-orange-100 text-orange-600' :
+                      order.status === 'shipping' ? 'bg-blue-100 text-blue-600' :
+                      'bg-red-100 text-red-600'
+                    }`}>
+                      {order.status === 'completed' ? 'Đã giao' :
+                       order.status === 'processing' ? 'Chờ xử lý' :
+                       order.status === 'shipping' ? 'Đang giao' : 'Đã hủy'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Review Stats */}
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+        <h2 className="text-lg font-bold mb-6">Thống kê đánh giá</h2>
+        <div className="flex items-center gap-6 mb-8">
+          <div className="text-center">
+            <div className="text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-1">{reviewStats.average}</div>
+            <div className="flex justify-center text-yellow-400 text-sm mb-1">
+              <FiStar className="fill-current" /><FiStar className="fill-current" /><FiStar className="fill-current" /><FiStar className="fill-current" /><FiStar className="fill-current" />
+            </div>
+            <div className="text-xs text-slate-500">{reviewStats.total} đánh giá</div>
+          </div>
+          <div className="flex-1">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
+              <div className="text-sm text-slate-500 mb-1">Tháng này</div>
+              <div className="text-xl font-bold text-purple-600 dark:text-purple-400">+{reviewStats.thisMonth}</div>
+            </div>
+          </div>
+        </div>
+        <div className="space-y-3">
+          {reviewStats.distribution.map((dist) => (
+            <div key={dist.stars} className="flex items-center gap-3 text-sm">
+              <div className="flex items-center gap-1 w-12 font-medium">{dist.stars} <FiStar className="text-yellow-400 fill-current" /></div>
+              <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${dist.percent}%` }}></div>
+              </div>
+              <div className="w-12 text-right text-slate-500">{dist.percent}%</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

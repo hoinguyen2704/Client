@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
-import Chatbot from './components/Chatbot';
 import { publicRoutes } from './routers/publicRoutes';
 import { userRoutes } from './routers/userRoutes';
 import { adminRoutes } from './routers/adminRoutes';
