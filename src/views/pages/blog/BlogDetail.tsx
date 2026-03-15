@@ -10,19 +10,19 @@ const mockPost = {
     
     <h3 class="text-2xl font-bold mb-4 mt-8">1. Thiết kế Titan mới mẻ và nhẹ nhàng hơn</h3>
     <p class="mb-4">Thay đổi lớn nhất về thiết kế trên iPhone 15 Pro Max chính là việc chuyển sang sử dụng khung viền Titanium thay vì thép không gỉ. Điều này không chỉ giúp máy bền bỉ hơn mà còn giảm trọng lượng đáng kể, mang lại cảm giác cầm nắm thoải mái hơn rất nhiều so với thế hệ trước.</p>
-    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:800:400/q:80/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png" alt="iPhone 15 Pro Max Design" class="w-full rounded-2xl my-8 object-cover aspect-video" />
+    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png" alt="iPhone 15 Pro Max Design" class="w-full rounded-2xl my-8 object-cover aspect-video" />
     
     <h3 class="text-2xl font-bold mb-4 mt-8">2. Camera Tele 5x - Bước nhảy vọt về nhiếp ảnh</h3>
     <p class="mb-4">Apple đã trang bị cho iPhone 15 Pro Max ống kính tetraprism mới, cho phép zoom quang học lên đến 5x (tương đương tiêu cự 120mm). Đây là một nâng cấp cực kỳ đáng giá cho những ai đam mê nhiếp ảnh di động, đặc biệt là khi chụp chân dung hoặc các chủ thể ở xa.</p>
     
     <h3 class="text-2xl font-bold mb-4 mt-8">3. Cổng USB-C - Cuối cùng cũng xuất hiện</h3>
     <p class="mb-4">Việc chuyển đổi từ Lightning sang USB-C mang lại sự tiện lợi vô cùng lớn. Giờ đây bạn có thể sử dụng chung một sợi cáp cho Mac, iPad và iPhone. Hơn nữa, chuẩn USB 3 trên bản Pro mang lại tốc độ truyền tải dữ liệu lên đến 10Gbps.</p>
-    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:800:400/q:80/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max-blue.png" alt="iPhone 15 Pro Max USB-C" class="w-full rounded-2xl my-8 object-cover aspect-video" />
+    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max-blue.png" alt="iPhone 15 Pro Max USB-C" class="w-full rounded-2xl my-8 object-cover aspect-video" />
     
     <h3 class="text-2xl font-bold mb-4 mt-8">Kết luận</h3>
     <p class="mb-4">Với những nâng cấp thiết thực về thiết kế, camera và cổng kết nối, iPhone 15 Pro Max thực sự là một chiếc smartphone toàn diện và đáng để nâng cấp, đặc biệt là đối với những người đang sử dụng các thế hệ iPhone cũ hơn (từ iPhone 13 series trở về trước).</p>
   `,
-  image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:600/q:80/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
+  image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
   date: '15/03/2026',
   author: 'Tech Reviewer',
   category: 'Đánh giá',
@@ -33,13 +33,13 @@ const relatedPosts = [
   {
     id: 2,
     title: 'Top 5 laptop gaming đáng mua nhất trong tầm giá 20-30 triệu',
-    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/t/e/text_ng_n_1__1_50.png',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/e/text_ng_n_1__1_50.png',
     date: '12/03/2026',
   },
   {
     id: 3,
     title: 'Hướng dẫn chọn mua bàn phím cơ phù hợp với nhu cầu',
-    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/k/e/keychron-q1-he.png',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/k/e/keychron-q1-he.png',
     date: '10/03/2026',
   }
 ];

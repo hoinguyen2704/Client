@@ -77,18 +77,18 @@ export const mockOrderDetails = {
 
 // ===== Products (Admin) =====
 export const mockAdminProducts = [
-  { id: 1, name: 'iPhone 15 Pro Max 256GB', category: 'Điện thoại', price: 34990000, stock: 150, status: 'active', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png' },
-  { id: 2, name: 'MacBook Air M2 2022', category: 'Laptop', price: 26990000, stock: 45, status: 'active', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png' },
-  { id: 3, name: 'AirPods Pro 2', category: 'Phụ kiện', price: 4990000, stock: 0, status: 'out_of_stock', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png' },
-  { id: 4, name: 'iPad Pro 11 inch M2', category: 'Tablet', price: 20990000, stock: 20, status: 'hidden', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/ipad-air-5-m1-1.png' },
-  { id: 5, name: 'Samsung Galaxy S24 Ultra', category: 'Điện thoại', price: 33990000, stock: 85, status: 'active', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png' },
+  { id: 1, name: 'iPhone 15 Pro Max 256GB', category: 'Điện thoại', price: 34990000, stock: 150, status: 'active', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png' },
+  { id: 2, name: 'MacBook Air M2 2022', category: 'Laptop', price: 26990000, stock: 45, status: 'active', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png' },
+  { id: 3, name: 'AirPods Pro 2', category: 'Phụ kiện', price: 4990000, stock: 0, status: 'out_of_stock', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png' },
+  { id: 4, name: 'iPad Pro 11 inch M2', category: 'Tablet', price: 20990000, stock: 20, status: 'hidden', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/ipad-air-5-m1-1.png' },
+  { id: 5, name: 'Samsung Galaxy S24 Ultra', category: 'Điện thoại', price: 33990000, stock: 85, status: 'active', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png' },
 ];
 
 // ===== Feedbacks (Reviews) =====
 export const mockAdminReviews = [
-  { id: 1, product: 'iPhone 15 Pro Max', customer: 'Nguyễn Văn A', rating: 5, content: 'Sản phẩm rất tuyệt vời, giao hàng nhanh chóng. Đóng gói cẩn thận.', date: '20/10/2023', status: 'approved', images: ['https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png'] },
+  { id: 1, product: 'iPhone 15 Pro Max', customer: 'Nguyễn Văn A', rating: 5, content: 'Sản phẩm rất tuyệt vời, giao hàng nhanh chóng. Đóng gói cẩn thận.', date: '20/10/2023', status: 'approved', images: ['https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png'] },
   { id: 2, product: 'MacBook Pro M3', customer: 'Trần Thị B', rating: 4, content: 'Máy đẹp, chạy mượt nhưng giá hơi cao. Pin trâu.', date: '19/10/2023', status: 'pending', images: [] },
-  { id: 3, product: 'AirPods Pro 2', customer: 'Lê Văn C', rating: 1, content: 'Tai nghe bị rè một bên, yêu cầu đổi trả ngay lập tức. Rất thất vọng về chất lượng.', date: '18/10/2023', status: 'hidden', images: ['https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png', 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png'] },
+  { id: 3, product: 'AirPods Pro 2', customer: 'Lê Văn C', rating: 1, content: 'Tai nghe bị rè một bên, yêu cầu đổi trả ngay lập tức. Rất thất vọng về chất lượng.', date: '18/10/2023', status: 'hidden', images: ['https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png', 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png'] },
   { id: 4, product: 'Samsung S24 Ultra', customer: 'Phạm D', rating: 5, content: 'Link mua hàng giá rẻ tại đây: http://spam-link.com', date: '17/10/2023', status: 'spam', images: [] },
 ];
 
@@ -111,15 +111,15 @@ export const mockTickets = [
 
 export const mockChatHistory = [
   { id: 1, sender: 'customer', name: 'Nguyễn Văn A', time: '14:30', text: 'Chào shop, mình mới nhận được điện thoại hôm qua nhưng màn hình bị sọc xanh. Mình muốn đổi trả thì làm thế nào ạ?' },
-  { id: 2, sender: 'customer', name: 'Nguyễn Văn A', time: '14:31', text: 'Đây là hình ảnh sản phẩm ạ.', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:300:200/q:80/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png' },
+  { id: 2, sender: 'customer', name: 'Nguyễn Văn A', time: '14:31', text: 'Đây là hình ảnh sản phẩm ạ.', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png' },
   { id: 3, sender: 'admin', name: 'Admin Support', time: '14:45', text: 'Chào bạn, shop rất xin lỗi về sự cố bạn gặp phải. Bạn vui lòng cung cấp mã đơn hàng để shop kiểm tra và hướng dẫn thủ tục đổi trả nhé.' },
 ];
 
 // ===== CMS =====
 export const mockBanners = [
-  { id: 1, title: 'Khuyến mãi mùa hè', link: '/sale-summer', order: 1, status: 'visible', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:300/q:80/plain/https://cellphones.com.vn/media/wysiwyg/trangchu/banner-sale-mung-quoc-khanh.jpg' },
-  { id: 2, title: 'Ra mắt iPhone 15', link: '/iphone-15', order: 2, status: 'visible', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:300/q:80/plain/https://cellphones.com.vn/media/wysiwyg/trangchu/banner-laptop-gaming.jpg' },
-  { id: 3, title: 'Giảm giá phụ kiện', link: '/accessories', order: 3, status: 'hidden', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:300/q:80/plain/https://cellphones.com.vn/media/wysiwyg/trangchu/banner-apple-week.jpg' },
+  { id: 1, title: 'Khuyến mãi mùa hè', link: '/sale-summer', order: 1, status: 'visible', image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&h=300&fit=crop' },
+  { id: 2, title: 'Ra mắt iPhone 15', link: '/iphone-15', order: 2, status: 'visible', image: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&h=300&fit=crop' },
+  { id: 3, title: 'Giảm giá phụ kiện', link: '/accessories', order: 3, status: 'hidden', image: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&h=300&fit=crop' },
 ];
 
 export const mockPosts = [
@@ -145,7 +145,7 @@ export const mockPromotions = [
 
 // ===== Home Banners =====
 export const homeBanners = [
-  { id: 1, image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:80/plain/https://cellphones.com.vn/media/wysiwyg/trangchu/banner-sale-mung-quoc-khanh.jpg', title: 'Siêu Sale Công Nghệ', subtitle: 'Giảm đến 50%' },
-  { id: 2, image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:80/plain/https://cellphones.com.vn/media/wysiwyg/trangchu/banner-laptop-gaming.jpg', title: 'Laptop Gaming Mới', subtitle: 'Tặng kèm balo & chuột' },
-  { id: 3, image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:80/plain/https://cellphones.com.vn/media/wysiwyg/trangchu/banner-apple-week.jpg', title: 'Apple Week', subtitle: 'Ưu đãi độc quyền' },
+  { id: 1, image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1200&h=400&fit=crop', title: 'Siêu Sale Công Nghệ', subtitle: 'Giảm đến 50%' },
+  { id: 2, image: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=1200&h=400&fit=crop', title: 'Laptop Gaming Mới', subtitle: 'Tặng kèm balo & chuột' },
+  { id: 3, image: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=1200&h=400&fit=crop', title: 'Apple Week', subtitle: 'Ưu đãi độc quyền' },
 ];

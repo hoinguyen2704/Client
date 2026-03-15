@@ -181,7 +181,7 @@ export const mockToReview = [
     id: 101,
     productId: 3,
     productName: 'Tai nghe Bluetooth AirPods Pro 2',
-    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png',
     date: '12/03/2026',
     orderId: 'ORD-20260312-001'
   },
@@ -189,7 +189,7 @@ export const mockToReview = [
     id: 102,
     productId: 4,
     productName: 'Chuột không dây Logitech MX Master 3S',
-    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/c/h/chuot-logitech-g-pro-x-superlight-2-01.png',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/c/h/chuot-logitech-g-pro-x-superlight-2-01.png',
     date: '10/03/2026',
     orderId: 'ORD-20260310-005'
   }
@@ -200,7 +200,7 @@ export const mockReviews = [
     id: 1,
     productId: 1,
     productName: 'iPhone 15 Pro Max 256GB',
-    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
     rating: 5,
     content: 'Sản phẩm tuyệt vời, giao hàng nhanh chóng. Đóng gói cẩn thận. Sẽ ủng hộ shop dài dài.',
     date: '20/10/2025',
@@ -211,7 +211,7 @@ export const mockReviews = [
     id: 2,
     productId: 2,
     productName: 'MacBook Air M2 2022',
-    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png',
     rating: 4,
     content: 'Máy đẹp, mỏng nhẹ. Tuy nhiên pin không được trâu như quảng cáo.',
     date: '15/09/2025',

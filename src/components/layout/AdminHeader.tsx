@@ -1,7 +1,23 @@
-import { FiBell, FiSearch, FiLogOut } from 'react-icons/fi';
+import { useState, useRef, useEffect } from 'react';
+import { FiBell, FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield, FiHelpCircle } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 import type { AdminHeaderProps } from './types';
 
 export default function AdminHeader({ onLogout }: AdminHeaderProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
       <div className="flex items-center gap-4 flex-1">
@@ -16,19 +32,92 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Notification Bell */}
         <button className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative">
           <FiBell className="text-xl" />
           <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
+
         <div className="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
-        <button onClick={onLogout} className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-xl transition-colors">
-          <img src="https://i.pravatar.cc/100?img=68" alt="Admin" className="w-10 h-10 rounded-full object-cover" />
-          <div className="hidden md:block text-sm text-left">
-            <p className="font-bold">Admin Manager</p>
-            <p className="text-slate-500 dark:text-slate-400 text-xs">Super Admin</p>
-          </div>
-          <FiLogOut className="text-slate-400 ml-2" />
-        </button>
+
+        {/* User Menu */}
+        <div className="relative" ref={menuRef}>
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-xl transition-colors"
+          >
+            <img src="https://i.pravatar.cc/100?img=68" alt="Admin" className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/20" />
+            <div className="hidden md:block text-sm text-left">
+              <p className="font-bold">Admin Manager</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs">Super Admin</p>
+            </div>
+            <FiChevronDown className={`text-slate-400 ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {/* Dropdown Menu */}
+          {isMenuOpen && (
+            <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              {/* User Info */}
+              <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-3">
+                  <img src="https://i.pravatar.cc/100?img=68" alt="Admin" className="w-12 h-12 rounded-full object-cover" />
+                  <div>
+                    <p className="font-bold text-sm">Admin Manager</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">admin@hozitech.vn</p>
+                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-bold rounded-md">Super Admin</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Menu Items */}
+              <div className="py-1">
+                <Link 
+                  to="/admin/settings" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <FiUser className="text-lg text-slate-400" />
+                  Hồ sơ cá nhân
+                </Link>
+                <Link 
+                  to="/admin/settings" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <FiSettings className="text-lg text-slate-400" />
+                  Cài đặt hệ thống
+                </Link>
+                <Link 
+                  to="/admin/settings" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <FiShield className="text-lg text-slate-400" />
+                  Phân quyền
+                </Link>
+                <Link 
+                  to="/admin/settings" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <FiHelpCircle className="text-lg text-slate-400" />
+                  Trợ giúp
+                </Link>
+              </div>
+
+              {/* Logout */}
+              <div className="border-t border-slate-100 dark:border-slate-800 pt-1">
+                <button 
+                  onClick={() => { setIsMenuOpen(false); onLogout(); }}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors w-full"
+                >
+                  <FiLogOut className="text-lg" />
+                  Đăng xuất
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
