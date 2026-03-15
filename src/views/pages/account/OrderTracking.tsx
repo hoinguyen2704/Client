@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiPackage, FiTruck, FiCheckCircle, FiClock, FiMapPin } from 'react-icons/fi';
 import { motion } from 'motion/react';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
 import { mockOrderDetails } from '@/utils/mockAccount';
 
 export default function OrderTracking() {

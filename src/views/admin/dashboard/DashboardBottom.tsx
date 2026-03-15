@@ -1,5 +1,6 @@
 import { FiStar } from 'react-icons/fi';
 import { recentOrders, reviewStats } from '@/utils/mockDashboard';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 export default function DashboardBottom() {
   return (
@@ -29,16 +30,7 @@ export default function DashboardBottom() {
                   <td className="py-4 text-slate-500">{order.date}</td>
                   <td className="py-4 font-bold">{order.amount}</td>
                   <td className="py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      order.status === 'completed' ? 'bg-green-100 text-green-600' :
-                      order.status === 'processing' ? 'bg-orange-100 text-orange-600' :
-                      order.status === 'shipping' ? 'bg-blue-100 text-blue-600' :
-                      'bg-red-100 text-red-600'
-                    }`}>
-                      {order.status === 'completed' ? 'Đã giao' :
-                       order.status === 'processing' ? 'Chờ xử lý' :
-                       order.status === 'shipping' ? 'Đang giao' : 'Đã hủy'}
-                    </span>
+                    <StatusBadge status={order.status} />
                   </td>
                 </tr>
               ))}

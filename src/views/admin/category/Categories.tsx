@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiFolder, FiX, FiCheck } from 'react-icons/fi';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 const initialCategories = [
   { id: 1, name: 'Điện thoại', slug: 'dien-thoai', productCount: 150, status: 'active' },
@@ -113,11 +114,7 @@ export default function AdminCategories() {
                   <td className="p-4 text-slate-500">{category.slug}</td>
                   <td className="p-4 text-center font-medium">{category.productCount}</td>
                   <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      category.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-                    }`}>
-                      {category.status === 'active' ? 'Hiển thị' : 'Đã ẩn'}
-                    </span>
+                    <StatusBadge status={category.status} label={category.status === 'active' ? 'Hiển thị' : 'Đã ẩn'} />
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">

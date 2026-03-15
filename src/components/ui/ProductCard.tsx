@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiHeart, FiStar, FiClock } from 'react-icons/fi';
-import { formatPrice } from '../../utils/mockData';
+import { formatPrice } from '@/helpers/format';
 import { motion } from 'motion/react';
 
 interface ProductCardProps {

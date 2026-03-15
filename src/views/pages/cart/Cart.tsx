@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FiTrash2, FiTag, FiChevronRight, FiMinus, FiPlus, FiX, FiCheck } from 'react-icons/fi';
-import { mockProducts, formatPrice } from '@/utils/mockData';
+import { mockProducts } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 

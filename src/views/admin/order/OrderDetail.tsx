@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiPrinter, FiEdit, FiUser, FiMapPin, FiCreditCard, FiPackage, FiTruck, FiCheckCircle, FiX } from 'react-icons/fi';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 const mockOrderDetails = {
   id: 'ORD-20231101-042',
@@ -71,18 +72,7 @@ export default function OrderDetail() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-3">
               Đơn hàng {order.id}
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                order.status === 'delivered' ? 'bg-green-100 text-green-600' :
-                order.status === 'pending' ? 'bg-yellow-100 text-yellow-600' :
-                order.status === 'verified' ? 'bg-blue-100 text-blue-600' :
-                order.status === 'shipping' ? 'bg-orange-100 text-orange-600' :
-                'bg-red-100 text-red-600'
-              }`}>
-                {order.status === 'delivered' ? 'Đã giao' :
-                 order.status === 'pending' ? 'Chờ xử lý' :
-                 order.status === 'verified' ? 'Đã xác nhận' :
-                 order.status === 'shipping' ? 'Đang giao' : 'Đã hủy'}
-              </span>
+              <StatusBadge status={order.status} />
             </h1>
             <p className="text-slate-500 text-sm mt-1">{order.date}</p>
           </div>

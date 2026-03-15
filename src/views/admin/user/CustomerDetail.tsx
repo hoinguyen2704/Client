@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiMail, FiPhone, FiMapPin, FiCalendar, FiShoppingBag, FiDollarSign, FiStar } from 'react-icons/fi';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
 
 const mockCustomer = {
   id: 1,

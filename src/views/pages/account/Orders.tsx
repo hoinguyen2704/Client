@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiChevronRight, FiStar, FiX } from 'react-icons/fi';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { orderTabs as tabs, mockOrders } from '@/utils/mockAccount';

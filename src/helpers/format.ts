@@ -56,3 +56,10 @@ export function truncate(text: string, length: number): string {
   if (text.length <= length) return text;
   return text.slice(0, length) + '...';
 }
+
+/**
+ * Format giá VND — alias cho formatMoney, dùng trong views
+ */
+export const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+};

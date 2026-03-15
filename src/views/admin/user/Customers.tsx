@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { FiSearch, FiFilter, FiMoreVertical, FiMail, FiPhone, FiEye, FiLock, FiUnlock, FiX } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 const mockCustomers = [
   { id: 1, name: 'Nguyễn Văn A', email: 'nguyenvana@example.com', phone: '0987654321', totalOrders: 12, totalSpent: 154000000, status: 'active', joinDate: '15/01/2023', avatar: 'https://picsum.photos/seed/user1/100/100' },
@@ -104,14 +105,7 @@ export default function Customers() {
                   <td className="p-4 text-center font-bold">{customer.totalOrders}</td>
                   <td className="p-4 text-right font-bold text-purple-600">{formatPrice(customer.totalSpent)}</td>
                   <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      customer.status === 'active' ? 'bg-green-100 text-green-600' :
-                      customer.status === 'vip' ? 'bg-purple-100 text-purple-600' :
-                      'bg-red-100 text-red-600'
-                    }`}>
-                      {customer.status === 'active' ? 'Hoạt động' :
-                       customer.status === 'vip' ? 'VIP' : 'Bị khóa'}
-                    </span>
+                    <StatusBadge status={customer.status} />
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">

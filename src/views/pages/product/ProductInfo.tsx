@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
 
 interface Product {
   id: string;

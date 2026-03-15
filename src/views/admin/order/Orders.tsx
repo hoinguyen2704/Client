@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { FiSearch, FiFilter, FiEye, FiMoreVertical, FiDownload } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 const mockOrders = [
   { id: 'ORD-20231025-001', customer: 'Nguyễn Văn A', phone: '0987654321', date: '25/10/2023 14:30', total: 34990000, status: 'delivered', payment: 'Thẻ tín dụng' },
@@ -84,18 +85,7 @@ export default function AdminOrders() {
                   <td className="p-4 font-bold">{formatPrice(order.total)}</td>
                   <td className="p-4 text-slate-500">{order.payment}</td>
                   <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                      order.status === 'delivered' ? 'bg-green-100 text-green-600' :
-                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-600' :
-                      order.status === 'verified' ? 'bg-blue-100 text-blue-600' :
-                      order.status === 'shipping' ? 'bg-orange-100 text-orange-600' :
-                      'bg-red-100 text-red-600'
-                    }`}>
-                      {order.status === 'delivered' ? 'Đã giao' :
-                       order.status === 'pending' ? 'Chờ xử lý' :
-                       order.status === 'verified' ? 'Đã xác nhận' :
-                       order.status === 'shipping' ? 'Đang giao' : 'Đã hủy'}
-                    </span>
+                    <StatusBadge status={order.status} />
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">

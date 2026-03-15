@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiMoreVertical } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { formatPrice } from '@/utils/mockData';
+import { formatPrice } from '@/helpers/format';
 
 const mockProducts = [
   { id: 1, name: 'iPhone 15 Pro Max 256GB', category: 'Điện thoại', price: 34990000, stock: 150, status: 'active', image: 'https://picsum.photos/seed/iphone15/100/100' },
