@@ -1,5 +1,5 @@
 import axios from '../axios';
-import type { ApiResponse, UserResponse } from '@/types';
+import type { ApiResponse, UserResponse, UpdateUserRequest } from '@/types';
 
 const USER_URL = '/users';
 
@@ -7,7 +7,7 @@ const userService = {
   getProfile: (): Promise<ApiResponse<UserResponse>> =>
     axios.get(`${USER_URL}/me`),
 
-  updateProfile: (data: { fullName?: string; phone?: string }): Promise<ApiResponse<UserResponse>> =>
+  updateProfile: (data: UpdateUserRequest): Promise<ApiResponse<UserResponse>> =>
     axios.put(`${USER_URL}/me`, data),
 
   changePassword: (data: { currentPassword: string; newPassword: string }): Promise<ApiResponse<void>> =>

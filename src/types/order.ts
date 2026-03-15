@@ -118,6 +118,17 @@ export interface FlashSaleItemResponse {
 }
 
 // ─── Ticket ─────────────────────────────────────────────────────
+export interface TicketRequest {
+  subject: string;
+  content: string;
+  attachmentsJson?: string;
+}
+
+export interface TicketMessageRequest {
+  content: string;
+  attachmentsJson?: string;
+}
+
 export interface TicketResponse {
   id: string;
   ticketNumber?: string;
@@ -289,4 +300,10 @@ export interface UserResponse {
   role: string;
   status: string;
   createdAt: string;
+}
+
+export interface UpdateUserRequest {
+  fullName: string;
+  dateOfBirth?: string;
+  gender?: string;
 }

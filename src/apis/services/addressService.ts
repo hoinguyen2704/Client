@@ -1,5 +1,5 @@
 import axios from '../axios';
-import type { ApiResponse, AddressResponse } from '@/types';
+import type { ApiResponse, AddressResponse, AddressRequest } from '@/types';
 
 const ADDRESS_URL = '/addresses';
 
@@ -7,7 +7,7 @@ const addressService = {
   getMyAddresses: (): Promise<ApiResponse<AddressResponse[]>> =>
     axios.get(ADDRESS_URL),
 
-  create: (data: Omit<AddressResponse, 'id' | 'isDefault'>): Promise<ApiResponse<AddressResponse>> =>
+  create: (data: AddressRequest): Promise<ApiResponse<AddressResponse>> =>
     axios.post(ADDRESS_URL, data),
 
   update: (id: string, data: Partial<AddressResponse>): Promise<ApiResponse<AddressResponse>> =>

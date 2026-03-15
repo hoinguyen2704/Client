@@ -72,7 +72,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
               {/* Menu Items */}
               <div className="py-1">
                 <Link 
-                  to="/admin/settings" 
+                  to="/user/profile" 
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
@@ -88,7 +88,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   Cài đặt hệ thống
                 </Link>
                 <Link 
-                  to="/admin/settings" 
+                  to="/admin/customers" 
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
@@ -96,7 +96,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   Phân quyền
                 </Link>
                 <Link 
-                  to="/admin/settings" 
+                  to="/admin/tickets" 
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >

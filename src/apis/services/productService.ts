@@ -22,6 +22,18 @@ class ProductService extends BaseService<ProductResponse, ProductRequest> {
   async getBySlug(slug: string): Promise<ApiResponse<ProductResponse>> {
     return axios.get(`${this.endpoint}/${slug}`);
   }
+
+  async getFeatured(limit = 8): Promise<ApiResponse<ProductResponse[]>> {
+    return axios.get(`${this.endpoint}/featured`, { params: { limit } });
+  }
+
+  async getNewArrivals(limit = 8): Promise<ApiResponse<ProductResponse[]>> {
+    return axios.get(`${this.endpoint}/new-arrivals`, { params: { limit } });
+  }
+
+  async getTopRated(limit = 8): Promise<ApiResponse<ProductResponse[]>> {
+    return axios.get(`${this.endpoint}/top-rated`, { params: { limit } });
+  }
 }
 
 export default new ProductService();

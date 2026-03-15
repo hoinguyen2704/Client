@@ -104,14 +104,14 @@ export default function Feedbacks() {
                       </button>
                       <button 
                         onClick={() => markSpam(review.id)}
-                        className="p-2 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
+                        className="p-2 text-orange-600 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/40 dark:text-orange-400 rounded-lg transition-colors"
                         title="Đánh dấu Spam"
                       >
                         <FiAlertTriangle />
                       </button>
                       <button 
                         onClick={() => deleteReview(review.id)}
-                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                        className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 rounded-lg transition-colors"
                         title="Xóa"
                       >
                         <FiTrash2 />

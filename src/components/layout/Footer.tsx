@@ -189,7 +189,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="w-full px-4 md:px-8 lg:px-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+      <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
         <p>© 2026 Hozitech. All rights reserved.</p>
         <p>Thiết kế và phát triển bởi Hội Nguyễn</p>
       </div>

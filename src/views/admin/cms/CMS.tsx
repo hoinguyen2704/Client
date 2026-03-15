@@ -97,15 +97,15 @@ export default function CMS() {
                         <div className="flex items-center justify-end gap-2">
                           <button 
                             onClick={() => toggleBannerStatus(banner.id, banner.status)}
-                            className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                            className={`p-2 rounded-lg transition-colors ${banner.status === 'visible' ? 'text-orange-600 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/40 dark:text-orange-400' : 'text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40 dark:text-green-400'}`}
                             title={banner.status === 'visible' ? 'Ẩn' : 'Hiện'}
                           >
                             {banner.status === 'visible' ? <FiEyeOff /> : <FiEye />}
                           </button>
-                          <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Sửa">
+                          <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors" title="Sửa">
                             <FiEdit2 />
                           </button>
-                          <button className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Xóa">
+                          <button className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 rounded-lg transition-colors" title="Xóa">
                             <FiTrash2 />
                           </button>
                         </div>
@@ -215,15 +215,15 @@ export default function CMS() {
                           <div className="flex items-center justify-end gap-2">
                             <button 
                               onClick={() => togglePostStatus(post.id, post.status)}
-                              className={`p-2 rounded-lg transition-colors ${post.status === 'published' ? 'text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20' : 'text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20'}`}
+                              className={`p-2 rounded-lg transition-colors ${post.status === 'published' ? 'text-orange-600 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/40 dark:text-orange-400' : 'text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40 dark:text-green-400'}`}
                               title={post.status === 'published' ? 'Gỡ xuất bản' : 'Xuất bản'}
                             >
                               {post.status === 'published' ? <FiXCircle /> : <FiCheckCircle />}
                             </button>
-                            <button onClick={() => setIsEditingPost(true)} className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Sửa">
+                            <button onClick={() => setIsEditingPost(true)} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors" title="Sửa">
                               <FiEdit2 />
                             </button>
-                            <button className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Xóa">
+                            <button className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 rounded-lg transition-colors" title="Xóa">
                               <FiTrash2 />
                             </button>
                           </div>

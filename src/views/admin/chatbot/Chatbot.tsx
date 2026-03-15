@@ -196,7 +196,7 @@ export default function Chatbot() {
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Xem Log">
+                      <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors" title="Xem Log">
                         <FiMessageSquare />
                       </button>
                     </td>
