@@ -1,10 +1,4 @@
-interface ProductGalleryProps {
-  images: string[];
-  activeImage: number;
-  onImageChange: (idx: number) => void;
-  productName: string;
-  discount: number;
-}
+import type { ProductGalleryProps } from './types';
 
 export default function ProductGallery({ images, activeImage, onImageChange, productName, discount }: ProductGalleryProps) {
   return (

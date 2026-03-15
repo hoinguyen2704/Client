@@ -180,7 +180,7 @@ export default function Contact() {
 
                 <button 
                   type="submit"
-                  className="flex items-center justify-center gap-2 w-full md:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-purple-500/30 transition-all"
+                  className="btn btn-primary btn-lg w-full md:w-auto gap-2"
                 >
                   <FiSend /> Gửi tin nhắn
                 </button>

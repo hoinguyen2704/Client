@@ -1,17 +1,13 @@
 import { useState } from 'react';
 import { FiStar, FiCheck, FiThumbsUp, FiMessageSquare, FiImage, FiX, FiPlus } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
+import type { ProductTabsProps } from './types';
 
 const reviews = [
-  { id: 1, user: 'Nguyễn Văn A', avatar: 'https://picsum.photos/seed/user1/50/50', rating: 5, date: '12/10/2026', content: 'Sản phẩm tuyệt vời, đóng gói cẩn thận, giao hàng nhanh.', images: ['https://picsum.photos/seed/rev1/200/200'] },
-  { id: 2, user: 'Trần Thị B', avatar: 'https://picsum.photos/seed/user2/50/50', rating: 4, date: '10/10/2026', content: 'Máy xài mượt, màn hình đẹp nhưng pin hơi hẻo.', images: [] },
-  { id: 3, user: 'Lê Hoàng C', avatar: 'https://picsum.photos/seed/user3/50/50', rating: 5, date: '05/10/2026', content: 'Rất hài lòng với chất lượng phục vụ của shop.', images: ['https://picsum.photos/seed/rev2/200/200', 'https://picsum.photos/seed/rev3/200/200'] },
+  { id: 1, user: 'Nguyễn Văn A', avatar: 'https://i.pravatar.cc/50?img=11', rating: 5, date: '12/10/2026', content: 'Sản phẩm tuyệt vời, đóng gói cẩn thận, giao hàng nhanh.', images: ['https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png'] },
+  { id: 2, user: 'Trần Thị B', avatar: 'https://i.pravatar.cc/50?img=26', rating: 4, date: '10/10/2026', content: 'Máy xài mượt, màn hình đẹp nhưng pin hơi hẻo.', images: [] },
+  { id: 3, user: 'Lê Hoàng C', avatar: 'https://i.pravatar.cc/50?img=33', rating: 5, date: '05/10/2026', content: 'Rất hài lòng với chất lượng phục vụ của shop.', images: ['https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png', 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png'] },
 ];
-
-interface ProductTabsProps {
-  product: { name: string; image: string; rating: number; reviews: number };
-  images: string[];
-}
 
 export default function ProductTabs({ product, images }: ProductTabsProps) {
   const [activeTab, setActiveTab] = useState('description');
@@ -99,7 +95,7 @@ export default function ProductTabs({ product, images }: ProductTabsProps) {
                   ))}
                 </div>
                 <div className="md:w-1/4 flex flex-col items-center justify-center">
-                  <button onClick={() => setIsReviewModalOpen(true)} className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold hover:shadow-lg hover:shadow-purple-500/30 transition-all">Viết đánh giá</button>
+                  <button onClick={() => setIsReviewModalOpen(true)} className="btn btn-primary w-full py-4">Viết đánh giá</button>
                 </div>
               </div>
 
@@ -179,7 +175,7 @@ export default function ProductTabs({ product, images }: ProductTabsProps) {
                     </button>
                   </div>
                 </div>
-                <button onClick={() => setIsReviewModalOpen(false)} className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold hover:shadow-lg hover:shadow-purple-500/30 transition-all">Gửi đánh giá</button>
+                <button onClick={() => setIsReviewModalOpen(false)} className="btn btn-primary w-full py-4">Gửi đánh giá</button>
               </div>
             </motion.div>
           </div>

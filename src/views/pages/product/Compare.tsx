@@ -4,6 +4,7 @@ import { mockProducts } from '@/utils/mockData';
 import { formatPrice } from '@/helpers/format';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import EmptyState from '@/components/ui/EmptyState';
 
 export default function Compare() {
   const [compareItems, setCompareItems] = useState([mockProducts[0], mockProducts[1]]);
@@ -38,15 +39,16 @@ export default function Compare() {
       <h1 className="text-3xl font-bold mb-8 text-center">So sánh sản phẩm</h1>
 
       {compareItems.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-slate-500 mb-6">Chưa có sản phẩm nào để so sánh.</p>
-          <button 
-            onClick={() => setIsModalOpen(true)}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all"
-          >
-            Thêm sản phẩm
-          </button>
-        </div>
+        <EmptyState
+          icon={<FiPlus className="text-4xl" />}
+          title="Chưa có sản phẩm nào"
+          description="Chưa có sản phẩm nào để so sánh."
+          action={
+            <button onClick={() => setIsModalOpen(true)} className="btn btn-md btn-primary">
+              Thêm sản phẩm
+            </button>
+          }
+        />
       ) : (
         <div className="overflow-x-auto pb-8">
           <table className="w-full min-w-[800px] border-collapse">

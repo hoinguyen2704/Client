@@ -2,27 +2,7 @@ import { useState } from 'react';
 import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  oldPrice?: number;
-  image: string;
-  rating: number;
-  reviews: number;
-  sold: number;
-  discount: number;
-  category: string;
-  brand: string;
-  isNew?: boolean;
-  isFlashSale?: boolean;
-  specs?: Record<string, string>;
-}
-
-interface ProductInfoProps {
-  product: Product;
-}
+import type { ProductInfoProps } from './types';
 
 export default function ProductInfo({ product }: ProductInfoProps) {
   const navigate = useNavigate();
@@ -154,7 +134,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <FiShoppingCart className="text-xl" /> Thêm vào giỏ
         </button>
         <button onClick={handleBuyNow}
-          className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02] transition-all">
+          className="btn btn-primary flex-1 h-14 text-lg">
           Mua ngay
         </button>
       </div>

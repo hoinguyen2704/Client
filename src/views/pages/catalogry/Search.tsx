@@ -307,7 +307,7 @@ export default function Search() {
                   setSelectedBrands([]);
                   setDynamicFilters({});
                 }}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all"
+                className="btn btn-primary btn-md"
               >
                 Xóa bộ lọc
               </button>

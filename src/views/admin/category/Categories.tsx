@@ -1,14 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiFolder, FiX, FiCheck } from 'react-icons/fi';
 import StatusBadge from '@/components/ui/StatusBadge';
-
-const initialCategories = [
-  { id: 1, name: 'Điện thoại', slug: 'dien-thoai', productCount: 150, status: 'active' },
-  { id: 2, name: 'Laptop', slug: 'laptop', productCount: 85, status: 'active' },
-  { id: 3, name: 'Tai nghe', slug: 'tai-nghe', productCount: 120, status: 'active' },
-  { id: 4, name: 'Đồng hồ thông minh', slug: 'dong-ho-thong-minh', productCount: 45, status: 'inactive' },
-  { id: 5, name: 'Phụ kiện', slug: 'phu-kien', productCount: 300, status: 'active' },
-];
+import { initialCategories } from '@/utils/mockAdmin';
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState(initialCategories);
@@ -63,7 +56,7 @@ export default function AdminCategories() {
         <h1 className="text-2xl font-bold">Danh mục sản phẩm</h1>
         <button 
           onClick={() => handleOpenModal()}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
+          className="btn btn-md btn-primary"
         >
           <FiPlus /> Thêm danh mục
         </button>

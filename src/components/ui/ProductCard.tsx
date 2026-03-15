@@ -3,10 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiHeart, FiStar, FiClock } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import { motion } from 'motion/react';
-
-interface ProductCardProps {
-  product: any;
-}
+import type { ProductCardProps } from './types';
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 45, seconds: 12 });

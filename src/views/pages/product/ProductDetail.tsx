@@ -14,9 +14,9 @@ export default function ProductDetail() {
 
   const images = [
     product.image,
-    `https://picsum.photos/seed/${product.id}a/800/800`,
-    `https://picsum.photos/seed/${product.id}b/800/800`,
-    `https://picsum.photos/seed/${product.id}c/800/800`,
+    product.image.replace('rs:fill:358:358', 'rs:fill:800:800'),
+    product.image.replace('rs:fill:358:358', 'rs:fill:600:600'),
+    product.image,
   ];
 
   return (

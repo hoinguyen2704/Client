@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiChevronDown, FiCalendar, FiX } from 'react-icons/fi';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { categoryDataMap, categoryPeriodLabels, CATEGORY_COLORS, type CategoryPeriod } from '@/utils/mockDashboard';
+import Card from '@/components/ui/Card';
 
 export default function CategoryChart() {
   const [catPeriod, setCatPeriod] = useState<CategoryPeriod>('day');
@@ -11,7 +12,7 @@ export default function CategoryChart() {
   const [showDateRange, setShowDateRange] = useState(false);
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+    <Card>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <h2 className="text-lg font-bold flex items-center gap-2">
           <span className="text-xl">📦</span> Thống kê số lượng hàng hóa bán
@@ -89,6 +90,6 @@ export default function CategoryChart() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }

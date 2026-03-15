@@ -51,7 +51,7 @@ export default function Cart() {
       {cartItems.length === 0 ? (
         <div className="text-center py-20">
           <p className="text-slate-500 mb-6">Giỏ hàng trống.</p>
-          <Link to="/" className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+          <Link to="/" className="btn btn-primary btn-md">
             Tiếp tục mua sắm
           </Link>
         </div>
@@ -266,7 +266,7 @@ export default function Cart() {
               <div className="p-6 border-t border-slate-200 dark:border-slate-800">
                 <button 
                   onClick={() => setIsVoucherOpen(false)}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold hover:shadow-lg hover:shadow-purple-500/30 transition-all"
+                  className="btn btn-primary w-full py-4"
                 >
                   Xác nhận
                 </button>

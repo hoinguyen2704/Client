@@ -20,7 +20,7 @@ export const mockOrders = [
         variant: 'Titan Tự nhiên',
         price: 34990000,
         quantity: 1,
-        image: 'https://picsum.photos/seed/iphone15/200/200',
+        image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
       }
     ]
   },
@@ -36,7 +36,7 @@ export const mockOrders = [
         variant: 'Xanh dương',
         price: 15990000,
         quantity: 1,
-        image: 'https://picsum.photos/seed/ipad/200/200',
+        image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/ipad-air-5-m1-1.png',
       }
     ]
   },
@@ -52,7 +52,7 @@ export const mockOrders = [
         variant: 'Trắng',
         price: 4990000,
         quantity: 1,
-        image: 'https://picsum.photos/seed/airpods/200/200',
+        image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png',
       }
     ]
   },
@@ -68,7 +68,7 @@ export const mockOrders = [
         variant: 'Brown Switch',
         price: 2490000,
         quantity: 1,
-        image: 'https://picsum.photos/seed/keyboard/200/200',
+        image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/k/e/keychron-q1-he.png',
       }
     ]
   }
@@ -98,7 +98,7 @@ export const mockOrderDetails = {
       variant: 'Xanh dương',
       price: 15990000,
       quantity: 1,
-      image: 'https://picsum.photos/seed/ipad/200/200',
+      image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/ipad-air-5-m1-1.png',
     }
   ],
   timeline: [
@@ -181,7 +181,7 @@ export const mockToReview = [
     id: 101,
     productId: 3,
     productName: 'Tai nghe Bluetooth AirPods Pro 2',
-    productImage: 'https://picsum.photos/seed/airpods/100/100',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png',
     date: '12/03/2026',
     orderId: 'ORD-20260312-001'
   },
@@ -189,7 +189,7 @@ export const mockToReview = [
     id: 102,
     productId: 4,
     productName: 'Chuột không dây Logitech MX Master 3S',
-    productImage: 'https://picsum.photos/seed/mouse/100/100',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/c/h/chuot-logitech-g-pro-x-superlight-2-01.png',
     date: '10/03/2026',
     orderId: 'ORD-20260310-005'
   }
@@ -200,18 +200,18 @@ export const mockReviews = [
     id: 1,
     productId: 1,
     productName: 'iPhone 15 Pro Max 256GB',
-    productImage: 'https://picsum.photos/seed/iphone15/100/100',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
     rating: 5,
     content: 'Sản phẩm tuyệt vời, giao hàng nhanh chóng. Đóng gói cẩn thận. Sẽ ủng hộ shop dài dài.',
     date: '20/10/2025',
-    images: ['https://picsum.photos/seed/review1/200/200', 'https://picsum.photos/seed/review2/200/200'],
+    images: ['https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png', 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png'],
     reply: 'Cảm ơn bạn đã tin tưởng và ủng hộ Hozitech. Chúc bạn có trải nghiệm tuyệt vời với sản phẩm!',
   },
   {
     id: 2,
     productId: 2,
     productName: 'MacBook Air M2 2022',
-    productImage: 'https://picsum.photos/seed/macbook/100/100',
+    productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:100:100/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png',
     rating: 4,
     content: 'Máy đẹp, mỏng nhẹ. Tuy nhiên pin không được trâu như quảng cáo.',
     date: '15/09/2025',

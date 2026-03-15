@@ -64,7 +64,7 @@ export default function Vouchers() {
           placeholder="Nhập mã voucher tại đây..." 
           className="flex-1 h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase transition-all"
         />
-        <button className="px-8 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold hover:shadow-lg hover:shadow-purple-500/30 transition-all hover:scale-105 whitespace-nowrap">
+        <button className="btn btn-primary btn-lg">
           Lưu mã
         </button>
       </div>
@@ -137,7 +137,7 @@ export default function Vouchers() {
                         </button>
                         <Link 
                           to="/cart"
-                          className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 text-white hover:shadow-lg hover:shadow-purple-500/30 transition-all text-sm font-bold"
+                          className="btn btn-primary btn-sm gap-1.5"
                         >
                           Dùng ngay <FiShoppingCart />
                         </Link>

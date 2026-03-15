@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { revenue7Days, revenueMonth, revenueQuarter, getChartSummary } from '@/utils/mockDashboard';
+import Card from '@/components/ui/Card';
 
 export default function RevenueChart() {
   const [chartType, setChartType] = useState<'7days' | 'month' | 'quarter'>('7days');
@@ -10,7 +11,7 @@ export default function RevenueChart() {
   const periodLabel = chartType === '7days' ? 'Tuần trước' : 'Năm trước';
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+    <Card>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <h2 className="text-lg font-bold">Biểu đồ doanh thu</h2>
         <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
@@ -80,6 +81,6 @@ export default function RevenueChart() {
           )}
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }

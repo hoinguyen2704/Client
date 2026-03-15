@@ -3,41 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiPrinter, FiEdit, FiUser, FiMapPin, FiCreditCard, FiPackage, FiTruck, FiCheckCircle, FiX } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
-
-const mockOrderDetails = {
-  id: 'ORD-20231101-042',
-  date: '01/11/2023 14:30',
-  status: 'pending', // pending, verified, shipping, delivered, cancelled
-  total: 15990000,
-  subtotal: 15990000,
-  shippingFee: 30000,
-  discount: 30000,
-  paymentMethod: 'Thanh toán khi nhận hàng (COD)',
-  paymentStatus: 'Chưa thanh toán',
-  customer: {
-    name: 'Trần Thị B',
-    email: 'tranthib@example.com',
-    phone: '0912345678',
-    totalOrders: 5,
-  },
-  shippingAddress: {
-    name: 'Trần Thị B',
-    phone: '0912345678',
-    address: '456 Đường DEF, Phường UVW, Quận 3, TP. Hồ Chí Minh'
-  },
-  items: [
-    {
-      id: 2,
-      name: 'iPad Air 5 M1 64GB',
-      variant: 'Xanh dương',
-      price: 15990000,
-      quantity: 1,
-      image: 'https://picsum.photos/seed/ipad/100/100',
-      sku: 'IPAD-AIR5-BLU-64'
-    }
-  ],
-  notes: 'Giao hàng trong giờ hành chính giúp mình nhé.'
-};
+import { mockOrderDetails } from '@/utils/mockAdmin';
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -81,7 +47,7 @@ export default function OrderDetail() {
           <button onClick={handlePrint} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
             <FiPrinter /> In hóa đơn
           </button>
-          <button onClick={() => setIsStatusModalOpen(true)} className="px-6 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+          <button onClick={() => setIsStatusModalOpen(true)} className="btn btn-md btn-primary">
             Cập nhật trạng thái
           </button>
         </div>

@@ -1,9 +1,4 @@
-interface EmptyStateProps {
-  icon?: React.ReactNode;
-  title: string;
-  description?: string;
-  action?: React.ReactNode;
-}
+import type { EmptyStateProps } from './types';
 
 export default function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (

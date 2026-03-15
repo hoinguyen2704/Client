@@ -3,12 +3,7 @@ import { FiMessageSquare, FiX, FiSend, FiUser, FiCpu } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
-
-interface Message {
-  id: string;
-  role: 'user' | 'model';
-  text: string;
-}
+import type { Message } from './types';
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);

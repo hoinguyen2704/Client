@@ -1,12 +1,13 @@
 import { FiStar } from 'react-icons/fi';
 import { recentOrders, reviewStats } from '@/utils/mockDashboard';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Card from '@/components/ui/Card';
 
 export default function DashboardBottom() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Recent Orders */}
-      <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+      <Card className="lg:col-span-2 overflow-hidden">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold">Đơn hàng gần đây</h2>
           <button className="text-sm font-medium text-purple-600 hover:underline">Xem tất cả</button>
@@ -37,10 +38,10 @@ export default function DashboardBottom() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* Review Stats */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+      <Card>
         <h2 className="text-lg font-bold mb-6">Thống kê đánh giá</h2>
         <div className="flex items-center gap-6 mb-8">
           <div className="text-center">
@@ -68,7 +69,7 @@ export default function DashboardBottom() {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

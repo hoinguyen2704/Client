@@ -32,7 +32,7 @@ export default function ProductForm() {
           >
             Hủy
           </button>
-          <button className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center gap-2">
+          <button className="btn btn-primary btn-md gap-2">
             <FiSave /> Lưu sản phẩm
           </button>
         </div>
@@ -260,7 +260,7 @@ export default function ProductForm() {
               
               {/* Placeholder for uploaded images */}
               <div className="aspect-square rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 relative group overflow-hidden">
-                <img src="https://picsum.photos/seed/prod1/200/200" alt="Preview" className="w-full h-full object-cover" />
+                <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png" alt="Preview" className="w-full h-full object-cover" />
                 <button className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center shadow-lg">
                   <FiTrash2 />
                 </button>

@@ -153,7 +153,7 @@ export default function Orders() {
             </div>
             <h3 className="text-xl font-bold mb-2">Không tìm thấy đơn hàng</h3>
             <p className="text-slate-500 mb-6">Bạn chưa có đơn hàng nào trong trạng thái này.</p>
-            <Link to="/search" className="inline-block px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+            <Link to="/search" className="inline-block btn btn-primary btn-lg">
               Tiếp tục mua sắm
             </Link>
           </div>
@@ -226,7 +226,7 @@ export default function Orders() {
                 </button>
                 <button
                   onClick={handleSubmitReview}
-                  className="px-6 py-2.5 rounded-xl font-medium bg-gradient-to-r from-purple-600 to-blue-500 text-white hover:shadow-lg hover:shadow-purple-500/30 transition-all"
+                  className="btn btn-primary btn-md"
                 >
                   Gửi đánh giá
                 </button>

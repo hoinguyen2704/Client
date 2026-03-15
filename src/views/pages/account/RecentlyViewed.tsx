@@ -3,6 +3,7 @@ import { FiClock, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '@/components/ui/ProductCard';
 import { mockProducts } from '@/utils/mockData';
+import EmptyState from '@/components/ui/EmptyState';
 
 export default function RecentlyViewed() {
   // Mocking recently viewed by taking the first 6 products and adding a timestamp
@@ -55,11 +56,11 @@ export default function RecentlyViewed() {
         </div>
       ) : (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
-          <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-4xl">
-            <FiClock />
-          </div>
-          <h3 className="text-xl font-bold mb-2">Chưa có sản phẩm nào</h3>
-          <p className="text-slate-500 mb-6">Bạn chưa xem sản phẩm nào gần đây.</p>
+          <EmptyState
+            icon={<FiClock />}
+            title="Chưa có sản phẩm nào"
+            description="Bạn chưa xem sản phẩm nào gần đây."
+          />
         </div>
       )}
     </div>

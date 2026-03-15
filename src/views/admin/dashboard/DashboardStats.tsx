@@ -3,10 +3,7 @@ import { FiTrendingUp, FiDollarSign, FiShoppingBag, FiUsers, FiBox, FiRefreshCcw
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { AnimatePresence, motion } from 'motion/react';
 import { pieData, PIE_COLORS } from '@/utils/mockDashboard';
-
-interface DashboardStatsProps {
-  onOpenModal: (modal: string) => void;
-}
+import type { DashboardStatsProps } from './types';
 
 const CardTooltip = ({ children, content }: { children: React.ReactNode; content: React.ReactNode }) => {
   const [isHovered, setIsHovered] = useState(false);

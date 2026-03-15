@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiTag, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-
-const mockVouchers = [
-  { id: 1, code: 'HOZITECH100K', type: 'discount', value: '100,000đ', minOrder: '1,000,000đ', usageLimit: 100, used: 45, startDate: '01/11/2023', endDate: '31/12/2023', status: 'active' },
-  { id: 2, code: 'FREESHIP50K', type: 'shipping', value: '50,000đ', minOrder: '500,000đ', usageLimit: 500, used: 480, startDate: '01/10/2023', endDate: '15/11/2023', status: 'active' },
-  { id: 3, code: 'NEWUSER200K', type: 'discount', value: '200,000đ', minOrder: '0đ', usageLimit: 1000, used: 1000, startDate: '01/01/2023', endDate: '31/12/2023', status: 'expired' },
-  { id: 4, code: 'FLASH500K', type: 'discount', value: '500,000đ', minOrder: '5,000,000đ', usageLimit: 50, used: 12, startDate: '11/11/2023', endDate: '12/11/2023', status: 'scheduled' },
-];
+import { mockVouchers } from '@/utils/mockAdmin';
 
 export default function AdminVouchers() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,7 +13,7 @@ export default function AdminVouchers() {
         <h1 className="text-2xl font-bold">Quản lý Voucher</h1>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
+          className="btn btn-primary btn-md gap-2"
         >
           <FiPlus /> Tạo Voucher mới
         </button>
@@ -216,7 +210,7 @@ export default function AdminVouchers() {
                 <button onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                   Hủy
                 </button>
-                <button className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center gap-2">
+                <button className="btn btn-primary btn-md gap-2">
                   <FiCheck /> Lưu Voucher
                 </button>
               </div>

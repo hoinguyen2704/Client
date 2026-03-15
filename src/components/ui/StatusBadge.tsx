@@ -1,8 +1,5 @@
 import { cn } from '@/utils/cn';
-
-type StatusType = 'completed' | 'delivered' | 'processing' | 'shipping' | 'cancelled' | 'pending' | 'verified'
-  | 'active' | 'inactive' | 'expired' | 'open' | 'in_progress' | 'replied' | 'closed'
-  | 'vip' | 'banned';
+import type { StatusType, StatusBadgeProps } from './types';
 
 const statusConfig: Record<StatusType, { label: string; className: string }> = {
   completed:   { label: 'Đã giao',     className: 'bg-green-100 text-green-600' },
@@ -22,12 +19,6 @@ const statusConfig: Record<StatusType, { label: string; className: string }> = {
   vip:         { label: 'VIP',         className: 'bg-purple-100 text-purple-600' },
   banned:      { label: 'Bị khóa',    className: 'bg-red-100 text-red-600' },
 };
-
-interface StatusBadgeProps {
-  status: string;
-  label?: string;        // Override default label
-  className?: string;    // Additional classes
-}
 
 export default function StatusBadge({ status, label, className }: StatusBadgeProps) {
   const config = statusConfig[status as StatusType] || { label: status, className: 'bg-slate-100 text-slate-600' };

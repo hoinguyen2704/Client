@@ -48,10 +48,10 @@ export const recentOrders = [
 
 // ── Top Products ──────────────────────────────────────────────────
 export const topProducts = [
-  { id: 1, name: 'iPhone 15 Pro Max 256GB', sold: 1245, revenue: '36.092.550.000đ', image: 'https://picsum.photos/seed/p1/50/50' },
-  { id: 2, name: 'MacBook Pro 14 M3 Pro', sold: 856, revenue: '42.791.440.000đ', image: 'https://picsum.photos/seed/p2/50/50' },
-  { id: 3, name: 'Samsung Galaxy S24 Ultra', sold: 643, revenue: '20.569.570.000đ', image: 'https://picsum.photos/seed/p3/50/50' },
-  { id: 4, name: 'AirPods Pro Gen 2', sold: 2105, revenue: '12.608.950.000đ', image: 'https://picsum.photos/seed/p4/50/50' },
+  { id: 1, name: 'iPhone 15 Pro Max 256GB', sold: 1245, revenue: '36.092.550.000đ', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:50:50/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png' },
+  { id: 2, name: 'MacBook Pro 14 M3 Pro', sold: 856, revenue: '42.791.440.000đ', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:50:50/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png' },
+  { id: 3, name: 'Samsung Galaxy S24 Ultra', sold: 643, revenue: '20.569.570.000đ', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:50:50/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png' },
+  { id: 4, name: 'AirPods Pro Gen 2', sold: 2105, revenue: '12.608.950.000đ', image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:50:50/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png' },
 ];
 
 // ── Top Categories ────────────────────────────────────────────────
@@ -119,10 +119,10 @@ export const categoryPeriodLabels: Record<CategoryPeriod, string> = {
 
 // ── Top Customers ─────────────────────────────────────────────────
 export const topCustomers = [
-  { id: 1, name: 'Trần Đại Quang', spent: '156.450.000đ', orders: 12, avatar: 'https://picsum.photos/seed/u1/50/50' },
-  { id: 2, name: 'Lê Thị Hoa', spent: '98.200.000đ', orders: 8, avatar: 'https://picsum.photos/seed/u2/50/50' },
-  { id: 3, name: 'Phạm Minh Tuấn', spent: '75.500.000đ', orders: 15, avatar: 'https://picsum.photos/seed/u3/50/50' },
-  { id: 4, name: 'Hoàng Văn Thái', spent: '62.100.000đ', orders: 5, avatar: 'https://picsum.photos/seed/u4/50/50' },
+  { id: 1, name: 'Trần Đại Quang', spent: '156.450.000đ', orders: 12, avatar: 'https://i.pravatar.cc/50?img=1' },
+  { id: 2, name: 'Lê Thị Hoa', spent: '98.200.000đ', orders: 8, avatar: 'https://i.pravatar.cc/50?img=5' },
+  { id: 3, name: 'Phạm Minh Tuấn', spent: '75.500.000đ', orders: 15, avatar: 'https://i.pravatar.cc/50?img=8' },
+  { id: 4, name: 'Hoàng Văn Thái', spent: '62.100.000đ', orders: 5, avatar: 'https://i.pravatar.cc/50?img=12' },
 ];
 
 // ── Review Stats ──────────────────────────────────────────────────

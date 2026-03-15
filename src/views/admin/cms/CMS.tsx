@@ -1,17 +1,6 @@
 import { useState } from 'react';
 import { FiImage, FiEdit2, FiTrash2, FiEye, FiEyeOff, FiPlus, FiUploadCloud, FiCheckCircle, FiXCircle } from 'react-icons/fi';
-
-const mockBanners = [
-  { id: 1, title: 'Khuyến mãi mùa hè', link: '/sale-summer', order: 1, status: 'visible', image: 'https://picsum.photos/seed/b1/800/300' },
-  { id: 2, title: 'Ra mắt iPhone 15', link: '/iphone-15', order: 2, status: 'visible', image: 'https://picsum.photos/seed/b2/800/300' },
-  { id: 3, title: 'Giảm giá phụ kiện', link: '/accessories', order: 3, status: 'hidden', image: 'https://picsum.photos/seed/b3/800/300' },
-];
-
-const mockPosts = [
-  { id: 1, title: 'Đánh giá chi tiết iPhone 15 Pro Max sau 1 tháng sử dụng', author: 'Admin', category: 'Review', date: '20/10/2023', status: 'published' },
-  { id: 2, title: 'Top 5 laptop sinh viên đáng mua nhất 2023', author: 'Content Team', category: 'Tư vấn', date: '18/10/2023', status: 'published' },
-  { id: 3, title: 'Hướng dẫn vệ sinh tai nghe AirPods đúng cách', author: 'Admin', category: 'Thủ thuật', date: '15/10/2023', status: 'draft' },
-];
+import { mockBanners, mockPosts } from '@/utils/mockAdmin';
 
 export default function CMS() {
   const [activeTab, setActiveTab] = useState<'banners' | 'posts'>('banners');

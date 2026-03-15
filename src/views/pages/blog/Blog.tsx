@@ -8,7 +8,7 @@ const mockPosts = [
     id: 1,
     title: 'Đánh giá chi tiết iPhone 15 Pro Max: Đáng đồng tiền bát gạo?',
     excerpt: 'iPhone 15 Pro Max mang đến nhiều cải tiến đáng giá như khung titan, camera tele 5x và cổng USB-C. Cùng tìm hiểu xem liệu đây có phải là chiếc smartphone đáng mua nhất hiện nay.',
-    image: 'https://picsum.photos/seed/iphone15/800/500',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
     date: '15/03/2026',
     author: 'Tech Reviewer',
     category: 'Đánh giá'
@@ -17,7 +17,7 @@ const mockPosts = [
     id: 2,
     title: 'Top 5 laptop gaming đáng mua nhất trong tầm giá 20-30 triệu',
     excerpt: 'Bạn đang tìm kiếm một chiếc laptop gaming mạnh mẽ nhưng ngân sách có hạn? Hãy tham khảo danh sách 5 mẫu laptop gaming tốt nhất trong phân khúc 20-30 triệu đồng.',
-    image: 'https://picsum.photos/seed/laptop/800/500',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/t/e/text_ng_n_1__1_50.png',
     date: '12/03/2026',
     author: 'Gaming Expert',
     category: 'Tư vấn'
@@ -26,7 +26,7 @@ const mockPosts = [
     id: 3,
     title: 'Hướng dẫn chọn mua bàn phím cơ phù hợp với nhu cầu',
     excerpt: 'Bàn phím cơ có rất nhiều loại switch, layout và tính năng khác nhau. Bài viết này sẽ giúp bạn hiểu rõ và chọn được chiếc bàn phím cơ ưng ý nhất.',
-    image: 'https://picsum.photos/seed/keyboard/800/500',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/k/e/keychron-q1-he.png',
     date: '10/03/2026',
     author: 'Setup Master',
     category: 'Hướng dẫn'
@@ -35,7 +35,7 @@ const mockPosts = [
     id: 4,
     title: 'So sánh AirPods Pro 2 và Sony WF-1000XM5: Đâu là vua tai nghe TWS?',
     excerpt: 'Hai mẫu tai nghe true wireless chống ồn hàng đầu hiện nay đang cạnh tranh gay gắt. Cùng xem xét ưu nhược điểm của từng sản phẩm để đưa ra quyết định.',
-    image: 'https://picsum.photos/seed/earbuds/800/500',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png',
     date: '08/03/2026',
     author: 'Audio Fanatic',
     category: 'So sánh'
@@ -44,7 +44,7 @@ const mockPosts = [
     id: 5,
     title: 'Xu hướng công nghệ năm 2026: AI tiếp tục lên ngôi',
     excerpt: 'Trí tuệ nhân tạo đang ngày càng được tích hợp sâu vào các thiết bị công nghệ từ điện thoại, laptop đến đồ gia dụng. Cùng điểm qua những xu hướng nổi bật trong năm nay.',
-    image: 'https://picsum.photos/seed/ai/800/500',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png',
     date: '05/03/2026',
     author: 'Tech Analyst',
     category: 'Tin tức'
@@ -53,7 +53,7 @@ const mockPosts = [
     id: 6,
     title: 'Cách tối ưu hóa pin cho MacBook để sử dụng cả ngày dài',
     excerpt: 'MacBook nổi tiếng với thời lượng pin ấn tượng, nhưng bạn vẫn có thể làm nhiều cách để kéo dài thời gian sử dụng hơn nữa. Hãy thử áp dụng các mẹo sau.',
-    image: 'https://picsum.photos/seed/macbook/800/500',
+    image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:800:500/q:80/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png',
     date: '01/03/2026',
     author: 'Apple Guru',
     category: 'Thủ thuật'

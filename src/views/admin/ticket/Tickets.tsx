@@ -1,19 +1,7 @@
 import { useState } from 'react';
 import { FiMessageSquare, FiPaperclip, FiSend, FiCheckCircle, FiXCircle, FiClock, FiAlertCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-
-const mockTickets = [
-  { id: 'TKT-1024', customer: 'Nguyễn Văn A', subject: 'Sản phẩm bị lỗi màn hình', status: 'open', priority: 'high', date: '20/10/2023 14:30' },
-  { id: 'TKT-1023', customer: 'Trần Thị B', subject: 'Hỏi về chính sách bảo hành', status: 'in_progress', priority: 'medium', date: '19/10/2023 09:15' },
-  { id: 'TKT-1022', customer: 'Lê Văn C', subject: 'Yêu cầu xuất hóa đơn đỏ', status: 'open', priority: 'low', date: '18/10/2023 16:45' },
-  { id: 'TKT-1021', customer: 'Phạm D', subject: 'Thay đổi địa chỉ giao hàng', status: 'closed', priority: 'medium', date: '17/10/2023 10:20' },
-];
-
-const mockChatHistory = [
-  { id: 1, sender: 'customer', name: 'Nguyễn Văn A', time: '14:30', text: 'Chào shop, mình mới nhận được điện thoại hôm qua nhưng màn hình bị sọc xanh. Mình muốn đổi trả thì làm thế nào ạ?' },
-  { id: 2, sender: 'customer', name: 'Nguyễn Văn A', time: '14:31', text: 'Đây là hình ảnh sản phẩm ạ.', image: 'https://picsum.photos/seed/t1/300/200' },
-  { id: 3, sender: 'admin', name: 'Admin Support', time: '14:45', text: 'Chào bạn, shop rất xin lỗi về sự cố bạn gặp phải. Bạn vui lòng cung cấp mã đơn hàng để shop kiểm tra và hướng dẫn thủ tục đổi trả nhé.' },
-];
+import { mockTickets, mockChatHistory } from '@/utils/mockAdmin';
 
 export default function Tickets() {
   const [tickets, setTickets] = useState(mockTickets);

@@ -4,6 +4,7 @@ import { mockProducts } from '@/utils/mockData';
 import { formatPrice } from '@/helpers/format';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import EmptyState from '@/components/ui/EmptyState';
 
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState(mockProducts.slice(0, 4));
@@ -25,21 +26,17 @@ export default function Wishlist() {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <div className="w-40 h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
-            <FiHeart className="text-6xl text-slate-300 dark:text-slate-600" />
-          </div>
-          <h2 className="text-2xl font-bold mb-2">Chưa có sản phẩm yêu thích</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
-            Hãy thêm những sản phẩm bạn yêu thích vào danh sách để dễ dàng mua sắm sau này.
-          </p>
-          <Link 
-            to="/"
-            className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold text-lg hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105 transition-all"
-          >
-            Tiếp tục mua sắm
-          </Link>
+          <EmptyState
+            icon={<FiHeart className="text-6xl" />}
+            title="Chưa có sản phẩm yêu thích"
+            description="Hãy thêm những sản phẩm bạn yêu thích vào danh sách để dễ dàng mua sắm sau này."
+            action={
+              <Link to="/" className="btn btn-lg btn-primary rounded-2xl">
+                Tiếp tục mua sắm
+              </Link>
+            }
+          />
         </motion.div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">

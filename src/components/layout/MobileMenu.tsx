@@ -2,13 +2,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiSearch, FiUser, FiSettings, FiBox, FiLogOut } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { navItems } from './Header';
-
-interface MobileMenuProps {
-  isOpen: boolean;
-  user: { role: string; email: string } | null;
-  onClose: () => void;
-  onLogout: () => void;
-}
+import type { MobileMenuProps } from './types';
 
 export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMenuProps) {
   const navigate = useNavigate();

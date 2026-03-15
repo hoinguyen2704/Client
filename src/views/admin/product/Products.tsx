@@ -2,14 +2,7 @@ import { useState } from 'react';
 import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiMoreVertical } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
-
-const mockProducts = [
-  { id: 1, name: 'iPhone 15 Pro Max 256GB', category: 'Điện thoại', price: 34990000, stock: 150, status: 'active', image: 'https://picsum.photos/seed/iphone15/100/100' },
-  { id: 2, name: 'MacBook Air M2 2022', category: 'Laptop', price: 26990000, stock: 45, status: 'active', image: 'https://picsum.photos/seed/macbook/100/100' },
-  { id: 3, name: 'AirPods Pro 2', category: 'Phụ kiện', price: 4990000, stock: 0, status: 'out_of_stock', image: 'https://picsum.photos/seed/airpods/100/100' },
-  { id: 4, name: 'iPad Pro 11 inch M2', category: 'Tablet', price: 20990000, stock: 20, status: 'hidden', image: 'https://picsum.photos/seed/ipad/100/100' },
-  { id: 5, name: 'Samsung Galaxy S24 Ultra', category: 'Điện thoại', price: 33990000, stock: 85, status: 'active', image: 'https://picsum.photos/seed/s24/100/100' },
-];
+import { mockAdminProducts } from '@/utils/mockAdmin';
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,7 +10,7 @@ export default function Products() {
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedItems(mockProducts.map(p => p.id));
+      setSelectedItems(mockAdminProducts.map(p => p.id));
     } else {
       setSelectedItems([]);
     }
@@ -43,7 +36,7 @@ export default function Products() {
           )}
           <Link 
             to="/admin/products/new"
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
+            className="btn btn-primary btn-md gap-2"
           >
             <FiPlus /> Thêm sản phẩm mới
           </Link>
@@ -86,7 +79,7 @@ export default function Products() {
                   <input 
                     type="checkbox" 
                     className="rounded border-slate-300 text-purple-600 focus:ring-purple-500"
-                    checked={selectedItems.length === mockProducts.length && mockProducts.length > 0}
+                    checked={selectedItems.length === mockAdminProducts.length && mockAdminProducts.length > 0}
                     onChange={handleSelectAll}
                   />
                 </th>
@@ -99,7 +92,7 @@ export default function Products() {
               </tr>
             </thead>
             <tbody>
-              {mockProducts.map((product) => (
+              {mockAdminProducts.map((product) => (
                 <tr key={product.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                   <td className="p-4">
                     <input 

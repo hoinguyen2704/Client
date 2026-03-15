@@ -2,32 +2,11 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiMail, FiPhone, FiMapPin, FiCalendar, FiShoppingBag, FiDollarSign, FiStar } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
-
-const mockCustomer = {
-  id: 1,
-  name: 'Nguyễn Văn A',
-  email: 'nguyenvana@example.com',
-  phone: '0987654321',
-  address: '123 Đường ABC, Phường XYZ, Quận 1, TP. Hồ Chí Minh',
-  joinDate: '15/01/2023',
-  status: 'active',
-  avatar: 'https://picsum.photos/seed/user1/150/150',
-  stats: {
-    totalOrders: 12,
-    totalSpent: 154000000,
-    averageOrderValue: 12833333,
-    rank: 'Khách hàng VIP'
-  },
-  recentOrders: [
-    { id: 'ORD-20231025-001', date: '25/10/2023', total: 34990000, status: 'delivered', items: 2 },
-    { id: 'ORD-20230915-088', date: '15/09/2023', total: 2490000, status: 'delivered', items: 1 },
-    { id: 'ORD-20230802-045', date: '02/08/2023', total: 15990000, status: 'cancelled', items: 1 },
-  ]
-};
+import { mockCustomerDetail } from '@/utils/mockAdmin';
 
 export default function CustomerDetail() {
   const { id } = useParams();
-  const [customer] = useState(mockCustomer);
+  const [customer] = useState(mockCustomerDetail);
 
   return (
     <div className="space-y-6">

@@ -1,10 +1,5 @@
 import { cn } from '@/utils/cn';
-
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-}
+import type { CardProps } from './types';
 
 export default function Card({ children, className, onClick }: CardProps) {
   return (

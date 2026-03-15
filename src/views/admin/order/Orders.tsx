@@ -3,14 +3,7 @@ import { FiSearch, FiFilter, FiEye, FiMoreVertical, FiDownload } from 'react-ico
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
-
-const mockOrders = [
-  { id: 'ORD-20231025-001', customer: 'Nguyễn Văn A', phone: '0987654321', date: '25/10/2023 14:30', total: 34990000, status: 'delivered', payment: 'Thẻ tín dụng' },
-  { id: 'ORD-20231101-042', customer: 'Trần Thị B', phone: '0912345678', date: '01/11/2023 09:15', total: 15990000, status: 'pending', payment: 'COD' },
-  { id: 'ORD-20231105-112', customer: 'Lê Văn C', phone: '0909090909', date: '05/11/2023 16:45', total: 4990000, status: 'shipping', payment: 'Chuyển khoản' },
-  { id: 'ORD-20230915-088', customer: 'Phạm Thị D', phone: '0988888888', date: '15/09/2023 10:20', total: 2490000, status: 'cancelled', payment: 'COD' },
-  { id: 'ORD-20231110-005', customer: 'Hoàng Văn E', phone: '0977777777', date: '10/11/2023 11:00', total: 20990000, status: 'verified', payment: 'Thẻ tín dụng' },
-];
+import { mockAdminOrders } from '@/utils/mockAdmin';
 
 export default function AdminOrders() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,7 +64,7 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody>
-              {mockOrders.map((order) => (
+              {mockAdminOrders.map((order) => (
                 <tr key={order.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                   <td className="p-4">
                     <input type="checkbox" className="rounded border-slate-300 text-purple-600 focus:ring-purple-500" />

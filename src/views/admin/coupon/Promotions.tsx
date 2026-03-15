@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiGift } from 'react-icons/fi';
-
-const mockPromotions = [
-  { id: 1, name: 'Siêu Sale 11.11', type: 'Giảm giá toàn sàn', value: 'Lên đến 50%', startDate: '10/11/2023', endDate: '12/11/2023', status: 'active' },
-  { id: 2, name: 'Black Friday', type: 'Flash Sale', value: 'Đồng giá 99k', startDate: '24/11/2023', endDate: '26/11/2023', status: 'scheduled' },
-  { id: 3, name: 'Mừng Xuân Mới', type: 'Tặng quà', value: 'Tặng tai nghe', startDate: '01/01/2023', endDate: '15/01/2023', status: 'expired' },
-];
+import Card from '@/components/ui/Card';
+import { mockPromotions } from '@/utils/mockAdmin';
 
 export default function AdminPromotions() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,13 +10,13 @@ export default function AdminPromotions() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Chương trình khuyến mãi</h1>
-        <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2">
+        <button className="btn btn-primary btn-md gap-2">
           <FiPlus /> Tạo chương trình
         </button>
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
+      <Card className="rounded-2xl p-4 flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <input 
             type="text" 
@@ -42,10 +38,10 @@ export default function AdminPromotions() {
             <FiFilter /> Lọc
           </button>
         </div>
-      </div>
+      </Card>
 
       {/* Promotions Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+      <Card className="rounded-2xl p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -107,7 +103,7 @@ export default function AdminPromotions() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

@@ -1,16 +1,10 @@
 import { useState } from 'react';
 import { FiSearch, FiFilter, FiEye, FiEyeOff, FiTrash2, FiAlertTriangle, FiStar, FiMessageSquare, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-
-const mockReviews = [
-  { id: 1, product: 'iPhone 15 Pro Max', customer: 'Nguyễn Văn A', rating: 5, content: 'Sản phẩm rất tuyệt vời, giao hàng nhanh chóng. Đóng gói cẩn thận.', date: '20/10/2023', status: 'approved', images: ['https://picsum.photos/seed/r1/100/100'] },
-  { id: 2, product: 'MacBook Pro M3', customer: 'Trần Thị B', rating: 4, content: 'Máy đẹp, chạy mượt nhưng giá hơi cao. Pin trâu.', date: '19/10/2023', status: 'pending', images: [] },
-  { id: 3, product: 'AirPods Pro 2', customer: 'Lê Văn C', rating: 1, content: 'Tai nghe bị rè một bên, yêu cầu đổi trả ngay lập tức. Rất thất vọng về chất lượng.', date: '18/10/2023', status: 'hidden', images: ['https://picsum.photos/seed/r2/100/100', 'https://picsum.photos/seed/r3/100/100'] },
-  { id: 4, product: 'Samsung S24 Ultra', customer: 'Phạm D', rating: 5, content: 'Link mua hàng giá rẻ tại đây: http://spam-link.com', date: '17/10/2023', status: 'spam', images: [] },
-];
+import { mockAdminReviews } from '@/utils/mockAdmin';
 
 export default function Feedbacks() {
-  const [reviews, setReviews] = useState(mockReviews);
+  const [reviews, setReviews] = useState(mockAdminReviews);
   const [selectedReview, setSelectedReview] = useState<any>(null);
   const [replyText, setReplyText] = useState('');
 

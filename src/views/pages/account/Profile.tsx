@@ -16,7 +16,7 @@ export default function Profile() {
           {/* Avatar Upload */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-lg group">
-              <img src="https://picsum.photos/seed/avatar/200/200" alt="Avatar" className="w-full h-full rounded-full object-cover" />
+              <img src="https://i.pravatar.cc/200?img=32" alt="Avatar" className="w-full h-full rounded-full object-cover" />
               <button className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center text-white transition-opacity">
                 <FiCamera className="text-2xl" />
               </button>
@@ -45,7 +45,7 @@ export default function Profile() {
               </div>
             </div>
             
-            <button className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+            <button className="btn btn-primary btn-lg">
               Lưu thay đổi
             </button>
           </div>

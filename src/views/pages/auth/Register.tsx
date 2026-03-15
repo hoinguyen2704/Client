@@ -212,7 +212,7 @@ export default function Register() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="group w-full flex justify-center items-center py-3.5 px-4 border border-transparent text-[15px] font-bold rounded-2xl text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-lg shadow-purple-500/30"
+              className="btn btn-primary w-full py-3.5 group"
             >
               Đăng ký
               <FiArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

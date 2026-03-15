@@ -3,14 +3,7 @@ import { FiSearch, FiFilter, FiMoreVertical, FiMail, FiPhone, FiEye, FiLock, FiU
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
-
-const mockCustomers = [
-  { id: 1, name: 'Nguyễn Văn A', email: 'nguyenvana@example.com', phone: '0987654321', totalOrders: 12, totalSpent: 154000000, status: 'active', joinDate: '15/01/2023', avatar: 'https://picsum.photos/seed/user1/100/100' },
-  { id: 2, name: 'Trần Thị B', email: 'tranthib@example.com', phone: '0912345678', totalOrders: 5, totalSpent: 45000000, status: 'active', joinDate: '20/03/2023', avatar: 'https://picsum.photos/seed/user2/100/100' },
-  { id: 3, name: 'Lê Văn C', email: 'levanc@example.com', phone: '0909090909', totalOrders: 1, totalSpent: 4990000, status: 'banned', joinDate: '05/11/2023', avatar: 'https://picsum.photos/seed/user3/100/100' },
-  { id: 4, name: 'Phạm Thị D', email: 'phamthid@example.com', phone: '0988888888', totalOrders: 0, totalSpent: 0, status: 'active', joinDate: '10/11/2023', avatar: 'https://picsum.photos/seed/user4/100/100' },
-  { id: 5, name: 'Hoàng Văn E', email: 'hoangvane@example.com', phone: '0977777777', totalOrders: 24, totalSpent: 320000000, status: 'vip', joinDate: '01/12/2022', avatar: 'https://picsum.photos/seed/user5/100/100' },
-];
+import { mockCustomers } from '@/utils/mockAdmin';
 
 export default function Customers() {
   const [searchQuery, setSearchQuery] = useState('');

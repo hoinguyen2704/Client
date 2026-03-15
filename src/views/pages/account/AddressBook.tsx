@@ -24,7 +24,7 @@ export default function AddressBook() {
         <h1 className="text-2xl font-bold">Sổ địa chỉ</h1>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2"
+          className="btn btn-primary btn-md gap-2"
         >
           <FiPlus /> Thêm địa chỉ mới
         </button>
@@ -155,7 +155,7 @@ export default function AddressBook() {
                 
                 <button 
                   onClick={() => setIsModalOpen(false)}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold hover:shadow-lg hover:shadow-purple-500/30 transition-all mt-6"
+                  className="btn btn-primary w-full py-4 mt-6"
                 >
                   Lưu địa chỉ
                 </button>

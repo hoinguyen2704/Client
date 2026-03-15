@@ -1,11 +1,12 @@
 import { FiMoreVertical } from 'react-icons/fi';
 import { topProducts, topCategories, topCustomers } from '@/utils/mockDashboard';
+import Card from '@/components/ui/Card';
 
 export default function DashboardLists() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Top Products */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+      <Card>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold">Top sản phẩm bán chạy</h2>
           <button className="text-slate-400 hover:text-purple-600"><FiMoreVertical /></button>
@@ -23,12 +24,12 @@ export default function DashboardLists() {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
       {/* Right Column */}
       <div className="space-y-6">
         {/* Top Categories */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+        <Card>
           <h2 className="text-lg font-bold mb-6">Danh mục nổi bật</h2>
           <div className="space-y-4">
             {topCategories.map((cat) => (
@@ -43,10 +44,10 @@ export default function DashboardLists() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Top Customers */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+        <Card>
           <h2 className="text-lg font-bold mb-6">Khách hàng tiềm năng</h2>
           <div className="space-y-4">
             {topCustomers.slice(0, 3).map((customer) => (
@@ -60,7 +61,7 @@ export default function DashboardLists() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

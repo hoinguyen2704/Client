@@ -32,7 +32,7 @@ export default function UserLayout() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 sticky top-28">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 p-1">
-                <img src="https://picsum.photos/seed/avatar/100/100" alt="Avatar" className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 object-cover" />
+                <img src="https://i.pravatar.cc/100?img=32" alt="Avatar" className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 object-cover" />
               </div>
               <div>
                 <h3 className="font-bold text-lg">Nguyễn Văn A</h3>

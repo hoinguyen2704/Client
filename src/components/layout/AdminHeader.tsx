@@ -1,8 +1,5 @@
 import { FiBell, FiSearch, FiLogOut } from 'react-icons/fi';
-
-interface AdminHeaderProps {
-  onLogout: () => void;
-}
+import type { AdminHeaderProps } from './types';
 
 export default function AdminHeader({ onLogout }: AdminHeaderProps) {
   return (
@@ -25,7 +22,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
         </button>
         <div className="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
         <button onClick={onLogout} className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-xl transition-colors">
-          <img src="https://picsum.photos/seed/admin/100/100" alt="Admin" className="w-10 h-10 rounded-full object-cover" />
+          <img src="https://i.pravatar.cc/100?img=68" alt="Admin" className="w-10 h-10 rounded-full object-cover" />
           <div className="hidden md:block text-sm text-left">
             <p className="font-bold">Admin Manager</p>
             <p className="text-slate-500 dark:text-slate-400 text-xs">Super Admin</p>

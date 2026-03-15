@@ -3,14 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiHeart, FiUser, FiMenu, FiLogOut, FiSettings, FiBox, FiSun, FiMoon } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import LogoIcon from '../ui/LogoIcon';
-
-interface HeaderProps {
-  user: { role: string; email: string } | null;
-  theme: 'light' | 'dark';
-  toggleTheme: () => void;
-  onMenuToggle: () => void;
-  onLogout: () => void;
-}
+import type { HeaderProps } from './types';
 
 const navItems = [
   { path: '/', label: 'Trang chủ' },
