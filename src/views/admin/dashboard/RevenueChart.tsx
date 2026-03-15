@@ -42,9 +42,15 @@ export default function RevenueChart() {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-5 mb-4">
-        <div className="flex items-center gap-2"><div className="w-6 h-0.5 bg-purple-500 rounded"></div><span className="text-xs text-slate-500">Kỳ này</span></div>
-        <div className="flex items-center gap-2"><div className="w-6 h-0.5 border-t-2 border-dashed border-amber-500 rounded"></div><span className="text-xs text-slate-400">{periodLabel}</span></div>
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+          <span className="w-3 h-3 rounded-full bg-purple-500"></span>
+          <span className="text-sm font-medium text-purple-700 dark:text-purple-400">Kỳ này</span>
+        </span>
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+          <span className="w-5 h-0 border-t-2 border-dashed border-amber-500"></span>
+          <span className="text-sm font-medium text-amber-600 dark:text-amber-400">{periodLabel}</span>
+        </span>
       </div>
 
       <div className="h-80">
@@ -52,7 +58,7 @@ export default function RevenueChart() {
           {chartType === '7days' ? (
             <AreaChart data={revenue7Days} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs><linearGradient id="colorRevWeek" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25}/><stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/></linearGradient></defs>
-              <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
               <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Kỳ trước' : 'Doanh thu']} />
@@ -62,7 +68,7 @@ export default function RevenueChart() {
           ) : chartType === 'month' ? (
             <AreaChart data={revenueMonth} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs><linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/><stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/></linearGradient></defs>
-              <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
               <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Năm trước' : 'Doanh thu']} />
@@ -71,7 +77,7 @@ export default function RevenueChart() {
             </AreaChart>
           ) : (
             <BarChart data={revenueQuarter} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
               <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Năm trước' : 'Doanh thu']} />

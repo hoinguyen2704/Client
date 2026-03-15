@@ -5,6 +5,7 @@ import { recentOrders } from '@/utils/mockDashboard';
 import StatusBadge from '@/components/ui/StatusBadge';
 import DashboardStats from './DashboardStats';
 import RevenueChart from './RevenueChart';
+import OrderChart from './OrderChart';
 import CategoryChart from './CategoryChart';
 import DashboardLists from './DashboardLists';
 import DashboardBottom from './DashboardBottom';
@@ -25,6 +26,7 @@ export default function Dashboard() {
 
       <DashboardStats onOpenModal={setActiveModal} />
       <RevenueChart />
+      <OrderChart />
       <CategoryChart />
       <DashboardLists />
       <DashboardBottom />

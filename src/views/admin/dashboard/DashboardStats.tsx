@@ -50,13 +50,13 @@ export default function DashboardStats({ onOpenModal }: DashboardStatsProps) {
       </CardTooltip>
 
       {/* Orders Card */}
-      <CardTooltip content={<div className="space-y-2 text-sm text-center"><p className="text-slate-500 mb-1">Tổng số đơn hàng</p><p className="text-2xl font-bold text-blue-600">15,420</p></div>}>
+      <CardTooltip content={<div className="space-y-2 text-sm text-center"><p className="text-slate-500 mb-1">Đơn hàng mới (Tháng)</p><p className="text-2xl font-bold text-blue-600">+342</p></div>}>
         <div onClick={() => onOpenModal('orders')} className="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer hover:border-blue-300 hover:scale-105 hover:shadow-blue-500/20 transition-all duration-300 h-full flex flex-col justify-between">
           <div className="flex justify-between items-start mb-2">
-            <p className="text-slate-500 text-xs font-medium">Đơn hàng mới</p>
+            <p className="text-slate-500 text-xs font-medium">Tổng đơn hàng</p>
             <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><FiShoppingBag /></div>
           </div>
-          <div><h3 className="text-xl font-bold mb-1">342</h3><div className="flex items-center gap-1 text-xs"><span className="flex items-center text-green-500 font-medium"><FiTrendingUp /> +5.2%</span></div></div>
+          <div><h3 className="text-xl font-bold mb-1">15,420</h3><div className="flex items-center gap-1 text-xs"><span className="flex items-center text-green-500 font-medium"><FiTrendingUp /> +5.2%</span></div></div>
         </div>
       </CardTooltip>
 

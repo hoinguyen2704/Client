@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 const mockPosts = [
   {
     id: 1,
+    slug: 'danh-gia-chi-tiet-iphone-15-pro-max',
     title: 'Đánh giá chi tiết iPhone 15 Pro Max: Đáng đồng tiền bát gạo?',
     excerpt: 'iPhone 15 Pro Max mang đến nhiều cải tiến đáng giá như khung titan, camera tele 5x và cổng USB-C. Cùng tìm hiểu xem liệu đây có phải là chiếc smartphone đáng mua nhất hiện nay.',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
@@ -15,6 +16,7 @@ const mockPosts = [
   },
   {
     id: 2,
+    slug: 'top-5-laptop-gaming-dang-mua-nhat-20-30-trieu',
     title: 'Top 5 laptop gaming đáng mua nhất trong tầm giá 20-30 triệu',
     excerpt: 'Bạn đang tìm kiếm một chiếc laptop gaming mạnh mẽ nhưng ngân sách có hạn? Hãy tham khảo danh sách 5 mẫu laptop gaming tốt nhất trong phân khúc 20-30 triệu đồng.',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/e/text_ng_n_1__1_50.png',
@@ -24,6 +26,7 @@ const mockPosts = [
   },
   {
     id: 3,
+    slug: 'huong-dan-chon-mua-ban-phim-co',
     title: 'Hướng dẫn chọn mua bàn phím cơ phù hợp với nhu cầu',
     excerpt: 'Bàn phím cơ có rất nhiều loại switch, layout và tính năng khác nhau. Bài viết này sẽ giúp bạn hiểu rõ và chọn được chiếc bàn phím cơ ưng ý nhất.',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/k/e/keychron-q1-he.png',
@@ -33,6 +36,7 @@ const mockPosts = [
   },
   {
     id: 4,
+    slug: 'so-sanh-airpods-pro-2-va-sony-wf-1000xm5',
     title: 'So sánh AirPods Pro 2 và Sony WF-1000XM5: Đâu là vua tai nghe TWS?',
     excerpt: 'Hai mẫu tai nghe true wireless chống ồn hàng đầu hiện nay đang cạnh tranh gay gắt. Cùng xem xét ưu nhược điểm của từng sản phẩm để đưa ra quyết định.',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png',
@@ -42,6 +46,7 @@ const mockPosts = [
   },
   {
     id: 5,
+    slug: 'xu-huong-cong-nghe-nam-2026-ai-len-ngoi',
     title: 'Xu hướng công nghệ năm 2026: AI tiếp tục lên ngôi',
     excerpt: 'Trí tuệ nhân tạo đang ngày càng được tích hợp sâu vào các thiết bị công nghệ từ điện thoại, laptop đến đồ gia dụng. Cùng điểm qua những xu hướng nổi bật trong năm nay.',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s24-ultra.png',
@@ -51,6 +56,7 @@ const mockPosts = [
   },
   {
     id: 6,
+    slug: 'cach-toi-uu-hoa-pin-cho-macbook',
     title: 'Cách tối ưu hóa pin cho MacBook để sử dụng cả ngày dài',
     excerpt: 'MacBook nổi tiếng với thời lượng pin ấn tượng, nhưng bạn vẫn có thể làm nhiều cách để kéo dài thời gian sử dụng hơn nữa. Hãy thử áp dụng các mẹo sau.',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png',
@@ -97,7 +103,7 @@ export default function Blog() {
               transition={{ delay: 0.2 }}
               className="mb-12"
             >
-              <Link to={`/blog/${mockPosts[0].id}`} className="group block relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+              <Link to={`/blog/${mockPosts[0].slug}`} className="group block relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <div className="aspect-[21/9] w-full overflow-hidden">
                   <img 
                     src={mockPosts[0].image} 
@@ -139,7 +145,7 @@ export default function Blog() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
                 >
-                  <Link to={`/blog/${post.id}`} className="group block h-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all border border-slate-200 dark:border-slate-800 flex flex-col">
+                  <Link to={`/blog/${post.slug}`} className="group block h-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all border border-slate-200 dark:border-slate-800 flex flex-col">
                     <div className="aspect-[16/9] w-full overflow-hidden relative">
                       <img 
                         src={post.image} 
@@ -208,7 +214,7 @@ export default function Blog() {
               <h3 className="text-lg font-bold mb-4">Bài viết nổi bật</h3>
               <div className="space-y-4">
                 {mockPosts.slice(1, 4).map(post => (
-                  <Link key={post.id} to={`/blog/${post.id}`} className="flex gap-4 group">
+                  <Link key={post.id} to={`/blog/${post.slug}`} className="flex gap-4 group">
                     <img src={post.image} alt={post.title} className="w-20 h-20 rounded-xl object-cover" />
                     <div className="flex-1">
                       <h4 className="font-medium text-sm line-clamp-2 group-hover:text-purple-600 transition-colors mb-1">

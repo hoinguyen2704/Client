@@ -28,8 +28,8 @@ export const publicRoutes = (
     <Route path="compare" element={<Compare />} />
     <Route path="wishlist" element={<Wishlist />} />
     <Route path="blog" element={<Blog />} />
-    <Route path="blog/:id" element={<BlogDetail />} />
-    <Route path="product/:id" element={<ProductDetail />} />
+    <Route path="blog/:slug" element={<BlogDetail />} />
+    <Route path="product/:slug" element={<ProductDetail />} />
     <Route path="flash-sale" element={<FlashSale />} />
     <Route path="contact" element={<Contact />} />
     <Route path="about" element={<About />} />

@@ -33,6 +33,9 @@ const authService = {
 
   socialLogin: (data: SocialLoginRequest): Promise<ApiResponse<AuthResponse>> =>
     axios.post(`${AUTH_URL}/social-login`, data),
+
+  logout: (): Promise<ApiResponse<void>> =>
+    axios.post(`${AUTH_URL}/logout`),
 };
 
 export default authService;

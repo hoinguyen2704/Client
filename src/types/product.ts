@@ -4,16 +4,16 @@ export interface ProductResponse {
   name: string;
   slug: string;
   description?: string;
-  thumbnail?: string;
-  images: string[];
-  basePrice: number;
-  categoryId?: string;
-  categoryName?: string;
-  brandId?: string;
+  mainImageUrl?: string;
   brandName?: string;
-  status: string;
+  category?: CategoryResponse;
+  originPrice: number;
   averageRating?: number;
-  totalFeedbacks?: number;
+  totalReviews?: number;
+  status: string;
+  isFeatured?: boolean;
+  specsJson?: string;
+  outOfStock?: boolean;
   variants: ProductVariantResponse[];
   createdAt: string;
 }
@@ -21,33 +21,46 @@ export interface ProductResponse {
 export interface ProductVariantResponse {
   id: string;
   sku: string;
+  variantName?: string;
   color?: string;
-  storage?: string;
-  ram?: string;
+  storageCapacity?: string;
   price: number;
-  originalPrice?: number;
-  stock: number;
+  stockQuantity: number;
+  images?: ProductImageResponse[];
+}
+
+export interface ProductImageResponse {
+  id: string;
+  imageUrl: string;
+  isPrimary?: boolean;
 }
 
 export interface ProductRequest {
   name: string;
   description?: string;
-  thumbnail?: string;
-  images?: string[];
-  basePrice: number;
-  categoryId?: string;
   brandId?: string;
-  variants: ProductVariantRequest[];
+  categoryId?: string;
+  originPrice: number;
+  specsJson?: string;
+  status?: string;
+  isFeatured?: boolean;
+  variants?: ProductVariantRequest[];
+  images?: ProductImageRequest[];
 }
 
 export interface ProductVariantRequest {
   sku: string;
-  color?: string;
-  storage?: string;
-  ram?: string;
+  variantName: string;
   price: number;
-  originalPrice?: number;
-  stock: number;
+  compareAtPrice?: number;
+  stock?: number;
+  active?: boolean;
+  images?: ProductImageRequest[];
+}
+
+export interface ProductImageRequest {
+  imageUrl: string;
+  isPrimary?: boolean;
 }
 
 // ─── Category ───────────────────────────────────────────────────
@@ -55,16 +68,18 @@ export interface CategoryResponse {
   id: string;
   name: string;
   slug: string;
-  parentId?: string;
-  icon?: string;
-  isActive: boolean;
+  description?: string;
+  imageUrl?: string;
+  active: boolean;
+  createdAt?: string;
   children?: CategoryResponse[];
 }
 
 export interface CategoryRequest {
   name: string;
   parentId?: string;
-  icon?: string;
+  description?: string;
+  imageUrl?: string;
 }
 
 // ─── Brand ──────────────────────────────────────────────────────
@@ -72,12 +87,12 @@ export interface BrandResponse {
   id: string;
   name: string;
   slug: string;
-  logo?: string;
-  description?: string;
+  logoUrl?: string;
+  productCount?: number;
 }
 
 export interface BrandRequest {
   name: string;
-  logo?: string;
+  logoUrl?: string;
   description?: string;
 }

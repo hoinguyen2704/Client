@@ -47,6 +47,7 @@ export default function MyReviews() {
       setReviews([{
         id: Date.now(),
         productId: selectedItem.productId,
+        productSlug: selectedItem.productSlug,
         productName: selectedItem.productName,
         productImage: selectedItem.productImage,
         rating,
@@ -117,7 +118,7 @@ export default function MyReviews() {
               {toReview.length > 0 ? (
                 toReview.map(item => (
                   <div key={item.id} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                    <Link to={`/product/${item.productId}`} className="flex items-center gap-4 flex-1 group">
+                    <Link to={`/product/${item.productSlug}`} className="flex items-center gap-4 flex-1 group">
                       <img src={item.productImage} alt={item.productName} className="w-20 h-20 object-cover rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:scale-105 transition-transform" />
                       <div>
                         <h3 className="font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-purple-600 transition-colors">{item.productName}</h3>
@@ -159,7 +160,7 @@ export default function MyReviews() {
                     className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow"
                   >
                     {/* Product Info */}
-                    <Link to={`/product/${review.productId}`} className="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 -mx-2 rounded-xl transition-colors group">
+                    <Link to={`/product/${review.productSlug}`} className="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 -mx-2 rounded-xl transition-colors group">
                       <img src={review.productImage} alt={review.productName} className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:scale-105 transition-transform" />
                       <div>
                         <h3 className="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-purple-600 transition-colors">{review.productName}</h3>

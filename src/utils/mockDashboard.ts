@@ -139,6 +139,47 @@ export const reviewStats = {
   ]
 };
 
+// ── Order Statistics Chart Data ───────────────────────────────────
+export const ordersWeek = [
+  { name: 'T2', orders: 24, cancelled: 2, prevOrders: 20 },
+  { name: 'T3', orders: 18, cancelled: 1, prevOrders: 22 },
+  { name: 'T4', orders: 35, cancelled: 3, prevOrders: 28 },
+  { name: 'T5', orders: 15, cancelled: 1, prevOrders: 19 },
+  { name: 'T6', orders: 48, cancelled: 4, prevOrders: 38 },
+  { name: 'T7', orders: 60, cancelled: 5, prevOrders: 52 },
+  { name: 'CN', orders: 75, cancelled: 6, prevOrders: 58 },
+];
+
+export const ordersMonth = [
+  { name: 'T1', orders: 124, cancelled: 8, prevOrders: 105 },
+  { name: 'T2', orders: 218, cancelled: 15, prevOrders: 180 },
+  { name: 'T3', orders: 335, cancelled: 22, prevOrders: 260 },
+  { name: 'T4', orders: 215, cancelled: 12, prevOrders: 200 },
+  { name: 'T5', orders: 250, cancelled: 18, prevOrders: 230 },
+  { name: 'T6', orders: 310, cancelled: 20, prevOrders: 275 },
+  { name: 'T7', orders: 280, cancelled: 16, prevOrders: 290 },
+  { name: 'T8', orders: 350, cancelled: 25, prevOrders: 305 },
+  { name: 'T9', orders: 340, cancelled: 19, prevOrders: 310 },
+  { name: 'T10', orders: 410, cancelled: 28, prevOrders: 350 },
+  { name: 'T11', orders: 480, cancelled: 32, prevOrders: 390 },
+  { name: 'T12', orders: 550, cancelled: 35, prevOrders: 420 },
+];
+
+export const ordersQuarter = [
+  { name: 'Quý 1', orders: 1124, cancelled: 72, prevOrders: 890 },
+  { name: 'Quý 2', orders: 1218, cancelled: 85, prevOrders: 980 },
+  { name: 'Quý 3', orders: 1335, cancelled: 90, prevOrders: 1100 },
+  { name: 'Quý 4', orders: 1815, cancelled: 120, prevOrders: 1350 },
+];
+
+export function getOrderSummary(data: { name: string; orders: number; cancelled: number }[]) {
+  const totalOrders = data.reduce((s, d) => s + d.orders, 0);
+  const totalCancelled = data.reduce((s, d) => s + d.cancelled, 0);
+  const successRate = ((totalOrders - totalCancelled) / totalOrders * 100).toFixed(1);
+  const max = data.reduce((m, d) => (d.orders > m.orders ? d : m), data[0]);
+  return { totalOrders, totalCancelled, successRate, peakDay: max.name, peakVal: max.orders };
+}
+
 // ── Helper ────────────────────────────────────────────────────────
 export function getChartSummary(data: { name: string; revenue: number }[]) {
   const total = data.reduce((s, d) => s + d.revenue, 0);

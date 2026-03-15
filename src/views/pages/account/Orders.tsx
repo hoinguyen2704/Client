@@ -98,7 +98,7 @@ export default function Orders() {
 
               <div className="space-y-4">
                 {order.items.map(item => (
-                  <Link to={`/product/${item.id}`} key={item.id} className="flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 -mx-2 rounded-xl transition-colors group">
+                  <Link to={`/product/${item.slug}`} key={item.id} className="flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 -mx-2 rounded-xl transition-colors group">
                     <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-xl bg-slate-50 dark:bg-slate-800" />
                     <div className="flex-1">
                       <h3 className="font-bold line-clamp-1 group-hover:text-purple-600 transition-colors">{item.name}</h3>

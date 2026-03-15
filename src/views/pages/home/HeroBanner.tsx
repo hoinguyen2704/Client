@@ -119,7 +119,7 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
                   {searchSuggestions.map((product) => (
                     <Link 
                       key={product.id} 
-                      to={`/product/${product.id}`}
+                      to={`/product/${product.slug}`}
                       className="flex items-center gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-none"
                     >
                       <img src={product.image} alt={product.name} className="w-12 h-12 rounded-lg object-cover" />

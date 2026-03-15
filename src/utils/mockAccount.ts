@@ -16,6 +16,7 @@ export const mockOrders = [
     items: [
       {
         id: 1,
+        slug: 'iphone-15-pro-max-256gb',
         name: 'iPhone 15 Pro Max 256GB',
         variant: 'Titan Tự nhiên',
         price: 34990000,
@@ -32,6 +33,7 @@ export const mockOrders = [
     items: [
       {
         id: 2,
+        slug: 'ipad-air-5-m1-64gb',
         name: 'iPad Air 5 M1 64GB',
         variant: 'Xanh dương',
         price: 15990000,
@@ -48,6 +50,7 @@ export const mockOrders = [
     items: [
       {
         id: 3,
+        slug: 'airpods-pro-2',
         name: 'AirPods Pro 2',
         variant: 'Trắng',
         price: 4990000,
@@ -64,6 +67,7 @@ export const mockOrders = [
     items: [
       {
         id: 4,
+        slug: 'ban-phim-co-keychron-k8-pro',
         name: 'Bàn phím cơ Keychron K8 Pro',
         variant: 'Brown Switch',
         price: 2490000,
@@ -94,6 +98,7 @@ export const mockOrderDetails = {
   items: [
     {
       id: 2,
+      slug: 'ipad-air-5-m1-64gb',
       name: 'iPad Air 5 M1 64GB',
       variant: 'Xanh dương',
       price: 15990000,
@@ -180,6 +185,7 @@ export const mockToReview = [
   {
     id: 101,
     productId: 3,
+    productSlug: 'tai-nghe-bluetooth-airpods-pro-2',
     productName: 'Tai nghe Bluetooth AirPods Pro 2',
     productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/r/group_169_1.png',
     date: '12/03/2026',
@@ -188,6 +194,7 @@ export const mockToReview = [
   {
     id: 102,
     productId: 4,
+    productSlug: 'chuot-khong-day-logitech-mx-master-3s',
     productName: 'Chuột không dây Logitech MX Master 3S',
     productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/c/h/chuot-logitech-g-pro-x-superlight-2-01.png',
     date: '10/03/2026',
@@ -199,6 +206,7 @@ export const mockReviews = [
   {
     id: 1,
     productId: 1,
+    productSlug: 'iphone-15-pro-max-256gb',
     productName: 'iPhone 15 Pro Max 256GB',
     productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png',
     rating: 5,
@@ -210,6 +218,7 @@ export const mockReviews = [
   {
     id: 2,
     productId: 2,
+    productSlug: 'macbook-air-m2-2022',
     productName: 'MacBook Air M2 2022',
     productImage: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/m/a/macbook-pro-14-2024-m4-1.png',
     rating: 4,

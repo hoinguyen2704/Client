@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiCheck } from 'react-icons/fi';
+import { AnimatePresence } from 'motion/react';
 import { mockProducts } from '@/utils/mockData';
 import ProductCard from '@/components/ui/ProductCard';
 import { Link } from 'react-router-dom';
@@ -170,48 +171,87 @@ export default function Products() {
               </div>
 
               {/* Brands */}
-              <div>
-                <h3 className="font-bold mb-4 text-lg">Thương hiệu</h3>
-                <div className="space-y-3">
-                  {brandsByCategory[selectedCategory].map(brand => (
-                    <label key={brand} className="flex items-center gap-3 cursor-pointer group">
-                      <div className="relative flex items-center justify-center">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedBrands.includes(brand)}
-                          onChange={() => toggleFilter(selectedBrands, setSelectedBrands, brand)}
-                          className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
-                        />
-                        <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
-                      </div>
-                      <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{brand}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Dynamic Filters */}
-              {filterConfigs[selectedCategory].map(filter => (
-                <div key={filter.id}>
-                  <h3 className="font-bold mb-4 text-lg">{filter.label}</h3>
-                  <div className="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                    {filter.options.map(option => (
-                      <label key={option} className="flex items-center gap-3 cursor-pointer group">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`brands-${selectedCategory}`}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                  <h3 className="font-bold mb-4 text-lg">Thương hiệu</h3>
+                  <div className="space-y-3">
+                    {brandsByCategory[selectedCategory].map((brand, i) => (
+                      <motion.label
+                        key={brand}
+                        initial={{ opacity: 0, x: -16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04, duration: 0.25 }}
+                        className="flex items-center gap-3 cursor-pointer group"
+                      >
                         <div className="relative flex items-center justify-center">
                           <input 
                             type="checkbox" 
-                            checked={(dynamicFilters[filter.id] || []).includes(option)}
-                            onChange={() => toggleDynamicFilter(filter.id, option)}
+                            checked={selectedBrands.includes(brand)}
+                            onChange={() => toggleFilter(selectedBrands, setSelectedBrands, brand)}
                             className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
                           />
                           <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
                         </div>
-                        <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{option}</span>
-                      </label>
+                        <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{brand}</span>
+                      </motion.label>
                     ))}
                   </div>
-                </div>
-              ))}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Dynamic Filters */}
+              <AnimatePresence mode="wait">
+                {filterConfigs[selectedCategory].length > 0 && (
+                  <motion.div
+                    key={`filters-${selectedCategory}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="space-y-8"
+                  >
+                    {filterConfigs[selectedCategory].map((filter, filterIdx) => (
+                      <motion.div
+                        key={filter.id}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: filterIdx * 0.08, duration: 0.3 }}
+                      >
+                        <h3 className="font-bold mb-4 text-lg">{filter.label}</h3>
+                        <div className="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                          {filter.options.map((option, i) => (
+                            <motion.label
+                              key={option}
+                              initial={{ opacity: 0, x: -12 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: filterIdx * 0.08 + i * 0.03, duration: 0.2 }}
+                              className="flex items-center gap-3 cursor-pointer group"
+                            >
+                              <div className="relative flex items-center justify-center">
+                                <input 
+                                  type="checkbox" 
+                                  checked={(dynamicFilters[filter.id] || []).includes(option)}
+                                  onChange={() => toggleDynamicFilter(filter.id, option)}
+                                  className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
+                                />
+                                <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
+                              </div>
+                              <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{option}</span>
+                            </motion.label>
+                          ))}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </aside>

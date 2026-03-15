@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 
 const mockPost = {
   id: 1,
+  slug: 'danh-gia-chi-tiet-iphone-15-pro-max',
   title: 'Đánh giá chi tiết iPhone 15 Pro Max: Đáng đồng tiền bát gạo?',
   content: `
     <p class="mb-6 text-lg">iPhone 15 Pro Max mang đến nhiều cải tiến đáng giá như khung titan, camera tele 5x và cổng USB-C. Cùng tìm hiểu xem liệu đây có phải là chiếc smartphone đáng mua nhất hiện nay.</p>
@@ -32,12 +33,14 @@ const mockPost = {
 const relatedPosts = [
   {
     id: 2,
+    slug: 'top-5-laptop-gaming-dang-mua-nhat-20-30-trieu',
     title: 'Top 5 laptop gaming đáng mua nhất trong tầm giá 20-30 triệu',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/e/text_ng_n_1__1_50.png',
     date: '12/03/2026',
   },
   {
     id: 3,
+    slug: 'huong-dan-chon-mua-ban-phim-co',
     title: 'Hướng dẫn chọn mua bàn phím cơ phù hợp với nhu cầu',
     image: 'https://cdn2.cellphones.com.vn/insecure/rs:fill:200:200/q:90/plain/https://cellphones.com.vn/media/catalog/product/k/e/keychron-q1-he.png',
     date: '10/03/2026',
@@ -45,7 +48,7 @@ const relatedPosts = [
 ];
 
 export default function BlogDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
 
   return (
     <div className="w-full px-4 md:px-8 lg:px-12 py-12">
@@ -154,7 +157,7 @@ export default function BlogDetail() {
           <h3 className="text-2xl font-bold mb-8">Bài viết liên quan</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {relatedPosts.map(post => (
-              <Link key={post.id} to={`/blog/${post.id}`} className="group block bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-200 dark:border-slate-800">
+              <Link key={post.id} to={`/blog/${post.slug}`} className="group block bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-200 dark:border-slate-800">
                 <div className="aspect-[16/9] w-full overflow-hidden">
                   <img 
                     src={post.image} 

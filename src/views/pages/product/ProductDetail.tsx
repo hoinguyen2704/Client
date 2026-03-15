@@ -8,8 +8,8 @@ import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';
 
 export default function ProductDetail() {
-  const { id } = useParams();
-  const product = mockProducts.find(p => p.id === id) || mockProducts[0];
+  const { slug } = useParams();
+  const product = mockProducts.find(p => p.slug === slug) || mockProducts[0];
   const [activeImage, setActiveImage] = useState(0);
 
   const images = [

@@ -2,31 +2,29 @@
 export interface OrderResponse {
   id: string;
   orderNumber: string;
-  userId: string;
-  status: string;
-  totalAmount: number;
-  discountAmount: number;
-  shippingFee: number;
-  finalAmount: number;
+  orderStatus: string;
   paymentMethod: string;
   paymentStatus: string;
-  shippingAddress: string;
+  subtotal: number;
+  shippingFee: number;
+  discountAmount: number;
+  totalAmount: number;
+  couponCode?: string;
   note?: string;
+  shippingAddress: string;
+  paymentUrl?: string;
   items: OrderItemResponse[];
   createdAt: string;
-  updatedAt: string;
 }
 
 export interface OrderItemResponse {
   id: string;
-  productId: string;
-  productName: string;
-  productThumbnail?: string;
   variantId: string;
-  variantInfo: string;
-  quantity: number;
+  productName: string;
+  variantName: string;
   unitPrice: number;
-  totalPrice: number;
+  quantity: number;
+  subtotal: number;
 }
 
 export interface CheckoutRequest {
@@ -34,26 +32,38 @@ export interface CheckoutRequest {
   paymentMethod: string;
   couponCode?: string;
   note?: string;
+  items: CheckoutItem[];
+}
+
+export interface CheckoutItem {
+  variantId: string;
+  quantity: number;
 }
 
 // ─── Feedback ────────────────────────────────────────────────────
 export interface FeedbackResponse {
   id: string;
+  rating: number;
+  content: string;
+  imagesJson?: string;
+  status: string;
+  createdAt: string;
+  productId: string;
+  productName?: string;
   userId: string;
   userName: string;
   userAvatar?: string;
-  productId: string;
-  productName?: string;
-  rating: number;
-  comment: string;
-  status: string;
-  createdAt: string;
+  orderId?: string;
+  adminReply?: string;
+  repliedAt?: string;
 }
 
 export interface FeedbackRequest {
   productId: string;
+  orderId?: string;
   rating: number;
-  comment: string;
+  content: string;
+  imagesJson?: string;
 }
 
 // ─── Coupon ──────────────────────────────────────────────────────
@@ -62,7 +72,7 @@ export interface CouponResponse {
   code: string;
   discountType: string;
   discountValue: number;
-  minOrderAmount?: number;
+  minOrderValue?: number;
   maxDiscountAmount?: number;
   usageLimit: number;
   usedCount: number;
@@ -75,7 +85,7 @@ export interface CouponRequest {
   code: string;
   discountType: string;
   discountValue: number;
-  minOrderAmount?: number;
+  minOrderValue?: number;
   maxDiscountAmount?: number;
   usageLimit: number;
   startDate: string;
@@ -86,37 +96,45 @@ export interface CouponRequest {
 export interface FlashSaleResponse {
   id: string;
   name: string;
+  description?: string;
   startTime: string;
   endTime: string;
   status: string;
   items: FlashSaleItemResponse[];
+  createdAt?: string;
 }
 
 export interface FlashSaleItemResponse {
   id: string;
-  productId: string;
+  variantId: string;
   productName: string;
-  productThumbnail?: string;
+  variantName?: string;
+  imageUrl?: string;
   originalPrice: number;
-  salePrice: number;
-  stock: number;
+  flashPrice: number;
+  flashStock: number;
   soldCount: number;
+  remainingStock: number;
 }
 
 // ─── Ticket ─────────────────────────────────────────────────────
 export interface TicketResponse {
   id: string;
+  ticketNumber?: string;
   subject: string;
   status: string;
   createdAt: string;
+  userId?: string;
+  userName?: string;
+  userEmail?: string;
   messages: TicketMessageResponse[];
 }
 
 export interface TicketMessageResponse {
   id: string;
-  senderId: string;
-  senderName: string;
+  senderType: string; // USER, ADMIN, AI_BOT
   content: string;
+  attachmentsJson?: string;
   createdAt: string;
 }
 
@@ -127,6 +145,7 @@ export interface NotificationResponse {
   content: string;
   isRead: boolean;
   type: string;
+  orderId?: string;
   createdAt: string;
 }
 
@@ -135,33 +154,46 @@ export interface WishlistResponse {
   id: string;
   productId: string;
   productName: string;
-  productThumbnail?: string;
+  productSlug?: string;
   productPrice: number;
-  createdAt: string;
+  productCompareAtPrice?: number;
+  productThumbnailUrl?: string;
+  addedAt: string;
 }
 
 // ─── Address ────────────────────────────────────────────────────
 export interface AddressResponse {
   id: string;
   fullName: string;
-  phone: string;
+  phoneNumber: string;
   province: string;
   district: string;
   ward: string;
-  detail: string;
+  detailAddress: string;
   isDefault: boolean;
+}
+
+export interface AddressRequest {
+  fullName: string;
+  phoneNumber: string;
+  province: string;
+  district: string;
+  ward: string;
+  detailAddress: string;
+  isDefault?: boolean;
 }
 
 // ─── Cart ───────────────────────────────────────────────────────
 export interface CartResponse {
   id: string;
-  productId: string;
-  productName: string;
-  productThumbnail?: string;
   variantId: string;
-  variantInfo: string;
+  productName: string;
+  variantName: string;
+  imageUrl?: string;
   price: number;
   quantity: number;
+  subtotal: number;
+  stockQuantity: number;
 }
 
 // ─── Banner / Article (CMS) ─────────────────────────────────────
@@ -169,9 +201,10 @@ export interface BannerResponse {
   id: string;
   title: string;
   imageUrl: string;
-  link?: string;
-  isActive: boolean;
+  targetUrl?: string;
   sortOrder: number;
+  isActive: boolean;
+  createdAt?: string;
 }
 
 export interface ArticleResponse {
@@ -179,26 +212,80 @@ export interface ArticleResponse {
   title: string;
   slug: string;
   content: string;
-  thumbnail?: string;
-  status: string;
+  thumbnailUrl?: string;
+  isPublished: boolean;
+  authorName?: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 // ─── Dashboard ──────────────────────────────────────────────────
 export interface DashboardStatsResponse {
   totalRevenue: number;
   totalOrders: number;
+  newOrders?: number;
   totalCustomers: number;
-  totalProducts: number;
+  newCustomers?: number;
+  productsSold?: number;
+  cancelledOrders?: number;
+  returnedOrders?: number;
+  totalFeedbacks?: number;
+  newFeedbacks?: number;
+  revenueChart?: RevenueChartItem[];
+  topProducts?: TopProductItem[];
+  topCategories?: TopCategoryItem[];
+  topCustomers?: TopCustomerItem[];
+  recentOrders?: RecentOrderItem[];
+  ratingDistribution?: Record<number, number>;
+}
+
+export interface RevenueChartItem {
+  label: string;
+  revenue: number;
+  orders: number;
+}
+
+export interface TopProductItem {
+  id: string;
+  name: string;
+  imageUrl?: string;
+  totalSold: number;
+  revenue: number;
+}
+
+export interface TopCategoryItem {
+  id: string;
+  name: string;
+  totalSold: number;
+  revenue: number;
+}
+
+export interface TopCustomerItem {
+  id: string;
+  name: string;
+  email: string;
+  totalOrders: number;
+  totalSpent: number;
+}
+
+export interface RecentOrderItem {
+  orderNumber: string;
+  customerName: string;
+  totalAmount: number;
+  status: string;
+  createdAt: string;
 }
 
 // ─── User (admin view) ─────────────────────────────────────────
 export interface UserResponse {
   id: string;
+  userName?: string;
   fullName: string;
+  phoneNumber?: string;
   email: string;
-  phone?: string;
-  avatar?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  avatarUrl?: string;
   role: string;
   status: string;
   createdAt: string;

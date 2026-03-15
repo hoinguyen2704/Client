@@ -1,6 +1,7 @@
 export const mockProducts = [
   {
     id: '1',
+    slug: 'laptop-gaming-asus-rog-strix-g15',
     name: 'Laptop Gaming ASUS ROG Strix G15',
     price: 25990000,
     oldPrice: 28990000,
@@ -23,6 +24,7 @@ export const mockProducts = [
   },
   {
     id: '2',
+    slug: 'macbook-pro-14-m3-pro-2023',
     name: 'MacBook Pro 14 M3 Pro 2023',
     price: 49990000,
     oldPrice: null,
@@ -45,6 +47,7 @@ export const mockProducts = [
   },
   {
     id: '3',
+    slug: 'dien-thoai-samsung-galaxy-s24-ultra',
     name: 'Điện thoại Samsung Galaxy S24 Ultra',
     price: 31990000,
     oldPrice: 33990000,
@@ -67,6 +70,7 @@ export const mockProducts = [
   },
   {
     id: '4',
+    slug: 'tai-nghe-bluetooth-sony-wh-1000xm5',
     name: 'Tai nghe Bluetooth Sony WH-1000XM5',
     price: 7490000,
     oldPrice: 8490000,
@@ -89,6 +93,7 @@ export const mockProducts = [
   },
   {
     id: '5',
+    slug: 'man-hinh-lg-ultragear-27-2k-144hz',
     name: 'Màn hình LG UltraGear 27" 2K 144Hz',
     price: 8990000,
     oldPrice: 10990000,
@@ -111,6 +116,7 @@ export const mockProducts = [
   },
   {
     id: '6',
+    slug: 'ban-phim-co-keychron-q1-pro',
     name: 'Bàn phím cơ Keychron Q1 Pro',
     price: 4590000,
     oldPrice: 4990000,

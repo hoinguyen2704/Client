@@ -1,5 +1,5 @@
-import BaseService from './baseService';
 import axios from '../axios';
+import { adminAxios } from '../axios';
 import type {
   ApiResponse,
   PageResponse,
@@ -7,35 +7,29 @@ import type {
   CheckoutRequest,
 } from '@/types';
 
-class OrderService extends BaseService<OrderResponse> {
-  constructor() {
-    super('/orders');
-  }
+const ORDER_URL = '/orders';
 
-  async checkout(data: CheckoutRequest): Promise<ApiResponse<OrderResponse>> {
-    return axios.post(`${this.endpoint}/checkout`, data);
-  }
+const orderService = {
+  // ─── User endpoints (api/v1/orders) ─────────────────────────────
+  checkout: (data: CheckoutRequest): Promise<ApiResponse<OrderResponse>> =>
+    axios.post(`${ORDER_URL}/checkout`, data),
 
-  async getByNumber(orderNumber: string): Promise<ApiResponse<OrderResponse>> {
-    return axios.get(`${this.endpoint}/${orderNumber}`);
-  }
+  getByNumber: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
+    axios.get(`${ORDER_URL}/${orderNumber}`),
 
-  async getMyOrders(params?: {
+  getMyOrders: (params?: {
     status?: string;
     page?: number;
     size?: number;
-  }): Promise<ApiResponse<PageResponse<OrderResponse>>> {
-    return axios.get(this.endpoint, { params });
-  }
+  }): Promise<ApiResponse<PageResponse<OrderResponse>>> =>
+    axios.get(ORDER_URL, { params }),
 
-  async cancel(orderId: string): Promise<ApiResponse<OrderResponse>> {
-    return axios.patch(`${this.endpoint}/${orderId}/cancel`);
-  }
+  cancel: (orderId: string): Promise<ApiResponse<OrderResponse>> =>
+    axios.patch(`${ORDER_URL}/${orderId}/cancel`),
 
-  // Admin
-  async updateStatus(orderId: string, status: string): Promise<ApiResponse<OrderResponse>> {
-    return axios.patch(`/admin/orders/${orderId}/status`, { status });
-  }
-}
+  // ─── Admin endpoints (admin/api/v1/orders) ──────────────────────
+  updateStatus: (orderId: string, status: string): Promise<ApiResponse<OrderResponse>> =>
+    adminAxios.patch(`${ORDER_URL}/${orderId}/status`, { status }),
+};
 
-export default new OrderService();
+export default orderService;

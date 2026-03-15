@@ -95,7 +95,7 @@ export default function Cart() {
                       <img src={item.image} alt={item.name} className="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" />
                       
                       <div className="flex-1 flex flex-col h-24">
-                        <Link to={`/product/${item.id}`} className="font-medium line-clamp-2 hover:text-purple-600 transition-colors mb-1">
+                        <Link to={`/product/${item.slug}`} className="font-medium line-clamp-2 hover:text-purple-600 transition-colors mb-1">
                           {item.name}
                         </Link>
                         <div className="text-sm text-slate-500 mb-auto">Phân loại: Đen, 8GB</div>

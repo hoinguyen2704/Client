@@ -1,11 +1,11 @@
-import axios from '../axios';
+import { adminAxios } from '../axios';
 import type { ApiResponse, DashboardStatsResponse } from '@/types';
 
-const DASHBOARD_URL = '/admin/dashboard';
+const DASHBOARD_URL = '/dashboard';
 
 const dashboardService = {
   getStats: (): Promise<ApiResponse<DashboardStatsResponse>> =>
-    axios.get(`${DASHBOARD_URL}/stats`),
+    adminAxios.get(`${DASHBOARD_URL}/stats`),
 };
 
 export default dashboardService;

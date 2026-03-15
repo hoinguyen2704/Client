@@ -6,9 +6,10 @@ export interface LoginRequest {
 
 export interface RegisterRequest {
   fullName: string;
+  userName: string;
   email: string;
   password: string;
-  phone?: string;
+  phoneNumber?: string;
 }
 
 export interface ForgotPasswordRequest {
@@ -33,7 +34,7 @@ export interface SocialLoginRequest {
 
 // ─── Auth Response ──────────────────────────────────────────────
 export interface AuthResponse {
-  token: string;
+  accessToken: string;
   refreshToken: string;
   user: UserSummary;
 }
@@ -42,8 +43,6 @@ export interface UserSummary {
   id: string;
   fullName: string;
   email: string;
-  phone?: string;
-  avatar?: string;
+  avatarUrl?: string;
   role: 'ADMIN' | 'USER' | 'SHIPPER';
-  status: string;
 }

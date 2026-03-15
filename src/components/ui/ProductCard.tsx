@@ -41,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Image */}
-      <Link to={`/product/${product.id}`} className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+      <Link to={`/product/${product.slug}`} className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
         <img 
           src={product.image} 
           alt={product.name} 
@@ -62,7 +62,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Content */}
       <div className="flex flex-col flex-1">
-        <Link to={`/product/${product.id}`} className="font-medium text-slate-900 dark:text-slate-100 line-clamp-2 mb-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+        <Link to={`/product/${product.slug}`} className="font-medium text-slate-900 dark:text-slate-100 line-clamp-2 mb-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
           {product.name}
         </Link>
         
