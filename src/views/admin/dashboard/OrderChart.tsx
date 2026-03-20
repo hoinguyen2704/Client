@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { ordersWeek, ordersMonth, ordersQuarter, getOrderSummary } from '@/utils/mockDashboard';
+import { ordersWeek, ordersMonth, ordersQuarter, getOrderSummary } from '@/__mocks__/mockDashboard';
 import Card from '@/components/ui/Card';
 import { FiShoppingBag, FiCheckCircle, FiXCircle, FiTrendingUp } from 'react-icons/fi';
 

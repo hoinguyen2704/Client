@@ -1,5 +1,5 @@
 import { FiStar } from 'react-icons/fi';
-import { recentOrders, reviewStats } from '@/utils/mockDashboard';
+import { recentOrders, reviewStats } from '@/__mocks__/mockDashboard';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Card from '@/components/ui/Card';
 

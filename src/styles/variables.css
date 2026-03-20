@@ -60,3 +60,23 @@
   --bp-lg: 1024px;
   --bp-xl: 1280px;
 }
+
+/* ─── Dark Mode Tokens ───────────────────────────────────────────
+   Overrides light tokens when .dark class is on <html>.
+────────────────────────────────────────────────────────────────── */
+.dark {
+  --color-primary: #3b82f6;
+  --color-primary-hover: #60a5fa;
+  --color-primary-light: rgba(59, 130, 246, 0.15);
+  --color-secondary: #a78bfa;
+
+  --color-bg: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-border: #334155;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+}

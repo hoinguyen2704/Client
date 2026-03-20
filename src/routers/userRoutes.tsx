@@ -1,17 +1,18 @@
+import { lazy } from 'react';
 import { Route, Navigate } from 'react-router-dom';
 
-import UserLayout from '@/components/layout/UserLayout';
-import Profile from '@/views/pages/account/Profile';
-import AddressBook from '@/views/pages/account/AddressBook';
-import PaymentMethods from '@/views/pages/account/PaymentMethods';
-import Orders from '@/views/pages/account/Orders';
-import OrderTracking from '@/views/pages/account/OrderTracking';
-import Vouchers from '@/views/pages/account/Vouchers';
-import MyReviews from '@/views/pages/account/MyReviews';
-import RecentlyViewed from '@/views/pages/account/RecentlyViewed';
-import Notifications from '@/views/pages/account/Notifications';
-import Support from '@/views/pages/account/Support';
-import UserSettings from '@/views/pages/account/Settings';
+const UserLayout = lazy(() => import('@/components/layout/UserLayout'));
+const Profile = lazy(() => import('@/views/pages/account/Profile'));
+const AddressBook = lazy(() => import('@/views/pages/account/AddressBook'));
+const PaymentMethods = lazy(() => import('@/views/pages/account/PaymentMethods'));
+const Orders = lazy(() => import('@/views/pages/account/Orders'));
+const OrderTracking = lazy(() => import('@/views/pages/account/OrderTracking'));
+const Vouchers = lazy(() => import('@/views/pages/account/Vouchers'));
+const MyReviews = lazy(() => import('@/views/pages/account/MyReviews'));
+const RecentlyViewed = lazy(() => import('@/views/pages/account/RecentlyViewed'));
+const Notifications = lazy(() => import('@/views/pages/account/Notifications'));
+const Support = lazy(() => import('@/views/pages/account/Support'));
+const UserSettings = lazy(() => import('@/views/pages/account/Settings'));
 
 export const userRoutes = (
   <Route path="user" element={<UserLayout />}>

@@ -1,19 +1,13 @@
 import axios from 'axios';
+import useAuthStore from '@/stores/useAuthStore';
 
 // ─── Shared interceptor setup ───────────────────────────────────
 function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
-  // Request: tự gắn Bearer token
+  // Request: tự gắn Bearer token từ Zustand store
   instance.interceptors.request.use((config) => {
-    const raw = localStorage.getItem('auth');
-    if (raw) {
-      try {
-        const auth = JSON.parse(raw);
-        if (auth?.state?.token) {
-          config.headers.Authorization = `Bearer ${auth.state.token}`;
-        }
-      } catch {
-        // ignore parse error
-      }
+    const token = useAuthStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   });
@@ -23,8 +17,7 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
     (response) => response.data, // unwrap AxiosResponse → ApiResponse
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem('auth');
-        window.location.href = '/login';
+        useAuthStore.getState().logout();
       }
       return Promise.reject(error.response?.data || error);
     },

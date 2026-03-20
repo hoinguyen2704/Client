@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
-import { mockProducts } from '@/utils/mockData';
+import { mockProducts } from '@/__mocks__/mockData';
 import ProductCard from '@/components/ui/ProductCard';
 import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';

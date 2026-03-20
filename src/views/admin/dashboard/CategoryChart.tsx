@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiChevronDown, FiCalendar, FiX } from 'react-icons/fi';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { categoryDataMap, categoryPeriodLabels, CATEGORY_COLORS, type CategoryPeriod } from '@/utils/mockDashboard';
+import { categoryDataMap, categoryPeriodLabels, CATEGORY_COLORS, type CategoryPeriod } from '@/__mocks__/mockDashboard';
 import Card from '@/components/ui/Card';
 
 export default function CategoryChart() {

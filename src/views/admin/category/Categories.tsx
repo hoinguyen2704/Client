@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiFolder, FiX, FiCheck } from 'react-icons/fi';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { initialCategories } from '@/utils/mockAdmin';
+import { initialCategories } from '@/__mocks__/mockAdmin';
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState(initialCategories);

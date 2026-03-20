@@ -1,5 +1,5 @@
 import { FiMoreVertical } from 'react-icons/fi';
-import { topProducts, topCategories, topCustomers } from '@/utils/mockDashboard';
+import { topProducts, topCategories, topCustomers } from '@/__mocks__/mockDashboard';
 import Card from '@/components/ui/Card';
 
 export default function DashboardLists() {

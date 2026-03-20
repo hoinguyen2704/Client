@@ -4,68 +4,40 @@ import Header from './Header';
 import MobileMenu from './MobileMenu';
 import Footer from './Footer';
 import Chatbot from '../ui/Chatbot';
+import useAuthStore from '@/stores/useAuthStore';
+import useUIStore from '@/stores/useUIStore';
+import { useScrollToTop } from '@/hooks';
 
 export default function MainLayout() {
+  useScrollToTop();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState<{ role: string; email: string } | null>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { user, logout } = useAuthStore();
+  const { darkMode, toggleDarkMode } = useUIStore();
   const navigate = useNavigate();
 
-  // ── Theme ────────────────────────────────────────────────────
+  // Sync dark mode class on mount
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    } else {
-      setTheme('light');
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (theme === 'light') {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      setTheme('light');
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
-  // ── User ─────────────────────────────────────────────────────
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error('Failed to parse user from localStorage', e);
-      }
-    }
-  }, []);
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
+    logout();
     navigate('/');
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 transition-colors duration-300">
       <Header
-        user={user}
-        theme={theme}
-        toggleTheme={toggleTheme}
+        user={user ? { role: user.role?.toLowerCase() || '', email: user.email } : null}
+        theme={darkMode ? 'dark' : 'light'}
+        toggleTheme={toggleDarkMode}
         onMenuToggle={() => setIsMenuOpen(!isMenuOpen)}
         onLogout={handleLogout}
       />
 
       <MobileMenu
         isOpen={isMenuOpen}
-        user={user}
+        user={user ? { role: user.role?.toLowerCase() || '', email: user.email } : null}
         onClose={() => setIsMenuOpen(false)}
         onLogout={handleLogout}
       />

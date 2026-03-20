@@ -1,6 +1,6 @@
 import { FiZap, FiTrendingUp, FiStar, FiCpu } from 'react-icons/fi';
-import { mockProducts } from '@/utils/mockData';
-import { homeBanners as banners } from '@/utils/mockAdmin';
+import { mockProducts } from '@/__mocks__/mockData';
+import { homeBanners as banners } from '@/__mocks__/mockAdmin';
 import HeroBanner from './HeroBanner';
 import ProductSection from './ProductSection';
 

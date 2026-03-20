@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiImage, FiEdit2, FiTrash2, FiEye, FiEyeOff, FiPlus, FiUploadCloud, FiCheckCircle, FiXCircle } from 'react-icons/fi';
-import { mockBanners, mockPosts } from '@/utils/mockAdmin';
+import { mockBanners, mockPosts } from '@/__mocks__/mockAdmin';
 
 export default function CMS() {
   const [activeTab, setActiveTab] = useState<'banners' | 'posts'>('banners');

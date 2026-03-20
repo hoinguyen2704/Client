@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
-import { mockProducts } from '@/utils/mockData';
+import { mockProducts } from '@/__mocks__/mockData';
 
 interface Banner {
   id: number;

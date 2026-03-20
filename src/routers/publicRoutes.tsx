@@ -1,24 +1,25 @@
+import { lazy } from 'react';
 import { Route } from 'react-router-dom';
 
-import Home from '@/views/pages/home/Home';
-import Search from '@/views/pages/catalogry/Search';
-import ProductsPage from '@/views/pages/product/Products';
-import Compare from '@/views/pages/product/Compare';
-import Wishlist from '@/views/pages/product/Wishlist';
-import Blog from '@/views/pages/blog/Blog';
-import BlogDetail from '@/views/pages/blog/BlogDetail';
-import ProductDetail from '@/views/pages/product/ProductDetail';
-import FlashSale from '@/views/pages/promotions/FlashSale';
-import Contact from '@/views/pages/contact/Contact';
-import About from '@/views/pages/about/About';
-import Terms from '@/views/pages/about/Terms';
-import Privacy from '@/views/pages/about/Privacy';
-import Cart from '@/views/pages/cart/Cart';
-import Checkout from '@/views/pages/payments/Checkout';
-import Login from '@/views/pages/auth/Login';
-import Register from '@/views/pages/auth/Register';
-import ForgotPassword from '@/views/pages/auth/ForgotPassword';
-import Forbidden from '@/views/pages/forbidden/Forbidden';
+const Home = lazy(() => import('@/views/pages/home/Home'));
+const Search = lazy(() => import('@/views/pages/category/Search'));
+const ProductsPage = lazy(() => import('@/views/pages/product/Products'));
+const Compare = lazy(() => import('@/views/pages/product/Compare'));
+const Wishlist = lazy(() => import('@/views/pages/product/Wishlist'));
+const Blog = lazy(() => import('@/views/pages/blog/Blog'));
+const BlogDetail = lazy(() => import('@/views/pages/blog/BlogDetail'));
+const ProductDetail = lazy(() => import('@/views/pages/product/ProductDetail'));
+const FlashSale = lazy(() => import('@/views/pages/promotions/FlashSale'));
+const Contact = lazy(() => import('@/views/pages/contact/Contact'));
+const About = lazy(() => import('@/views/pages/about/About'));
+const Terms = lazy(() => import('@/views/pages/about/Terms'));
+const Privacy = lazy(() => import('@/views/pages/about/Privacy'));
+const Cart = lazy(() => import('@/views/pages/cart/Cart'));
+const Checkout = lazy(() => import('@/views/pages/payments/Checkout'));
+const Login = lazy(() => import('@/views/pages/auth/Login'));
+const Register = lazy(() => import('@/views/pages/auth/Register'));
+const ForgotPassword = lazy(() => import('@/views/pages/auth/ForgotPassword'));
+const Forbidden = lazy(() => import('@/views/pages/forbidden/Forbidden'));
 
 export const publicRoutes = (
   <>

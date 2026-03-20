@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { mockPaymentMethods as initialMethods } from '@/utils/mockAccount';
+import { mockPaymentMethods as initialMethods } from '@/__mocks__/mockAccount';
 
 export default function PaymentMethods() {
   const [methods, setMethods] = useState(initialMethods);

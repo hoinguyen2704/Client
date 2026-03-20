@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiTag, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { mockVouchers } from '@/utils/mockAdmin';
+import { mockVouchers } from '@/__mocks__/mockAdmin';
 
 export default function AdminVouchers() {
   const [searchQuery, setSearchQuery] = useState('');

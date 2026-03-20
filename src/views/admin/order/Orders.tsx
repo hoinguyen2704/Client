@@ -3,7 +3,7 @@ import { FiSearch, FiFilter, FiEye, FiMoreVertical, FiDownload } from 'react-ico
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { mockAdminOrders } from '@/utils/mockAdmin';
+import { mockAdminOrders } from '@/__mocks__/mockAdmin';
 
 export default function AdminOrders() {
   const [searchQuery, setSearchQuery] = useState('');

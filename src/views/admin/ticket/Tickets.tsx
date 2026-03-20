@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiMessageSquare, FiPaperclip, FiSend, FiCheckCircle, FiXCircle, FiClock, FiAlertCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { mockTickets, mockChatHistory } from '@/utils/mockAdmin';
+import { mockTickets, mockChatHistory } from '@/__mocks__/mockAdmin';
 
 export default function Tickets() {
   const [tickets, setTickets] = useState(mockTickets);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiTrendingUp, FiDollarSign, FiShoppingBag, FiUsers, FiBox, FiRefreshCcw, FiStar } from 'react-icons/fi';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { AnimatePresence, motion } from 'motion/react';
-import { pieData, PIE_COLORS } from '@/utils/mockDashboard';
+import { pieData, PIE_COLORS } from '@/__mocks__/mockDashboard';
 import type { DashboardStatsProps } from './types';
 
 const CardTooltip = ({ children, content }: { children: React.ReactNode; content: React.ReactNode }) => {

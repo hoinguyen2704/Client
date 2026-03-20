@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { revenue7Days, revenueMonth, revenueQuarter, getChartSummary } from '@/utils/mockDashboard';
+import { revenue7Days, revenueMonth, revenueQuarter, getChartSummary } from '@/__mocks__/mockDashboard';
 import Card from '@/components/ui/Card';
 
 export default function RevenueChart() {

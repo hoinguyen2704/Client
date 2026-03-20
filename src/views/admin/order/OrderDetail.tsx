@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiPrinter, FiEdit, FiUser, FiMapPin, FiCreditCard, FiPackage, FiTruck, FiCheckCircle, FiX } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { mockOrderDetails } from '@/utils/mockAdmin';
+import { mockOrderDetails } from '@/__mocks__/mockAdmin';
 
 export default function OrderDetail() {
   const { id } = useParams();

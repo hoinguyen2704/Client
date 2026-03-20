@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiCreditCard, FiTruck } from 'react-icons/fi';
-import { mockProducts } from '@/utils/mockData';
+import { mockProducts } from '@/__mocks__/mockData';
 import { formatPrice } from '@/helpers/format';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';

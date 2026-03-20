@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiMessageCircle, FiPhoneCall, FiMail, FiHelpCircle, FiChevronDown, FiChevronUp, FiSend, FiCheckCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { mockFaqs as faqs } from '@/utils/mockAccount';
+import { mockFaqs as faqs } from '@/__mocks__/mockAccount';
 
 export default function Support() {
   const [openFaqId, setOpenFaqId] = useState<number | null>(1);

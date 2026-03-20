@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiHeart, FiUser, FiMenu, FiLogOut, FiSettings, FiBox, FiSun, FiMoon } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import LogoIcon from '../ui/LogoIcon';
+import useCartStore from '@/stores/useCartStore';
+import { useClickOutside } from '@/hooks';
 import type { HeaderProps } from './types';
 
 const navItems = [
@@ -18,19 +20,10 @@ export { navItems };
 
 export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogout }: HeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { totalItems } = useCartStore();
   const navigate = useNavigate();
-
-  // Close user menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.user-menu-container')) {
-        setIsUserMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useClickOutside(menuRef, useCallback(() => setIsUserMenuOpen(false), []));
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -86,13 +79,15 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             </Link>
             <Link to="/cart" className="p-2 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-colors relative">
               <FiShoppingCart className="text-xl" />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs flex items-center justify-center rounded-full shadow-md">
-                3
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs flex items-center justify-center rounded-full shadow-md">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
             </Link>
             
             {user ? (
-              <div className="relative hidden sm:block user-menu-container">
+              <div ref={menuRef} className="relative hidden sm:block">
                 <button 
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors flex items-center gap-2"

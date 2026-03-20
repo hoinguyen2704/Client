@@ -1,5 +1,4 @@
 import axios from 'axios';
-import type { ApiResponse } from '@/types';
 
 const chatbotAxios = axios.create({
   baseURL: import.meta.env.VITE_CHATBOT_URL,
@@ -7,14 +6,27 @@ const chatbotAxios = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+/** Role phải là 'bot' (không phải 'assistant') để chatbot server map đúng sang OpenAI */
 export interface ChatbotMessage {
-  role: 'user' | 'assistant';
+  role: 'user' | 'bot';
   content: string;
 }
 
+/** Response thực tế từ chatbot server */
+export interface ChatbotResponse {
+  answer: string;
+  mode: 'db' | 'non_db' | 'recommend';
+  data?: unknown;
+  plan?: unknown;
+  sql?: string;
+  params?: unknown[];
+  rowCount?: number;
+  rows?: unknown[];
+}
+
 const chatbotService = {
-  sendMessage: (message: string, history: ChatbotMessage[] = []): Promise<ApiResponse<string>> =>
-    chatbotAxios.post('', { message, history }).then((r) => r.data),
+  sendMessage: (message: string, history: ChatbotMessage[] = []): Promise<ChatbotResponse> =>
+    chatbotAxios.post('', { prompt: message, history }).then((r) => r.data),
 };
 
 export default chatbotService;

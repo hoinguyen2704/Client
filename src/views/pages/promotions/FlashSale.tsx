@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiZap, FiTag, FiCopy, FiCheckCircle } from 'react-icons/fi';
-import { mockProducts } from '@/utils/mockData';
+import { mockProducts } from '@/__mocks__/mockData';
 import ProductCard from '@/components/ui/ProductCard';
 import { motion } from 'motion/react';
 

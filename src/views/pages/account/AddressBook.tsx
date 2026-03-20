@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { mockAddresses as initialAddresses } from '@/utils/mockAccount';
+import { mockAddresses as initialAddresses } from '@/__mocks__/mockAccount';
 
 export default function AddressBook() {
   const [addresses, setAddresses] = useState(initialAddresses);

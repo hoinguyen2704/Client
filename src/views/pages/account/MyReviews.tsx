@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiStar, FiEdit3, FiTrash2, FiMessageSquare, FiImage, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { mockToReview, mockReviews } from '@/utils/mockAccount';
+import { mockToReview, mockReviews } from '@/__mocks__/mockAccount';
 import EmptyState from '@/components/ui/EmptyState';
 
 export default function MyReviews() {

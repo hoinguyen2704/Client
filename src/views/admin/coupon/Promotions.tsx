@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiGift } from 'react-icons/fi';
 import Card from '@/components/ui/Card';
-import { mockPromotions } from '@/utils/mockAdmin';
+import { mockPromotions } from '@/__mocks__/mockAdmin';
 
 export default function AdminPromotions() {
   const [searchQuery, setSearchQuery] = useState('');

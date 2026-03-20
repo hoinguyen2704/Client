@@ -3,7 +3,7 @@ import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiChevronRight,
 import { formatPrice } from '@/helpers/format';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { orderTabs as tabs, mockOrders } from '@/utils/mockAccount';
+import { orderTabs as tabs, mockOrders } from '@/__mocks__/mockAccount';
 
 const getStatusBadge = (status: string) => {
   switch (status) {

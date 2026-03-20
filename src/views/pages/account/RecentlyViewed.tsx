@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiClock, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '@/components/ui/ProductCard';
-import { mockProducts } from '@/utils/mockData';
+import { mockProducts } from '@/__mocks__/mockData';
 import EmptyState from '@/components/ui/EmptyState';
 
 export default function RecentlyViewed() {

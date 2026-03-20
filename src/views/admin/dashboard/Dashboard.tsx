@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { recentOrders } from '@/utils/mockDashboard';
+import { recentOrders } from '@/__mocks__/mockDashboard';
 import StatusBadge from '@/components/ui/StatusBadge';
 import DashboardStats from './DashboardStats';
 import RevenueChart from './RevenueChart';

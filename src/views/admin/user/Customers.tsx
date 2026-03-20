@@ -3,7 +3,7 @@ import { FiSearch, FiFilter, FiMoreVertical, FiMail, FiPhone, FiEye, FiLock, FiU
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { mockCustomers } from '@/utils/mockAdmin';
+import { mockCustomers } from '@/__mocks__/mockAdmin';
 
 export default function Customers() {
   const [searchQuery, setSearchQuery] = useState('');

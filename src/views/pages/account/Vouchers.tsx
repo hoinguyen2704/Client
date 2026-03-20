@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiTag, FiClock, FiCopy, FiCheckCircle, FiShoppingCart, FiAlertCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { mockVouchers } from '@/utils/mockAccount';
+import { mockVouchers } from '@/__mocks__/mockAccount';
 
 export default function Vouchers() {
   const [activeTab, setActiveTab] = useState('active');

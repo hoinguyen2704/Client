@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiCheck } from 'react-icons/fi';
 import { AnimatePresence } from 'motion/react';
-import { mockProducts } from '@/utils/mockData';
+import { mockProducts } from '@/__mocks__/mockData';
 import ProductCard from '@/components/ui/ProductCard';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';

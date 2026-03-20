@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiMoreVertical } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
-import { mockAdminProducts } from '@/utils/mockAdmin';
+import { mockAdminProducts } from '@/__mocks__/mockAdmin';
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState('');

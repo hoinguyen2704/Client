@@ -1,26 +1,25 @@
-import { useState, useRef, useEffect } from 'react';
-import { FiBell, FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield, FiHelpCircle } from 'react-icons/fi';
+import { useState, useRef, useCallback } from 'react';
+import { FiBell, FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield, FiHelpCircle, FiMenu } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { useClickOutside } from '@/hooks';
+import useUIStore from '@/stores/useUIStore';
 import type { AdminHeaderProps } from './types';
 
 export default function AdminHeader({ onLogout }: AdminHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  useClickOutside(menuRef, useCallback(() => setIsMenuOpen(false), []));
 
   return (
-    <header className="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+    <header className="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10">
       <div className="flex items-center gap-4 flex-1">
+        <button
+          onClick={toggleSidebar}
+          className="lg:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+        >
+          <FiMenu className="text-xl" />
+        </button>
         <div className="relative w-96 hidden md:block group">
           <input
             type="text"

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiMail, FiPhone, FiMapPin, FiCalendar, FiShoppingBag, FiDollarSign, FiStar } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
-import { mockCustomerDetail } from '@/utils/mockAdmin';
+import { mockCustomerDetail } from '@/__mocks__/mockAdmin';
 
 export default function CustomerDetail() {
   const { id } = useParams();

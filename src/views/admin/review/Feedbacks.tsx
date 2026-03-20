@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiSearch, FiFilter, FiEye, FiEyeOff, FiTrash2, FiAlertTriangle, FiStar, FiMessageSquare, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { mockAdminReviews } from '@/utils/mockAdmin';
+import { mockAdminReviews } from '@/__mocks__/mockAdmin';
 
 export default function Feedbacks() {
   const [reviews, setReviews] = useState(mockAdminReviews);
