@@ -62,7 +62,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">Địa chỉ</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">123 Đường Công Nghệ, Phường Đổi Mới, Quận Sáng Tạo, TP.HCM</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">132/72/6 đường Cầu Diễn, Nguyên Xá, phường Tây Tựu, Thành phố Hà Nội</p>
                   </div>
                 </div>
 
@@ -72,8 +72,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">Điện thoại</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">1900 1234 (Hỗ trợ 24/7)</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">0909 123 456 (Zalo/Viber)</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">0828443833 (Hỗ trợ 24/7)</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">0828443833 (Zalo/Viber)</p>
                   </div>
                 </div>
 
@@ -83,8 +83,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">Email</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">support@hozitech.vn</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">contact@hozitech.vn</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">hozinium@gmail.com</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">hozinium@gmail.com</p>
                   </div>
                 </div>
 

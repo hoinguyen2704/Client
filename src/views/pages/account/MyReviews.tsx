@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { FiStar, FiEdit3, FiTrash2, FiMessageSquare, FiImage, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { mockToReview, mockReviews } from '@/__mocks__/mockAccount';
+import feedbackService from '@/apis/services/feedbackService';
 import EmptyState from '@/components/ui/EmptyState';
 
+// Note: No server endpoint for "my reviews" list yet - state managed locally
 export default function MyReviews() {
   const [activeTab, setActiveTab] = useState<'to-review' | 'reviewed'>('to-review');
-  const [reviews, setReviews] = useState(mockReviews);
-  const [toReview, setToReview] = useState(mockToReview);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [toReview, setToReview] = useState<any[]>([]);
   
   // Modal states
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);

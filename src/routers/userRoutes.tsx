@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from '@/components/guards/ProtectedRoute';
 
 const UserLayout = lazy(() => import('@/components/layout/UserLayout'));
 const Profile = lazy(() => import('@/views/pages/account/Profile'));
@@ -15,7 +16,7 @@ const Support = lazy(() => import('@/views/pages/account/Support'));
 const UserSettings = lazy(() => import('@/views/pages/account/Settings'));
 
 export const userRoutes = (
-  <Route path="user" element={<UserLayout />}>
+  <Route path="user" element={<ProtectedRoute><UserLayout /></ProtectedRoute>}>
     <Route index element={<Navigate to="profile" replace />} />
     <Route path="profile" element={<Profile />} />
     <Route path="address" element={<AddressBook />} />

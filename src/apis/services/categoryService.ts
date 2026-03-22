@@ -14,6 +14,10 @@ class CategoryService extends BaseService<CategoryResponse, CategoryRequest> {
   async getBySlug(slug: string): Promise<ApiResponse<CategoryResponse>> {
     return axios.get(`${this.endpoint}/${slug}`);
   }
+
+  async getById(id: string): Promise<ApiResponse<CategoryResponse>> {
+    return axios.get(`${this.endpoint}/id/${id}`);
+  }
 }
 
 export default new CategoryService();

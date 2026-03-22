@@ -3,12 +3,14 @@ import { FiBell, FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield
 import { Link } from 'react-router-dom';
 import { useClickOutside } from '@/hooks';
 import useUIStore from '@/stores/useUIStore';
+import useAuthStore from '@/stores/useAuthStore';
 import type { AdminHeaderProps } from './types';
 
 export default function AdminHeader({ onLogout }: AdminHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const user = useAuthStore((s) => s.user);
   useClickOutside(menuRef, useCallback(() => setIsMenuOpen(false), []));
 
   return (
@@ -45,10 +47,16 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-xl transition-colors"
           >
-            <img src="https://i.pravatar.cc/100?img=68" alt="Admin" className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/20" />
+            {user?.avatar ? (
+              <img src={user.avatar} alt="Admin" className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/20" />
+            ) : (
+              <div className="w-10 h-10 rounded-full ring-2 ring-purple-500/20 bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+                <FiUser className="text-lg text-purple-500 dark:text-purple-400" />
+              </div>
+            )}
             <div className="hidden md:block text-sm text-left">
-              <p className="font-bold">Admin Manager</p>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">Super Admin</p>
+              <p className="font-bold">{user?.name || 'Admin'}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</p>
             </div>
             <FiChevronDown className={`text-slate-400 ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
           </button>
@@ -59,11 +67,17 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
               {/* User Info */}
               <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <img src="https://i.pravatar.cc/100?img=68" alt="Admin" className="w-12 h-12 rounded-full object-cover" />
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt="Admin" className="w-12 h-12 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+                      <FiUser className="text-2xl text-purple-500 dark:text-purple-400" />
+                    </div>
+                  )}
                   <div>
-                    <p className="font-bold text-sm">Admin Manager</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">admin@hozitech.vn</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-bold rounded-md">Super Admin</span>
+                    <p className="font-bold text-sm">{user?.name || 'Admin'}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email || ''}</p>
+                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-bold rounded-md">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</span>
                   </div>
                 </div>
               </div>

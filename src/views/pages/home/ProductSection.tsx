@@ -1,26 +1,11 @@
 import ProductCard from '@/components/ui/ProductCard';
 import { Link } from 'react-router-dom';
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  rating: number;
-  reviews: number;
-  sold: number;
-  discount: number;
-  category: string;
-  oldPrice?: number;
-  isNew?: boolean;
-  isFlashSale?: boolean;
-}
-
 interface ProductSectionProps {
   icon: React.ReactNode;
   title: string;
   subtitle?: React.ReactNode;
-  products: Product[];
+  products: any[];
   seeAllLink?: string;
   layout?: 'grid' | 'scroll';
   bgClassName?: string;
@@ -29,6 +14,8 @@ interface ProductSectionProps {
 export default function ProductSection({ 
   icon, title, subtitle, products, seeAllLink, layout = 'grid', bgClassName = '' 
 }: ProductSectionProps) {
+  if (!products.length) return null;
+
   return (
     <section className={`w-full px-4 md:px-8 lg:px-12 py-10 ${bgClassName}`}>
       <div className="flex items-center justify-between mb-8">

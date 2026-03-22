@@ -1,109 +1,117 @@
-import { useState } from 'react';
-import { FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, FiGift } from 'react-icons/fi';
-import Card from '@/components/ui/Card';
-import { mockPromotions } from '@/__mocks__/mockAdmin';
+import { useState, useEffect, useCallback } from 'react';
+import { FiPlus, FiSearch, FiEdit2, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import adminCouponService from '@/apis/services/adminCouponService';
+import type { CouponResponse, PageResponse } from '@/types';
+import { formatPrice } from '@/helpers/format';
 
-export default function AdminPromotions() {
+export default function Promotions() {
+  const [coupons, setCoupons] = useState<CouponResponse[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageData, setPageData] = useState<PageResponse<CouponResponse> | null>(null);
+
+  const fetchCoupons = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await adminCouponService.getAll({ keyword: searchQuery || undefined, page, size: 20 });
+      setPageData(res.data);
+      setCoupons(res.data.data || []);
+    } catch (err) { console.error('Failed to fetch coupons:', err); }
+    finally { setLoading(false); }
+  }, [searchQuery, page]);
+
+  useEffect(() => { fetchCoupons(); }, [fetchCoupons]);
+
+  const handleToggle = async (id: string) => {
+    try { await adminCouponService.toggleStatus(id); fetchCoupons(); }
+    catch (err) { console.error('Toggle failed:', err); }
+  };
+
+  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Chương trình khuyến mãi</h1>
-        <button className="btn btn-primary btn-md gap-2">
-          <FiPlus /> Tạo chương trình
-        </button>
+        <h1 className="text-2xl font-bold">Quản lý mã giảm giá</h1>
+        <button className="btn btn-primary btn-md gap-2"><FiPlus /> Tạo mã mới</button>
       </div>
 
-      {/* Filters & Search */}
-      <Card className="rounded-2xl p-4 flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm chương trình..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
-          />
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+        <div className="relative">
+          <input type="text" placeholder="Tìm kiếm mã giảm giá..."
+            value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500" />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
-        <div className="flex gap-2">
-          <select className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-medium outline-none">
-            <option value="">Tất cả trạng thái</option>
-            <option value="active">Đang diễn ra</option>
-            <option value="scheduled">Sắp tới</option>
-            <option value="expired">Đã kết thúc</option>
-          </select>
-          <button className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 font-medium">
-            <FiFilter /> Lọc
-          </button>
-        </div>
-      </Card>
+      </div>
 
-      {/* Promotions Table */}
-      <Card className="rounded-2xl p-0 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                <th className="p-4 font-medium w-10">
-                  <input type="checkbox" className="rounded border-slate-300 text-purple-600 focus:ring-purple-500" />
-                </th>
-                <th className="p-4 font-medium">Tên chương trình</th>
-                <th className="p-4 font-medium">Loại / Ưu đãi</th>
+                <th className="p-4 font-medium">Mã</th>
+                <th className="p-4 font-medium">Loại</th>
+                <th className="p-4 font-medium">Giá trị</th>
+                <th className="p-4 font-medium">Sử dụng</th>
                 <th className="p-4 font-medium">Thời gian</th>
                 <th className="p-4 font-medium">Trạng thái</th>
                 <th className="p-4 font-medium text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {mockPromotions.map((promo) => (
-                <tr key={promo.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                  <td className="p-4">
-                    <input type="checkbox" className="rounded border-slate-300 text-purple-600 focus:ring-purple-500" />
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center">
-                        <FiGift />
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
+                    {Array.from({ length: 7 }).map((_, j) => (
+                      <td key={j} className="p-4"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></td>
+                    ))}
+                  </tr>
+                ))
+              ) : coupons.length === 0 ? (
+                <tr><td colSpan={7} className="p-12 text-center text-slate-400">Không có mã giảm giá nào</td></tr>
+              ) : (
+                coupons.map((coupon) => (
+                  <tr key={coupon.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td className="p-4 font-bold font-mono text-purple-600">{coupon.code}</td>
+                    <td className="p-4 text-sm">{coupon.discountType === 'PERCENTAGE' ? 'Phần trăm' : 'Cố định'}</td>
+                    <td className="p-4 font-bold">{coupon.discountType === 'PERCENTAGE' ? `${coupon.discountValue}%` : formatPrice(coupon.discountValue)}</td>
+                    <td className="p-4">{coupon.usedCount}/{coupon.usageLimit}</td>
+                    <td className="p-4 text-sm text-slate-500">{formatDate(coupon.startDate)} - {formatDate(coupon.endDate)}</td>
+                    <td className="p-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${coupon.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
+                        {coupon.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm dừng'}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button onClick={() => handleToggle(coupon.id)} className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                          {coupon.status === 'ACTIVE' ? <FiToggleRight className="text-green-500" /> : <FiToggleLeft />}
+                        </button>
+                        <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 rounded-lg transition-colors"><FiEdit2 /></button>
                       </div>
-                      <span className="font-bold">{promo.name}</span>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-medium">{promo.type}</div>
-                    <div className="text-sm text-purple-600 font-bold">{promo.value}</div>
-                  </td>
-                  <td className="p-4 text-sm text-slate-500">
-                    <div>Từ: {promo.startDate}</div>
-                    <div>Đến: {promo.endDate}</div>
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      promo.status === 'active' ? 'bg-green-100 text-green-600' :
-                      promo.status === 'scheduled' ? 'bg-blue-100 text-blue-600' :
-                      'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-                    }`}>
-                      {promo.status === 'active' ? 'Đang diễn ra' :
-                       promo.status === 'scheduled' ? 'Sắp tới' : 'Đã kết thúc'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors" title="Chỉnh sửa">
-                        <FiEdit2 />
-                      </button>
-                      <button className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 rounded-lg transition-colors" title="Xóa">
-                        <FiTrash2 />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-      </Card>
+
+        {pageData && pageData.lastPage > 1 && (
+          <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
+            <div>Trang {page}/{pageData.lastPage}</div>
+            <div className="flex gap-1">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
+              {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
+                <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
+              ))}
+              <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

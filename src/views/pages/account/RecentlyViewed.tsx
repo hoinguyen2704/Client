@@ -1,22 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiClock, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import ProductCard from '@/components/ui/ProductCard';
-import { mockProducts } from '@/__mocks__/mockData';
+import { Link } from 'react-router-dom';
 import EmptyState from '@/components/ui/EmptyState';
+import { formatPrice } from '@/helpers/format';
+
+// Recently viewed products stored in localStorage
+const STORAGE_KEY = 'recently_viewed';
+
+interface ViewedProduct {
+  id: string;
+  name: string;
+  slug: string;
+  image?: string;
+  price: number;
+  viewedAt: string;
+}
+
+function getRecentlyViewed(): ViewedProduct[] {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function clearRecentlyViewed() {
+  localStorage.removeItem(STORAGE_KEY);
+}
 
 export default function RecentlyViewed() {
-  // Mocking recently viewed by taking the first 6 products and adding a timestamp
-  const initialViewed = mockProducts.slice(0, 6).map((p, index) => ({
-    ...p,
-    viewedAt: new Date(Date.now() - index * 3600000).toLocaleString('vi-VN', {
-      hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit'
-    })
-  }));
+  const [viewedProducts, setViewedProducts] = useState<ViewedProduct[]>([]);
 
-  const [viewedProducts, setViewedProducts] = useState(initialViewed);
+  useEffect(() => { setViewedProducts(getRecentlyViewed()); }, []);
 
   const clearHistory = () => {
+    clearRecentlyViewed();
     setViewedProducts([]);
   };
 
@@ -25,10 +41,8 @@ export default function RecentlyViewed() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Sản phẩm đã xem</h1>
         {viewedProducts.length > 0 && (
-          <button 
-            onClick={clearHistory}
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm"
-          >
+          <button onClick={clearHistory}
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm">
             <FiTrash2 /> Xóa lịch sử
           </button>
         )}
@@ -38,18 +52,24 @@ export default function RecentlyViewed() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <AnimatePresence>
             {viewedProducts.map(product => (
-              <motion.div
-                key={product.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="relative group"
-              >
-                <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-md text-white text-xs px-2 py-1 rounded-lg flex items-center gap-1">
-                  <FiClock /> {product.viewedAt}
-                </div>
-                <ProductCard product={product} />
+              <motion.div key={product.id} layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
+                className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow group">
+                <Link to={`/product/${product.slug}`} className="block">
+                  <div className="relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800">
+                    {product.image ? (
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-300"><FiClock className="text-4xl" /></div>
+                    )}
+                    <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-md text-white text-xs px-2 py-1 rounded-lg flex items-center gap-1">
+                      <FiClock /> {product.viewedAt}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold line-clamp-2 group-hover:text-purple-600 transition-colors mb-2">{product.name}</h3>
+                    <span className="text-lg font-bold text-purple-600">{formatPrice(product.price)}</span>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </AnimatePresence>

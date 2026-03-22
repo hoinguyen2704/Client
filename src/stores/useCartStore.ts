@@ -1,68 +1,47 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  variant?: string;
-}
+import cartService from '@/apis/services/cartService';
 
 interface CartState {
-  items: CartItem[];
   totalItems: number;
-  totalPrice: number;
 
-  addItem: (item: CartItem) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  /** Sync the totalItems count from the server's /cart/count endpoint */
+  syncFromServer: () => Promise<void>;
+
+  /** Directly set the totalItems count (e.g., after local add) */
+  setTotalItems: (n: number) => void;
+
+  /** Increment totalItems by n (optimistic update before server sync) */
+  incrementItems: (n: number) => void;
+
+  /** Clear count to 0 */
   clearCart: () => void;
-}
-
-function recalculate(items: CartItem[]) {
-  return {
-    items,
-    totalItems: items.reduce((sum, i) => sum + i.quantity, 0),
-    totalPrice: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
-  };
 }
 
 const useCartStore = create<CartState>()(
   persist(
     (set) => ({
-      items: [],
       totalItems: 0,
-      totalPrice: 0,
 
-      addItem: (item) =>
-        set((state) => {
-          const existing = state.items.find((i) => i.id === item.id);
-          const updated = existing
-            ? state.items.map((i) =>
-                i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i,
-              )
-            : [...state.items, item];
-          return recalculate(updated);
-        }),
+      syncFromServer: async () => {
+        try {
+          const res = await cartService.getCount();
+          const count = typeof res.data === 'number' ? res.data : 0;
+          set({ totalItems: count });
+        } catch {
+          // user not logged in or network error — leave current count
+        }
+      },
 
-      removeItem: (id) =>
-        set((state) => recalculate(state.items.filter((i) => i.id !== id))),
+      setTotalItems: (n) => set({ totalItems: n }),
 
-      updateQuantity: (id, quantity) =>
-        set((state) =>
-          recalculate(
-            quantity <= 0
-              ? state.items.filter((i) => i.id !== id)
-              : state.items.map((i) => (i.id === id ? { ...i, quantity } : i)),
-          ),
-        ),
+      incrementItems: (n) => set((s) => ({ totalItems: s.totalItems + n })),
 
-      clearCart: () => set({ items: [], totalItems: 0, totalPrice: 0 }),
+      clearCart: () => set({ totalItems: 0 }),
     }),
     { name: 'cart' },
   ),
 );
 
 export default useCartStore;
+

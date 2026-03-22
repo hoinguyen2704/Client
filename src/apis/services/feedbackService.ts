@@ -9,6 +9,12 @@ const feedbackService = {
 
   submit: (data: FeedbackRequest): Promise<ApiResponse<FeedbackResponse>> =>
     axios.post(FEEDBACK_URL, data),
+
+  checkProduct: (productId: string): Promise<ApiResponse<boolean>> =>
+    axios.get(`${FEEDBACK_URL}/check/${productId}`),
+
+  delete: (feedbackId: string): Promise<ApiResponse<void>> =>
+    axios.delete(`${FEEDBACK_URL}/${feedbackId}`),
 };
 
 export default feedbackService;

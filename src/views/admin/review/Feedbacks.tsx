@@ -1,194 +1,135 @@
-import { useState } from 'react';
-import { FiSearch, FiFilter, FiEye, FiEyeOff, FiTrash2, FiAlertTriangle, FiStar, FiMessageSquare, FiX, FiCheck } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
-import { mockAdminReviews } from '@/__mocks__/mockAdmin';
+import { useState, useEffect, useCallback } from 'react';
+import { FiSearch, FiStar, FiMessageCircle, FiDownload } from 'react-icons/fi';
+import adminFeedbackService from '@/apis/services/adminFeedbackService';
+import type { FeedbackResponse, PageResponse } from '@/types';
 
 export default function Feedbacks() {
-  const [reviews, setReviews] = useState(mockAdminReviews);
-  const [selectedReview, setSelectedReview] = useState<any>(null);
+  const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageData, setPageData] = useState<PageResponse<FeedbackResponse> | null>(null);
+  const [replyId, setReplyId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
 
-  const toggleStatus = (id: number, currentStatus: string) => {
-    setReviews(reviews.map(r => r.id === id ? { ...r, status: currentStatus === 'approved' ? 'hidden' : 'approved' } : r));
+  const fetchReviews = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await adminFeedbackService.getAll({ status: statusFilter || undefined, page, size: 20 });
+      setPageData(res.data);
+      setReviews(res.data.data || []);
+    } catch (err) { console.error('Failed to fetch feedbacks:', err); }
+    finally { setLoading(false); }
+  }, [statusFilter, page]);
+
+  useEffect(() => { fetchReviews(); }, [fetchReviews]);
+
+  const handleStatusChange = async (id: string, status: string) => {
+    try { await adminFeedbackService.updateStatus(id, status); fetchReviews(); }
+    catch (err) { console.error('Update failed:', err); }
   };
 
-  const markSpam = (id: number) => {
-    setReviews(reviews.map(r => r.id === id ? { ...r, status: 'spam' } : r));
+  const handleReply = async (id: string) => {
+    if (!replyText.trim()) return;
+    try {
+      await adminFeedbackService.reply(id, replyText);
+      setReplyId(null); setReplyText('');
+      fetchReviews();
+    } catch (err) { console.error('Reply failed:', err); }
   };
 
-  const deleteReview = (id: number) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
-      setReviews(reviews.filter(r => r.id !== id));
-    }
-  };
+  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý đánh giá</h1>
-        <div className="flex gap-2">
-          <select className="h-10 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-medium focus:ring-2 focus:ring-purple-500 outline-none">
-            <option value="">Tất cả số sao</option>
-            <option value="5">5 Sao</option>
-            <option value="4">4 Sao</option>
-            <option value="3">3 Sao</option>
-            <option value="2">2 Sao</option>
-            <option value="1">1 Sao</option>
-          </select>
-          <select className="h-10 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-medium focus:ring-2 focus:ring-purple-500 outline-none">
-            <option value="">Tất cả trạng thái</option>
-            <option value="pending">Chờ duyệt</option>
-            <option value="approved">Đã duyệt (Hiện)</option>
-            <option value="hidden">Đã ẩn</option>
-            <option value="spam">Spam</option>
-          </select>
-        </div>
+        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          className="h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 font-medium outline-none">
+          <option value="">Tất cả</option>
+          <option value="PENDING">Chờ duyệt</option>
+          <option value="APPROVED">Đã duyệt</option>
+          <option value="REJECTED">Đã từ chối</option>
+        </select>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm bg-slate-50/50 dark:bg-slate-800/50">
-                <th className="p-4 font-medium">Sản phẩm</th>
-                <th className="p-4 font-medium">Khách hàng</th>
-                <th className="p-4 font-medium">Đánh giá</th>
-                <th className="p-4 font-medium">Nội dung</th>
-                <th className="p-4 font-medium">Ngày</th>
-                <th className="p-4 font-medium">Trạng thái</th>
-                <th className="p-4 font-medium text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reviews.map((review) => (
-                <tr key={review.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="p-4 font-medium text-sm">{review.product}</td>
-                  <td className="p-4 text-sm">{review.customer}</td>
-                  <td className="p-4">
-                    <div className="flex text-yellow-400 text-sm">
-                      {[...Array(5)].map((_, i) => (
-                        <FiStar key={i} className={i < review.rating ? "fill-current" : "text-slate-300 dark:text-slate-600"} />
-                      ))}
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm max-w-[200px] truncate cursor-pointer hover:text-purple-600" onClick={() => setSelectedReview(review)}>
-                    {review.content}
-                    {review.images.length > 0 && <span className="ml-2 text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-500">+{review.images.length} ảnh</span>}
-                  </td>
-                  <td className="p-4 text-sm text-slate-500">{review.date}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      review.status === 'approved' ? 'bg-green-100 text-green-600' :
-                      review.status === 'hidden' ? 'bg-slate-100 text-slate-600' :
-                      review.status === 'spam' ? 'bg-red-100 text-red-600' :
-                      'bg-yellow-100 text-yellow-600'
-                    }`}>
-                      {review.status === 'approved' ? 'Hiện' : review.status === 'hidden' ? 'Ẩn' : review.status === 'spam' ? 'Spam' : 'Chờ duyệt'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button 
-                        onClick={() => setSelectedReview(review)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                        title="Trả lời / Chi tiết"
-                      >
-                        <FiMessageSquare />
-                      </button>
-                      <button 
-                        onClick={() => toggleStatus(review.id, review.status)}
-                        className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                        title={review.status === 'approved' ? 'Ẩn' : 'Hiện'}
-                      >
-                        {review.status === 'approved' ? <FiEyeOff /> : <FiEye />}
-                      </button>
-                      <button 
-                        onClick={() => markSpam(review.id)}
-                        className="p-2 text-orange-600 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/40 dark:text-orange-400 rounded-lg transition-colors"
-                        title="Đánh dấu Spam"
-                      >
-                        <FiAlertTriangle />
-                      </button>
-                      <button 
-                        onClick={() => deleteReview(review.id)}
-                        className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 rounded-lg transition-colors"
-                        title="Xóa"
-                      >
-                        <FiTrash2 />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Review Detail Modal */}
-      <AnimatePresence>
-        {selectedReview && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl"
-            >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold">Chi tiết đánh giá</h3>
-                <button onClick={() => setSelectedReview(null)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                  <FiX className="text-xl" />
-                </button>
-              </div>
-              
-              <div className="p-6 space-y-6">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-bold text-lg">{selectedReview.customer}</h4>
-                    <p className="text-sm text-slate-500">{selectedReview.product} • {selectedReview.date}</p>
-                  </div>
-                  <div className="flex text-yellow-400 text-lg">
-                    {[...Array(5)].map((_, i) => (
-                      <FiStar key={i} className={i < selectedReview.rating ? "fill-current" : "text-slate-300 dark:text-slate-600"} />
-                    ))}
-                  </div>
+      <div className="space-y-4">
+        {loading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 animate-pulse">
+              <div className="flex gap-4"><div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-full" /><div className="flex-1 space-y-2"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /><div className="h-4 w-full bg-slate-200 dark:bg-slate-700 rounded" /></div></div>
+            </div>
+          ))
+        ) : reviews.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">Không có đánh giá nào</div>
+        ) : (
+          reviews.map((review) => (
+            <div key={review.id} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-bold text-sm shrink-0">
+                  {review.userAvatar ? <img src={review.userAvatar} className="w-10 h-10 rounded-full object-cover" /> : review.userName?.charAt(0)?.toUpperCase()}
                 </div>
-
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-slate-700 dark:text-slate-300">
-                  {selectedReview.content}
-                </div>
-
-                {selectedReview.images.length > 0 && (
-                  <div>
-                    <h5 className="font-medium mb-3 text-sm text-slate-500">Hình ảnh đính kèm</h5>
-                    <div className="flex gap-3 overflow-x-auto pb-2">
-                      {selectedReview.images.map((img: string, idx: number) => (
-                        <img key={idx} src={img} alt="Review attachment" className="w-24 h-24 object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <div>
+                      <span className="font-bold">{review.userName}</span>
+                      <span className="text-slate-400 text-sm ml-2">{formatDate(review.createdAt)}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <FiStar key={i} className={`text-sm ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300'}`} />
                       ))}
                     </div>
                   </div>
-                )}
+                  <p className="text-sm text-slate-500 mb-1">SP: <span className="font-medium text-slate-700 dark:text-slate-300">{review.productName}</span></p>
+                  <p className="text-slate-700 dark:text-slate-300">{review.content}</p>
 
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                  <h5 className="font-medium mb-3">Trả lời đánh giá</h5>
-                  <textarea 
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                    placeholder="Nhập nội dung trả lời khách hàng..."
-                    className="w-full h-24 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-purple-500 outline-none resize-none"
-                  ></textarea>
-                  <div className="flex justify-end mt-3">
-                    <button className="px-6 py-2 bg-purple-600 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors flex items-center gap-2">
-                      <FiCheck /> Gửi phản hồi
-                    </button>
+                  {review.adminReply && (
+                    <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-sm">
+                      <span className="font-bold text-blue-600">Admin:</span> {review.adminReply}
+                    </div>
+                  )}
+
+                  <div className="mt-3 flex items-center gap-2 flex-wrap">
+                    <select value={review.status} onChange={(e) => handleStatusChange(review.id, e.target.value)}
+                      className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none cursor-pointer">
+                      <option value="PENDING">Chờ duyệt</option>
+                      <option value="APPROVED">Đã duyệt</option>
+                      <option value="REJECTED">Từ chối</option>
+                    </select>
+                    {!review.adminReply && (
+                      <button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
+                        className="text-xs font-medium px-3 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 hover:bg-purple-100 transition-colors flex items-center gap-1">
+                        <FiMessageCircle /> Trả lời
+                      </button>
+                    )}
                   </div>
+
+                  {replyId === review.id && (
+                    <div className="mt-3 flex gap-2">
+                      <input type="text" placeholder="Nhập nội dung trả lời..." value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                      <button onClick={() => handleReply(review.id)}
+                        className="h-10 px-4 rounded-xl bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors">Gửi</button>
+                    </div>
+                  )}
                 </div>
               </div>
-            </motion.div>
-          </div>
+            </div>
+          ))
         )}
-      </AnimatePresence>
+      </div>
+
+      {pageData && pageData.lastPage > 1 && (
+        <div className="flex justify-center gap-1">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
+          {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
+            <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
+        </div>
+      )}
     </div>
   );
 }

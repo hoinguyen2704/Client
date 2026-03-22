@@ -5,6 +5,7 @@ export interface ProductResponse {
   slug: string;
   description?: string;
   mainImageUrl?: string;
+  brandId?: string;
   brandName?: string;
   category?: CategoryResponse;
   originPrice: number;
@@ -14,6 +15,7 @@ export interface ProductResponse {
   isFeatured?: boolean;
   specsJson?: string;
   outOfStock?: boolean;
+  images?: ProductImageResponse[];
   variants: ProductVariantResponse[];
   createdAt: string;
 }

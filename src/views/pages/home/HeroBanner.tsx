@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
-import { mockProducts } from '@/__mocks__/mockData';
+import { productService } from '@/apis';
+import type { ProductResponse } from '@/types';
 
 interface Banner {
   id: number;
@@ -20,8 +21,11 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<ProductResponse[]>([]);
+  const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
+    if (!banners.length) return;
     const timer = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
     }, 5000);
@@ -31,16 +35,28 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
   const nextBanner = () => setCurrentBanner((prev) => (prev + 1) % banners.length);
   const prevBanner = () => setCurrentBanner((prev) => (prev - 1 + banners.length) % banners.length);
 
+  // Debounced search suggestions from API
+  const fetchSuggestions = useCallback((query: string) => {
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    if (!query.trim()) { setSuggestions([]); return; }
+
+    searchTimeout.current = setTimeout(async () => {
+      try {
+        const res = await productService.search({ keyword: query, size: 5 });
+        setSuggestions(res.data?.data || []);
+      } catch { setSuggestions([]); }
+    }, 300);
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      navigate(`/products?keyword=${encodeURIComponent(searchQuery)}`);
+      setShowSuggestions(false);
     }
   };
 
-  const searchSuggestions = mockProducts
-    .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .slice(0, 5);
+  if (!banners.length) return null;
 
   return (
     <section className="w-full px-4 md:px-8 lg:px-12 py-6">
@@ -95,6 +111,7 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setShowSuggestions(true);
+                  fetchSuggestions(e.target.value);
                 }}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
@@ -109,23 +126,25 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
             </form>
 
             <AnimatePresence>
-              {showSuggestions && searchQuery && searchSuggestions.length > 0 && (
+              {showSuggestions && searchQuery && suggestions.length > 0 && (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden text-left z-50"
                 >
-                  {searchSuggestions.map((product) => (
+                  {suggestions.map((product) => (
                     <Link 
                       key={product.id} 
                       to={`/product/${product.slug}`}
                       className="flex items-center gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-none"
                     >
-                      <img src={product.image} alt={product.name} className="w-12 h-12 rounded-lg object-cover" />
+                      <img src={product.mainImageUrl || ''} alt={product.name} className="w-12 h-12 rounded-lg object-cover" referrerPolicy="no-referrer" />
                       <div>
                         <h4 className="font-medium text-slate-900 dark:text-white line-clamp-1">{product.name}</h4>
-                        <p className="text-sm text-purple-600 font-bold">{product.price.toLocaleString('vi-VN')}đ</p>
+                        <p className="text-sm text-purple-600 font-bold">
+                          {(product.variants?.[0]?.price || product.originPrice || 0).toLocaleString('vi-VN')}đ
+                        </p>
                       </div>
                     </Link>
                   ))}

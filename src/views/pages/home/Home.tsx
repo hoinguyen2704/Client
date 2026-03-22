@@ -1,58 +1,94 @@
+import { useState, useEffect } from 'react';
 import { FiZap, FiTrendingUp, FiStar, FiCpu } from 'react-icons/fi';
-import { mockProducts } from '@/__mocks__/mockData';
-import { homeBanners as banners } from '@/__mocks__/mockAdmin';
+import { productService, cmsService } from '@/apis';
+import type { ProductResponse, BannerResponse } from '@/types';
 import HeroBanner from './HeroBanner';
 import ProductSection from './ProductSection';
 
 export default function Home() {
-  const flashSaleProducts = mockProducts.filter(p => p.isFlashSale);
-  const bestSellers = mockProducts.sort((a, b) => b.sold - a.sold).slice(0, 4);
-  const newArrivals = mockProducts.filter(p => p.isNew);
-  const aiRecommended = mockProducts.slice(2, 7);
+  const [banners, setBanners] = useState<BannerResponse[]>([]);
+  const [featured, setFeatured] = useState<ProductResponse[]>([]);
+  const [newArrivals, setNewArrivals] = useState<ProductResponse[]>([]);
+  const [bestSellers, setBestSellers] = useState<ProductResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [bannersRes, featuredRes, newRes, bestRes] = await Promise.allSettled([
+          cmsService.getBanners(),
+          productService.getFeatured(8),
+          productService.getNewArrivals(8),
+          productService.search({ sortBy: 'createdAt', sortDir: 'desc', size: 8 }),
+        ]);
+
+        if (bannersRes.status === 'fulfilled') setBanners(bannersRes.value.data || []);
+        if (featuredRes.status === 'fulfilled') setFeatured(featuredRes.value.data || []);
+        if (newRes.status === 'fulfilled') setNewArrivals(newRes.value.data || []);
+        if (bestRes.status === 'fulfilled') {
+          const page = bestRes.value.data;
+          setBestSellers(page?.data || []);
+        }
+      } catch (err) {
+        console.error('Lỗi load trang chủ:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  // Map banners từ server sang format HeroBanner cần
+  const heroBanners = banners.length > 0
+    ? banners.map((b, i) => ({
+        id: i,
+        image: b.imageUrl,
+        title: b.title || '',
+        subtitle: '',
+      }))
+    : [
+        { id: 0, image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1200&h=500&fit=crop', title: 'Công Nghệ Mới Nhất', subtitle: 'Khám phá sản phẩm hot nhất tại Hozitech' },
+        { id: 1, image: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=1200&h=500&fit=crop', title: 'Laptop Cao Cấp', subtitle: 'Hiệu năng vượt trội, giá tốt nhất' },
+      ];
 
   return (
     <div className="pb-20">
-      <HeroBanner banners={banners} />
+      <HeroBanner banners={heroBanners} />
 
-      <ProductSection
-        icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30"><FiCpu className="text-2xl" /></div>}
-        title="Gợi ý cho bạn"
-        subtitle={<p className="text-sm text-slate-500">Dựa trên lịch sử xem của bạn</p>}
-        products={aiRecommended}
-        layout="scroll"
-      />
+      {featured.length > 0 && (
+        <ProductSection
+          icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30"><FiCpu className="text-2xl" /></div>}
+          title="Sản phẩm nổi bật"
+          subtitle={<p className="text-sm text-slate-500">Được đề xuất cho bạn</p>}
+          products={featured}
+          layout="scroll"
+        />
+      )}
 
-      <ProductSection
-        icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-red-500/30"><FiZap className="text-2xl" /></div>}
-        title="Flash Sale"
-        subtitle={
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-slate-500">Kết thúc trong:</span>
-            <div className="flex gap-1 text-sm font-bold">
-              <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-md">02</span>:
-              <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-md">45</span>:
-              <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-md">12</span>
-            </div>
-          </div>
-        }
-        products={flashSaleProducts}
-        seeAllLink="/flash-sale"
-      />
+      {bestSellers.length > 0 && (
+        <ProductSection
+          icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-yellow-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/30"><FiTrendingUp className="text-2xl" /></div>}
+          title="Bán chạy nhất"
+          products={bestSellers}
+          layout="scroll"
+          bgClassName="bg-slate-100 dark:bg-slate-800/50 rounded-2xl my-10"
+        />
+      )}
 
-      <ProductSection
-        icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-yellow-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/30"><FiTrendingUp className="text-2xl" /></div>}
-        title="Bán chạy nhất"
-        products={bestSellers}
-        layout="scroll"
-        bgClassName="bg-slate-100 dark:bg-slate-800/50 rounded-2xl my-10"
-      />
+      {newArrivals.length > 0 && (
+        <ProductSection
+          icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30"><FiStar className="text-2xl" /></div>}
+          title="Hàng mới về"
+          products={newArrivals}
+          seeAllLink="/products"
+        />
+      )}
 
-      <ProductSection
-        icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30"><FiStar className="text-2xl" /></div>}
-        title="Hàng mới về"
-        products={newArrivals}
-        seeAllLink="/search"
-      />
+      {loading && (
+        <div className="flex justify-center py-20">
+          <div className="w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin" />
+        </div>
+      )}
     </div>
   );
 }

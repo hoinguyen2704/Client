@@ -1,92 +1,53 @@
-import { useState } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { revenue7Days, revenueMonth, revenueQuarter, getChartSummary } from '@/__mocks__/mockDashboard';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Card from '@/components/ui/Card';
+import type { DashboardChildProps } from './types';
 
-export default function RevenueChart() {
-  const [chartType, setChartType] = useState<'7days' | 'month' | 'quarter'>('7days');
+export default function RevenueChart({ stats }: DashboardChildProps) {
+  const chartData = (stats.revenueChart || []).map((item) => ({
+    name: item.label,
+    revenue: item.revenue,
+    orders: item.orders,
+  }));
 
-  const chartData = chartType === '7days' ? revenue7Days : chartType === 'month' ? revenueMonth : revenueQuarter;
-  const summary = getChartSummary(chartData);
-  const periodLabel = chartType === '7days' ? 'Tuần trước' : 'Năm trước';
+  const total = chartData.reduce((s, d) => s + d.revenue, 0);
+  const avg = chartData.length > 0 ? total / chartData.length : 0;
+  const maxItem = chartData.reduce((m, d) => d.revenue > m.revenue ? d : m, { name: '-', revenue: 0 });
 
   return (
     <Card>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-        <h2 className="text-lg font-bold">Biểu đồ doanh thu</h2>
-        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-          {(['7days', 'month', 'quarter'] as const).map((type) => (
-            <button key={type} onClick={() => setChartType(type)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${chartType === type ? 'bg-white dark:bg-slate-700 shadow-sm text-purple-600 dark:text-purple-400' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}
-            >
-              {type === '7days' ? 'Tuần' : type === 'month' ? 'Tháng' : 'Quý'}
-            </button>
-          ))}
-        </div>
-      </div>
+      <h2 className="text-lg font-bold mb-4">Biểu đồ doanh thu</h2>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 rounded-2xl p-4">
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Tổng doanh thu</p>
-          <p className="text-lg font-bold text-purple-700 dark:text-purple-400">{(summary.total / 1000).toFixed(0)}M</p>
+          <p className="text-lg font-bold text-purple-700 dark:text-purple-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-4">
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Trung bình</p>
-          <p className="text-lg font-bold text-blue-700 dark:text-blue-400">{(summary.avg / 1000).toFixed(0)}M</p>
+          <p className="text-lg font-bold text-blue-700 dark:text-blue-400">{avg >= 1e6 ? `${(avg / 1e6).toFixed(0)}M` : avg.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-4">
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Cao nhất ({summary.maxDay})</p>
-          <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{(summary.maxVal / 1000).toFixed(0)}M</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Cao nhất ({maxItem.name})</p>
+          <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{maxItem.revenue >= 1e6 ? `${(maxItem.revenue / 1e6).toFixed(0)}M` : maxItem.revenue.toLocaleString()}</p>
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
-        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
-          <span className="w-3 h-3 rounded-full bg-purple-500"></span>
-          <span className="text-sm font-medium text-purple-700 dark:text-purple-400">Kỳ này</span>
-        </span>
-        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-          <span className="w-5 h-0 border-t-2 border-dashed border-amber-500"></span>
-          <span className="text-sm font-medium text-amber-600 dark:text-amber-400">{periodLabel}</span>
-        </span>
-      </div>
-
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
-          {chartType === '7days' ? (
-            <AreaChart data={revenue7Days} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs><linearGradient id="colorRevWeek" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25}/><stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/></linearGradient></defs>
+      {chartData.length === 0 ? (
+        <div className="h-80 flex items-center justify-center text-slate-400">Chưa có dữ liệu doanh thu</div>
+      ) : (
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs><linearGradient id="colorRevAPI" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25}/><stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/></linearGradient></defs>
               <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
+              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v >= 1e6 ? `${v/1e6}M` : v}`} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Kỳ trước' : 'Doanh thu']} />
-              <Area type="monotone" dataKey="prevRevenue" stroke="#f59e0b" strokeWidth={2} strokeDasharray="12 6" fillOpacity={0} dot={false} />
-              <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevWeek)" dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number) => [`${value.toLocaleString()}đ`, 'Doanh thu']} />
+              <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevAPI)" dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
             </AreaChart>
-          ) : chartType === 'month' ? (
-            <AreaChart data={revenueMonth} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs><linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/><stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/></linearGradient></defs>
-              <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Năm trước' : 'Doanh thu']} />
-              <Area type="monotone" dataKey="prevRevenue" stroke="#f59e0b" strokeWidth={2} strokeDasharray="12 6" fillOpacity={0} dot={false} />
-              <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-            </AreaChart>
-          ) : (
-            <BarChart data={revenueQuarter} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}M`} />
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number, name: string) => [`${value.toLocaleString()}đ`, name === 'prevRevenue' ? 'Năm trước' : 'Doanh thu']} />
-              <Bar dataKey="prevRevenue" fill="#e2e8f0" radius={[4, 4, 0, 0]} barSize={30} />
-              <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} barSize={30} />
-            </BarChart>
-          )}
-        </ResponsiveContainer>
-      </div>
+          </ResponsiveContainer>
+        </div>
+      )}
     </Card>
   );
 }

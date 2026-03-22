@@ -12,6 +12,12 @@ const wishlistService = {
 
   remove: (productId: string): Promise<ApiResponse<void>> =>
     axios.delete(`${WISHLIST_URL}/${productId}`),
+
+  checkProduct: (productId: string): Promise<ApiResponse<boolean>> =>
+    axios.get(`${WISHLIST_URL}/check/${productId}`),
+
+  getCount: (): Promise<ApiResponse<number>> =>
+    axios.get(`${WISHLIST_URL}/count`),
 };
 
 export default wishlistService;

@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { FiGrid, FiShoppingBag, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft } from 'react-icons/fi';
+import { FiGrid, FiShoppingBag, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap, FiSliders } from 'react-icons/fi';
 import LogoIcon from '../ui/LogoIcon';
 import useUIStore from '@/stores/useUIStore';
 import { cn } from '@/utils/cn';
@@ -12,10 +12,12 @@ const menuItems = [
   { path: '/admin/customers', icon: FiUsers, label: 'Khách hàng' },
   { path: '/admin/promotions', icon: FiTag, label: 'Khuyến mãi' },
   { path: '/admin/vouchers', icon: FiTag, label: 'Voucher' },
+  { path: '/admin/flash-sales', icon: FiZap, label: 'Flash Sale' },
   { path: '/admin/feedbacks', icon: FiMessageSquare, label: 'Đánh giá' },
   { path: '/admin/tickets', icon: FiHeadphones, label: 'Hỗ trợ (Tickets)' },
   { path: '/admin/chatbot', icon: FiCpu, label: 'AI Chatbot' },
   { path: '/admin/cms', icon: FiFileText, label: 'Nội dung (CMS)' },
+  { path: '/admin/system-configs', icon: FiSliders, label: 'Cấu hình hệ thống' },
   { path: '/admin/settings', icon: FiSettings, label: 'Cài đặt' },
 ];
 

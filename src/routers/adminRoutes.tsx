@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from '@/components/guards/ProtectedRoute';
 
 const AdminLayout = lazy(() => import('@/components/layout/AdminLayout'));
 const Dashboard = lazy(() => import('@/views/admin/dashboard/Dashboard'));
@@ -17,9 +18,11 @@ const Feedbacks = lazy(() => import('@/views/admin/review/Feedbacks'));
 const AdminChatbot = lazy(() => import('@/views/admin/chatbot/Chatbot'));
 const CMS = lazy(() => import('@/views/admin/cms/CMS'));
 const Tickets = lazy(() => import('@/views/admin/ticket/Tickets'));
+const FlashSales = lazy(() => import('@/views/admin/flashsale/FlashSales'));
+const SystemConfigs = lazy(() => import('@/views/admin/systemconfig/SystemConfigs'));
 
 export const adminRoutes = (
-  <Route path="/admin" element={<AdminLayout />}>
+  <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN"><AdminLayout /></ProtectedRoute>}>
     <Route index element={<Navigate to="dashboard" replace />} />
     <Route path="dashboard" element={<Dashboard />} />
     <Route path="orders" element={<AdminOrders />} />
@@ -32,7 +35,9 @@ export const adminRoutes = (
     <Route path="customers/:id" element={<CustomerDetail />} />
     <Route path="promotions" element={<Promotions />} />
     <Route path="vouchers" element={<AdminVouchers />} />
+    <Route path="flash-sales" element={<FlashSales />} />
     <Route path="settings" element={<Settings />} />
+    <Route path="system-configs" element={<SystemConfigs />} />
     <Route path="feedbacks" element={<Feedbacks />} />
     <Route path="chatbot" element={<AdminChatbot />} />
     <Route path="cms" element={<CMS />} />

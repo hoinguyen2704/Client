@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiHeart, FiUser, FiMenu, FiLogOut, FiSettings, FiBox, FiSun, FiMoon } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
@@ -20,10 +20,13 @@ export { navItems };
 
 export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogout }: HeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { totalItems } = useCartStore();
+  const { totalItems, syncFromServer } = useCartStore();
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   useClickOutside(menuRef, useCallback(() => setIsUserMenuOpen(false), []));
+
+  // Sync cart count from server on mount
+  useEffect(() => { syncFromServer(); }, []);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -108,7 +111,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                         <p className="text-xs text-slate-500 capitalize mt-0.5">{user.role}</p>
                       </div>
                       <div className="p-2">
-                        {user.role === 'admin' ? (
+                        {user.role?.toLowerCase() === 'admin' ? (
                           <Link to="/admin" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                             <FiSettings className="text-lg" /> Quản trị viên
                           </Link>

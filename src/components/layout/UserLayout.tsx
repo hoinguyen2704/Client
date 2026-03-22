@@ -1,6 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiTruck, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings } from 'react-icons/fi';
 import { cn } from '../../utils/cn';
+import useAuthStore from '@/stores/useAuthStore';
 
 const menuItems = [
   { path: '/user/profile', icon: FiUser, label: 'Hồ sơ cá nhân' },
@@ -17,6 +18,7 @@ const menuItems = [
 
 export default function UserLayout() {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -31,12 +33,20 @@ export default function UserLayout() {
         <aside className="w-full lg:w-72 shrink-0">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 sticky top-28">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 p-1">
-                <img src="https://i.pravatar.cc/100?img=32" alt="Avatar" className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 object-cover" />
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 p-0.5 shrink-0 flex items-center justify-center">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 object-cover" />
+                ) : (
+                  <div className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+                    <FiUser className="text-2xl text-purple-500 dark:text-purple-400" />
+                  </div>
+                )}
               </div>
-              <div>
-                <h3 className="font-bold text-lg">Nguyễn Văn A</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Thành viên Bạc</p>
+              <div className="min-w-0">
+                <h3 className="font-bold text-lg truncate">{user?.name || 'Thành viên'}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                  {user?.role === 'ADMIN' ? 'Quản trị viên' : 'Khách hàng'}
+                </p>
               </div>
             </div>
 

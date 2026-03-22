@@ -16,3 +16,5 @@ export { default as addressService } from './services/addressService';
 export { default as cmsService } from './services/cmsService';
 export { default as dashboardService } from './services/dashboardService';
 export { default as chatbotService } from './services/chatbotService';
+export { default as adminFlashSaleService } from './services/adminFlashSaleService';
+export { default as adminSystemConfigService } from './services/adminSystemConfigService';

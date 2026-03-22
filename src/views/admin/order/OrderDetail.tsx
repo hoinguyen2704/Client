@@ -1,32 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiPrinter, FiEdit, FiUser, FiMapPin, FiCreditCard, FiPackage, FiTruck, FiCheckCircle, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiPrinter, FiUser, FiMapPin, FiCreditCard, FiPackage, FiX } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { mockOrderDetails } from '@/__mocks__/mockAdmin';
+import adminOrderService from '@/apis/services/adminOrderService';
+import type { OrderResponse } from '@/types';
 
 export default function OrderDetail() {
-  const { id } = useParams();
-  const [order, setOrder] = useState(mockOrderDetails); // In real app, fetch based on ID
+  const { id } = useParams<{ id: string }>();
+  const [order, setOrder] = useState<OrderResponse | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-  
-  const [editAddress, setEditAddress] = useState(order.shippingAddress);
-  const [editStatus, setEditStatus] = useState(order.status);
+  const [editStatus, setEditStatus] = useState('');
 
-  const handlePrint = () => {
-    window.print();
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    // Admin getAll with keyword=orderId to get single order (or direct endpoint if available)
+    adminOrderService.getAll({ keyword: id, page: 1, size: 1 })
+      .then(res => {
+        const found = res.data.data?.[0];
+        if (found) { setOrder(found); setEditStatus(found.orderStatus); }
+      })
+      .catch(err => console.error('Failed:', err))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const handleUpdateStatus = async () => {
+    if (!order) return;
+    try {
+      const res = await adminOrderService.updateStatus(order.id, editStatus);
+      setOrder(res.data);
+      setIsStatusModalOpen(false);
+    } catch (err) { console.error(err); }
   };
 
-  const handleUpdateStatus = () => {
-    setOrder({ ...order, status: editStatus });
-    setIsStatusModalOpen(false);
+  const formatDate = (d: string) => {
+    try { return new Date(d).toLocaleString('vi-VN'); } catch { return d; }
   };
 
-  const handleUpdateAddress = () => {
-    setOrder({ ...order, shippingAddress: editAddress });
-    setIsAddressModalOpen(false);
-  };
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 animate-pulse space-y-3">
+          <div className="h-5 w-64 bg-slate-200 dark:bg-slate-700 rounded" />
+          <div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!order) {
+    return <div className="p-8 text-center text-slate-400">Không tìm thấy đơn hàng</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -37,14 +64,14 @@ export default function OrderDetail() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-3">
-              Đơn hàng {order.id}
-              <StatusBadge status={order.status} />
+              Đơn hàng {order.orderNumber}
+              <StatusBadge status={order.orderStatus} />
             </h1>
-            <p className="text-slate-500 text-sm mt-1">{order.date}</p>
+            <p className="text-slate-500 text-sm mt-1">{formatDate(order.createdAt)}</p>
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={handlePrint} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
+          <button onClick={() => window.print()} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
             <FiPrinter /> In hóa đơn
           </button>
           <button onClick={() => setIsStatusModalOpen(true)} className="btn btn-md btn-primary">
@@ -54,39 +81,30 @@ export default function OrderDetail() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Order Items & Summary */}
+        {/* Items */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Items */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold flex items-center gap-2"><FiPackage className="text-purple-600" /> Sản phẩm ({order.items.length})</h2>
-            </div>
-            
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-6"><FiPackage className="text-purple-600" /> Sản phẩm ({order.items?.length || 0})</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
                     <th className="pb-3 font-medium">Sản phẩm</th>
                     <th className="pb-3 font-medium text-center">Đơn giá</th>
-                    <th className="pb-3 font-medium text-center">Số lượng</th>
+                    <th className="pb-3 font-medium text-center">SL</th>
                     <th className="pb-3 font-medium text-right">Thành tiền</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items.map((item) => (
+                  {order.items?.map((item) => (
                     <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0">
                       <td className="py-4">
-                        <div className="flex items-center gap-3">
-                          <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover bg-slate-100 dark:bg-slate-800" />
-                          <div>
-                            <div className="font-bold line-clamp-1">{item.name}</div>
-                            <div className="text-sm text-slate-500">{item.variant} | SKU: {item.sku}</div>
-                          </div>
-                        </div>
+                        <div className="font-bold">{item.productName}</div>
+                        <div className="text-sm text-slate-500">{item.variantName}</div>
                       </td>
-                      <td className="py-4 text-center font-medium">{formatPrice(item.price)}</td>
+                      <td className="py-4 text-center font-medium">{formatPrice(item.unitPrice)}</td>
                       <td className="py-4 text-center font-medium">{item.quantity}</td>
-                      <td className="py-4 text-right font-bold text-purple-600">{formatPrice(item.price * item.quantity)}</td>
+                      <td className="py-4 text-right font-bold text-purple-600">{formatPrice(item.subtotal)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -94,90 +112,37 @@ export default function OrderDetail() {
             </div>
           </div>
 
-          {/* Summary & Notes */}
+          {/* Summary */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold mb-4">Ghi chú của khách hàng</h2>
-              <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-sm leading-relaxed border border-yellow-100 dark:border-yellow-900/50">
-                {order.notes || 'Không có ghi chú.'}
+              <h2 className="text-lg font-bold mb-4">Ghi chú</h2>
+              <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-sm border border-yellow-100 dark:border-yellow-900/50">
+                {order.note || 'Không có ghi chú.'}
               </div>
             </div>
-
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-4">Tổng thanh toán</h2>
               <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-slate-500">
-                  <span>Tạm tính</span>
-                  <span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Phí vận chuyển</span>
-                  <span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Giảm giá</span>
-                  <span className="font-medium text-red-500">-{formatPrice(order.discount)}</span>
-                </div>
+                <div className="flex justify-between text-slate-500"><span>Tạm tính</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
+                <div className="flex justify-between text-slate-500"><span>Phí vận chuyển</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
+                <div className="flex justify-between text-slate-500"><span>Giảm giá</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>
                 <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-purple-600">
-                  <span>Tổng cộng</span>
-                  <span>{formatPrice(order.total)}</span>
+                  <span>Tổng cộng</span><span>{formatPrice(order.totalAmount)}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column - Customer, Shipping, Payment */}
+        {/* Right Column */}
         <div className="space-y-6">
-          {/* Customer Info */}
+          {/* Shipping */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold flex items-center gap-2"><FiUser className="text-blue-600" /> Khách hàng</h2>
-              <Link to={`/admin/customers/1`} className="text-sm font-medium text-purple-600 hover:underline">Hồ sơ</Link>
-            </div>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl font-bold text-slate-400">
-                {order.customer.name.charAt(0)}
-              </div>
-              <div>
-                <div className="font-bold">{order.customer.name}</div>
-                <div className="text-sm text-slate-500">{order.customer.totalOrders} đơn hàng</div>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500">Email:</span>
-                <span className="font-medium">{order.customer.email}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500">Điện thoại:</span>
-                <span className="font-medium">{order.customer.phone}</span>
-              </div>
-            </div>
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> Giao hàng</h2>
+            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{order.shippingAddress}</p>
           </div>
 
-          {/* Shipping Info */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold flex items-center gap-2"><FiMapPin className="text-orange-600" /> Giao hàng</h2>
-              <button onClick={() => setIsAddressModalOpen(true)} className="text-sm font-medium text-purple-600 hover:underline flex items-center gap-1">
-                <FiEdit /> Sửa
-              </button>
-            </div>
-            <div className="space-y-2 text-sm">
-              <p className="font-bold">{order.shippingAddress.name}</p>
-              <p className="text-slate-500">{order.shippingAddress.phone}</p>
-              <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{order.shippingAddress.address}</p>
-            </div>
-            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500 flex items-center gap-1"><FiTruck /> Đơn vị vận chuyển:</span>
-                <span className="font-bold">Giao Hàng Tiết Kiệm</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Payment Info */}
+          {/* Payment */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><FiCreditCard className="text-green-600" /> Thanh toán</h2>
             <div className="space-y-3 text-sm">
@@ -187,50 +152,14 @@ export default function OrderDetail() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-500">Trạng thái:</span>
-                <span className={`px-2 py-1 rounded-md text-xs font-bold ${
-                  order.paymentStatus === 'Đã thanh toán' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'
-                }`}>
-                  {order.paymentStatus}
+                <span className={`px-2 py-1 rounded-md text-xs font-bold ${order.paymentStatus === 'PAID' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
+                  {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}
                 </span>
               </div>
-            </div>
-          </div>
-
-          {/* Timeline */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">Lịch sử đơn hàng</h2>
-            <div className="relative border-l-2 border-slate-200 dark:border-slate-700 ml-3 space-y-6">
-              <div className="relative pl-6">
-                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-900"></div>
-                <div className="text-sm font-bold">Chờ xử lý</div>
-                <div className="text-xs text-slate-500">01/11/2023 14:30</div>
-              </div>
-              {['verified', 'shipping', 'delivered'].includes(order.status) && (
-                <div className="relative pl-6">
-                  <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white dark:border-slate-900"></div>
-                  <div className="text-sm font-bold text-blue-600">Đã xác nhận</div>
-                  <div className="text-xs text-slate-500">01/11/2023 15:00</div>
-                </div>
-              )}
-              {['shipping', 'delivered'].includes(order.status) && (
-                <div className="relative pl-6">
-                  <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-white dark:border-slate-900"></div>
-                  <div className="text-sm font-bold text-orange-600">Đang giao hàng</div>
-                  <div className="text-xs text-slate-500">02/11/2023 08:30</div>
-                </div>
-              )}
-              {order.status === 'delivered' && (
-                <div className="relative pl-6">
-                  <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-slate-900"></div>
-                  <div className="text-sm font-bold text-green-600">Đã giao thành công</div>
-                  <div className="text-xs text-slate-500">03/11/2023 10:15</div>
-                </div>
-              )}
-              {order.status === 'cancelled' && (
-                <div className="relative pl-6">
-                  <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-red-500 border-2 border-white dark:border-slate-900"></div>
-                  <div className="text-sm font-bold text-red-600">Đã hủy</div>
-                  <div className="text-xs text-slate-500">01/11/2023 16:00</div>
+              {order.couponCode && (
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">Mã giảm giá:</span>
+                  <span className="font-mono font-bold text-purple-600">{order.couponCode}</span>
                 </div>
               )}
             </div>
@@ -238,90 +167,27 @@ export default function OrderDetail() {
         </div>
       </div>
 
-      {/* Status Update Modal */}
+      {/* Status Modal */}
       {isStatusModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-xl overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
               <h3 className="text-lg font-bold">Cập nhật trạng thái</h3>
-              <button onClick={() => setIsStatusModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                <FiX className="text-xl" />
-              </button>
+              <button onClick={() => setIsStatusModalOpen(false)} className="text-slate-400 hover:text-slate-600"><FiX className="text-xl" /></button>
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trạng thái đơn hàng</label>
-                <select 
-                  value={editStatus}
-                  onChange={(e) => setEditStatus(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
-                >
-                  <option value="pending">Chờ xử lý (Pending)</option>
-                  <option value="verified">Đã xác nhận (Verified)</option>
-                  <option value="shipping">Đang giao (Shipping)</option>
-                  <option value="delivered">Đã giao (Delivered)</option>
-                  <option value="cancelled">Đã hủy (Cancelled)</option>
-                </select>
-              </div>
+            <div className="p-6">
+              <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none">
+                <option value="PENDING">Chờ xử lý</option>
+                <option value="CONFIRMED">Đã xác nhận</option>
+                <option value="SHIPPING">Đang giao</option>
+                <option value="DELIVERED">Đã giao</option>
+                <option value="CANCELLED">Đã hủy</option>
+              </select>
             </div>
             <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-800/50">
-              <button onClick={() => setIsStatusModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                Hủy
-              </button>
-              <button onClick={handleUpdateStatus} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">
-                Cập nhật
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Address Modal */}
-      {isAddressModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-lg font-bold">Sửa địa chỉ giao hàng</h3>
-              <button onClick={() => setIsAddressModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                <FiX className="text-xl" />
-              </button>
-            </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Tên người nhận</label>
-                <input 
-                  type="text" 
-                  value={editAddress.name}
-                  onChange={(e) => setEditAddress({...editAddress, name: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Số điện thoại</label>
-                <input 
-                  type="text" 
-                  value={editAddress.phone}
-                  onChange={(e) => setEditAddress({...editAddress, phone: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Địa chỉ chi tiết</label>
-                <textarea 
-                  value={editAddress.address}
-                  onChange={(e) => setEditAddress({...editAddress, address: e.target.value})}
-                  rows={3}
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none resize-none"
-                ></textarea>
-              </div>
-            </div>
-            <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-800/50">
-              <button onClick={() => setIsAddressModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                Hủy
-              </button>
-              <button onClick={handleUpdateAddress} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">
-                Lưu thay đổi
-              </button>
+              <button onClick={() => setIsStatusModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium hover:bg-slate-200 transition-colors">Hủy</button>
+              <button onClick={handleUpdateStatus} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">Cập nhật</button>
             </div>
           </div>
         </div>

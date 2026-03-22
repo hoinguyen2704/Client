@@ -307,3 +307,18 @@ export interface UpdateUserRequest {
   dateOfBirth?: string;
   gender?: string;
 }
+
+// ─── SystemConfig ───────────────────────────────────────────────
+export interface SystemConfigResponse {
+  id: string;
+  configKey: string;
+  configValue: string;
+  description?: string;
+  updatedAt: string;
+}
+
+export interface SystemConfigRequest {
+  configKey: string;
+  configValue?: string;
+  description?: string;
+}

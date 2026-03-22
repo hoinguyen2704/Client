@@ -1,114 +1,106 @@
 import { useState, useEffect } from 'react';
 import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiCheck } from 'react-icons/fi';
-import { AnimatePresence } from 'motion/react';
-import { mockProducts } from '@/__mocks__/mockData';
-import ProductCard from '@/components/ui/ProductCard';
+import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { motion } from 'motion/react';
-
-const categories = [
-  { id: 'all', label: 'Tất cả danh mục' },
-  { id: 'laptop', label: 'Laptop' },
-  { id: 'smartphone', label: 'Điện thoại' },
-  { id: 'tablet', label: 'Máy tính bảng' },
-  { id: 'accessory', label: 'Phụ kiện' },
-];
-
-const brandsByCategory: Record<string, string[]> = {
-  all: ['Apple', 'Samsung', 'ASUS', 'Sony', 'LG', 'Keychron', 'Dell', 'HP', 'Lenovo', 'Xiaomi', 'OPPO', 'Logitech'],
-  laptop: ['Apple', 'ASUS', 'Dell', 'HP', 'Lenovo'],
-  smartphone: ['Apple', 'Samsung', 'Xiaomi', 'OPPO'],
-  tablet: ['Apple', 'Samsung', 'Lenovo'],
-  accessory: ['Sony', 'LG', 'Keychron', 'Logitech', 'Apple', 'Samsung'],
-};
-
-const filterConfigs: Record<string, { id: string, label: string, options: string[] }[]> = {
-  all: [],
-  laptop: [
-    { id: 'cpu', label: 'CPU', options: ['Intel Core i5', 'Intel Core i7', 'Intel Core i9', 'AMD Ryzen 5', 'AMD Ryzen 7', 'Apple M1/M2/M3'] },
-    { id: 'ram', label: 'RAM', options: ['8GB', '16GB', '32GB', '64GB'] },
-    { id: 'storage', label: 'Ổ cứng', options: ['256GB', '512GB', '1TB', '2TB'] },
-    { id: 'screen', label: 'Màn hình', options: ['13.3"', '14"', '15.6"', '16"'] },
-  ],
-  smartphone: [
-    { id: 'ram', label: 'RAM', options: ['4GB', '8GB', '12GB', '16GB'] },
-    { id: 'storage', label: 'Bộ nhớ trong', options: ['64GB', '128GB', '256GB', '512GB', '1TB'] },
-  ],
-  tablet: [
-    { id: 'ram', label: 'RAM', options: ['4GB', '8GB', '16GB'] },
-    { id: 'storage', label: 'Bộ nhớ trong', options: ['64GB', '128GB', '256GB', '512GB', '1TB'] },
-    { id: 'screen', label: 'Màn hình', options: ['8"', '10.2"', '11"', '12.9"'] },
-  ],
-  accessory: [
-    { id: 'type', label: 'Loại phụ kiện', options: ['Bàn phím', 'Chuột', 'Tai nghe', 'Cáp sạc', 'Ốp lưng'] },
-    { id: 'connection', label: 'Kết nối', options: ['Có dây', 'Không dây (Bluetooth)', 'Wireless 2.4GHz'] },
-  ],
-};
+import { productService, categoryService, brandService } from '@/apis';
+import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
+import ProductCard from '@/components/ui/ProductCard';
 
 export default function Search() {
-  const [searchParams] = useSearchParams();
-  const query = searchParams.get('q') || '';
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('q') || searchParams.get('keyword') || '';
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 100000000]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [dynamicFilters, setDynamicFilters] = useState<Record<string, string[]>>({});
-  const [sortBy, setSortBy] = useState('newest');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('categorySlug') || '');
+  const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || '');
+  const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'createdAt');
+  const [sortDir, setSortDir] = useState(searchParams.get('sortDir') || 'desc');
+  const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'));
 
-  const toggleFilter = (state: string[], setState: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
-    if (state.includes(value)) {
-      setState(state.filter(v => v !== value));
-    } else {
-      setState([...state, value]);
-    }
-  };
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [brands, setBrands] = useState<BrandResponse[]>([]);
+  const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const handleCategoryChange = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-    setSelectedBrands([]);
-    setDynamicFilters({});
-  };
-
-  const toggleDynamicFilter = (filterId: string, value: string) => {
-    setDynamicFilters(prev => {
-      const current = prev[filterId] || [];
-      if (current.includes(value)) {
-        return { ...prev, [filterId]: current.filter(v => v !== value) };
-      } else {
-        return { ...prev, [filterId]: [...current, value] };
+  // Load categories + brands
+  useEffect(() => {
+    Promise.allSettled([
+      categoryService.getTree(),
+      brandService.getAll(),
+    ]).then(([catRes, brandRes]) => {
+      if (catRes.status === 'fulfilled') setCategories(catRes.value.data || []);
+      if (brandRes.status === 'fulfilled') {
+        const d = brandRes.value.data;
+        // getAll() trả về PageResponse hoặc array tuỳ server
+        setBrands(Array.isArray(d) ? d : (d as any)?.content || []);
       }
     });
+  }, []);
+
+  // Load products when filters change
+  useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await productService.search({
+          keyword: query || undefined,
+          categorySlug: selectedCategory || undefined,
+          brand: selectedBrand || undefined,
+          page,
+          size: 16,
+          sortBy,
+          sortDir,
+        });
+        const pageData = res.data;
+        setProducts(pageData?.data || []);
+        setTotalPages(pageData?.lastPage || 0);
+        setTotalElements(pageData?.total || 0);
+      } catch (err) {
+        console.error('Lỗi tìm kiếm:', err);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+
+    // Sync URL params
+    const params: Record<string, string> = {};
+    if (query) params.keyword = query;
+    if (selectedCategory) params.categorySlug = selectedCategory;
+    if (selectedBrand) params.brand = selectedBrand;
+    if (sortBy !== 'createdAt') params.sortBy = sortBy;
+    if (sortDir !== 'desc') params.sortDir = sortDir;
+    if (page > 1) params.page = String(page);
+    setSearchParams(params, { replace: true });
+  }, [query, selectedCategory, selectedBrand, sortBy, sortDir, page]);
+
+  const handleSortChange = (value: string) => {
+    if (value === 'price-asc') { setSortBy('price'); setSortDir('asc'); }
+    else if (value === 'price-desc') { setSortBy('price'); setSortDir('desc'); }
+    else { setSortBy('createdAt'); setSortDir('desc'); }
+    setPage(1);
   };
 
-  // Mock filtering logic
-  let filteredProducts = mockProducts.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
-  
-  if (query) {
-    const lowerQuery = query.toLowerCase();
-    filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(lowerQuery) || p.brand.toLowerCase().includes(lowerQuery));
-  }
+  const handleCategoryChange = (slug: string) => {
+    setSelectedCategory(slug === selectedCategory ? '' : slug);
+    setPage(1);
+  };
 
-  if (selectedCategory !== 'all') {
-    filteredProducts = filteredProducts.filter(p => {
-      const name = p.name.toLowerCase();
-      if (selectedCategory === 'laptop') return name.includes('macbook') || name.includes('laptop') || name.includes('asus');
-      if (selectedCategory === 'smartphone') return name.includes('iphone') || name.includes('samsung') || name.includes('điện thoại');
-      if (selectedCategory === 'tablet') return name.includes('ipad') || name.includes('tab');
-      if (selectedCategory === 'accessory') return name.includes('tai nghe') || name.includes('bàn phím') || name.includes('chuột');
-      return true;
-    });
-  }
+  const handleBrandChange = (slug: string) => {
+    setSelectedBrand(slug === selectedBrand ? '' : slug);
+    setPage(1);
+  };
 
-  if (selectedBrands.length > 0) {
-    filteredProducts = filteredProducts.filter(p => selectedBrands.includes(p.brand));
-  }
-  
-  // Mock sorting logic
-  if (sortBy === 'price-asc') filteredProducts.sort((a, b) => a.price - b.price);
-  if (sortBy === 'price-desc') filteredProducts.sort((a, b) => b.price - a.price);
-  if (sortBy === 'best-selling') filteredProducts.sort((a, b) => b.sold - a.sold);
-  if (sortBy === 'newest') filteredProducts.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+  const clearFilters = () => {
+    setSelectedCategory('');
+    setSelectedBrand('');
+    setSortBy('createdAt');
+    setSortDir('desc');
+    setPage(1);
+  };
 
   return (
     <div className="w-full px-4 md:px-8 lg:px-12 py-8">
@@ -141,154 +133,68 @@ export default function Search() {
             </div>
 
             <div className="space-y-8 pb-8">
-              {/* Category */}
+              {/* Categories */}
               <div>
-                <h3 className="font-bold mb-4 text-lg">Danh mục sản phẩm</h3>
+                <h3 className="font-bold mb-4 text-lg">Danh mục</h3>
                 <div className="space-y-2">
                   {categories.map(cat => (
                     <button
                       key={cat.id}
-                      onClick={() => handleCategoryChange(cat.id)}
-                      className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${selectedCategory === cat.id ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                      onClick={() => handleCategoryChange(cat.slug)}
+                      className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${selectedCategory === cat.slug ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                     >
-                      {cat.label}
+                      {cat.name}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Price Range */}
+              {/* Brands */}
               <div>
-                <h3 className="font-bold mb-4 text-lg">Khoảng giá</h3>
-                <div className="space-y-4">
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="100000000" 
-                    step="1000000"
-                    value={priceRange[1]} 
-                    onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                    className="w-full accent-purple-600"
-                  />
-                  <div className="flex items-center gap-2">
-                    <input type="number" value={priceRange[0]} onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])} className="w-full h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none text-sm" />
-                    <span>-</span>
-                    <input type="number" value={priceRange[1]} onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])} className="w-full h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none text-sm" />
-                  </div>
+                <h3 className="font-bold mb-4 text-lg">Thương hiệu</h3>
+                <div className="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                  {brands.map(brand => (
+                    <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+                      <div className="relative flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedBrand === brand.slug}
+                          onChange={() => handleBrandChange(brand.slug)}
+                          className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
+                        />
+                        <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
+                      </div>
+                      <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{brand.name}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
-
-              {/* Brands */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`brands-${selectedCategory}`}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="overflow-hidden"
-                >
-                  <h3 className="font-bold mb-4 text-lg">Thương hiệu</h3>
-                  <div className="space-y-3">
-                    {brandsByCategory[selectedCategory].map((brand, i) => (
-                      <motion.label
-                        key={brand}
-                        initial={{ opacity: 0, x: -16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.04, duration: 0.25 }}
-                        className="flex items-center gap-3 cursor-pointer group"
-                      >
-                        <div className="relative flex items-center justify-center">
-                          <input 
-                            type="checkbox" 
-                            checked={selectedBrands.includes(brand)}
-                            onChange={() => toggleFilter(selectedBrands, setSelectedBrands, brand)}
-                            className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
-                          />
-                          <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
-                        </div>
-                        <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{brand}</span>
-                      </motion.label>
-                    ))}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Dynamic Filters */}
-              <AnimatePresence mode="wait">
-                {filterConfigs[selectedCategory].length > 0 && (
-                  <motion.div
-                    key={`filters-${selectedCategory}`}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -12 }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="space-y-8"
-                  >
-                    {filterConfigs[selectedCategory].map((filter, filterIdx) => (
-                      <motion.div
-                        key={filter.id}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: filterIdx * 0.08, duration: 0.3 }}
-                      >
-                        <h3 className="font-bold mb-4 text-lg">{filter.label}</h3>
-                        <div className="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                          {filter.options.map((option, i) => (
-                            <motion.label
-                              key={option}
-                              initial={{ opacity: 0, x: -12 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: filterIdx * 0.08 + i * 0.03, duration: 0.2 }}
-                              className="flex items-center gap-3 cursor-pointer group"
-                            >
-                              <div className="relative flex items-center justify-center">
-                                <input 
-                                  type="checkbox" 
-                                  checked={(dynamicFilters[filter.id] || []).includes(option)}
-                                  onChange={() => toggleDynamicFilter(filter.id, option)}
-                                  className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
-                                />
-                                <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
-                              </div>
-                              <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{option}</span>
-                            </motion.label>
-                          ))}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
           </div>
         </aside>
 
         {/* Overlay for mobile filter */}
         {isFilterOpen && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-            onClick={() => setIsFilterOpen(false)}
-          />
+          <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsFilterOpen(false)} />
         )}
 
         {/* Main Content */}
         <main className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <h1 className="text-2xl font-bold">
-              {query ? `Kết quả tìm kiếm cho "${query}"` : 'Tất cả sản phẩm'} <span className="text-slate-500 text-lg font-normal">({filteredProducts.length})</span>
+              {query ? `Kết quả cho "${query}"` : 'Tất cả sản phẩm'} 
+              <span className="text-slate-500 text-lg font-normal"> ({totalElements})</span>
             </h1>
             
             <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-500">Sắp xếp theo:</span>
+              <span className="text-sm text-slate-500">Sắp xếp:</span>
               <div className="relative">
                 <select 
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  value={sortBy === 'price' ? (sortDir === 'asc' ? 'price-asc' : 'price-desc') : 'newest'}
+                  onChange={(e) => handleSortChange(e.target.value)}
                   className="appearance-none h-10 pl-4 pr-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 font-medium cursor-pointer"
                 >
                   <option value="newest">Mới nhất</option>
-                  <option value="best-selling">Bán chạy</option>
                   <option value="price-asc">Giá tăng dần</option>
                   <option value="price-desc">Giá giảm dần</option>
                 </select>
@@ -297,35 +203,48 @@ export default function Search() {
             </div>
           </div>
 
-          {filteredProducts.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="animate-pulse bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
+                  <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl mb-4" />
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : products.length > 0 ? (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                {filteredProducts.map(product => (
+                {products.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
 
               {/* Pagination */}
-              <div className="flex justify-center mt-12">
-                <div className="flex items-center gap-2">
-                  <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50" disabled>
-                    <FiChevronLeft />
-                  </button>
-                  <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold shadow-md shadow-purple-500/20">
-                    1
-                  </button>
-                  <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800">
-                    2
-                  </button>
-                  <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800">
-                    3
-                  </button>
-                  <span className="px-2">...</span>
-                  <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800">
-                    <FiChevronRight />
-                  </button>
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-12">
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}
+                      className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
+                      <FiChevronLeft />
+                    </button>
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      const pageNum = page <= 3 ? i + 1 : Math.min(page - 2 + i, totalPages);
+                      return (
+                        <button key={pageNum} onClick={() => setPage(pageNum)}
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${page === pageNum ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                    <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages}
+                      className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
+                      <FiChevronRight />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </>
           ) : (
             <motion.div 
@@ -338,17 +257,9 @@ export default function Search() {
               </div>
               <h2 className="text-2xl font-bold mb-2">Không tìm thấy sản phẩm nào</h2>
               <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
-                Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn. Vui lòng thử lại với các tiêu chí khác.
+                Vui lòng thử lại với các tiêu chí khác.
               </p>
-              <button 
-                onClick={() => {
-                  setPriceRange([0, 100000000]);
-                  setSelectedCategory('all');
-                  setSelectedBrands([]);
-                  setDynamicFilters({});
-                }}
-                className="btn btn-primary btn-md"
-              >
+              <button onClick={clearFilters} className="btn btn-primary btn-md">
                 Xóa bộ lọc
               </button>
             </motion.div>
