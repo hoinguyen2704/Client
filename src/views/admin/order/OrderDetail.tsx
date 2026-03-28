@@ -3,7 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiPrinter, FiUser, FiMapPin, FiCreditCard, FiPackage, FiX } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
+import CustomSelect from '@/components/ui/CustomSelect';
+import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
 import type { OrderResponse } from '@/types';
 
 export default function OrderDetail() {
@@ -16,10 +19,10 @@ export default function OrderDetail() {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    // Admin getAll with keyword=orderId to get single order (or direct endpoint if available)
-    adminOrderService.getAll({ keyword: id, page: 1, size: 1 })
+    // Fetch individual order by orderNumber
+    adminOrderService.getByNumber(id)
       .then(res => {
-        const found = res.data.data?.[0];
+        const found = res.data;
         if (found) { setOrder(found); setEditStatus(found.orderStatus); }
       })
       .catch(err => console.error('Failed:', err))
@@ -32,7 +35,11 @@ export default function OrderDetail() {
       const res = await adminOrderService.updateStatus(order.id, editStatus);
       setOrder(res.data);
       setIsStatusModalOpen(false);
-    } catch (err) { console.error(err); }
+      toast.success('Cập nhật trạng thái đơn hàng thành công!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Cập nhật trạng thái đơn hàng thất bại!');
+    }
   };
 
   const formatDate = (d: string) => {
@@ -136,6 +143,31 @@ export default function OrderDetail() {
 
         {/* Right Column */}
         <div className="space-y-6">
+          {/* Customer Info */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-purple-600" /> Khách hàng</h2>
+            <div className="space-y-3 text-sm">
+              {order.customerName && (
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">Họ tên:</span>
+                  <span className="font-medium">{order.customerName}</span>
+                </div>
+              )}
+              {order.customerEmail && (
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">Email:</span>
+                  <span className="font-medium text-purple-600">{order.customerEmail}</span>
+                </div>
+              )}
+              {order.customerPhone && (
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500">SĐT:</span>
+                  <span className="font-medium">{order.customerPhone}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Shipping */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> Giao hàng</h2>
@@ -170,22 +202,21 @@ export default function OrderDetail() {
       {/* Status Modal */}
       {isStatusModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-xl overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-xl">
             <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
               <h3 className="text-lg font-bold">Cập nhật trạng thái</h3>
               <button onClick={() => setIsStatusModalOpen(false)} className="text-slate-400 hover:text-slate-600"><FiX className="text-xl" /></button>
             </div>
             <div className="p-6">
-              <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none">
-                <option value="PENDING">Chờ xử lý</option>
-                <option value="CONFIRMED">Đã xác nhận</option>
-                <option value="SHIPPING">Đang giao</option>
-                <option value="DELIVERED">Đã giao</option>
-                <option value="CANCELLED">Đã hủy</option>
-              </select>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trạng thái mới</label>
+              <CustomSelect 
+                value={editStatus} 
+                onChange={(val) => setEditStatus(val)}
+                options={ORDER_STATUS_OPTIONS}
+                className="w-full"
+              />
             </div>
-            <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-800/50">
+            <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-800/50 rounded-b-2xl">
               <button onClick={() => setIsStatusModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium hover:bg-slate-200 transition-colors">Hủy</button>
               <button onClick={handleUpdateStatus} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">Cập nhật</button>
             </div>

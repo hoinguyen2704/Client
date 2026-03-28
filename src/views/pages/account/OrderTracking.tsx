@@ -4,26 +4,18 @@ import { FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiArrowLeft } from 'react
 import { formatPrice } from '@/helpers/format';
 import orderService from '@/apis/services/orderService';
 import type { OrderResponse } from '@/types';
-
-const statusSteps = [
-  { key: 'PENDING', label: 'Chờ xác nhận', icon: FiPackage },
-  { key: 'PROCESSING', label: 'Đang xử lý', icon: FiPackage },
-  { key: 'SHIPPING', label: 'Đang giao', icon: FiTruck },
-  { key: 'DELIVERED', label: 'Đã giao', icon: FiCheckCircle },
-];
-
-const statusIndex: Record<string, number> = { PENDING: 0, PROCESSING: 1, SHIPPING: 2, DELIVERED: 3 };
+import { ORDER_TRACKING_STEPS, ORDER_STATUS_INDEX } from '@/constants/orderConstants';
 
 export default function OrderTracking() {
-  const { orderId } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!orderId) return;
+    if (!id) return;
     setLoading(true);
-    orderService.getByNumber(orderId).then(res => setOrder(res.data)).catch(() => setOrder(null)).finally(() => setLoading(false));
-  }, [orderId]);
+    orderService.getByNumber(id).then(res => setOrder(res.data)).catch(() => setOrder(null)).finally(() => setLoading(false));
+  }, [id]);
 
   const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch { return d; } };
 
@@ -45,7 +37,7 @@ export default function OrderTracking() {
     </div>
   );
 
-  const currentStep = statusIndex[order.orderStatus] ?? -1;
+  const currentStep = ORDER_STATUS_INDEX[order.orderStatus] ?? -1;
   const isCancelled = order.orderStatus === 'CANCELLED' || order.orderStatus === 'RETURNED';
 
   return (
@@ -59,7 +51,7 @@ export default function OrderTracking() {
       {!isCancelled && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between">
-            {statusSteps.map((step, idx) => {
+            {ORDER_TRACKING_STEPS.map((step, idx) => {
               const Icon = step.icon;
               const isActive = idx <= currentStep;
               return (

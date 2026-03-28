@@ -6,6 +6,7 @@ import { formatPrice } from '@/helpers/format';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function Products() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -20,7 +21,7 @@ export default function Products() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const res = await adminCategoryService.getAll({ size: 100 });
+      const res = await adminCategoryService.getAll({ size: PAGE_SIZE.LARGE });
       setCategories(res.data?.data || []);
     } catch {
       console.error('Failed to fetch categories');
@@ -36,7 +37,7 @@ export default function Products() {
         keyword: searchQuery || undefined,
         status: statusFilter || undefined,
         categoryId: categoryFilter || undefined,
-        page, size: 20,
+        page, size: PAGE_SIZE.LARGE,
       });
       setPageData(res.data);
       setProducts(res.data.data || []);
@@ -294,7 +295,7 @@ export default function Products() {
         {/* Pagination */}
         {pageData && pageData.lastPage > 1 && (
           <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Hiển thị {((page - 1) * 20) + 1}-{Math.min(page * 20, pageData.total)} của {pageData.total} sản phẩm</div>
+            <div>Hiển thị {((page - 1) * PAGE_SIZE.LARGE) + 1}-{Math.min(page * PAGE_SIZE.LARGE, pageData.total)} của {pageData.total} sản phẩm</div>
             <div className="flex gap-1">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
                 className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiMail, FiPhone, FiCalendar, FiShoppingBag, FiDollarSign, FiLock, FiUnlock } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
+import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
 import type { UserResponse } from '@/types';
 
@@ -24,7 +25,11 @@ export default function CustomerDetail() {
     try {
       const res = await adminUserService.toggleStatus(user.id);
       setUser(res.data);
-    } catch (err) { console.error(err); }
+      toast.success('Cập nhật trạng thái người dùng thành công!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Cập nhật trạng thái người dùng thất bại!');
+    }
   };
 
   const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };

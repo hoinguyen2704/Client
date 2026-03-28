@@ -13,6 +13,9 @@ export interface OrderResponse {
   note?: string;
   shippingAddress: string;
   paymentUrl?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
   items: OrderItemResponse[];
   createdAt: string;
 }
@@ -67,6 +70,13 @@ export interface FeedbackRequest {
 }
 
 // ─── Coupon ──────────────────────────────────────────────────────
+export interface ApplicableProductInfo {
+  id: string;
+  name: string;
+  slug: string;
+  mainImageUrl?: string;
+}
+
 export interface CouponResponse {
   id: string;
   code: string;
@@ -79,6 +89,10 @@ export interface CouponResponse {
   startDate: string;
   endDate: string;
   status: string;
+  isPublic?: boolean;
+  applyType?: string; // ALL | SPECIFIC_PRODUCTS
+  applicableProducts?: ApplicableProductInfo[];
+  saved?: boolean;
 }
 
 export interface CouponRequest {
@@ -90,6 +104,9 @@ export interface CouponRequest {
   usageLimit: number;
   startDate: string;
   endDate: string;
+  isPublic?: boolean;
+  applyType?: string;
+  applicableProductIds?: string[];
 }
 
 // ─── FlashSale ───────────────────────────────────────────────────
@@ -194,11 +211,11 @@ export interface AddressRequest {
   isDefault?: boolean;
 }
 
-// ─── Cart ───────────────────────────────────────────────────────
 export interface CartResponse {
   id: string;
   variantId: string;
   productName: string;
+  productSlug: string;
   variantName: string;
   imageUrl?: string;
   price: number;

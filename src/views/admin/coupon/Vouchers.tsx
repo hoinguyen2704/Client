@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiPlus, FiSearch, FiEdit2, FiTag, FiToggleLeft, FiToggleRight, FiX, FiCheck } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEdit2, FiTag, FiToggleLeft, FiToggleRight, FiX, FiCheck, FiGlobe, FiLock, FiPackage } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import adminCouponService from '@/apis/services/adminCouponService';
 import type { CouponResponse, CouponRequest, PageResponse } from '@/types';
 import { formatPrice } from '@/helpers/format';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function AdminVouchers() {
   const [vouchers, setVouchers] = useState<CouponResponse[]>([]);
@@ -12,12 +14,18 @@ export default function AdminVouchers() {
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<CouponResponse> | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState<Partial<CouponRequest>>({ discountType: 'PERCENTAGE' });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState<Partial<CouponRequest>>({
+    discountType: 'PERCENTAGE',
+    isPublic: false,
+    applyType: 'ALL',
+    applicableProductIds: [],
+  });
 
   const fetchVouchers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminCouponService.getAll({ keyword: searchQuery || undefined, page, size: 20 });
+      const res = await adminCouponService.getAll({ keyword: searchQuery || undefined, page, size: PAGE_SIZE.MEDIUM });
       setPageData(res.data); setVouchers(res.data.data || []);
     } catch (err) { console.error('Failed:', err); }
     finally { setLoading(false); }
@@ -26,15 +34,55 @@ export default function AdminVouchers() {
   useEffect(() => { fetchVouchers(); }, [fetchVouchers]);
 
   const handleToggle = async (id: string) => {
-    try { await adminCouponService.toggleStatus(id); fetchVouchers(); }
-    catch (err) { console.error(err); }
+    try {
+      await adminCouponService.toggleStatus(id);
+      setVouchers(prev => prev.map(v =>
+        v.id === id ? { ...v, status: v.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' } : v
+      ));
+      toast.success('Cập nhật trạng thái voucher thành công!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Cập nhật trạng thái voucher thất bại!');
+    }
   };
 
-  const handleCreate = async () => {
+  const resetForm = () => {
+    setForm({ discountType: 'PERCENTAGE', isPublic: false, applyType: 'ALL', applicableProductIds: [] });
+    setEditingId(null);
+  };
+
+  const openEditModal = (v: CouponResponse) => {
+    setEditingId(v.id);
+    setForm({
+      code: v.code,
+      discountType: v.discountType,
+      discountValue: v.discountValue,
+      minOrderValue: v.minOrderValue,
+      maxDiscountAmount: v.maxDiscountAmount,
+      usageLimit: v.usageLimit,
+      startDate: v.startDate?.slice(0, 10) as any,
+      endDate: v.endDate?.slice(0, 10) as any,
+      isPublic: v.isPublic || false,
+      applyType: v.applyType || 'ALL',
+      applicableProductIds: v.applicableProducts?.map(p => p.id) || [],
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async () => {
     try {
-      await adminCouponService.create(form as CouponRequest);
-      setIsModalOpen(false); setForm({ discountType: 'PERCENTAGE' }); fetchVouchers();
-    } catch (err) { console.error(err); }
+      if (editingId) {
+        await adminCouponService.update(editingId, form as CouponRequest);
+        toast.success('Cập nhật voucher thành công!');
+      } else {
+        await adminCouponService.create(form as CouponRequest);
+        toast.success('Tạo voucher thành công!');
+      }
+      setIsModalOpen(false); resetForm(); fetchVouchers();
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || 'Thao tác voucher thất bại!');
+    }
   };
 
   const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
@@ -43,7 +91,7 @@ export default function AdminVouchers() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý Voucher</h1>
-        <button onClick={() => setIsModalOpen(true)} className="btn btn-primary btn-md gap-2"><FiPlus /> Tạo Voucher mới</button>
+        <button onClick={() => { resetForm(); setIsModalOpen(true); }} className="btn btn-primary btn-md gap-2"><FiPlus /> Tạo Voucher mới</button>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
@@ -64,6 +112,8 @@ export default function AdminVouchers() {
                 <th className="p-4 font-medium">Loại / Giá trị</th>
                 <th className="p-4 font-medium text-center">Đã dùng</th>
                 <th className="p-4 font-medium">Thời gian</th>
+                <th className="p-4 font-medium text-center">Hiển thị</th>
+                <th className="p-4 font-medium text-center">Phạm vi</th>
                 <th className="p-4 font-medium">Trạng thái</th>
                 <th className="p-4 font-medium text-right">Thao tác</th>
               </tr>
@@ -72,13 +122,13 @@ export default function AdminVouchers() {
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                    {Array.from({ length: 6 }).map((_, j) => (
+                    {Array.from({ length: 8 }).map((_, j) => (
                       <td key={j} className="p-4"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></td>
                     ))}
                   </tr>
                 ))
               ) : vouchers.length === 0 ? (
-                <tr><td colSpan={6} className="p-12 text-center text-slate-400">Không có voucher nào</td></tr>
+                <tr><td colSpan={8} className="p-12 text-center text-slate-400">Không có voucher nào</td></tr>
               ) : (
                 vouchers.map((v) => (
                   <tr key={v.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
@@ -94,15 +144,37 @@ export default function AdminVouchers() {
                     </td>
                     <td className="p-4">
                       <div className="flex flex-col items-center">
-                        <span className="font-bold">{v.usedCount} / {v.usageLimit}</span>
-                        <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mt-1 overflow-hidden">
-                          <div className="h-full bg-purple-600 rounded-full" style={{ width: `${(v.usedCount / v.usageLimit) * 100}%` }} />
-                        </div>
+                        <span className="font-bold">{v.usedCount}/{v.usageLimit || '∞'}</span>
+                        {v.usageLimit && (
+                          <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mt-1 overflow-hidden max-w-[60px]">
+                            <div className="h-full bg-purple-600 rounded-full" style={{ width: `${(v.usedCount / v.usageLimit) * 100}%` }} />
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="p-4 text-sm text-slate-500">
-                      <div>Từ: {formatDate(v.startDate)}</div>
-                      <div>Đến: {formatDate(v.endDate)}</div>
+                      <div>Từ: {v.startDate ? formatDate(v.startDate) : '—'}</div>
+                      <div>Đến: {v.endDate ? formatDate(v.endDate) : '—'}</div>
+                    </td>
+                    <td className="p-4 text-center">
+                      {v.isPublic ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                          <FiGlobe className="text-[10px]" /> Công khai
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                          <FiLock className="text-[10px]" /> Riêng tư
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4 text-center">
+                      {v.applyType === 'SPECIFIC_PRODUCTS' ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
+                          <FiPackage className="text-[10px]" /> {v.applicableProducts?.length || 0} SP
+                        </span>
+                      ) : (
+                        <span className="text-xs text-slate-400">Tất cả</span>
+                      )}
                     </td>
                     <td className="p-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${v.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
@@ -114,7 +186,7 @@ export default function AdminVouchers() {
                         <button onClick={() => handleToggle(v.id)} className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors">
                           {v.status === 'ACTIVE' ? <FiToggleRight className="text-green-500" /> : <FiToggleLeft />}
                         </button>
-                        <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><FiEdit2 /></button>
+                        <button onClick={() => openEditModal(v)} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><FiEdit2 /></button>
                       </div>
                     </td>
                   </tr>
@@ -138,22 +210,25 @@ export default function AdminVouchers() {
         )}
       </div>
 
-      {/* Create Voucher Modal */}
+      {/* Create/Edit Voucher Modal */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
               <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <h3 className="text-xl font-bold">Tạo Voucher Mới</h3>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"><FiX className="text-xl" /></button>
+                <h3 className="text-xl font-bold">{editingId ? 'Chỉnh sửa Voucher' : 'Tạo Voucher Mới'}</h3>
+                <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"><FiX className="text-xl" /></button>
               </div>
-              <div className="p-6 overflow-y-auto flex-1 space-y-4">
+              <div className="p-6 overflow-y-auto flex-1 space-y-5">
+                {/* Code */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Mã Voucher</label>
                   <input type="text" placeholder="VD: SUMMER2024" value={form.code || ''} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none uppercase" />
+                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none uppercase font-mono" />
                 </div>
+
+                {/* Discount Type */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Loại Giảm Giá</label>
                   <div className="flex gap-4">
@@ -162,11 +237,13 @@ export default function AdminVouchers() {
                       <span className="text-sm">Theo %</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name="discountType" checked={form.discountType === 'FIXED'} onChange={() => setForm({ ...form, discountType: 'FIXED' })} className="text-purple-600" />
+                      <input type="radio" name="discountType" checked={form.discountType === 'FIXED_AMOUNT'} onChange={() => setForm({ ...form, discountType: 'FIXED_AMOUNT' })} className="text-purple-600" />
                       <span className="text-sm">Tiền cố định</span>
                     </label>
                   </div>
                 </div>
+
+                {/* Value + Min */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Giá trị giảm</label>
@@ -179,6 +256,8 @@ export default function AdminVouchers() {
                       className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
                   </div>
                 </div>
+
+                {/* Limit + Max */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Giới hạn sử dụng</label>
@@ -191,6 +270,8 @@ export default function AdminVouchers() {
                       className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
                   </div>
                 </div>
+
+                {/* Dates */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Ngày bắt đầu</label>
@@ -203,10 +284,63 @@ export default function AdminVouchers() {
                       className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
                   </div>
                 </div>
+
+                {/* ═══ NEW: Visibility ═══ */}
+                <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-100 dark:border-blue-900/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-bold flex items-center gap-2">
+                        {form.isPublic ? <FiGlobe className="text-blue-500" /> : <FiLock className="text-slate-400" />}
+                        Hiển thị công khai
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {form.isPublic
+                          ? 'Voucher sẽ hiển thị trên trang của khách hàng, họ có thể lưu & sử dụng'
+                          : 'Chỉ khi khách hàng nhập đúng mã mới dùng được'}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, isPublic: !form.isPublic })}
+                      className={`relative w-12 h-6 rounded-full transition-colors ${form.isPublic ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
+                      <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.isPublic ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* ═══ NEW: Apply Type ═══ */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">Phạm vi áp dụng</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, applyType: 'ALL', applicableProductIds: [] })}
+                      className={`p-3 rounded-xl border-2 text-left transition-all ${form.applyType === 'ALL'
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/30'
+                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
+                      <div className="text-sm font-bold">🛒 Tất cả sản phẩm</div>
+                      <div className="text-xs text-slate-500 mt-0.5">Áp dụng cho toàn bộ đơn hàng</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, applyType: 'SPECIFIC_PRODUCTS' })}
+                      className={`p-3 rounded-xl border-2 text-left transition-all ${form.applyType === 'SPECIFIC_PRODUCTS'
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/30'
+                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
+                      <div className="text-sm font-bold">📦 Sản phẩm cụ thể</div>
+                      <div className="text-xs text-slate-500 mt-0.5">Chỉ giảm cho SP được chọn</div>
+                    </button>
+                  </div>
+                  {form.applyType === 'SPECIFIC_PRODUCTS' && (
+                    <div className="text-xs text-amber-600 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50">
+                      💡 Tính năng chọn sản phẩm cụ thể sẽ được cập nhật trong phiên bản tiếp theo. Hiện tại voucher sẽ áp dụng cho tất cả SP.
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="p-6 border-t border-slate-100 dark:border-slate-800 shrink-0 flex justify-end gap-3">
-                <button onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 transition-colors">Hủy</button>
-                <button onClick={handleCreate} className="btn btn-primary btn-md gap-2"><FiCheck /> Lưu Voucher</button>
+                <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 transition-colors">Hủy</button>
+                <button onClick={handleSubmit} className="btn btn-primary btn-md gap-2"><FiCheck /> {editingId ? 'Cập nhật' : 'Lưu Voucher'}</button>
               </div>
             </motion.div>
           </div>

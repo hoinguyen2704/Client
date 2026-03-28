@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSettings, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck, FiSearch } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import { adminSystemConfigService } from '@/apis';
 import type { SystemConfigResponse, SystemConfigRequest } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function SystemConfigs() {
   const [configs, setConfigs] = useState<SystemConfigResponse[]>([]);
@@ -15,7 +17,7 @@ export default function SystemConfigs() {
   const fetchConfigs = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminSystemConfigService.getAll({ page: 1, size: 100 });
+      const res = await adminSystemConfigService.getAll({ page: 1, size: PAGE_SIZE.LARGE });
       setConfigs(res.data?.data || []);
     } catch { /* ignore */ }
     setLoading(false);
@@ -40,7 +42,11 @@ export default function SystemConfigs() {
       await adminSystemConfigService.saveOrUpdate(form);
       setIsModalOpen(false);
       fetchConfigs();
-    } catch { /* ignore */ }
+      toast.success('Lưu cấu hình thành công!');
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || 'Lưu cấu hình thất bại!');
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -48,7 +54,11 @@ export default function SystemConfigs() {
     try {
       await adminSystemConfigService.delete(id);
       fetchConfigs();
-    } catch { /* ignore */ }
+      toast.success('Xóa cấu hình thành công!');
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || 'Xóa cấu hình thất bại!');
+    }
   };
 
   const filtered = configs.filter(c =>

@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { Route } from 'react-router-dom';
+import ProtectedRoute from '@/components/guards/ProtectedRoute';
 
 const Home = lazy(() => import('@/views/pages/home/Home'));
 const Search = lazy(() => import('@/views/pages/category/Search'));
@@ -27,7 +28,7 @@ export const publicRoutes = (
     <Route path="search" element={<Search />} />
     <Route path="products" element={<ProductsPage />} />
     <Route path="compare" element={<Compare />} />
-    <Route path="wishlist" element={<Wishlist />} />
+    <Route path="wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
     <Route path="blog" element={<Blog />} />
     <Route path="blog/:slug" element={<BlogDetail />} />
     <Route path="product/:slug" element={<ProductDetail />} />
@@ -36,8 +37,8 @@ export const publicRoutes = (
     <Route path="about" element={<About />} />
     <Route path="terms" element={<Terms />} />
     <Route path="privacy" element={<Privacy />} />
-    <Route path="cart" element={<Cart />} />
-    <Route path="checkout" element={<Checkout />} />
+    <Route path="cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+    <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
     <Route path="login" element={<Login />} />
     <Route path="register" element={<Register />} />
     <Route path="forgot-password" element={<ForgotPassword />} />

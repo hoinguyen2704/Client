@@ -14,7 +14,7 @@ export default function Products() {
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   const [selectedCategorySlug, setSelectedCategorySlug] = useState(searchParams.get('categorySlug') || '');
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || '');
-  const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'createdAt');
+  const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'popular');
   const [sortDir, setSortDir] = useState(searchParams.get('sortDir') || 'DESC');
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
 
@@ -92,7 +92,7 @@ export default function Products() {
     if (keyword) params.keyword = keyword;
     if (selectedCategorySlug) params.categorySlug = selectedCategorySlug;
     if (selectedBrand) params.brand = selectedBrand;
-    if (sortBy !== 'createdAt') params.sortBy = sortBy;
+    if (sortBy !== 'popular') params.sortBy = sortBy;
     if (sortDir !== 'DESC') params.sortDir = sortDir;
     if (page > 1) params.page = String(page);
     setSearchParams(params, { replace: true });
@@ -111,12 +111,13 @@ export default function Products() {
 
   const handleSortChange = (value: string) => {
     const map: Record<string, { sortBy: string; sortDir: string }> = {
+      popular: { sortBy: 'popular', sortDir: 'DESC' },
       newest: { sortBy: 'createdAt', sortDir: 'DESC' },
       'price-asc': { sortBy: 'originPrice', sortDir: 'ASC' },
       'price-desc': { sortBy: 'originPrice', sortDir: 'DESC' },
       'best-rated': { sortBy: 'averageRating', sortDir: 'DESC' },
     };
-    const s = map[value] || map.newest;
+    const s = map[value] || map.popular;
     setSortBy(s.sortBy);
     setSortDir(s.sortDir);
     setPage(1);
@@ -126,14 +127,15 @@ export default function Products() {
     if (sortBy === 'originPrice' && sortDir === 'ASC') return 'price-asc';
     if (sortBy === 'originPrice' && sortDir === 'DESC') return 'price-desc';
     if (sortBy === 'averageRating') return 'best-rated';
-    return 'newest';
+    if (sortBy === 'createdAt') return 'newest';
+    return 'popular';
   };
 
   const handleClearFilters = () => {
     setKeyword('');
     setSelectedCategorySlug('');
     setSelectedBrand('');
-    setSortBy('createdAt');
+    setSortBy('popular');
     setSortDir('DESC');
     setPage(1);
   };
@@ -290,6 +292,7 @@ export default function Products() {
                   onChange={(e) => handleSortChange(e.target.value)}
                   className="appearance-none h-10 pl-4 pr-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 font-medium cursor-pointer"
                 >
+                  <option value="popular">Phổ biến / Bán chạy</option>
                   <option value="newest">Mới nhất</option>
                   <option value="best-rated">Đánh giá cao</option>
                   <option value="price-asc">Giá tăng dần</option>

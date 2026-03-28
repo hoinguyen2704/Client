@@ -13,7 +13,7 @@ export interface EmptyStateProps {
 
 export type StatusType = 'completed' | 'delivered' | 'processing' | 'shipping' | 'cancelled' | 'pending' | 'verified'
   | 'active' | 'inactive' | 'expired' | 'open' | 'in_progress' | 'replied' | 'closed'
-  | 'vip' | 'banned';
+  | 'vip' | 'banned' | 'PENDING' | 'CONFIRMED' | 'PROCESSING' | 'SHIPPING' | 'SHIPPED' | 'CANCELLED' | 'RETURNED';
 
 export interface StatusBadgeProps {
   status: string;

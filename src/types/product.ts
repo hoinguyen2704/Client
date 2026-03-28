@@ -9,6 +9,7 @@ export interface ProductResponse {
   brandName?: string;
   category?: CategoryResponse;
   originPrice: number;
+  lowestPrice?: number;
   averageRating?: number;
   totalReviews?: number;
   status: string;
@@ -27,7 +28,9 @@ export interface ProductVariantResponse {
   color?: string;
   storageCapacity?: string;
   price: number;
+  compareAtPrice?: number;
   stockQuantity: number;
+  active?: boolean;
   images?: ProductImageResponse[];
 }
 
@@ -65,7 +68,13 @@ export interface ProductImageRequest {
   isPrimary?: boolean;
 }
 
-// ─── Category ───────────────────────────────────────────────────
+export interface SpecTemplateResponse {
+  id: string;
+  specKey: string;
+  hint?: string;
+  sortOrder?: number;
+}
+
 export interface CategoryResponse {
   id: string;
   name: string;
@@ -75,6 +84,7 @@ export interface CategoryResponse {
   active: boolean;
   createdAt?: string;
   children?: CategoryResponse[];
+  specTemplates?: SpecTemplateResponse[];
 }
 
 export interface CategoryRequest {
@@ -82,6 +92,7 @@ export interface CategoryRequest {
   parentId?: string;
   description?: string;
   imageUrl?: string;
+  specTemplates?: { specKey: string; hint?: string; sortOrder?: number }[];
 }
 
 // ─── Brand ──────────────────────────────────────────────────────

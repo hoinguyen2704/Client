@@ -17,16 +17,17 @@ export const PAGINATION = {
 export const ORDER_STATUS: Record<string, string> = {
   PENDING: 'Chờ xác nhận',
   CONFIRMED: 'Đã xác nhận',
+  PROCESSING: 'Đang xử lý',
   SHIPPING: 'Đang giao',
-  DELIVERED: 'Đã giao',
+  SHIPPED: 'Đã giao',
   CANCELLED: 'Đã hủy',
-  RETURNED: 'Đã trả',
+  RETURNED: 'Đã hoàn trả',
 };
 
 // ─── Payment methods ────────────────────────────────────────────
 export const PAYMENT_METHODS: Record<string, string> = {
   COD: 'Thanh toán khi nhận hàng',
-  BANKING: 'Chuyển khoản ngân hàng',
+  BANK_TRANSFER: 'Chuyển khoản ngân hàng',
   MOMO: 'Ví MoMo',
   VNPAY: 'VNPay',
 };

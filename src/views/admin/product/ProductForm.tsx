@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, ChangeEvent, DragEvent } from 'react';
-import { FiArrowLeft, FiImage, FiPlus, FiTrash2, FiSave, FiLoader, FiCheckSquare, FiSquare, FiChevronDown, FiCheck, FiSearch, FiUploadCloud } from 'react-icons/fi';
+import { FiArrowLeft, FiImage, FiPlus, FiTrash2, FiSave, FiLoader, FiCheckSquare, FiSquare, FiChevronDown, FiCheck, FiSearch, FiUploadCloud, FiStar, FiEye, FiEyeOff } from 'react-icons/fi';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
@@ -9,15 +9,19 @@ import type {
   ProductVariantRequest,
   CategoryResponse,
   BrandResponse,
+  SpecTemplateResponse,
 } from '@/types';
 import { toast } from 'sonner';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 interface VariantFormData {
   id?: string;
   sku: string;
   variantName: string;
   price: number | '';
+  compareAtPrice: number | '';
   stock: number | '';
+  active: boolean;
 }
 
 interface SpecRow {
@@ -25,64 +29,9 @@ interface SpecRow {
   value: string;
 }
 
-const CATEGORY_TEMPLATES: Record<string, string[]> = {
-  'Điện thoại': ['Màn hình', 'Hệ điều hành', 'Camera sau', 'Camera trước', 'Chip', 'RAM', 'Dung lượng lưu trữ', 'Pin, Sạc'],
-  'Laptop': ['CPU', 'RAM', 'Ổ cứng', 'Màn hình', 'Card đồ họa', 'Cổng kết nối', 'Trọng lượng', 'Pin'],
-  'Máy tính bảng': ['Màn hình', 'Hệ điều hành', 'Chip', 'RAM', 'Dung lượng lưu trữ', 'Phụ kiện', 'Pin, Sạc'],
-  'Tai nghe': ['Kiểu dáng', 'Thời gian sử dụng', 'Thời gian sạc', 'Cổng sạc', 'Chống ồn', 'Mic thoại', 'Tương thích'],
-  'Loa': ['Công suất', 'Kết nối', 'Thời lượng pin', 'Thời gian sạc', 'Phím điều khiển', 'Trọng lượng', 'Thương hiệu'],
-  'Bàn phím': ['Kiểu bàn phím', 'Loại Switch', 'Kết nối', 'Đèn LED', 'Kích thước', 'Trọng lượng', 'Tương thích'],
-  'Chuột': ['Độ phân giải (DPI)', 'Số nút bấm', 'Kết nối', 'Loại pin', 'Đèn LED', 'Trọng lượng', 'Tương thích'],
-  'Màn hình': ['Kích thước', 'Độ phân giải', 'Tần số quét', 'Độ sáng', 'Độ tương phản', 'Cổng kết nối', 'Tấm nền', 'Tương thích VESA'],
-};
+// Spec templates are now loaded from API (category.specTemplates)
 
-const SPEC_HINTS: Record<string, string> = {
-  'Màn hình': 'VD: 6.7 inch OLED, 120Hz',
-  'Hệ điều hành': 'VD: Android 14, iOS 17',
-  'Camera sau': 'VD: 48MP + 12MP + 12MP',
-  'Camera trước': 'VD: 12MP, TrueDepth',
-  'Chip': 'VD: Apple A17 Pro, Snapdragon 8 Gen 3',
-  'RAM': 'VD: 8GB, 16GB',
-  'Dung lượng lưu trữ': 'VD: 128GB, 256GB, 512GB',
-  'Pin, Sạc': 'VD: 5000mAh, Sạc nhanh 67W',
-  'CPU': 'VD: Intel Core i7-13700H',
-  'Ổ cứng': 'VD: SSD 512GB NVMe',
-  'Card đồ họa': 'VD: NVIDIA RTX 4060 6GB',
-  'Cổng kết nối': 'VD: USB-C, HDMI, Jack 3.5mm',
-  'Trọng lượng': 'VD: 150g, 1.8kg',
-  'Pin': 'VD: 10 tiếng, 72Wh',
-  'Phụ kiện': 'VD: Bút S Pen, Bao da',
-  'Kiểu dáng': 'VD: In-ear, Over-ear, True Wireless',
-  'Thời gian sử dụng': 'VD: 8 tiếng, 30 tiếng (với hộp sạc)',
-  'Thời gian sạc': 'VD: 1.5 tiếng, Sạc nhanh 10 phút',
-  'Cổng sạc': 'VD: USB-C, Lightning',
-  'Chống ồn': 'VD: Chống ồn chủ động ANC',
-  'Mic thoại': 'VD: 3 mic, Lọc ồn AI',
-  'Tương thích': 'VD: iOS, Android, Windows',
-  'Công suất': 'VD: 20W, 50W RMS',
-  'Kết nối': 'VD: Bluetooth 5.3, USB, 2.4GHz',
-  'Thời lượng pin': 'VD: 12 tiếng, 24 tiếng',
-  'Phím điều khiển': 'VD: Cảm ứng, Nút vật lý',
-  'Thương hiệu': 'VD: JBL, Sony, Marshall',
-  'Kiểu bàn phím': 'VD: Cơ, Membrance, TKL, Full-size',
-  'Loại Switch': 'VD: Cherry MX Red, Gateron Brown',
-  'Đèn LED': 'VD: RGB 16 triệu màu, Đơn sắc',
-  'Kích thước': 'VD: 27 inch, 34 inch',
-  'Độ phân giải (DPI)': 'VD: 25600 DPI, Điều chỉnh được',
-  'Số nút bấm': 'VD: 6 nút, 11 nút',
-  'Loại pin': 'VD: Pin sạc, 1x AA',
-  'Độ phân giải': 'VD: 2560x1440 (2K QHD)',
-  'Tần số quét': 'VD: 144Hz, 165Hz, 240Hz',
-  'Độ sáng': 'VD: 350 nits, HDR 400',
-  'Độ tương phản': 'VD: 1000:1, 3000:1',
-  'Tấm nền': 'VD: IPS, VA, OLED',
-  'Tương thích VESA': 'VD: 100x100mm',
-  'Màu sắc': 'VD: Đen, Trắng, Xám',
-  'Chất liệu': 'VD: Nhựa ABS, Kim loại, Nhôm',
-  'Bảo hành': 'VD: 12 tháng, 24 tháng',
-};
-
-const emptyVariant: VariantFormData = { sku: '', variantName: '', price: '', stock: '' };
+const emptyVariant: VariantFormData = { sku: '', variantName: '', price: '', compareAtPrice: '', stock: '', active: true };
 
 export default function ProductForm() {
   const { id } = useParams<{ id: string }>();
@@ -95,7 +44,7 @@ export default function ProductForm() {
   const [categoryId, setCategoryId] = useState('');
   const [brandId, setBrandId] = useState('');
   const [originPrice, setOriginPrice] = useState<number | ''>('');
-  const [salePrice, setSalePrice] = useState<number | ''>('');
+  const [isFeatured, setIsFeatured] = useState(false);
   const [status, setStatus] = useState('ACTIVE');
   const [specs, setSpecs] = useState<SpecRow[]>([]);
   const [variants, setVariants] = useState<VariantFormData[]>([{ ...emptyVariant }]);
@@ -124,6 +73,19 @@ export default function ProductForm() {
   const brandDropdownRef = useRef<HTMLDivElement>(null);
   const statusDropdownRef = useRef<HTMLDivElement>(null);
 
+  // ─── Inline create state ──────────────────────────────────────
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [savingCategory, setSavingCategory] = useState(false);
+  const [isCreatingBrand, setIsCreatingBrand] = useState(false);
+  const [newBrandName, setNewBrandName] = useState('');
+  const [savingBrand, setSavingBrand] = useState(false);
+  // Helper: get selected category's spec templates from API data
+  const getSelectedCategoryTemplates = (): SpecTemplateResponse[] => {
+    const cat = categories.find(c => c.id === categoryId);
+    return cat?.specTemplates || [];
+  };
+
   // Close popups on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -137,16 +99,58 @@ export default function ProductForm() {
   }, []);
 
   const getTemplateKeys = (): string[] => {
-    const catName = categories.find(c => c.id === categoryId)?.name || '';
-    return Object.entries(CATEGORY_TEMPLATES).find(([key]) => catName.includes(key))?.[1] || ['Thương hiệu', 'Bảo hành'];
+    const templates = getSelectedCategoryTemplates();
+    return templates.length > 0 ? templates.map(t => t.specKey) : ['Thương hiệu', 'Bảo hành'];
+  };
+
+  const getHintForSpec = (specKey: string): string => {
+    const templates = getSelectedCategoryTemplates();
+    return templates.find(t => t.specKey === specKey)?.hint || 'Nhập giá trị...';
+  };
+
+  // ─── Inline create handlers ───────────────────────────────────
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) return;
+    setSavingCategory(true);
+    try {
+      const res = await adminCategoryService.create({ name: newCategoryName.trim() });
+      const newCat = res.data;
+      setCategories(prev => [...prev, newCat]);
+      setCategoryId(newCat.id);
+      setNewCategoryName('');
+      setIsCreatingCategory(false);
+      toast.success(`Đã tạo danh mục "${newCat.name}"`);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Tạo danh mục thất bại');
+    } finally {
+      setSavingCategory(false);
+    }
+  };
+
+  const handleCreateBrand = async () => {
+    if (!newBrandName.trim()) return;
+    setSavingBrand(true);
+    try {
+      const res = await adminBrandService.create({ name: newBrandName.trim() });
+      const newBrand = res.data;
+      setBrands(prev => [...prev, newBrand]);
+      setBrandId(newBrand.id);
+      setNewBrandName('');
+      setIsCreatingBrand(false);
+      toast.success(`Đã tạo thương hiệu "${newBrand.name}"`);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Tạo thương hiệu thất bại');
+    } finally {
+      setSavingBrand(false);
+    }
   };
 
   // ─── Fetch dropdown data ──────────────────────────────────────
   const fetchDropdowns = useCallback(async () => {
     try {
       const [catRes, brandRes] = await Promise.all([
-        adminCategoryService.getAll({ size: 100 }),
-        adminBrandService.getAll({ size: 100 }),
+        adminCategoryService.getAll({ size: PAGE_SIZE.LARGE }),
+        adminBrandService.getAll({ size: PAGE_SIZE.LARGE }),
       ]);
       setCategories(catRes.data?.data ?? []);
       setBrands(brandRes.data?.data ?? []);
@@ -172,6 +176,7 @@ export default function ProductForm() {
       setCategoryId(p.category?.id ?? '');
       setBrandId(p.brandId ?? '');
       setOriginPrice(p.originPrice ?? '');
+      setIsFeatured(p.isFeatured ?? false);
       setStatus(p.status ?? 'ACTIVE');
       
       try {
@@ -188,14 +193,19 @@ export default function ProductForm() {
       // Map variants
       if (p.variants && p.variants.length > 0) {
         setVariants(
-          p.variants.map((v) => ({
+          p.variants.map((v: any) => ({
             id: v.id,
             sku: v.sku ?? '',
             variantName: v.variantName ?? '',
             price: v.price ?? '',
+            compareAtPrice: v.compareAtPrice ?? '',
             stock: v.stockQuantity ?? '',
+            active: v.active ?? true,
           }))
         );
+      } else {
+        // Product has no variants — show empty (don't keep initial empty variant)
+        setVariants([]);
       }
 
       // Load product-level images from API response
@@ -234,12 +244,15 @@ export default function ProductForm() {
     setVariants(variants.filter((_, i) => i !== index));
   };
 
-  const updateVariant = (index: number, field: keyof VariantFormData, value: string) => {
+  const updateVariant = (index: number, field: keyof VariantFormData, value: string | boolean) => {
     setVariants((prev) =>
       prev.map((v, i) => {
         if (i !== index) return v;
-        if (field === 'price' || field === 'stock') {
+        if (field === 'price' || field === 'stock' || field === 'compareAtPrice') {
           return { ...v, [field]: value === '' ? '' : Number(value) };
+        }
+        if (field === 'active') {
+          return { ...v, [field]: value as boolean };
         }
         return { ...v, [field]: value };
       })
@@ -261,7 +274,9 @@ export default function ProductForm() {
         sku: v.sku,
         variantName: v.variantName,
         price: Number(v.price) || 0,
+        compareAtPrice: v.compareAtPrice !== '' ? Number(v.compareAtPrice) : undefined,
         stock: Number(v.stock) || 0,
+        active: v.active,
       }));
 
     const filteredSpecs = specs.filter(s => s.key.trim() && s.value.trim());
@@ -276,6 +291,7 @@ export default function ProductForm() {
       originPrice: Number(originPrice) || 0,
       specsJson: finalSpecsJson,
       status,
+      isFeatured,
       variants: variantRequests.length > 0 ? variantRequests : undefined,
     };
 
@@ -423,6 +439,43 @@ export default function ProductForm() {
                           </button>
                         ))}
                       </div>
+                      {/* Inline create category */}
+                      <div className="border-t border-slate-100 dark:border-slate-700 p-2">
+                        {isCreatingCategory ? (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={newCategoryName}
+                              onChange={(e) => setNewCategoryName(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleCreateCategory(); } if (e.key === 'Escape') setIsCreatingCategory(false); }}
+                              placeholder="Tên danh mục mới..."
+                              className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500"
+                              autoFocus
+                            />
+                            <button
+                              type="button"
+                              onClick={handleCreateCategory}
+                              disabled={savingCategory || !newCategoryName.trim()}
+                              className="h-8 px-3 rounded-lg bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
+                            >
+                              {savingCategory ? <FiLoader className="animate-spin text-xs" /> : <FiCheck className="text-xs" />}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setIsCreatingCategory(false); setNewCategoryName(''); }}
+                              className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition-colors"
+                            >✕</button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setIsCreatingCategory(true)}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                          >
+                            <FiPlus className="text-xs" /> Thêm danh mục mới
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -481,6 +534,43 @@ export default function ProductForm() {
                           </button>
                         ))}
                       </div>
+                      {/* Inline create brand */}
+                      <div className="border-t border-slate-100 dark:border-slate-700 p-2">
+                        {isCreatingBrand ? (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={newBrandName}
+                              onChange={(e) => setNewBrandName(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleCreateBrand(); } if (e.key === 'Escape') setIsCreatingBrand(false); }}
+                              placeholder="Tên thương hiệu mới..."
+                              className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500"
+                              autoFocus
+                            />
+                            <button
+                              type="button"
+                              onClick={handleCreateBrand}
+                              disabled={savingBrand || !newBrandName.trim()}
+                              className="h-8 px-3 rounded-lg bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
+                            >
+                              {savingBrand ? <FiLoader className="animate-spin text-xs" /> : <FiCheck className="text-xs" />}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setIsCreatingBrand(false); setNewBrandName(''); }}
+                              className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition-colors"
+                            >✕</button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setIsCreatingBrand(true)}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                          >
+                            <FiPlus className="text-xs" /> Thêm thương hiệu mới
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -521,42 +611,81 @@ export default function ProductForm() {
                           {getTemplateKeys().map((templateKey) => {
                             const alreadyAdded = specs.some(s => s.key === templateKey);
                             return (
-                              <button
-                                key={templateKey}
-                                onClick={() => {
-                                  if (alreadyAdded) {
-                                    setSpecs(specs.filter(s => s.key !== templateKey));
-                                  } else {
-                                    setSpecs([...specs, { key: templateKey, value: '' }]);
-                                  }
-                                }}
-                                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
-                                  alreadyAdded
-                                    ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium'
-                                    : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
-                                }`}
-                              >
-                                {alreadyAdded ? <FiCheckSquare className="text-purple-500 flex-shrink-0" /> : <FiSquare className="text-slate-400 flex-shrink-0" />}
-                                {templateKey}
-                              </button>
+                              <div key={templateKey} className="flex items-center group">
+                                <button
+                                  onClick={() => {
+                                    if (alreadyAdded) {
+                                      setSpecs(specs.filter(s => s.key !== templateKey));
+                                    } else {
+                                      setSpecs([...specs, { key: templateKey, value: '' }]);
+                                    }
+                                  }}
+                                  className={`flex-1 flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
+                                    alreadyAdded
+                                      ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium'
+                                      : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
+                                  }`}
+                                >
+                                  {alreadyAdded ? <FiCheckSquare className="text-purple-500 flex-shrink-0" /> : <FiSquare className="text-slate-400 flex-shrink-0" />}
+                                  {templateKey}
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    // Remove template from local categories state
+                                    setCategories(prev => prev.map(c => {
+                                      if (c.id !== categoryId) return c;
+                                      return { ...c, specTemplates: (c.specTemplates || []).filter(t => t.specKey !== templateKey) };
+                                    }));
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-red-500 rounded transition-all"
+                                  title="Xóa khỏi gợi ý"
+                                >
+                                  <FiTrash2 className="text-xs" />
+                                </button>
+                              </div>
                             );
                           })}
                         </div>
-                        <div className="border-t border-slate-100 dark:border-slate-700 pt-2 mt-2 flex justify-between">
-                          <button
-                            onClick={() => {
-                              const newSpecs = [...specs];
-                              getTemplateKeys().forEach(k => {
-                                if (!newSpecs.some(s => s.key === k)) newSpecs.push({ key: k, value: '' });
-                              });
-                              setSpecs(newSpecs);
-                            }}
-                            className="text-xs font-medium text-blue-600 hover:underline"
-                          >Chọn tất cả</button>
-                          <button
-                            onClick={() => setShowTemplatePopup(false)}
-                            className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                          >Đóng</button>
+                        {/* Add custom template key */}
+                        <div className="border-t border-slate-100 dark:border-slate-700 pt-2 mt-2 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              placeholder="Thêm thông số gợi ý..."
+                              className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs focus:ring-1 focus:ring-purple-500"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const val = (e.target as HTMLInputElement).value.trim();
+                                  if (!val || !categoryId) return;
+                                  // Add template to local categories state
+                                  setCategories(prev => prev.map(c => {
+                                    if (c.id !== categoryId) return c;
+                                    const existing = c.specTemplates || [];
+                                    if (existing.some(t => t.specKey === val)) return c;
+                                    return { ...c, specTemplates: [...existing, { id: '', specKey: val, hint: '', sortOrder: existing.length }] };
+                                  }));
+                                  (e.target as HTMLInputElement).value = '';
+                                }
+                              }}
+                            />
+                          </div>
+                          <div className="flex justify-between">
+                            <button
+                              onClick={() => {
+                                const newSpecs = [...specs];
+                                getTemplateKeys().forEach(k => {
+                                  if (!newSpecs.some(s => s.key === k)) newSpecs.push({ key: k, value: '' });
+                                });
+                                setSpecs(newSpecs);
+                              }}
+                              className="text-xs font-medium text-blue-600 hover:underline"
+                            >Chọn tất cả</button>
+                            <button
+                              onClick={() => setShowTemplatePopup(false)}
+                              className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                            >Đóng</button>
+                          </div>
                         </div>
                       </>
                     )}
@@ -587,7 +716,7 @@ export default function ProductForm() {
                       newSpecs[index].value = e.target.value;
                       setSpecs(newSpecs);
                     }}
-                    placeholder={SPEC_HINTS[spec.key] || 'Nhập giá trị...'}
+                    placeholder={getHintForSpec(spec.key)}
                     className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm"
                   />
                   <button
@@ -663,46 +792,74 @@ export default function ProductForm() {
                   </div>
 
                   {/* Card body */}
-                  <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">SKU</label>
-                      <input
-                        type="text"
-                        value={variant.sku}
-                        onChange={(e) => updateVariant(index, 'sku', e.target.value)}
-                        placeholder="VD: SP-001-BK"
-                        className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
-                      />
+                  <div className="p-4 space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">SKU</label>
+                        <input
+                          type="text"
+                          value={variant.sku}
+                          onChange={(e) => updateVariant(index, 'sku', e.target.value)}
+                          placeholder="VD: SP-001-BK"
+                          className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tên phân loại</label>
+                        <input
+                          type="text"
+                          value={variant.variantName}
+                          onChange={(e) => updateVariant(index, 'variantName', e.target.value)}
+                          placeholder="VD: Đen - 256GB"
+                          className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">Giá bán (VNĐ)</label>
+                        <input
+                          type="number"
+                          value={variant.price}
+                          onChange={(e) => updateVariant(index, 'price', e.target.value)}
+                          placeholder="0"
+                          className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">Giá gốc so sánh (VNĐ)</label>
+                        <input
+                          type="number"
+                          value={variant.compareAtPrice}
+                          onChange={(e) => updateVariant(index, 'compareAtPrice', e.target.value)}
+                          placeholder="Giá trước giảm"
+                          className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tên phân loại</label>
-                      <input
-                        type="text"
-                        value={variant.variantName}
-                        onChange={(e) => updateVariant(index, 'variantName', e.target.value)}
-                        placeholder="VD: Đen - 256GB"
-                        className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">Giá bán (VNĐ)</label>
-                      <input
-                        type="number"
-                        value={variant.price}
-                        onChange={(e) => updateVariant(index, 'price', e.target.value)}
-                        placeholder="0"
-                        className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tồn kho</label>
-                      <input
-                        type="number"
-                        value={variant.stock}
-                        onChange={(e) => updateVariant(index, 'stock', e.target.value)}
-                        placeholder="0"
-                        className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
-                      />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tồn kho</label>
+                        <input
+                          type="number"
+                          value={variant.stock}
+                          onChange={(e) => updateVariant(index, 'stock', e.target.value)}
+                          placeholder="0"
+                          className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <button
+                          type="button"
+                          onClick={() => updateVariant(index, 'active', !variant.active)}
+                          className={`h-10 px-4 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
+                            variant.active
+                              ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700'
+                          }`}
+                        >
+                          {variant.active ? <FiEye /> : <FiEyeOff />}
+                          {variant.active ? 'Đang bán' : 'Đã ẩn'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -925,17 +1082,35 @@ export default function ProductForm() {
                 placeholder="0"
                 className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
               />
+              <p className="text-xs text-slate-400 mt-1">Giá sale/giảm giá nằm ở từng phân loại (Giá gốc so sánh)</p>
             </div>
 
+            {/* Featured toggle */}
             <div>
-              <label className="block font-medium mb-2">Giá khuyến mãi (VNĐ)</label>
-              <input
-                type="number"
-                value={salePrice}
-                onChange={(e) => setSalePrice(e.target.value === '' ? '' : Number(e.target.value))}
-                placeholder="0"
-                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
-              />
+              <label className="block font-medium mb-2">Sản phẩm nổi bật</label>
+              <button
+                type="button"
+                onClick={() => setIsFeatured(!isFeatured)}
+                className={`w-full h-12 px-4 rounded-xl flex items-center justify-between transition-colors ${
+                  isFeatured
+                    ? 'bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border border-amber-300 dark:border-amber-700'
+                    : 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <FiStar className={isFeatured ? 'text-amber-500 fill-amber-500' : 'text-slate-400'} />
+                  <span className={isFeatured ? 'text-amber-700 dark:text-amber-300 font-medium' : 'text-slate-500'}>
+                    {isFeatured ? 'Đang hiện trên trang chủ' : 'Không nổi bật'}
+                  </span>
+                </div>
+                <div className={`w-10 h-6 rounded-full transition-colors relative ${
+                  isFeatured ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-600'
+                }`}>
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                    isFeatured ? 'translate-x-5' : 'translate-x-1'
+                  }`} />
+                </div>
+              </button>
             </div>
           </div>
         </div>

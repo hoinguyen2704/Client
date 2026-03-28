@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiStar, FiMessageCircle, FiDownload } from 'react-icons/fi';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
+import CustomSelect from '@/components/ui/CustomSelect';
+import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function Feedbacks() {
   const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
@@ -15,7 +18,7 @@ export default function Feedbacks() {
   const fetchReviews = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminFeedbackService.getAll({ status: statusFilter || undefined, page, size: 20 });
+      const res = await adminFeedbackService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data);
       setReviews(res.data.data || []);
     } catch (err) { console.error('Failed to fetch feedbacks:', err); }
@@ -44,13 +47,8 @@ export default function Feedbacks() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý đánh giá</h1>
-        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 font-medium outline-none">
-          <option value="">Tất cả</option>
-          <option value="PENDING">Chờ duyệt</option>
-          <option value="APPROVED">Đã duyệt</option>
-          <option value="REJECTED">Đã từ chối</option>
-        </select>
+        <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
+          options={FEEDBACK_FILTER_OPTIONS} className="w-full sm:w-48 z-20" />
       </div>
 
       <div className="space-y-4">
@@ -91,12 +89,8 @@ export default function Feedbacks() {
                   )}
 
                   <div className="mt-3 flex items-center gap-2 flex-wrap">
-                    <select value={review.status} onChange={(e) => handleStatusChange(review.id, e.target.value)}
-                      className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none cursor-pointer">
-                      <option value="PENDING">Chờ duyệt</option>
-                      <option value="APPROVED">Đã duyệt</option>
-                      <option value="REJECTED">Từ chối</option>
-                    </select>
+                    <CustomSelect value={review.status} onChange={(val) => handleStatusChange(review.id, val)}
+                      options={FEEDBACK_STATUS_OPTIONS} className="w-32 z-10" />
                     {!review.adminReply && (
                       <button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
                         className="text-xs font-medium px-3 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 hover:bg-purple-100 transition-colors flex items-center gap-1">

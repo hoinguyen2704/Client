@@ -6,27 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
 import type { OrderResponse } from '@/types';
-
-const tabs = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'PENDING', label: 'Chờ xác nhận' },
-  { id: 'PROCESSING', label: 'Đang xử lý' },
-  { id: 'SHIPPING', label: 'Đang giao' },
-  { id: 'DELIVERED', label: 'Đã giao' },
-  { id: 'CANCELLED', label: 'Đã hủy' },
-];
-
-const getStatusBadge = (status: string) => {
-  switch (status) {
-    case 'PENDING': return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-sm font-medium"><FiPackage /> Chờ xác nhận</span>;
-    case 'PROCESSING': return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-100 text-yellow-600 text-sm font-medium"><FiPackage /> Đang xử lý</span>;
-    case 'SHIPPING': return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-sm font-medium"><FiTruck /> Đang giao</span>;
-    case 'DELIVERED': return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-600 text-sm font-medium"><FiCheckCircle /> Đã giao</span>;
-    case 'CANCELLED': return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-medium"><FiXCircle /> Đã hủy</span>;
-    case 'RETURNED': return <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm font-medium"><FiXCircle /> Đã hoàn</span>;
-    default: return <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-sm font-medium">{status}</span>;
-  }
-};
+import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
 
 export default function Orders() {
   const [activeTab, setActiveTab] = useState('all');
@@ -98,7 +78,7 @@ export default function Orders() {
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
         <div className="flex overflow-x-auto pb-2 hide-scrollbar border-b border-slate-100 dark:border-slate-800">
-          {tabs.map(tab => (
+          {CLIENT_ORDER_TABS.map(tab => (
             <button key={tab.id} onClick={() => { setActiveTab(tab.id); setPage(1); }}
               className={`px-6 py-3 font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>
               {tab.label}
@@ -129,7 +109,7 @@ export default function Orders() {
                   <span className="font-bold text-lg mr-4">{order.orderNumber}</span>
                   <span className="text-slate-500 text-sm">Ngày đặt: {formatDate(order.createdAt)}</span>
                 </div>
-                <div>{getStatusBadge(order.orderStatus)}</div>
+                <div>{getClientStatusBadge(order.orderStatus)}</div>
               </div>
 
               <div className="space-y-4">
@@ -150,7 +130,7 @@ export default function Orders() {
                   Tổng tiền: <span className="text-xl font-bold text-purple-600 ml-2">{formatPrice(order.totalAmount)}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  {order.orderStatus === 'DELIVERED' && (
+                  {order.orderStatus === 'SHIPPED' && (
                     <button onClick={() => handleOpenReview(order)} className="px-4 py-2 rounded-lg border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">Đánh giá</button>
                   )}
                   {(order.orderStatus === 'PENDING' || order.orderStatus === 'PROCESSING') && (

@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiPlus, FiSearch, FiEdit2, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import { toast } from 'sonner';
 import adminCouponService from '@/apis/services/adminCouponService';
 import type { CouponResponse, PageResponse } from '@/types';
 import { formatPrice } from '@/helpers/format';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function Promotions() {
   const [coupons, setCoupons] = useState<CouponResponse[]>([]);
@@ -14,7 +16,7 @@ export default function Promotions() {
   const fetchCoupons = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminCouponService.getAll({ keyword: searchQuery || undefined, page, size: 20 });
+      const res = await adminCouponService.getAll({ keyword: searchQuery || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data);
       setCoupons(res.data.data || []);
     } catch (err) { console.error('Failed to fetch coupons:', err); }
@@ -24,8 +26,16 @@ export default function Promotions() {
   useEffect(() => { fetchCoupons(); }, [fetchCoupons]);
 
   const handleToggle = async (id: string) => {
-    try { await adminCouponService.toggleStatus(id); fetchCoupons(); }
-    catch (err) { console.error('Toggle failed:', err); }
+    try {
+      await adminCouponService.toggleStatus(id);
+      setCoupons(prev => prev.map(c =>
+        c.id === id ? { ...c, status: c.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' } : c
+      ));
+      toast.success('Cập nhật trạng thái khuyến mãi thành công!');
+    } catch (err) {
+      console.error('Toggle failed:', err);
+      toast.error('Cập nhật trạng thái khuyến mãi thất bại!');
+    }
   };
 
   const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };

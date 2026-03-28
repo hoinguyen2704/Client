@@ -57,10 +57,16 @@ const useAuthStore = create<AuthState>()(
           sessionStorage.setItem('auth-session-only', 'true');
         }
         set({ token, user, isAuthenticated: true });
+        
+        // Sync cart and wishlist from server after successful login
+        import('./useCartStore').then(m => m.default.getState().syncFromServer());
+        import('./useWishlistStore').then(m => m.default.getState().syncFromServer());
       },
 
       logout: () => {
         sessionStorage.removeItem('auth-session-only');
+        import('./useCartStore').then(m => m.default.getState().clearCart());
+        import('./useWishlistStore').then(m => m.default.getState().clearWishlist());
         set({ token: null, user: null, isAuthenticated: false });
         window.location.href = '/login';
       },

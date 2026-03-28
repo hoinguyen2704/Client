@@ -93,15 +93,22 @@ export default function Cart() {
             {items.map(item => (
               <div key={item.id} className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 flex items-center gap-4">
                 <input type="checkbox" checked={item.selected} onChange={() => toggleSelect(item.id)} className="w-4 h-4 rounded border-slate-300 shrink-0" />
-                {item.imageUrl ? (
-                  <img src={item.imageUrl} alt={item.productName} className="w-20 h-20 object-cover rounded-xl bg-slate-50 dark:bg-slate-800" />
-                ) : (
-                  <div className="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400"><FiShoppingBag /></div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold line-clamp-1">{item.productName}</h3>
-                  <p className="text-sm text-slate-500">{item.variantName}</p>
-                  <p className="text-purple-600 font-bold mt-1">{formatPrice(item.price)}</p>
+                <Link to={`/product/${item.productSlug}`} className="shrink-0 group block">
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.productName} className="w-20 h-20 object-cover rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-transparent group-hover:border-purple-300 transition-colors" />
+                  ) : (
+                    <div className="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-purple-50 transition-colors"><FiShoppingBag /></div>
+                  )}
+                </Link>
+                <div className="flex-1 min-w-0 flex flex-col items-start">
+                  <Link to={`/product/${item.productSlug}`} className="hover:text-purple-600 transition-colors w-full">
+                    <h3 className="font-bold line-clamp-1">{item.productName}</h3>
+                  </Link>
+                  <Link to={`/product/${item.productSlug}`} className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-0.5 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group cursor-pointer" title="Nhấn để đổi cấu hình khác">
+                    <p className="text-sm font-medium text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300">{item.variantName}</p>
+                    <span className="text-[10px] font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">Thay đổi</span>
+                  </Link>
+                  <p className="text-purple-600 font-bold mt-1.5">{formatPrice(item.price)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => handleUpdateQty(item.id, item.quantity - 1)} className="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800"><FiMinus /></button>

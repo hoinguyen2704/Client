@@ -4,6 +4,7 @@ import { FiSearch, FiShoppingCart, FiHeart, FiUser, FiMenu, FiLogOut, FiSettings
 import { motion, AnimatePresence } from 'motion/react';
 import LogoIcon from '../ui/LogoIcon';
 import useCartStore from '@/stores/useCartStore';
+import useWishlistStore from '@/stores/useWishlistStore';
 import { useClickOutside } from '@/hooks';
 import type { HeaderProps } from './types';
 
@@ -21,12 +22,16 @@ export { navItems };
 export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogout }: HeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { totalItems, syncFromServer } = useCartStore();
+  const { totalItems: wishlistCount, syncFromServer: syncWishlist } = useWishlistStore();
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   useClickOutside(menuRef, useCallback(() => setIsUserMenuOpen(false), []));
 
-  // Sync cart count from server on mount
-  useEffect(() => { syncFromServer(); }, []);
+  // Sync cart and wishlist count from server on mount
+  useEffect(() => { 
+    syncFromServer(); 
+    syncWishlist();
+  }, []);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -78,7 +83,9 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             </button>
             <Link to="/wishlist" className="p-2 text-slate-600 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 rounded-xl transition-colors relative">
               <FiHeart className="text-xl" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              {wishlistCount > 0 && (
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-800 animate-pulse"></span>
+              )}
             </Link>
             <Link to="/cart" className="p-2 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-colors relative">
               <FiShoppingCart className="text-xl" />

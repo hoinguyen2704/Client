@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
 import type { UserResponse, PageResponse } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function Customers() {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -18,7 +20,7 @@ export default function Customers() {
       const res = await adminUserService.getAll({
         keyword: searchQuery || undefined,
         role: roleFilter || undefined,
-        page, size: 20,
+        page, size: PAGE_SIZE.LARGE,
       });
       setPageData(res.data);
       setUsers(res.data.data || []);
@@ -34,8 +36,14 @@ export default function Customers() {
   const handleToggleStatus = async (id: string) => {
     try {
       await adminUserService.toggleStatus(id);
-      fetchUsers();
-    } catch (err) { console.error('Toggle status failed:', err); }
+      setUsers(prev => prev.map(u =>
+        u.id === id ? { ...u, status: u.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' } : u
+      ));
+      toast.success('Cập nhật trạng thái người dùng thành công!');
+    } catch (err) {
+      console.error('Toggle status failed:', err);
+      toast.error('Cập nhật trạng thái người dùng thất bại!');
+    }
   };
 
   const handleExport = async () => {
@@ -150,7 +158,7 @@ export default function Customers() {
 
         {pageData && pageData.lastPage > 1 && (
           <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Hiển thị {((page - 1) * 20) + 1}-{Math.min(page * 20, pageData.total)} của {pageData.total} người dùng</div>
+            <div>Hiển thị {((page - 1) * PAGE_SIZE.LARGE) + 1}-{Math.min(page * PAGE_SIZE.LARGE, pageData.total)} của {pageData.total} người dùng</div>
             <div className="flex gap-1">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
               {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (

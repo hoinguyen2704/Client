@@ -6,6 +6,8 @@ import { formatPrice } from '@/helpers/format';
 import type { ProductResponse } from '@/types';
 
 import useCartStore from '@/stores/useCartStore';
+import useWishlistStore from '@/stores/useWishlistStore';
+import useAuthStore from '@/stores/useAuthStore';
 import { cartService } from '@/apis';
 
 export default function ProductInfo({ product }: { product: ProductResponse }) {
@@ -17,12 +19,17 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
   const activeVariant = variants[selectedVariantIdx] || null;
 
   const price = activeVariant?.price || product.originPrice;
+  const comparePrice = activeVariant?.compareAtPrice || product.originPrice;
   const rating = product.averageRating || 0;
   const reviews = product.totalReviews || 0;
   const stock = activeVariant?.stockQuantity || 0;
 
   const incrementItems = useCartStore((state) => state.incrementItems);
   const syncFromServer = useCartStore((state) => state.syncFromServer);
+
+  const { toggleItem: toggleWishlist, items: wishlistItems } = useWishlistStore();
+  const { isAuthenticated } = useAuthStore();
+  const liked = wishlistItems.some(item => item.productId === product.id);
 
   // Parse specs JSON để hiện highlight
   let specs: Record<string, string> = {};
@@ -34,6 +41,12 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
   const uniqueCapacities = [...new Set(variants.map(v => v.storageCapacity).filter(Boolean))];
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng!');
+      navigate('/login');
+      return;
+    }
+    
     if (!activeVariant) {
       toast.warning('Vui lòng chọn phiên bản trước khi mua!');
       return;
@@ -53,16 +66,23 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
         description: `${product.name} ${activeVariant.variantName ? `(${activeVariant.variantName})` : ''}`,
       });
     } catch (error) {
-      console.warn('Lỗi thêm giỏ hàng API, có thể do chưa đăng nhập:', error);
-      // Optimistic: increment locally if API fails (guest mode)
-      incrementItems(quantity);
-      toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`, {
-        description: product.name,
-      });
+      console.error('Lỗi thêm giỏ hàng API, có thể do chưa đăng nhập:', error);
+      toast.error('Thêm giỏ hàng thất bại!');
     }
   };
 
   const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để mua hàng!');
+      navigate('/login');
+      return;
+    }
+
+    if (!activeVariant) {
+      toast.warning('Vui lòng chọn phiên bản trước khi mua!');
+      return;
+    }
+
     navigate('/checkout', {
       state: {
         buyNowItem: {
@@ -107,8 +127,8 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
         <span className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
           {formatPrice(price)}
         </span>
-        {product.originPrice > price && (
-          <span className="text-xl text-slate-400 line-through mb-1">{formatPrice(product.originPrice)}</span>
+        {comparePrice > price && (
+          <span className="text-xl text-slate-400 line-through mb-1">{formatPrice(comparePrice)}</span>
         )}
       </div>
 
@@ -151,10 +171,31 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
                 <FiMinus />
               </button>
               <input type="text" value={quantity}
-                onChange={(e) => { const num = parseInt(e.target.value); if (!isNaN(num) && num > 0) setQuantity(num); }}
+                onChange={(e) => { 
+                  if (e.target.value === '') {
+                    setQuantity(1);
+                    return;
+                  }
+                  const num = parseInt(e.target.value); 
+                  if (!isNaN(num) && num > 0) {
+                    if (num > stock) {
+                      toast.warning(`Chỉ còn ${stock} sản phẩm có sẵn!`);
+                      setQuantity(stock);
+                    } else {
+                      setQuantity(num);
+                    }
+                  } 
+                }}
                 className="w-16 h-10 text-center border-none bg-transparent font-bold text-lg focus:ring-0 p-0" />
-              <button type="button" onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 shadow-sm transition-all active:scale-95">
+              <button type="button" onClick={() => {
+                  if (quantity >= stock) {
+                    toast.warning(`Chỉ còn ${stock} sản phẩm có sẵn!`);
+                  } else {
+                    setQuantity(quantity + 1);
+                  }
+                }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 shadow-sm transition-all active:scale-95 disabled:opacity-50"
+                disabled={quantity >= stock}>
                 <FiPlus />
               </button>
             </div>
@@ -165,8 +206,22 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
 
       {/* Actions */}
       <div className="flex gap-4 mt-auto">
-        <button className="w-14 h-14 shrink-0 rounded-2xl border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
-          <FiHeart className="text-2xl" />
+        <button 
+          onClick={async () => {
+            if (!isAuthenticated) {
+              toast.error('Vui lòng đăng nhập để thêm vào danh sách yêu thích!');
+              navigate('/login');
+              return;
+            }
+            if (product.id) await toggleWishlist(product.id);
+          }}
+          className={`w-14 h-14 shrink-0 rounded-2xl border-2 flex items-center justify-center transition-all ${
+            liked 
+              ? 'border-red-200 bg-red-50 text-red-500 dark:border-red-800 dark:bg-red-900/20' 
+              : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+          }`}
+        >
+          <FiHeart className={`text-2xl ${liked ? 'fill-red-500 cursor-pointer' : ''}`} />
         </button>
         <button onClick={handleAddToCart} disabled={stock === 0}
           className="flex-1 h-14 rounded-2xl border-2 border-purple-500 text-purple-600 dark:text-purple-400 font-bold text-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">

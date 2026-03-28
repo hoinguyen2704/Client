@@ -12,6 +12,9 @@ const adminOrderService = {
   }): Promise<ApiResponse<PageResponse<OrderResponse>>> =>
     adminAxios.get(URL, { params }),
 
+  getByNumber: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
+    adminAxios.get(`${URL}/${orderNumber}`),
+
   updateStatus: (id: string, status: string): Promise<ApiResponse<OrderResponse>> =>
     adminAxios.patch(`${URL}/${id}/status`, { status }),
 

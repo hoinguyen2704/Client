@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiZap, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse } from '@/types';
 import type { FlashSaleRequest } from '@/apis/services/adminFlashSaleService';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function FlashSales() {
   const [sales, setSales] = useState<FlashSaleResponse[]>([]);
@@ -15,7 +17,7 @@ export default function FlashSales() {
   const fetchSales = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminFlashSaleService.getAll({ page: 1, size: 50 });
+      const res = await adminFlashSaleService.getAll({ page: 1, size: PAGE_SIZE.LARGE });
       setSales(res.data?.data || []);
     } catch { /* ignore */ }
     setLoading(false);
@@ -44,20 +46,29 @@ export default function FlashSales() {
     try {
       if (editingSale) {
         await adminFlashSaleService.update(editingSale.id, form);
+        toast.success('Cập nhật Flash Sale thành công!');
       } else {
         await adminFlashSaleService.create(form);
+        toast.success('Tạo Flash Sale thành công!');
       }
       setIsModalOpen(false);
       fetchSales();
-    } catch { /* ignore */ }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || 'Lưu Flash Sale thất bại!');
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Bạn có chắc muốn xóa Flash Sale này?')) return;
     try {
       await adminFlashSaleService.delete(id);
+      toast.success('Xóa Flash Sale thành công!');
       fetchSales();
-    } catch { /* ignore */ }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || 'Xóa Flash Sale thất bại!');
+    }
   };
 
   const statusColor = (status: string) => {

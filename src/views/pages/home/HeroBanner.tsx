@@ -100,8 +100,11 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
             transition={{ delay: 0.2 }}
             className="w-full max-w-2xl relative"
           >
-            <form onSubmit={handleSearch} className="relative flex items-center">
-              <div className="absolute left-4 text-slate-400">
+            <form 
+              onSubmit={handleSearch} 
+              className="relative flex items-center w-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 p-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(139,92,246,0.15)] focus-within:ring-2 focus-within:ring-purple-500/50 transition-all duration-300"
+            >
+              <div className="pl-5 text-slate-400">
                 <FiSearch className="text-2xl" />
               </div>
               <input
@@ -115,11 +118,11 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
                 }}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="w-full h-16 pl-14 pr-32 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-white/20 text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-purple-500/50 text-lg shadow-2xl transition-all"
+                className="w-full h-14 bg-transparent border-none outline-none pl-4 pr-4 text-slate-900 dark:text-white placeholder-slate-400 text-lg"
               />
               <button 
                 type="submit"
-                className="btn btn-primary absolute right-2 h-12 px-6"
+                className="h-14 px-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold flex-shrink-0 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 transition-all active:scale-95"
               >
                 Tìm kiếm
               </button>

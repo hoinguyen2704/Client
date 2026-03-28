@@ -1,7 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiX, FiList } from 'react-icons/fi';
+import { toast } from 'sonner';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { CategoryResponse, PageResponse } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
+
+interface SpecTemplateRow {
+  specKey: string;
+  hint: string;
+  sortOrder: number;
+}
 
 export default function Categories() {
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
@@ -12,11 +20,13 @@ export default function Categories() {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: '', description: '', imageUrl: '', parentId: '' });
+  const [specTemplates, setSpecTemplates] = useState<SpecTemplateRow[]>([]);
+  const [saving, setSaving] = useState(false);
 
   const fetchCategories = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminCategoryService.getAll({ keyword: searchQuery || undefined, page, size: 20 });
+      const res = await adminCategoryService.getAll({ keyword: searchQuery || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data);
       setCategories(res.data.data || []);
     } catch (err) { console.error('Failed to fetch categories:', err); }
@@ -25,59 +35,200 @@ export default function Categories() {
 
   useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
+  const resetForm = () => {
+    setShowForm(false);
+    setEditId(null);
+    setFormData({ name: '', description: '', imageUrl: '', parentId: '' });
+    setSpecTemplates([]);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
     try {
+      const payload = {
+        ...formData,
+        specTemplates: specTemplates.filter(t => t.specKey.trim()).map((t, i) => ({
+          specKey: t.specKey.trim(),
+          hint: t.hint.trim() || undefined,
+          sortOrder: i,
+        })),
+      };
       if (editId) {
-        await adminCategoryService.update(editId, formData);
+        await adminCategoryService.update(editId, payload);
+        toast.success('Đã cập nhật danh mục!');
       } else {
-        await adminCategoryService.create(formData);
+        await adminCategoryService.create(payload);
+        toast.success('Đã tạo danh mục mới!');
       }
-      setShowForm(false); setEditId(null);
-      setFormData({ name: '', description: '', imageUrl: '', parentId: '' });
+      resetForm();
       fetchCategories();
-    } catch (err) { console.error('Save failed:', err); }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Lưu danh mục thất bại!');
+      console.error('Save failed:', err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleEdit = (cat: CategoryResponse) => {
     setEditId(cat.id);
     setFormData({ name: cat.name, description: cat.description || '', imageUrl: cat.imageUrl || '', parentId: '' });
+    setSpecTemplates(
+      (cat.specTemplates || []).map((t, i) => ({
+        specKey: t.specKey,
+        hint: t.hint || '',
+        sortOrder: t.sortOrder ?? i,
+      }))
+    );
     setShowForm(true);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Bạn có chắc muốn xóa danh mục này?')) return;
-    try { await adminCategoryService.delete(id); fetchCategories(); }
-    catch (err) { console.error('Delete failed:', err); }
+    try {
+      await adminCategoryService.delete(id);
+      toast.success('Đã xóa danh mục!');
+      fetchCategories();
+    } catch (err) {
+      toast.error('Không thể xóa danh mục này!');
+      console.error('Delete failed:', err);
+    }
   };
 
   const handleToggle = async (id: string) => {
-    try { await adminCategoryService.toggleStatus(id); fetchCategories(); }
-    catch (err) { console.error('Toggle failed:', err); }
+    try {
+      await adminCategoryService.toggleStatus(id);
+      setCategories(prev => prev.map(c =>
+        c.id === id ? { ...c, active: !c.active } : c
+      ));
+      toast.success('Cập nhật trạng thái thành công!');
+    } catch (err) {
+      console.error('Toggle failed:', err);
+      toast.error('Cập nhật trạng thái thất bại!');
+    }
+  };
+
+  // ─── Spec template helpers ──────────────────────────────────
+  const addSpecRow = () => {
+    setSpecTemplates(prev => [...prev, { specKey: '', hint: '', sortOrder: prev.length }]);
+  };
+
+  const removeSpecRow = (index: number) => {
+    setSpecTemplates(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updateSpecRow = (index: number, field: 'specKey' | 'hint', value: string) => {
+    setSpecTemplates(prev => prev.map((row, i) => i === index ? { ...row, [field]: value } : row));
   };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý danh mục</h1>
-        <button onClick={() => { setShowForm(true); setEditId(null); setFormData({ name: '', description: '', imageUrl: '', parentId: '' }); }}
+        <button onClick={() => { resetForm(); setShowForm(true); }}
           className="btn btn-primary btn-md gap-2"><FiPlus /> Thêm danh mục</button>
       </div>
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-          <h2 className="text-lg font-bold mb-4">{editId ? 'Sửa danh mục' : 'Thêm danh mục mới'}</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4">
-            <input type="text" placeholder="Tên danh mục" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required
-              className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 flex-1" />
-            <input type="text" placeholder="Mô tả" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 flex-1" />
-            <button type="submit" className="h-12 px-6 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">
-              {editId ? 'Cập nhật' : 'Tạo'}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold">{editId ? 'Sửa danh mục' : 'Thêm danh mục mới'}</h2>
+            <button onClick={resetForm} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+              <FiX className="text-lg" />
             </button>
-            <button type="button" onClick={() => { setShowForm(false); setEditId(null); }}
-              className="h-12 px-6 rounded-xl bg-slate-200 dark:bg-slate-700 font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Hủy</button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Basic info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1.5">Tên danh mục *</label>
+                <input type="text" placeholder="VD: Điện thoại, Laptop..." value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })} required
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1.5">Mô tả</label>
+                <input type="text" placeholder="Mô tả ngắn về danh mục..." value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm" />
+              </div>
+            </div>
+
+            {/* Spec Templates Section */}
+            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <div className="bg-slate-50 dark:bg-slate-800/50 px-4 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-2">
+                  <FiList className="text-purple-500" />
+                  <span className="font-medium text-sm">Gợi ý thông số kỹ thuật</span>
+                  <span className="text-xs text-slate-400">({specTemplates.length} thông số)</span>
+                </div>
+                <button type="button" onClick={addSpecRow}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                  <FiPlus className="text-xs" /> Thêm
+                </button>
+              </div>
+
+              {specTemplates.length === 0 ? (
+                <div className="p-6 text-center">
+                  <p className="text-sm text-slate-400 mb-3">Chưa có thông số gợi ý nào</p>
+                  <button type="button" onClick={addSpecRow}
+                    className="text-sm font-medium text-purple-600 hover:text-purple-700 hover:underline">
+                    + Thêm thông số đầu tiên
+                  </button>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {/* Header */}
+                  <div className="grid grid-cols-[1fr_1.5fr_40px] gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-800/30">
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Tên thông số</span>
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Gợi ý (placeholder)</span>
+                    <span></span>
+                  </div>
+                  {specTemplates.map((row, index) => (
+                    <div key={index} className="grid grid-cols-[1fr_1.5fr_40px] gap-3 px-4 py-2.5 items-center group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                      <input
+                        type="text"
+                        value={row.specKey}
+                        onChange={(e) => updateSpecRow(index, 'specKey', e.target.value)}
+                        placeholder="VD: Màn hình, RAM..."
+                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                      />
+                      <input
+                        type="text"
+                        value={row.hint}
+                        onChange={(e) => updateSpecRow(index, 'hint', e.target.value)}
+                        placeholder="VD: 6.7 inch OLED, 120Hz"
+                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeSpecRow(index)}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all"
+                        title="Xóa"
+                      >
+                        <FiTrash2 className="text-sm" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-3 justify-end">
+              <button type="button" onClick={resetForm}
+                className="h-11 px-6 rounded-xl bg-slate-200 dark:bg-slate-700 font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-sm">
+                Hủy
+              </button>
+              <button type="submit" disabled={saving}
+                className="h-11 px-6 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors text-sm flex items-center gap-2">
+                {saving && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                {editId ? 'Cập nhật' : 'Tạo danh mục'}
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -100,6 +251,7 @@ export default function Categories() {
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
                 <th className="p-4 font-medium">Danh mục</th>
                 <th className="p-4 font-medium">Slug</th>
+                <th className="p-4 font-medium text-center">Thông số</th>
                 <th className="p-4 font-medium">Trạng thái</th>
                 <th className="p-4 font-medium text-right">Thao tác</th>
               </tr>
@@ -110,12 +262,13 @@ export default function Categories() {
                   <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
                     <td className="p-4"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></td>
                     <td className="p-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></td>
+                    <td className="p-4"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
                     <td className="p-4"><div className="h-6 w-16 bg-slate-200 dark:bg-slate-700 rounded-full" /></td>
                     <td className="p-4"><div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded ml-auto" /></td>
                   </tr>
                 ))
               ) : categories.length === 0 ? (
-                <tr><td colSpan={4} className="p-12 text-center text-slate-400">Không có danh mục nào</td></tr>
+                <tr><td colSpan={5} className="p-12 text-center text-slate-400">Không có danh mục nào</td></tr>
               ) : (
                 categories.map((cat) => (
                   <tr key={cat.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
@@ -129,6 +282,15 @@ export default function Categories() {
                       </div>
                     </td>
                     <td className="p-4 text-slate-500 font-mono text-sm">{cat.slug}</td>
+                    <td className="p-4 text-center">
+                      {(cat.specTemplates?.length || 0) > 0 ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                          <FiList className="text-[9px]" /> {cat.specTemplates!.length}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-slate-300">—</span>
+                      )}
+                    </td>
                     <td className="p-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${cat.active ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
                         {cat.active ? 'Hoạt động' : 'Đã ẩn'}

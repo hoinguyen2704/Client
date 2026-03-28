@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiEye, FiDownload } from 'react-icons/fi';
+import { FiSearch, FiEye, FiDownload, FiPackage } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
+import CustomSelect from '@/components/ui/CustomSelect';
 import adminOrderService from '@/apis/services/adminOrderService';
+import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';
 import type { OrderResponse, PageResponse } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
@@ -20,7 +23,7 @@ export default function AdminOrders() {
       const res = await adminOrderService.getAll({
         keyword: searchQuery || undefined,
         status: statusFilter || undefined,
-        page, size: 20,
+        page, size: PAGE_SIZE.LARGE,
       });
       setPageData(res.data);
       setOrders(res.data.data || []);
@@ -78,81 +81,105 @@ export default function AdminOrders() {
           />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
-        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-medium outline-none">
-          <option value="">Tất cả trạng thái</option>
-          <option value="PENDING">Chờ xử lý</option>
-          <option value="CONFIRMED">Đã xác nhận</option>
-          <option value="SHIPPING">Đang giao</option>
-          <option value="DELIVERED">Đã giao</option>
-          <option value="CANCELLED">Đã hủy</option>
-        </select>
+        <CustomSelect 
+          value={statusFilter} 
+          onChange={(val) => { setStatusFilter(val); setPage(1); }}
+          options={ORDER_FILTER_OPTIONS}
+          className="w-full md:w-56"
+        />
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                <th className="p-4 font-medium">Mã đơn hàng</th>
-                <th className="p-4 font-medium">Ngày đặt</th>
-                <th className="p-4 font-medium">SP</th>
-                <th className="p-4 font-medium">Tổng tiền</th>
-                <th className="p-4 font-medium">Thanh toán</th>
-                <th className="p-4 font-medium">Trạng thái</th>
-                <th className="p-4 font-medium text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                    <td className="p-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-6 w-20 bg-slate-200 dark:bg-slate-700 rounded-full" /></td>
-                    <td className="p-4"><div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded ml-auto" /></td>
-                  </tr>
-                ))
-              ) : orders.length === 0 ? (
-                <tr><td colSpan={7} className="p-12 text-center text-slate-400">Không có đơn hàng nào</td></tr>
-              ) : (
-                orders.map((order) => (
-                  <tr key={order.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td className="p-4 font-bold text-purple-600">{order.orderNumber}</td>
-                    <td className="p-4 text-slate-500">{formatDate(order.createdAt)}</td>
-                    <td className="p-4">{order.items?.length || 0}</td>
-                    <td className="p-4 font-bold">{formatPrice(order.totalAmount)}</td>
-                    <td className="p-4 text-slate-500">{order.paymentMethod}</td>
-                    <td className="p-4">
-                      <select value={order.orderStatus} onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                        className="text-xs font-bold px-2 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none cursor-pointer">
-                        <option value="PENDING">Chờ xử lý</option>
-                        <option value="CONFIRMED">Đã xác nhận</option>
-                        <option value="SHIPPING">Đang giao</option>
-                        <option value="DELIVERED">Đã giao</option>
-                        <option value="CANCELLED">Đã hủy</option>
-                      </select>
-                    </td>
-                    <td className="p-4 text-right">
-                      <Link to={`/admin/orders/${order.id}`} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors inline-flex" title="Xem chi tiết">
-                        <FiEye />
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {/* Orders Table */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+        
+        {/* Desktop Header */}
+        <div className="hidden lg:grid grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm font-semibold rounded-t-2xl">
+          <div>Mã đơn hàng</div>
+          <div>Ngày đặt</div>
+          <div>SP</div>
+          <div>Tổng tiền</div>
+          <div>Thanh toán</div>
+          <div>Trạng thái</div>
+          <div className="text-right">Thao tác</div>
+        </div>
+        
+        <div className="flex flex-col">
+          {loading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-5 border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
+                <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
+                <div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
+                <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
+                <div className="h-8 w-36 bg-slate-200 dark:bg-slate-700 rounded-xl" />
+                <div className="h-8 w-10 bg-slate-200 dark:bg-slate-700 rounded-lg ml-auto hidden lg:block" />
+              </div>
+            ))
+          ) : orders.length === 0 ? (
+            <div className="p-16 flex flex-col items-center justify-center text-slate-400">
+              <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4"><FiPackage className="text-2xl" /></div>
+              <span>Không có đơn hàng nào</span>
+            </div>
+          ) : (
+            orders.map((order) => (
+              <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 items-center p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
+                {/* Mobile: Order Header */}
+                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                  <div className="font-bold text-purple-600 flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 lg:hidden"><FiPackage className="text-sm" /></div>
+                    {order.orderNumber}
+                  </div>
+                  <div className="lg:hidden text-slate-500 text-sm">{formatDate(order.createdAt)}</div>
+                </div>
+
+                <div className="hidden lg:block text-slate-500 font-medium">{formatDate(order.createdAt)}</div>
+                
+                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                  <span className="lg:hidden text-slate-500 text-sm">Số lượng SP:</span>
+                  <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-xs lg:text-sm w-max">
+                    {order.items?.length || 0}
+                  </div>
+                </div>
+
+                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                  <span className="lg:hidden text-slate-500 text-sm">Tổng tiền:</span>
+                  <div className="font-bold">{formatPrice(order.totalAmount)}</div>
+                </div>
+
+                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                  <span className="lg:hidden text-slate-500 text-sm">Thanh toán:</span>
+                  <div className="text-slate-500 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-xs lg:text-sm w-max border lg:border-none border-slate-200 dark:border-slate-700">
+                    {order.paymentMethod}
+                  </div>
+                </div>
+
+                <div className="w-full lg:w-auto mt-2 lg:mt-0 flex justify-between items-center lg:block">
+                  <span className="lg:hidden text-slate-500 text-sm">Trạng thái:</span>
+                  <CustomSelect 
+                    value={order.orderStatus} 
+                    onChange={(val) => handleStatusChange(order.id, val)}
+                    options={ORDER_STATUS_OPTIONS}
+                    className="w-48 lg:w-40"
+                  />
+                </div>
+
+                <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-end">
+                  <Link to={`/admin/orders/${order.orderNumber}`} className="w-full lg:w-auto p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors inline-flex justify-center items-center shadow-sm" title="Xem chi tiết">
+                    <FiEye className="text-lg lg:text-base" />
+                    <span className="ml-2 lg:hidden font-medium">Chi tiết đơn hàng</span>
+                  </Link>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Pagination */}
         {pageData && pageData.lastPage > 1 && (
           <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Hiển thị {((page - 1) * 20) + 1}-{Math.min(page * 20, pageData.total)} của {pageData.total} đơn hàng</div>
+            <div>Hiển thị {((page - 1) * PAGE_SIZE.LARGE) + 1}-{Math.min(page * PAGE_SIZE.LARGE, pageData.total)} của {pageData.total} đơn hàng</div>
             <div className="flex gap-1">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
               {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (

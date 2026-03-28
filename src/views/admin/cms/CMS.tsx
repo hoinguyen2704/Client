@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiImage } from 'react-icons/fi';
+import { toast } from 'sonner';
 import adminCmsService from '@/apis/services/adminCmsService';
 import type { BannerResponse, ArticleResponse, PageResponse } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function CMS() {
   const [tab, setTab] = useState<'banners' | 'articles'>('banners');
@@ -20,7 +22,7 @@ export default function CMS() {
 
   const fetchArticles = async (p = 1) => {
     try {
-      const res = await adminCmsService.getArticles({ page: p, size: 20 });
+      const res = await adminCmsService.getArticles({ page: p, size: PAGE_SIZE.LARGE });
       setArticlePageData(res.data);
       setArticles(res.data.data || []);
     } catch (err) { console.error('Failed to fetch articles:', err); }
@@ -35,14 +37,26 @@ export default function CMS() {
 
   const handleDeleteBanner = async (id: string) => {
     if (!confirm('Xóa banner này?')) return;
-    try { await adminCmsService.deleteBanner(id); fetchBanners(); }
-    catch (err) { console.error('Delete failed:', err); }
+    try {
+      await adminCmsService.deleteBanner(id);
+      fetchBanners();
+      toast.success('Xóa banner thành công!');
+    } catch (err) {
+      console.error('Delete failed:', err);
+      toast.error('Xóa banner thất bại!');
+    }
   };
 
   const handleDeleteArticle = async (id: string) => {
     if (!confirm('Xóa bài viết này?')) return;
-    try { await adminCmsService.deleteArticle(id); fetchArticles(articlePage); }
-    catch (err) { console.error('Delete failed:', err); }
+    try {
+      await adminCmsService.deleteArticle(id);
+      fetchArticles(articlePage);
+      toast.success('Xóa bài viết thành công!');
+    } catch (err) {
+      console.error('Delete failed:', err);
+      toast.error('Xóa bài viết thất bại!');
+    }
   };
 
   const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };

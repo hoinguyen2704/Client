@@ -73,12 +73,16 @@ export default function ProductDetail() {
   });
   if (allImages.length === 0) allImages.push('https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image');
 
-  // Calc price/discount
+  // Calc price/discount using variant compareAtPrice
   const lowestPrice = product.variants?.length
-    ? Math.min(...product.variants.map(v => v.price))
+    ? Math.min(...product.variants.map((v: any) => v.price))
     : product.originPrice;
-  const discount = product.originPrice > lowestPrice
-    ? Math.round((1 - lowestPrice / product.originPrice) * 100)
+  const highestComparePrice = product.variants?.length
+    ? Math.max(...product.variants.map((v: any) => v.compareAtPrice || v.price))
+    : product.originPrice;
+  const referencePrice = highestComparePrice > lowestPrice ? highestComparePrice : product.originPrice;
+  const discount = referencePrice > lowestPrice
+    ? Math.round((1 - lowestPrice / referencePrice) * 100)
     : 0;
 
   return (
@@ -115,7 +119,7 @@ export default function ProductDetail() {
           <h2 className="text-2xl font-bold mb-8">Sản phẩm liên quan</h2>
           <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x custom-scrollbar">
             {related.map(p => (
-              <div key={p.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0">
+              <div key={p.id} className="w-[240px] md:w-[280px] snap-start shrink-0 flex-none">
                 <ProductCard product={p} />
               </div>
             ))}

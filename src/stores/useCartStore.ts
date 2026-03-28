@@ -25,11 +25,16 @@ const useCartStore = create<CartState>()(
 
       syncFromServer: async () => {
         try {
+          const authStore = (await import('@/stores/useAuthStore')).default;
+          if (!authStore.getState().token) {
+            set({ totalItems: 0 }); // reset if guest
+            return;
+          }
           const res = await cartService.getCount();
           const count = typeof res.data === 'number' ? res.data : 0;
           set({ totalItems: count });
         } catch {
-          // user not logged in or network error — leave current count
+          // fetch failed — leave current count or reset on auth error
         }
       },
 

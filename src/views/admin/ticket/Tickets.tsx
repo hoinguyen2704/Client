@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle } from 'react-icons/fi';
 import adminTicketService from '@/apis/services/adminTicketService';
+import CustomSelect from '@/components/ui/CustomSelect';
+import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
 import type { TicketResponse, PageResponse } from '@/types';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
@@ -15,7 +18,7 @@ export default function Tickets() {
   const fetchTickets = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminTicketService.getAll({ status: statusFilter || undefined, page, size: 20 });
+      const res = await adminTicketService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data); setTickets(res.data.data || []);
     } catch (err) { console.error('Failed to fetch tickets:', err); }
     finally { setLoading(false); }
@@ -50,13 +53,8 @@ export default function Tickets() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý yêu cầu hỗ trợ</h1>
-        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 font-medium outline-none">
-          <option value="">Tất cả</option>
-          <option value="OPEN">Đang mở</option>
-          <option value="IN_PROGRESS">Đang xử lý</option>
-          <option value="CLOSED">Đã đóng</option>
-        </select>
+        <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
+          options={TICKET_FILTER_OPTIONS} className="w-full sm:w-48 z-20" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -99,12 +97,8 @@ export default function Tickets() {
                     <h2 className="text-lg font-bold">{selectedTicket.subject}</h2>
                     <p className="text-sm text-slate-500 mt-1">{selectedTicket.userName} ({selectedTicket.userEmail})</p>
                   </div>
-                  <select value={selectedTicket.status} onChange={(e) => handleStatusChange(selectedTicket.id, e.target.value)}
-                    className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none cursor-pointer">
-                    <option value="OPEN">Đang mở</option>
-                    <option value="IN_PROGRESS">Đang xử lý</option>
-                    <option value="CLOSED">Đã đóng</option>
-                  </select>
+                  <CustomSelect value={selectedTicket.status} onChange={(val) => handleStatusChange(selectedTicket.id, val)}
+                    options={TICKET_STATUS_OPTIONS} className="w-36 z-10" />
                 </div>
               </div>
               <div className="flex-1 p-6 overflow-y-auto max-h-[400px] space-y-4">
