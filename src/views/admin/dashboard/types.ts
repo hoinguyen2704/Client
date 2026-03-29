@@ -1,4 +1,4 @@
-import type { DashboardStatsResponse } from '@/apis/services/adminDashboardService';
+import type { DashboardStatsResponse } from '@/types';
 
 export interface DashboardStatsProps {
   stats: DashboardStatsResponse;

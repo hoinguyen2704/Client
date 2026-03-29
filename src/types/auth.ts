@@ -29,7 +29,7 @@ export interface ResetPasswordRequest {
 
 export interface SocialLoginRequest {
   provider: 'GOOGLE' | 'FACEBOOK';
-  accessToken: string;
+  token: string;
 }
 
 // ─── Auth Response ──────────────────────────────────────────────

@@ -23,6 +23,7 @@ export interface OrderResponse {
 export interface OrderItemResponse {
   id: string;
   variantId: string;
+  productId?: string;
   productName: string;
   variantName: string;
   unitPrice: number;

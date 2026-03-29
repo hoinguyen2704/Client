@@ -63,8 +63,13 @@ export default function Orders() {
 
   const handleSubmitReview = async () => {
     if (!selectedOrder || !selectedOrder.items[0]) return;
+    const firstItem = selectedOrder.items[0];
+    if (!firstItem.productId) {
+      alert('Không xác định được sản phẩm để đánh giá!');
+      return;
+    }
     try {
-      await feedbackService.submit({ productId: selectedOrder.items[0].variantId, orderId: selectedOrder.id, rating, content: reviewText });
+      await feedbackService.submit({ productId: firstItem.productId, orderId: selectedOrder.id, rating, content: reviewText });
       alert('Cảm ơn bạn đã đánh giá sản phẩm!');
       setReviewModalOpen(false);
     } catch { alert('Gửi đánh giá thất bại!'); }
@@ -133,7 +138,7 @@ export default function Orders() {
                   {order.orderStatus === 'SHIPPED' && (
                     <button onClick={() => handleOpenReview(order)} className="px-4 py-2 rounded-lg border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">Đánh giá</button>
                   )}
-                  {(order.orderStatus === 'PENDING' || order.orderStatus === 'PROCESSING') && (
+                  {order.orderStatus === 'PENDING' && (
                     <button onClick={() => handleCancelOrder(order.id)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Hủy đơn</button>
                   )}
                   <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center gap-2">

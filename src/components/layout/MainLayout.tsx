@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Header from './Header';
 import MobileMenu from './MobileMenu';
@@ -13,7 +13,6 @@ export default function MainLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuthStore();
   const { darkMode, toggleDarkMode } = useUIStore();
-  const navigate = useNavigate();
 
   // Sync dark mode class on mount
   useEffect(() => {
@@ -22,7 +21,6 @@ export default function MainLayout() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
   };
 
   return (

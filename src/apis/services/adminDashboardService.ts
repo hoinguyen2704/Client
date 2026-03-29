@@ -2,8 +2,8 @@ import { adminAxios } from '../axios';
 import type { ApiResponse, DashboardStatsResponse } from '@/types';
 
 const adminDashboardService = {
-  getStats: (period: string = 'MONTH') =>
-    adminAxios.get<DashboardStatsResponse>('/dashboard/stats', { params: { period } }),
+  getStats: (period: string = 'MONTH'): Promise<ApiResponse<DashboardStatsResponse>> =>
+    adminAxios.get('/dashboard/stats', { params: { period } }),
 
   /** Xuất báo cáo doanh thu Excel */
   exportReport: (period: string = 'MONTH'): Promise<Blob> =>
