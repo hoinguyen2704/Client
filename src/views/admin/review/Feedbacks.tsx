@@ -5,6 +5,7 @@ import CustomSelect from '@/components/ui/CustomSelect';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { AdminPagination } from '@/components/ui';
 
 export default function Feedbacks() {
   const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
@@ -115,14 +116,15 @@ export default function Feedbacks() {
         )}
       </div>
 
-      {pageData && pageData.lastPage > 1 && (
-        <div className="flex justify-center gap-1">
-          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
-          {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
-            <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
-          ))}
-          <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
-        </div>
+      {pageData && (
+        <AdminPagination
+          currentPage={page}
+          totalPages={pageData.lastPage}
+          totalItems={pageData.total}
+          perPage={PAGE_SIZE.LARGE}
+          label="đánh giá"
+          onPageChange={setPage}
+        />
       )}
     </div>
   );

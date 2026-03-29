@@ -5,6 +5,7 @@ import adminCouponService from '@/apis/services/adminCouponService';
 import type { CouponResponse, PageResponse } from '@/types';
 import { formatPrice } from '@/helpers/format';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { AdminSearch, AdminPagination, PrimaryButton, ActionButtons } from '@/components/ui';
 
 export default function Promotions() {
   const [coupons, setCoupons] = useState<CouponResponse[]>([]);
@@ -44,17 +45,14 @@ export default function Promotions() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý mã giảm giá</h1>
-        <button className="btn btn-primary btn-md gap-2"><FiPlus /> Tạo mã mới</button>
+        <PrimaryButton icon={<FiPlus className="text-base" />}>Tạo mã mới</PrimaryButton>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="relative">
-          <input type="text" placeholder="Tìm kiếm mã giảm giá..."
-            value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500" />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
-        </div>
-      </div>
+      <AdminSearch
+        placeholder="Tìm kiếm mã giảm giá..."
+        value={searchQuery}
+        onChange={(val) => { setSearchQuery(val); setPage(1); }}
+      />
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
@@ -95,12 +93,20 @@ export default function Promotions() {
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleToggle(coupon.id)} className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                          {coupon.status === 'ACTIVE' ? <FiToggleRight className="text-green-500" /> : <FiToggleLeft />}
-                        </button>
-                        <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 rounded-lg transition-colors"><FiEdit2 /></button>
-                      </div>
+                        <ActionButtons
+                          actions={[
+                            {
+                              type: 'more',
+                              title: coupon.status === 'ACTIVE' ? 'Tạm dừng' : 'Kích hoạt',
+                              icon: coupon.status === 'ACTIVE' ? <FiToggleRight className="text-green-500 text-xl" /> : <FiToggleLeft className="text-xl" />,
+                              onClick: () => handleToggle(coupon.id)
+                            },
+                            {
+                              type: 'edit',
+                              onClick: () => {} // currently empty in original code
+                            }
+                          ]}
+                        />
                     </td>
                   </tr>
                 ))
@@ -109,17 +115,15 @@ export default function Promotions() {
           </table>
         </div>
 
-        {pageData && pageData.lastPage > 1 && (
-          <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Trang {page}/{pageData.lastPage}</div>
-            <div className="flex gap-1">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
-              {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
-              ))}
-              <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
-            </div>
-          </div>
+        {pageData && (
+          <AdminPagination
+            currentPage={page}
+            totalPages={pageData.lastPage}
+            totalItems={pageData.total}
+            perPage={PAGE_SIZE.LARGE}
+            label="mã giảm giá"
+            onPageChange={setPage}
+          />
         )}
       </div>
     </div>

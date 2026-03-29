@@ -3,9 +3,10 @@ import { FiZap, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { adminFlashSaleService } from '@/apis';
-import type { FlashSaleResponse } from '@/types';
+import type { FlashSaleResponse, PageResponse } from '@/types';
 import type { FlashSaleRequest } from '@/apis/services/adminFlashSaleService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { AdminPagination, ActionButtons, PrimaryButton } from '@/components/ui';
 
 export default function FlashSales() {
   const [sales, setSales] = useState<FlashSaleResponse[]>([]);
@@ -13,15 +14,18 @@ export default function FlashSales() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSale, setEditingSale] = useState<FlashSaleResponse | null>(null);
   const [form, setForm] = useState<FlashSaleRequest>({ name: '', startTime: '', endTime: '' });
+  const [page, setPage] = useState(1);
+  const [pageData, setPageData] = useState<PageResponse<FlashSaleResponse> | null>(null);
 
   const fetchSales = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminFlashSaleService.getAll({ page: 1, size: PAGE_SIZE.LARGE });
+      const res = await adminFlashSaleService.getAll({ page, size: PAGE_SIZE.LARGE });
       setSales(res.data?.data || []);
+      setPageData(res.data);
     } catch { /* ignore */ }
     setLoading(false);
-  }, []);
+  }, [page]);
 
   useEffect(() => { fetchSales(); }, [fetchSales]);
 
@@ -95,9 +99,9 @@ export default function FlashSales() {
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <FiZap className="text-yellow-500" /> Quản lý Flash Sale
         </h1>
-        <button onClick={openCreate} className="px-5 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-sm flex items-center gap-2 w-fit">
-          <FiPlus /> Tạo Flash Sale
-        </button>
+        <PrimaryButton onClick={openCreate} icon={<FiPlus className="text-base" />}>
+          Tạo Flash Sale
+        </PrimaryButton>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
@@ -133,20 +137,36 @@ export default function FlashSales() {
                     </span>
                   </td>
                   <td className="p-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => openEdit(sale)} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Sửa">
-                        <FiEdit2 />
-                      </button>
-                      <button onClick={() => handleDelete(sale.id)} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Xóa">
-                        <FiTrash2 />
-                      </button>
-                    </div>
+                    <ActionButtons
+                      actions={[
+                        {
+                          type: 'edit',
+                          onClick: () => openEdit(sale)
+                        },
+                        {
+                          type: 'delete',
+                          onClick: () => handleDelete(sale.id)
+                        }
+                      ]}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {pageData && (
+          <AdminPagination
+            currentPage={page}
+            totalPages={pageData.lastPage}
+            totalItems={pageData.total}
+            perPage={PAGE_SIZE.LARGE}
+            label="flash sale"
+            onPageChange={setPage}
+          />
+        )}
       </div>
 
       {/* Modal */}

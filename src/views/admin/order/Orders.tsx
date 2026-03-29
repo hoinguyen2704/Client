@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
 import CustomSelect from '@/components/ui/CustomSelect';
+import { AdminSearch, AdminPagination, ActionButtons } from '@/components/ui';
 import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';
 import type { OrderResponse, PageResponse } from '@/types';
@@ -78,13 +79,12 @@ export default function AdminOrders() {
 
       {/* Filters & Search */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 print:hidden">
-        <div className="relative flex-1">
-          <input type="text" placeholder="Tìm kiếm theo mã đơn, tên khách hàng..."
+        <div className="flex-1">
+          <AdminSearch
+            placeholder="Tìm kiếm theo mã đơn, tên khách hàng..."
             value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+            onChange={(val) => { setSearchQuery(val); setPage(1); }}
           />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
         <CustomSelect 
           value={statusFilter} 
@@ -170,11 +170,15 @@ export default function AdminOrders() {
                   />
                 </div>
 
-                <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-end">
-                  <Link to={`/admin/orders/${order.orderNumber}`} className="w-full lg:w-auto p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors inline-flex justify-center items-center shadow-sm" title="Xem chi tiết">
-                    <FiEye className="text-lg lg:text-base" />
-                    <span className="ml-2 lg:hidden font-medium">Chi tiết đơn hàng</span>
-                  </Link>
+                <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-end items-center print:hidden">
+                  <ActionButtons
+                    actions={[
+                      {
+                        type: 'view',
+                        href: `/admin/orders/${order.orderNumber}`,
+                      }
+                    ]}
+                  />
                 </div>
               </div>
             ))
@@ -182,17 +186,15 @@ export default function AdminOrders() {
         </div>
 
         {/* Pagination */}
-        {pageData && pageData.lastPage > 1 && (
-          <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Hiển thị {((page - 1) * PAGE_SIZE.LARGE) + 1}-{Math.min(page * PAGE_SIZE.LARGE, pageData.total)} của {pageData.total} đơn hàng</div>
-            <div className="flex gap-1">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
-              {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
-              ))}
-              <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
-            </div>
-          </div>
+        {pageData && (
+          <AdminPagination
+            currentPage={page}
+            totalPages={pageData.lastPage}
+            totalItems={pageData.total}
+            perPage={PAGE_SIZE.LARGE}
+            label="đơn hàng"
+            onPageChange={setPage}
+          />
         )}
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
 import CustomSelect from '@/components/ui/CustomSelect';
+import { AdminSearch, AdminPagination } from '@/components/ui';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 
@@ -70,12 +71,12 @@ export default function Customers() {
 
       {/* Filters & Search */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <input type="text" placeholder="Tìm kiếm theo tên, email, SĐT..."
-            value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+        <div className="flex-1">
+          <AdminSearch
+            placeholder="Tìm kiếm theo tên, email, SĐT..."
+            value={searchQuery}
+            onChange={(val) => { setSearchQuery(val); setPage(1); }}
           />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
         <CustomSelect 
           value={roleFilter} 
@@ -159,17 +160,15 @@ export default function Customers() {
           </table>
         </div>
 
-        {pageData && pageData.lastPage > 1 && (
-          <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Hiển thị {((page - 1) * PAGE_SIZE.LARGE) + 1}-{Math.min(page * PAGE_SIZE.LARGE, pageData.total)} của {pageData.total} người dùng</div>
-            <div className="flex gap-1">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
-              {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
-              ))}
-              <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
-            </div>
-          </div>
+        {pageData && (
+          <AdminPagination
+            currentPage={page}
+            totalPages={pageData.lastPage}
+            totalItems={pageData.total}
+            perPage={PAGE_SIZE.LARGE}
+            label="người dùng"
+            onPageChange={setPage}
+          />
         )}
       </div>
     </div>

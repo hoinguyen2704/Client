@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import adminCmsService from '@/apis/services/adminCmsService';
 import type { BannerResponse, ArticleResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import PrimaryButton from '@/components/ui/PrimaryButton';
+import { PrimaryButton, AdminPagination, ActionButtons } from '@/components/ui';
 
 export default function CMS() {
   const [tab, setTab] = useState<'banners' | 'articles'>('banners');
@@ -153,10 +153,18 @@ export default function CMS() {
                         </span>
                       </td>
                       <td className="p-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><FiEdit2 /></button>
-                          <button onClick={() => handleDeleteArticle(a.id)} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"><FiTrash2 /></button>
-                        </div>
+                        <ActionButtons
+                          actions={[
+                            {
+                              type: 'edit',
+                              onClick: () => {}
+                            },
+                            {
+                              type: 'delete',
+                              onClick: () => handleDeleteArticle(a.id)
+                            }
+                          ]}
+                        />
                       </td>
                     </tr>
                   ))
@@ -164,6 +172,16 @@ export default function CMS() {
               </tbody>
             </table>
           </div>
+          {articlePageData && (
+            <AdminPagination
+              currentPage={articlePage}
+              totalPages={articlePageData.lastPage}
+              totalItems={articlePageData.total}
+              perPage={PAGE_SIZE.LARGE}
+              label="bài viết"
+              onPageChange={setArticlePage}
+            />
+          )}
         </div>
       )}
     </div>

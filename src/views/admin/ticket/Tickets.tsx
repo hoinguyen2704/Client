@@ -5,6 +5,7 @@ import CustomSelect from '@/components/ui/CustomSelect';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
 import type { TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { AdminPagination } from '@/components/ui';
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
@@ -85,6 +86,18 @@ export default function Tickets() {
               ))
             )}
           </div>
+          {pageData && (
+            <div className="p-3 border-t border-slate-100 dark:border-slate-800">
+              <AdminPagination
+                currentPage={page}
+                totalPages={pageData.lastPage}
+                totalItems={pageData.total}
+                perPage={PAGE_SIZE.LARGE}
+                label="yêu cầu"
+                onPageChange={setPage}
+              />
+            </div>
+          )}
         </div>
 
         {/* Ticket Detail */}

@@ -4,8 +4,7 @@ import { toast } from 'sonner';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { CategoryResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import PrimaryButton from '@/components/ui/PrimaryButton';
-import TrashButton from '@/components/ui/TrashButton';
+import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons } from '@/components/ui';
 
 interface SpecTemplateRow {
   specKey: string;
@@ -234,14 +233,14 @@ export default function Categories() {
       )}
 
       {/* Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="relative">
-          <input type="text" placeholder="Tìm kiếm danh mục..."
-            value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500" />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
-        </div>
-      </div>
+      <AdminSearch
+        placeholder="Tìm kiếm danh mục..."
+        value={searchQuery}
+        onChange={(val) => {
+          setSearchQuery(val);
+          setPage(1);
+        }}
+      />
 
       {/* Categories Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
@@ -297,14 +296,24 @@ export default function Categories() {
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleToggle(cat.id)} className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors"
-                          title={cat.active ? 'Ẩn' : 'Hiện'}>
-                          {cat.active ? <FiToggleRight className="text-green-500" /> : <FiToggleLeft />}
-                        </button>
-                        <button onClick={() => handleEdit(cat)} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Sửa"><FiEdit2 /></button>
-                        <button onClick={() => handleDelete(cat.id)} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Xóa"><FiTrash2 /></button>
-                      </div>
+                      <ActionButtons
+                        actions={[
+                          {
+                            type: 'more',
+                            title: cat.active ? 'Ẩn' : 'Hiện',
+                            icon: cat.active ? <FiToggleRight className="text-green-500 text-xl" /> : <FiToggleLeft className="text-xl" />,
+                            onClick: () => handleToggle(cat.id)
+                          },
+                          {
+                            type: 'edit',
+                            onClick: () => handleEdit(cat)
+                          },
+                          {
+                            type: 'delete',
+                            onClick: () => handleDelete(cat.id)
+                          }
+                        ]}
+                      />
                     </td>
                   </tr>
                 ))
@@ -313,17 +322,15 @@ export default function Categories() {
           </table>
         </div>
 
-        {pageData && pageData.lastPage > 1 && (
-          <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Trang {page}/{pageData.lastPage}</div>
-            <div className="flex gap-1">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
-              {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
-              ))}
-              <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
-            </div>
-          </div>
+        {pageData && (
+          <AdminPagination
+            currentPage={page}
+            totalPages={pageData.lastPage}
+            totalItems={pageData.total}
+            perPage={PAGE_SIZE.LARGE}
+            label="danh mục"
+            onPageChange={setPage}
+          />
         )}
       </div>
     </div>
