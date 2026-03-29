@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiX, FiPrinter, FiDownload } from 'react-icons/fi';
+import { FiX, FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [period, setPeriod] = useState('MONTH');
+  const [period, setPeriod] = useState('WEEK');
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -39,9 +39,15 @@ export default function Dashboard() {
         };
 
         if (selectedPeriod === 'WEEK') {
-          for (let i = 6; i >= 0; i--) {
-            const d = new Date(today);
-            d.setDate(d.getDate() - i);
+          // Tính ngày Thứ 2 đầu tuần (getDay(): 0=CN, 1=T2, ..., 6=T7)
+          const dayOfWeek = today.getDay(); // 0=CN, 1=T2...
+          const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+          const monday = new Date(today);
+          monday.setDate(today.getDate() - diffToMonday);
+
+          for (let i = 0; i < 7; i++) {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
             const labelKey = formatYMD(d);
             const item = map.get(labelKey) || { label: labelKey, revenue: 0, orders: 0 };
             padded.push({ ...item, label: `${d.getDate()}/${d.getMonth() + 1}` });
@@ -157,28 +163,33 @@ export default function Dashboard() {
                   {activeModal === 'reviews' && 'Tổng quan đánh giá'}
                 </h3>
                 <div className="flex items-center gap-3">
-                  <button onClick={() => window.print()} className="px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors">
-                    <FiPrinter /> In báo cáo
+                  <button
+                    onClick={async () => {
+                      if (!activeModal) return;
+                      try {
+                        toast.loading('Đang tạo báo cáo PDF...', { id: 'pdf-report' });
+                        const blob = await adminDashboardService.exportReportPdf(activeModal, period);
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `report_${activeModal}_${new Date().toISOString().slice(0, 10)}.pdf`;
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        toast.success('Xuất báo cáo PDF thành công!', { id: 'pdf-report' });
+                      } catch (err) {
+                        console.error(err);
+                        toast.error('Xuất báo cáo thất bại!', { id: 'pdf-report' });
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors"
+                  >
+                    <FiDownload /> Tải PDF
                   </button>
                   <button onClick={() => setActiveModal(null)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-800 rounded-full">
                     <FiX className="text-xl" />
                   </button>
                 </div>
               </div>
-
-              {/* Print Header (Only visible when printing) */}
-              <div className="hidden print:block p-8 pb-0 text-center">
-                <h1 className="text-2xl font-bold uppercase mb-2">
-                  {activeModal === 'orders' && 'Báo cáo đơn hàng'}
-                  {activeModal === 'revenue' && 'Báo cáo doanh thu'}
-                  {activeModal === 'customers' && 'Báo cáo khách hàng tiềm năng'}
-                  {activeModal === 'products' && 'Báo cáo sản phẩm bán ra'}
-                  {activeModal === 'returns' && 'Báo cáo tỉ lệ Hoàn / Hủy'}
-                  {activeModal === 'reviews' && 'Báo cáo tổng quan đánh giá'}
-                </h1>
-                <p className="text-slate-500 text-sm">Thời gian: {new Date().toLocaleDateString('vi-VN')} - Theo {period}</p>
-              </div>
-
               <div className="p-6 overflow-y-auto flex-1">
                 {activeModal === 'orders' ? (
                   <div className="overflow-x-auto">

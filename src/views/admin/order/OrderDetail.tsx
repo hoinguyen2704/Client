@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiPrinter, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiX } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { toast } from 'sonner';
@@ -96,11 +96,8 @@ export default function OrderDetail() {
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => window.print()} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
-            <FiPrinter /> In hóa đơn
-          </button>
           <button onClick={handleExportInvoice} className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2">
-            <FiDownload /> Tải PDF
+            <FiDownload /> Tải hóa đơn PDF
           </button>
           <button onClick={() => setIsStatusModalOpen(true)} className="btn btn-md btn-primary">
             Cập nhật trạng thái
