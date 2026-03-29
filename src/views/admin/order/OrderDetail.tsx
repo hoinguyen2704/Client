@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiPrinter, FiUser, FiMapPin, FiCreditCard, FiPackage, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiPrinter, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiX } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { toast } from 'sonner';
@@ -42,6 +42,23 @@ export default function OrderDetail() {
     }
   };
 
+  const handleExportInvoice = async () => {
+    if (!order) return;
+    try {
+      const blob = await adminOrderService.exportInvoice(order.id);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice_${order.orderNumber}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success('Xuất hóa đơn PDF thành công!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Xuất hóa đơn thất bại!');
+    }
+  };
+
   const formatDate = (d: string) => {
     try { return new Date(d).toLocaleString('vi-VN'); } catch { return d; }
   };
@@ -63,7 +80,8 @@ export default function OrderDetail() {
   }
 
   return (
-    <div className="space-y-6">
+    <>
+    <div className="space-y-6 print:hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link to="/admin/orders" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
@@ -80,6 +98,9 @@ export default function OrderDetail() {
         <div className="flex gap-3">
           <button onClick={() => window.print()} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2">
             <FiPrinter /> In hóa đơn
+          </button>
+          <button onClick={handleExportInvoice} className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2">
+            <FiDownload /> Tải PDF
           </button>
           <button onClick={() => setIsStatusModalOpen(true)} className="btn btn-md btn-primary">
             Cập nhật trạng thái
@@ -224,5 +245,88 @@ export default function OrderDetail() {
         </div>
       )}
     </div>
+
+    {/* ===== PRINT INVOICE TEMPLATE ===== */}
+    <div className="hidden print:block w-full text-black bg-white p-8">
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <h2 className="text-3xl font-bold font-serif mb-2 text-[#2539e6]">HoziTech</h2>
+          <p className="text-sm">123 Đường Công Nghệ, Quận IT, TP.HCM</p>
+          <p className="text-sm">SĐT: 0123.456.789</p>
+          <p className="text-sm">Email: contact@hozitech.com</p>
+        </div>
+        <div className="text-right">
+          <h1 className="text-2xl font-bold uppercase tracking-widest text-[#2539e6]">Hóa Đơn</h1>
+          <p className="font-bold text-lg mt-2 font-mono">#{order.orderNumber}</p>
+          <p className="text-sm text-slate-600">Ngày: {formatDate(order.createdAt)}</p>
+        </div>
+      </div>
+
+      <div className="mb-8 border-t border-slate-200 pt-6 flex justify-between">
+        <div>
+          <h3 className="font-bold text-slate-500 uppercase text-xs mb-2">Khách hàng</h3>
+          <p className="font-bold text-base">{order.customerName}</p>
+          <p className="text-sm">{order.shippingAddress || 'Nhận tại cửa hàng'}</p>
+        </div>
+        <div className="text-right">
+          <h3 className="font-bold text-slate-500 uppercase text-xs mb-2">Thanh toán & Giao hàng</h3>
+          <p className="text-sm"><strong>Phương thức:</strong> {order.paymentMethod}</p>
+          <p className="text-sm"><strong>Trạng thái:</strong> {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thu tiền'}</p>
+        </div>
+      </div>
+
+      <table className="w-full text-left mb-8 border-collapse">
+        <thead>
+          <tr className="border-b-2 border-slate-800 text-sm">
+            <th className="py-2 font-bold">Sản phẩm</th>
+            <th className="py-2 font-bold text-center">SL</th>
+            <th className="py-2 font-bold text-right">Đơn giá</th>
+            <th className="py-2 font-bold text-right">Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody className="text-sm">
+          {order.items?.map((item, idx) => (
+            <tr key={idx} className="border-b border-slate-200">
+              <td className="py-3 pr-4">
+                <div className="font-medium text-base">{item.productName}</div>
+                {item.variantName && (
+                  <div className="text-xs mt-1 italic">N/L: {item.variantName}</div>
+                )}
+              </td>
+              <td className="py-3 text-center">{item.quantity}</td>
+              <td className="py-3 text-right">{formatPrice(item.unitPrice)}</td>
+              <td className="py-3 text-right font-medium">{formatPrice(item.subtotal)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="flex justify-end mb-12">
+        <div className="w-64 space-y-2 text-sm">
+          <div className="flex justify-between"><span>Tạm tính:</span> <span>{formatPrice(order.totalAmount + (order.discountAmount || 0))}</span></div>
+          {(order.discountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm giá:</span> <span>-{formatPrice(order.discountAmount!)}</span></div>}
+          <div className="flex justify-between font-bold text-lg pt-3 border-t-2 border-slate-800 mt-2">
+            <span>Tổng cộng:</span>
+            <span>{formatPrice(order.totalAmount)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-between text-center mx-12 mt-16 text-sm">
+        <div>
+          <p className="font-bold mb-24">Người mua hàng</p>
+          <p className="text-slate-500 italic">(Ký, ghi rõ họ tên)</p>
+        </div>
+        <div>
+          <p className="font-bold mb-24">Người bán hàng</p>
+          <p className="text-slate-500 italic">(Ký, ghi rõ họ tên)</p>
+        </div>
+      </div>
+
+      <div className="mt-20 text-center text-xs text-slate-500 border-t border-slate-200 pt-4">
+        Cảm ơn quý khách đã mua bán tại HoziTech!
+      </div>
+    </div>
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import adminCmsService from '@/apis/services/adminCmsService';
 import type { BannerResponse, ArticleResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 
 export default function CMS() {
   const [tab, setTab] = useState<'banners' | 'articles'>('banners');
@@ -65,9 +66,9 @@ export default function CMS() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý nội dung</h1>
-        <button className="btn btn-primary btn-md gap-2">
-          <FiPlus /> {tab === 'banners' ? 'Thêm banner' : 'Thêm bài viết'}
-        </button>
+        <PrimaryButton icon={<FiPlus className="text-base" />}>
+          {tab === 'banners' ? 'Thêm banner' : 'Thêm bài viết'}
+        </PrimaryButton>
       </div>
 
       {/* Tabs */}

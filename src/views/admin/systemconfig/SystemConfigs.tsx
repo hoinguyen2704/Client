@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { adminSystemConfigService } from '@/apis';
 import type { SystemConfigResponse, SystemConfigRequest } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 
 export default function SystemConfigs() {
   const [configs, setConfigs] = useState<SystemConfigResponse[]>([]);
@@ -73,9 +74,9 @@ export default function SystemConfigs() {
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <FiSettings className="text-slate-500" /> Cấu hình Hệ thống
         </h1>
-        <button onClick={openCreate} className="px-5 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-sm flex items-center gap-2 w-fit">
-          <FiPlus /> Thêm cấu hình
-        </button>
+        <PrimaryButton onClick={openCreate} className="w-fit" icon={<FiPlus className="text-base" />}>
+          Thêm cấu hình
+        </PrimaryButton>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiEye, FiDownload, FiPackage } from 'react-icons/fi';
+import { FiSearch, FiEye, FiDownload, FiPackage, FiPrinter } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -66,13 +66,18 @@ export default function AdminOrders() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
-        <button onClick={handleExport} className="px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center justify-center gap-2">
-          <FiDownload /> Xuất danh sách
-        </button>
+        <div className="flex gap-3 print:hidden">
+          <button onClick={() => window.print()} className="px-6 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">
+            <FiPrinter /> In danh sách
+          </button>
+          <button onClick={handleExport} className="px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center justify-center gap-2">
+            <FiDownload /> Xuất danh sách
+          </button>
+        </div>
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 print:hidden">
         <div className="relative flex-1">
           <input type="text" placeholder="Tìm kiếm theo mã đơn, tên khách hàng..."
             value={searchQuery}
@@ -101,7 +106,7 @@ export default function AdminOrders() {
           <div>Tổng tiền</div>
           <div>Thanh toán</div>
           <div>Trạng thái</div>
-          <div className="text-right">Thao tác</div>
+          <div className="text-right print:hidden">Thao tác</div>
         </div>
         
         <div className="flex flex-col">

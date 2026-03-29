@@ -3,6 +3,7 @@ import { FiSearch, FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
+import CustomSelect from '@/components/ui/CustomSelect';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 
@@ -76,13 +77,16 @@ export default function Customers() {
           />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
-        <select value={roleFilter} onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }}
-          className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-medium outline-none">
-          <option value="">Tất cả vai trò</option>
-          <option value="USER">Khách hàng</option>
-          <option value="ADMIN">Admin</option>
-          <option value="SHIPPER">Shipper</option>
-        </select>
+        <CustomSelect 
+          value={roleFilter} 
+          onChange={(val) => { setRoleFilter(val); setPage(1); }}
+          options={[
+            { value: '', label: 'Tất cả vai trò' },
+            { value: 'USER', label: 'Khách hàng' },
+            { value: 'ADMIN', label: 'Admin' }
+          ]}
+          className="w-full md:w-48"
+        />
       </div>
 
       {/* Users Table */}
@@ -127,7 +131,6 @@ export default function Customers() {
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
                         user.role === 'ADMIN' ? 'bg-purple-100 text-purple-600' :
-                        user.role === 'SHIPPER' ? 'bg-blue-100 text-blue-600' :
                         'bg-slate-100 text-slate-600'
                       }`}>{user.role}</span>
                     </td>

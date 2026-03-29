@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { CategoryResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import PrimaryButton from '@/components/ui/PrimaryButton';
+import TrashButton from '@/components/ui/TrashButton';
 
 interface SpecTemplateRow {
   specKey: string;
@@ -126,8 +128,11 @@ export default function Categories() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý danh mục</h1>
-        <button onClick={() => { resetForm(); setShowForm(true); }}
-          className="btn btn-primary btn-md gap-2"><FiPlus /> Thêm danh mục</button>
+        <PrimaryButton 
+          onClick={() => { resetForm(); setShowForm(true); }}
+          icon={<FiPlus className="text-base" />}>
+          Thêm danh mục
+        </PrimaryButton>
       </div>
 
       {/* Add/Edit Form */}
@@ -203,14 +208,9 @@ export default function Categories() {
                         placeholder="VD: 6.7 inch OLED, 120Hz"
                         className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                       />
-                      <button
-                        type="button"
-                        onClick={() => removeSpecRow(index)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all"
-                        title="Xóa"
-                      >
-                        <FiTrash2 className="text-sm" />
-                      </button>
+                      <div className="flex items-center justify-center">
+                        <TrashButton onClick={() => removeSpecRow(index)} />
+                      </div>
                     </div>
                   ))}
                 </div>

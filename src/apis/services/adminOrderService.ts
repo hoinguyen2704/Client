@@ -25,6 +25,10 @@ const adminOrderService = {
     to?: string;
   }): Promise<Blob> =>
     adminAxios.get(`${URL}/export`, { params, responseType: 'blob' }),
+
+  /** Xuất hóa đơn PDF cho 1 đơn hàng */
+  exportInvoice: (orderId: string): Promise<Blob> =>
+    adminAxios.get(`${URL}/${orderId}/invoice`, { responseType: 'blob' }),
 };
 
 export default adminOrderService;

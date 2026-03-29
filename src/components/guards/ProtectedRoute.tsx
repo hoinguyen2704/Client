@@ -3,7 +3,7 @@ import useAuthStore from '@/stores/useAuthStore';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'ADMIN' | 'USER' | 'SHIPPER';
+  requiredRole?: 'ADMIN' | 'USER';
 }
 
 /**

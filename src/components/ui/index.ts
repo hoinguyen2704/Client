@@ -10,4 +10,6 @@ export { default as ActionButtons } from './ActionButtons';
 export { default as AdminSearch, FilterButton } from './AdminSearch';
 export { default as AdminPagination } from './AdminPagination';
 export { default as OptimizedImage } from './OptimizedImage';
+export { default as PrimaryButton } from './PrimaryButton';
+export { default as TrashButton } from './TrashButton';
 export * from './types';

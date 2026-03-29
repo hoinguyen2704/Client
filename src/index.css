@@ -16,3 +16,23 @@
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #334155;
 }
+
+@media print {
+  @page {
+    margin: 15mm;
+    size: auto;
+  }
+  body, html {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    background-color: white !important;
+    color: black !important;
+  }
+  aside, header {
+    display: none !important;
+  }
+  /* Remove scrollbars during print to allow natural page breaks */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}

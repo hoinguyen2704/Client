@@ -44,5 +44,5 @@ export interface UserSummary {
   fullName: string;
   email: string;
   avatarUrl?: string;
-  role: 'ADMIN' | 'USER' | 'SHIPPER';
+  role: 'ADMIN' | 'USER';
 }

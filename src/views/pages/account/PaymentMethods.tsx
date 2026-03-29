@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle, FiX } from 'react-icons/fi';
+import { PrimaryButton } from '@/components/ui';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Note: No server endpoint for payment methods - state managed locally
@@ -31,19 +32,16 @@ export default function PaymentMethods() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Phương thức thanh toán</h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary btn-md gap-2"
-        >
-          <FiPlus /> Thêm thẻ mới
-        </button>
+        <PrimaryButton onClick={() => setIsModalOpen(true)} icon={<FiPlus className="text-base" />}>
+          Thêm thẻ mới
+        </PrimaryButton>
       </div>
 
       {methods.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800 shadow-sm">
           <FiCreditCard className="text-5xl text-slate-300 mx-auto mb-4" />
           <h3 className="text-xl font-bold mb-2">Chưa có thẻ thanh toán</h3>
-          <p className="text-slate-500">Thêm thẻ để thanh toán nhanh hơn.</p>
+          <p className="text-slate-500">Bấm thêm thẻ mới để thanh toán nhanh hơn nhé.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -42,7 +42,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
       <button
         type="button"
         onClick={toggleDropdown}
-        className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-sm font-semibold rounded-xl border outline-none focus:ring-2 focus:ring-purple-500/50 shadow-sm transition-all duration-200 ${
+        className={`w-full h-full flex items-center justify-between gap-2 px-3 py-2 text-sm font-semibold rounded-xl border outline-none focus:ring-2 focus:ring-purple-500/50 shadow-sm transition-all duration-200 ${
           selectedOption?.colorClass || 'bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white hover:bg-white dark:hover:bg-slate-700'
         } ${isOpen ? 'ring-2 ring-purple-500/50 scale-[0.98]' : ''}`}
       >

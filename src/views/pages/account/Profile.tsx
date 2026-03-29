@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import userService from '@/apis/services/userService';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
+import CustomSelect from '@/components/ui/CustomSelect';
 import type { UserResponse } from '@/types';
 
 export default function Profile() {
@@ -235,16 +236,17 @@ export default function Profile() {
               </div>
               <div>
                 <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Giới tính</label>
-                <select
+                <CustomSelect
                   value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-medium"
-                >
-                  <option value="">Chưa chọn</option>
-                  <option value="MALE">Nam</option>
-                  <option value="FEMALE">Nữ</option>
-                  <option value="OTHER">Khác</option>
-                </select>
+                  onChange={(v) => setGender(v)}
+                  className="w-full h-12"
+                  options={[
+                    { value: '', label: 'Chưa chọn' },
+                    { value: 'MALE', label: 'Nam' },
+                    { value: 'FEMALE', label: 'Nữ' },
+                    { value: 'OTHER', label: 'Khác' }
+                  ]}
+                />
               </div>
             </div>
 
@@ -390,10 +392,15 @@ export default function Profile() {
                   </div>
                   <span className="font-medium">Ngôn ngữ</span>
                 </div>
-                <select className="h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-medium">
-                  <option value="vi">Tiếng Việt</option>
-                  <option value="en">English</option>
-                </select>
+                <CustomSelect
+                  value="vi"
+                  onChange={() => {}}
+                  className="w-32 h-10"
+                  options={[
+                    { value: 'vi', label: 'Tiếng Việt' },
+                    { value: 'en', label: 'English' }
+                  ]}
+                />
               </div>
 
               <div className="flex items-center justify-between">

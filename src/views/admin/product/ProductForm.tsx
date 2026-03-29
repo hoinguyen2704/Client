@@ -13,6 +13,7 @@ import type {
 } from '@/types';
 import { toast } from 'sonner';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { TrashButton } from '@/components/ui';
 
 interface VariantFormData {
   id?: string;
@@ -719,17 +720,14 @@ export default function ProductForm() {
                     placeholder={getHintForSpec(spec.key)}
                     className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm"
                   />
-                  <button
+                  <TrashButton
                     onClick={() => {
                       const newSpecs = [...specs];
                       newSpecs.splice(index, 1);
                       setSpecs(newSpecs);
                     }}
-                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     title="Xóa thông số này"
-                  >
-                    <FiTrash2 />
-                  </button>
+                  />
                 </div>
               ))}
               
@@ -782,12 +780,9 @@ export default function ProductForm() {
                       </span>
                     </div>
                     {variants.length > 1 && (
-                      <button
-                        onClick={() => removeVariant(index)}
-                        className="opacity-0 group-hover:opacity-100 text-xs font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1"
-                      >
-                        <FiTrash2 className="text-sm" /> Xóa
-                      </button>
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <TrashButton onClick={() => removeVariant(index)} iconOnly={false}>Xóa</TrashButton>
+                      </div>
                     )}
                   </div>
 
@@ -866,7 +861,7 @@ export default function ProductForm() {
               ))}
 
               {variants.length === 0 && (
-                <div className="text-center py-10 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl">
+                <div className="text-center py-10 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl mt-2">
                   <div className="w-14 h-14 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center mx-auto mb-3">
                     <FiPlus className="text-2xl text-purple-500" />
                   </div>

@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo, FiChevronUp, FiChevronDown } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/helpers/format';
+import CustomSelect from '@/components/ui/CustomSelect';
+import PrimaryButton from '@/components/ui/PrimaryButton';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
@@ -18,6 +20,8 @@ export default function Products() {
   const [pageData, setPageData] = useState<PageResponse<ProductResponse> | null>(null);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortDir, setSortDir] = useState('DESC');
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -38,6 +42,7 @@ export default function Products() {
         status: statusFilter || undefined,
         categoryId: categoryFilter || undefined,
         page, size: PAGE_SIZE.LARGE,
+        sortBy, sortDir
       });
       setPageData(res.data);
       setProducts(res.data.data || []);
@@ -47,9 +52,19 @@ export default function Products() {
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, statusFilter, categoryFilter, page]);
+  }, [searchQuery, statusFilter, categoryFilter, page, sortBy, sortDir]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      setSortDir(sortDir === 'ASC' ? 'DESC' : 'ASC');
+    } else {
+      setSortBy(column);
+      setSortDir('ASC');
+    }
+    setPage(1);
+  };
 
   const handleDelete = async (id: string) => {
     toast('Xác nhận xóa sản phẩm này?', {
@@ -141,13 +156,9 @@ export default function Products() {
               Xóa ({selectedItems.length})
             </button>
           )}
-          <Link
-            to="/admin/products/new"
-            className="h-11 px-5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold text-sm flex items-center gap-2 transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:-translate-y-0.5 active:translate-y-0"
-          >
-            <FiPlus className="text-base" />
+          <PrimaryButton href="/admin/products/new" icon={<FiPlus className="text-base" />}>
             Thêm sản phẩm
-          </Link>
+          </PrimaryButton>
         </div>
       </div>
 
@@ -162,25 +173,25 @@ export default function Products() {
           />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
-        <select
+        <CustomSelect
           value={categoryFilter}
-          onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-          className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-medium outline-none"
-        >
-          <option value="">Tất cả danh mục</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>{cat.name}</option>
-          ))}
-        </select>
-        <select
+          onChange={(val) => { setCategoryFilter(val); setPage(1); }}
+          options={[
+            { value: '', label: 'Tất cả danh mục' },
+            ...categories.map((cat) => ({ value: cat.id, label: cat.name }))
+          ]}
+          className="w-full md:w-56"
+        />
+        <CustomSelect
           value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-medium outline-none w-auto min-w-[150px]"
-        >
-          <option value="">Tất cả trạng thái</option>
-          <option value="ACTIVE">Đang bán</option>
-          <option value="INACTIVE">Đã ẩn</option>
-        </select>
+          onChange={(val) => { setStatusFilter(val); setPage(1); }}
+          options={[
+            { value: '', label: 'Tất cả trạng thái' },
+            { value: 'ACTIVE', label: 'Đang bán' },
+            { value: 'INACTIVE', label: 'Đã ẩn' }
+          ]}
+          className="w-full md:w-48"
+        />
       </div>
 
       {/* Products Table */}
@@ -195,11 +206,19 @@ export default function Products() {
                     onChange={handleSelectAll}
                   />
                 </th>
-                <th className="p-4 font-medium">Sản phẩm</th>
+                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('name')}>
+                  <div className="flex items-center gap-1">Sản phẩm {sortBy === 'name' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                </th>
                 <th className="p-4 font-medium">Danh mục</th>
-                <th className="p-4 font-medium">Giá bán</th>
-                <th className="p-4 font-medium">Tồn kho</th>
-                <th className="p-4 font-medium">Trạng thái</th>
+                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('originPrice')}>
+                  <div className="flex items-center gap-1">Giá bán {sortBy === 'originPrice' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                </th>
+                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('totalStock')}>
+                  <div className="flex items-center gap-1">Tồn kho {sortBy === 'totalStock' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                </th>
+                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('status')}>
+                  <div className="flex items-center gap-1">Trạng thái {sortBy === 'status' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                </th>
                 <th className="p-4 font-medium text-right">Thao tác</th>
               </tr>
             </thead>

@@ -3,6 +3,7 @@ import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, 
 import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '@/components/ui/ProductCard';
+import CustomSelect from '@/components/ui/CustomSelect';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
 
@@ -286,19 +287,20 @@ export default function Products() {
             
             <div className="flex items-center gap-3">
               <span className="text-sm text-slate-500">Sắp xếp theo:</span>
-              <div className="relative">
-                <select 
+              <div>
+                <CustomSelect 
                   value={currentSortValue()}
-                  onChange={(e) => handleSortChange(e.target.value)}
-                  className="appearance-none h-10 pl-4 pr-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-purple-500 font-medium cursor-pointer"
-                >
-                  <option value="popular">Phổ biến / Bán chạy</option>
-                  <option value="newest">Mới nhất</option>
-                  <option value="best-rated">Đánh giá cao</option>
-                  <option value="price-asc">Giá tăng dần</option>
-                  <option value="price-desc">Giá giảm dần</option>
-                </select>
-                <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  onChange={(v) => handleSortChange(v)}
+                  dropdownAlign="right"
+                  className="w-56 h-10"
+                  options={[
+                    { value: 'popular', label: 'Phổ biến / Bán chạy' },
+                    { value: 'newest', label: 'Mới nhất' },
+                    { value: 'best-rated', label: 'Đánh giá cao' },
+                    { value: 'price-asc', label: 'Giá tăng dần' },
+                    { value: 'price-desc', label: 'Giá giảm dần' }
+                  ]}
+                />
               </div>
             </div>
           </div>

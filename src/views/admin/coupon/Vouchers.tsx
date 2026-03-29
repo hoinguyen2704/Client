@@ -1,53 +1,87 @@
-import { useState, useEffect, useCallback } from 'react';
-import { FiPlus, FiSearch, FiEdit2, FiTag, FiToggleLeft, FiToggleRight, FiX, FiCheck, FiGlobe, FiLock, FiPackage } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
-import { toast } from 'sonner';
-import adminCouponService from '@/apis/services/adminCouponService';
-import type { CouponResponse, CouponRequest, PageResponse } from '@/types';
-import { formatPrice } from '@/helpers/format';
-import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { useState, useEffect, useCallback } from "react";
+import {
+  FiPlus,
+  FiSearch,
+  FiEdit2,
+  FiTag,
+  FiToggleLeft,
+  FiToggleRight,
+  FiX,
+  FiCheck,
+  FiGlobe,
+  FiLock,
+  FiPackage,
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "motion/react";
+import { toast } from "sonner";
+import adminCouponService from "@/apis/services/adminCouponService";
+import type { CouponResponse, CouponRequest, PageResponse } from "@/types";
+import { formatPrice } from "@/helpers/format";
+import { PAGE_SIZE } from "@/constants/paginationConstants";
+import { PrimaryButton } from "@/components/ui";
 
 export default function AdminVouchers() {
   const [vouchers, setVouchers] = useState<CouponResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState<PageResponse<CouponResponse> | null>(null);
+  const [pageData, setPageData] = useState<PageResponse<CouponResponse> | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<CouponRequest>>({
-    discountType: 'PERCENTAGE',
+    discountType: "PERCENTAGE",
     isPublic: false,
-    applyType: 'ALL',
+    applyType: "ALL",
     applicableProductIds: [],
   });
 
   const fetchVouchers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminCouponService.getAll({ keyword: searchQuery || undefined, page, size: PAGE_SIZE.MEDIUM });
-      setPageData(res.data); setVouchers(res.data.data || []);
-    } catch (err) { console.error('Failed:', err); }
-    finally { setLoading(false); }
+      const res = await adminCouponService.getAll({
+        keyword: searchQuery || undefined,
+        page,
+        size: PAGE_SIZE.MEDIUM,
+      });
+      setPageData(res.data);
+      setVouchers(res.data.data || []);
+    } catch (err) {
+      console.error("Failed:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [searchQuery, page]);
 
-  useEffect(() => { fetchVouchers(); }, [fetchVouchers]);
+  useEffect(() => {
+    fetchVouchers();
+  }, [fetchVouchers]);
 
   const handleToggle = async (id: string) => {
     try {
       await adminCouponService.toggleStatus(id);
-      setVouchers(prev => prev.map(v =>
-        v.id === id ? { ...v, status: v.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' } : v
-      ));
-      toast.success('Cập nhật trạng thái voucher thành công!');
+      setVouchers((prev) =>
+        prev.map((v) =>
+          v.id === id
+            ? { ...v, status: v.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }
+            : v,
+        ),
+      );
+      toast.success("Cập nhật trạng thái voucher thành công!");
     } catch (err) {
       console.error(err);
-      toast.error('Cập nhật trạng thái voucher thất bại!');
+      toast.error("Cập nhật trạng thái voucher thất bại!");
     }
   };
 
   const resetForm = () => {
-    setForm({ discountType: 'PERCENTAGE', isPublic: false, applyType: 'ALL', applicableProductIds: [] });
+    setForm({
+      discountType: "PERCENTAGE",
+      isPublic: false,
+      applyType: "ALL",
+      applicableProductIds: [],
+    });
     setEditingId(null);
   };
 
@@ -63,8 +97,8 @@ export default function AdminVouchers() {
       startDate: v.startDate?.slice(0, 10) as any,
       endDate: v.endDate?.slice(0, 10) as any,
       isPublic: v.isPublic || false,
-      applyType: v.applyType || 'ALL',
-      applicableProductIds: v.applicableProducts?.map(p => p.id) || [],
+      applyType: v.applyType || "ALL",
+      applicableProductIds: v.applicableProducts?.map((p) => p.id) || [],
     });
     setIsModalOpen(true);
   };
@@ -73,32 +107,55 @@ export default function AdminVouchers() {
     try {
       if (editingId) {
         await adminCouponService.update(editingId, form as CouponRequest);
-        toast.success('Cập nhật voucher thành công!');
+        toast.success("Cập nhật voucher thành công!");
       } else {
         await adminCouponService.create(form as CouponRequest);
-        toast.success('Tạo voucher thành công!');
+        toast.success("Tạo voucher thành công!");
       }
-      setIsModalOpen(false); resetForm(); fetchVouchers();
+      setIsModalOpen(false);
+      resetForm();
+      fetchVouchers();
     } catch (err: any) {
       console.error(err);
-      toast.error(err?.response?.data?.message || 'Thao tác voucher thất bại!');
+      toast.error(err?.response?.data?.message || "Thao tác voucher thất bại!");
     }
   };
 
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
+  const formatDate = (d: string) => {
+    try {
+      return new Date(d).toLocaleDateString("vi-VN");
+    } catch {
+      return d;
+    }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý Voucher</h1>
-        <button onClick={() => { resetForm(); setIsModalOpen(true); }} className="btn btn-primary btn-md gap-2"><FiPlus /> Tạo Voucher mới</button>
+        <PrimaryButton
+          onClick={() => {
+            resetForm();
+            setIsModalOpen(true);
+          }}
+          icon={<FiPlus className="text-base" />}
+        >
+          Tạo Voucher mới
+        </PrimaryButton>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
-          <input type="text" placeholder="Tìm kiếm theo mã voucher..."
-            value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase" />
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã voucher..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(1);
+            }}
+            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase"
+          />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
       </div>
@@ -121,40 +178,73 @@ export default function AdminVouchers() {
             <tbody>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
+                  <tr
+                    key={i}
+                    className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse"
+                  >
                     {Array.from({ length: 8 }).map((_, j) => (
-                      <td key={j} className="p-4"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></td>
+                      <td key={j} className="p-4">
+                        <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" />
+                      </td>
                     ))}
                   </tr>
                 ))
               ) : vouchers.length === 0 ? (
-                <tr><td colSpan={8} className="p-12 text-center text-slate-400">Không có voucher nào</td></tr>
+                <tr>
+                  <td colSpan={8} className="p-12 text-center text-slate-400">
+                    Không có voucher nào
+                  </td>
+                </tr>
               ) : (
                 vouchers.map((v) => (
-                  <tr key={v.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <tr
+                    key={v.id}
+                    className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                  >
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600"><FiTag /></div>
-                        <span className="font-bold font-mono tracking-wider">{v.code}</span>
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600">
+                          <FiTag />
+                        </div>
+                        <span className="font-bold font-mono tracking-wider">
+                          {v.code}
+                        </span>
                       </div>
                     </td>
                     <td className="p-4">
-                      <div className="font-bold text-purple-600">{v.discountType === 'PERCENTAGE' ? `${v.discountValue}%` : formatPrice(v.discountValue)}</div>
-                      <div className="text-xs text-slate-500">{v.discountType === 'PERCENTAGE' ? 'Giảm giá' : 'Cố định'}</div>
+                      <div className="font-bold text-purple-600">
+                        {v.discountType === "PERCENTAGE"
+                          ? `${v.discountValue}%`
+                          : formatPrice(v.discountValue)}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {v.discountType === "PERCENTAGE"
+                          ? "Giảm giá"
+                          : "Cố định"}
+                      </div>
                     </td>
                     <td className="p-4">
                       <div className="flex flex-col items-center">
-                        <span className="font-bold">{v.usedCount}/{v.usageLimit || '∞'}</span>
+                        <span className="font-bold">
+                          {v.usedCount}/{v.usageLimit || "∞"}
+                        </span>
                         {v.usageLimit && (
                           <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mt-1 overflow-hidden max-w-[60px]">
-                            <div className="h-full bg-purple-600 rounded-full" style={{ width: `${(v.usedCount / v.usageLimit) * 100}%` }} />
+                            <div
+                              className="h-full bg-purple-600 rounded-full"
+                              style={{
+                                width: `${(v.usedCount / v.usageLimit) * 100}%`,
+                              }}
+                            />
                           </div>
                         )}
                       </div>
                     </td>
                     <td className="p-4 text-sm text-slate-500">
-                      <div>Từ: {v.startDate ? formatDate(v.startDate) : '—'}</div>
-                      <div>Đến: {v.endDate ? formatDate(v.endDate) : '—'}</div>
+                      <div>
+                        Từ: {v.startDate ? formatDate(v.startDate) : "—"}
+                      </div>
+                      <div>Đến: {v.endDate ? formatDate(v.endDate) : "—"}</div>
                     </td>
                     <td className="p-4 text-center">
                       {v.isPublic ? (
@@ -168,25 +258,40 @@ export default function AdminVouchers() {
                       )}
                     </td>
                     <td className="p-4 text-center">
-                      {v.applyType === 'SPECIFIC_PRODUCTS' ? (
+                      {v.applyType === "SPECIFIC_PRODUCTS" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                          <FiPackage className="text-[10px]" /> {v.applicableProducts?.length || 0} SP
+                          <FiPackage className="text-[10px]" />{" "}
+                          {v.applicableProducts?.length || 0} SP
                         </span>
                       ) : (
                         <span className="text-xs text-slate-400">Tất cả</span>
                       )}
                     </td>
                     <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${v.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
-                        {v.status === 'ACTIVE' ? 'Đang hoạt động' : 'Tạm dừng'}
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold ${v.status === "ACTIVE" ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-600"}`}
+                      >
+                        {v.status === "ACTIVE" ? "Đang hoạt động" : "Tạm dừng"}
                       </span>
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleToggle(v.id)} className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                          {v.status === 'ACTIVE' ? <FiToggleRight className="text-green-500" /> : <FiToggleLeft />}
+                        <button
+                          onClick={() => handleToggle(v.id)}
+                          className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                        >
+                          {v.status === "ACTIVE" ? (
+                            <FiToggleRight className="text-green-500" />
+                          ) : (
+                            <FiToggleLeft />
+                          )}
                         </button>
-                        <button onClick={() => openEditModal(v)} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><FiEdit2 /></button>
+                        <button
+                          onClick={() => openEditModal(v)}
+                          className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                        >
+                          <FiEdit2 />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -198,13 +303,38 @@ export default function AdminVouchers() {
 
         {pageData && pageData.lastPage > 1 && (
           <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
-            <div>Trang {page}/{pageData.lastPage}</div>
+            <div>
+              Trang {page}/{pageData.lastPage}
+            </div>
             <div className="flex gap-1">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&lt;</button>
-              {Array.from({ length: Math.min(pageData.lastPage, 5) }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? 'bg-purple-600 text-white font-medium shadow-sm' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50"
+              >
+                &lt;
+              </button>
+              {Array.from(
+                { length: Math.min(pageData.lastPage, 5) },
+                (_, i) => i + 1,
+              ).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`w-8 h-8 flex items-center justify-center rounded-lg ${p === page ? "bg-purple-600 text-white font-medium shadow-sm" : "hover:bg-slate-100 dark:hover:bg-slate-800"}`}
+                >
+                  {p}
+                </button>
               ))}
-              <button onClick={() => setPage(p => Math.min(pageData.lastPage, p + 1))} disabled={page === pageData.lastPage} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50">&gt;</button>
+              <button
+                onClick={() =>
+                  setPage((p) => Math.min(pageData.lastPage, p + 1))
+                }
+                disabled={page === pageData.lastPage}
+                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50"
+              >
+                &gt;
+              </button>
             </div>
           </div>
         )}
@@ -214,18 +344,39 @@ export default function AdminVouchers() {
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col"
+            >
               <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <h3 className="text-xl font-bold">{editingId ? 'Chỉnh sửa Voucher' : 'Tạo Voucher Mới'}</h3>
-                <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"><FiX className="text-xl" /></button>
+                <h3 className="text-xl font-bold">
+                  {editingId ? "Chỉnh sửa Voucher" : "Tạo Voucher Mới"}
+                </h3>
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    resetForm();
+                  }}
+                  className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"
+                >
+                  <FiX className="text-xl" />
+                </button>
               </div>
               <div className="p-6 overflow-y-auto flex-1 space-y-5">
                 {/* Code */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Mã Voucher</label>
-                  <input type="text" placeholder="VD: SUMMER2024" value={form.code || ''} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none uppercase font-mono" />
+                  <input
+                    type="text"
+                    placeholder="VD: SUMMER2024"
+                    value={form.code || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, code: e.target.value.toUpperCase() })
+                    }
+                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none uppercase font-mono"
+                  />
                 </div>
 
                 {/* Discount Type */}
@@ -233,11 +384,27 @@ export default function AdminVouchers() {
                   <label className="text-sm font-medium">Loại Giảm Giá</label>
                   <div className="flex gap-4">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name="discountType" checked={form.discountType === 'PERCENTAGE'} onChange={() => setForm({ ...form, discountType: 'PERCENTAGE' })} className="text-purple-600" />
+                      <input
+                        type="radio"
+                        name="discountType"
+                        checked={form.discountType === "PERCENTAGE"}
+                        onChange={() =>
+                          setForm({ ...form, discountType: "PERCENTAGE" })
+                        }
+                        className="text-purple-600"
+                      />
                       <span className="text-sm">Theo %</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name="discountType" checked={form.discountType === 'FIXED_AMOUNT'} onChange={() => setForm({ ...form, discountType: 'FIXED_AMOUNT' })} className="text-purple-600" />
+                      <input
+                        type="radio"
+                        name="discountType"
+                        checked={form.discountType === "FIXED_AMOUNT"}
+                        onChange={() =>
+                          setForm({ ...form, discountType: "FIXED_AMOUNT" })
+                        }
+                        className="text-purple-600"
+                      />
                       <span className="text-sm">Tiền cố định</span>
                     </label>
                   </div>
@@ -247,27 +414,57 @@ export default function AdminVouchers() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Giá trị giảm</label>
-                    <input type="number" placeholder="VD: 10" value={form.discountValue || ''} onChange={(e) => setForm({ ...form, discountValue: +e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
+                    <input
+                      type="number"
+                      placeholder="VD: 10"
+                      value={form.discountValue || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, discountValue: +e.target.value })
+                      }
+                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Đơn tối thiểu</label>
-                    <input type="number" placeholder="500000" value={form.minOrderValue || ''} onChange={(e) => setForm({ ...form, minOrderValue: +e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
+                    <input
+                      type="number"
+                      placeholder="500000"
+                      value={form.minOrderValue || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, minOrderValue: +e.target.value })
+                      }
+                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                    />
                   </div>
                 </div>
 
                 {/* Limit + Max */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Giới hạn sử dụng</label>
-                    <input type="number" placeholder="100" value={form.usageLimit || ''} onChange={(e) => setForm({ ...form, usageLimit: +e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
+                    <label className="text-sm font-medium">
+                      Giới hạn sử dụng
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="100"
+                      value={form.usageLimit || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, usageLimit: +e.target.value })
+                      }
+                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Giảm tối đa</label>
-                    <input type="number" placeholder="100000" value={form.maxDiscountAmount || ''} onChange={(e) => setForm({ ...form, maxDiscountAmount: +e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
+                    <input
+                      type="number"
+                      placeholder="100000"
+                      value={form.maxDiscountAmount || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, maxDiscountAmount: +e.target.value })
+                      }
+                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                    />
                   </div>
                 </div>
 
@@ -275,13 +472,25 @@ export default function AdminVouchers() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Ngày bắt đầu</label>
-                    <input type="date" value={form.startDate || ''} onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
+                    <input
+                      type="date"
+                      value={form.startDate || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, startDate: e.target.value })
+                      }
+                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Ngày kết thúc</label>
-                    <input type="date" value={form.endDate || ''} onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
+                    <input
+                      type="date"
+                      value={form.endDate || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, endDate: e.target.value })
+                      }
+                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+                    />
                   </div>
                 </div>
 
@@ -290,20 +499,29 @@ export default function AdminVouchers() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-sm font-bold flex items-center gap-2">
-                        {form.isPublic ? <FiGlobe className="text-blue-500" /> : <FiLock className="text-slate-400" />}
+                        {form.isPublic ? (
+                          <FiGlobe className="text-blue-500" />
+                        ) : (
+                          <FiLock className="text-slate-400" />
+                        )}
                         Hiển thị công khai
                       </div>
                       <p className="text-xs text-slate-500 mt-0.5">
                         {form.isPublic
-                          ? 'Voucher sẽ hiển thị trên trang của khách hàng, họ có thể lưu & sử dụng'
-                          : 'Chỉ khi khách hàng nhập đúng mã mới dùng được'}
+                          ? "Voucher sẽ hiển thị trên trang của khách hàng, họ có thể lưu & sử dụng"
+                          : "Chỉ khi khách hàng nhập đúng mã mới dùng được"}
                       </p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, isPublic: !form.isPublic })}
-                      className={`relative w-12 h-6 rounded-full transition-colors ${form.isPublic ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
-                      <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.isPublic ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                      onClick={() =>
+                        setForm({ ...form, isPublic: !form.isPublic })
+                      }
+                      className={`relative w-12 h-6 rounded-full transition-colors ${form.isPublic ? "bg-blue-500" : "bg-slate-300 dark:bg-slate-600"}`}
+                    >
+                      <span
+                        className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.isPublic ? "translate-x-6" : "translate-x-0.5"}`}
+                      />
                     </button>
                   </div>
                 </div>
@@ -314,33 +532,70 @@ export default function AdminVouchers() {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, applyType: 'ALL', applicableProductIds: [] })}
-                      className={`p-3 rounded-xl border-2 text-left transition-all ${form.applyType === 'ALL'
-                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/30'
-                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
-                      <div className="text-sm font-bold">🛒 Tất cả sản phẩm</div>
-                      <div className="text-xs text-slate-500 mt-0.5">Áp dụng cho toàn bộ đơn hàng</div>
+                      onClick={() =>
+                        setForm({
+                          ...form,
+                          applyType: "ALL",
+                          applicableProductIds: [],
+                        })
+                      }
+                      className={`p-3 rounded-xl border-2 text-left transition-all ${
+                        form.applyType === "ALL"
+                          ? "border-purple-500 bg-purple-50 dark:bg-purple-950/30"
+                          : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      <div className="text-sm font-bold">
+                        🛒 Tất cả sản phẩm
+                      </div>
+                      <div className="text-xs text-slate-500 mt-0.5">
+                        Áp dụng cho toàn bộ đơn hàng
+                      </div>
                     </button>
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, applyType: 'SPECIFIC_PRODUCTS' })}
-                      className={`p-3 rounded-xl border-2 text-left transition-all ${form.applyType === 'SPECIFIC_PRODUCTS'
-                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/30'
-                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
-                      <div className="text-sm font-bold">📦 Sản phẩm cụ thể</div>
-                      <div className="text-xs text-slate-500 mt-0.5">Chỉ giảm cho SP được chọn</div>
+                      onClick={() =>
+                        setForm({ ...form, applyType: "SPECIFIC_PRODUCTS" })
+                      }
+                      className={`p-3 rounded-xl border-2 text-left transition-all ${
+                        form.applyType === "SPECIFIC_PRODUCTS"
+                          ? "border-purple-500 bg-purple-50 dark:bg-purple-950/30"
+                          : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      <div className="text-sm font-bold">
+                        📦 Sản phẩm cụ thể
+                      </div>
+                      <div className="text-xs text-slate-500 mt-0.5">
+                        Chỉ giảm cho SP được chọn
+                      </div>
                     </button>
                   </div>
-                  {form.applyType === 'SPECIFIC_PRODUCTS' && (
+                  {form.applyType === "SPECIFIC_PRODUCTS" && (
                     <div className="text-xs text-amber-600 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50">
-                      💡 Tính năng chọn sản phẩm cụ thể sẽ được cập nhật trong phiên bản tiếp theo. Hiện tại voucher sẽ áp dụng cho tất cả SP.
+                      💡 Tính năng chọn sản phẩm cụ thể sẽ được cập nhật trong
+                      phiên bản tiếp theo. Hiện tại voucher sẽ áp dụng cho tất
+                      cả SP.
                     </div>
                   )}
                 </div>
               </div>
               <div className="p-6 border-t border-slate-100 dark:border-slate-800 shrink-0 flex justify-end gap-3">
-                <button onClick={() => { setIsModalOpen(false); resetForm(); }} className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 transition-colors">Hủy</button>
-                <button onClick={handleSubmit} className="btn btn-primary btn-md gap-2"><FiCheck /> {editingId ? 'Cập nhật' : 'Lưu Voucher'}</button>
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    resetForm();
+                  }}
+                  className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 transition-colors"
+                >
+                  Hủy
+                </button>
+                <PrimaryButton
+                  onClick={handleSubmit}
+                  icon={<FiCheck className="text-base" />}
+                >
+                  {editingId ? "Cập nhật" : "Lưu Voucher"}
+                </PrimaryButton>
               </div>
             </motion.div>
           </div>

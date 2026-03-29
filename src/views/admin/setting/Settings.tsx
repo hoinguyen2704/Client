@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FiSave, FiSettings, FiGlobe, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 export default function Settings() {
   const [paymentMethods, setPaymentMethods] = useState({
@@ -15,6 +16,10 @@ export default function Settings() {
   });
 
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [currency, setCurrency] = useState('VND');
+  const [algorithm, setAlgorithm] = useState('collaborative');
+  const [algoPriority, setAlgoPriority] = useState(70);
+  const [algoExploration, setAlgoExploration] = useState(30);
 
   return (
     <div className="space-y-6">
@@ -43,10 +48,15 @@ export default function Settings() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Đơn vị tiền tệ</label>
-                <select className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
-                  <option value="VND">VNĐ (Việt Nam Đồng)</option>
-                  <option value="USD">USD (Đô la Mỹ)</option>
-                </select>
+                <CustomSelect
+                  value={currency}
+                  onChange={setCurrency}
+                  options={[
+                    { value: 'VND', label: 'VNĐ (Việt Nam Đồng)' },
+                    { value: 'USD', label: 'USD (Đô la Mỹ)' }
+                  ]}
+                  className="w-full"
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Thuế mặc định (%)</label>
@@ -208,28 +218,33 @@ export default function Settings() {
               <div className="p-6 space-y-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Thuật toán cốt lõi</label>
-                  <select className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-                    <option value="collaborative">Collaborative Filtering (Hành vi người dùng)</option>
-                    <option value="content">Content-based (Đặc trưng sản phẩm)</option>
-                    <option value="hybrid">Hybrid (Kết hợp)</option>
-                  </select>
+                  <CustomSelect
+                    value={algorithm}
+                    onChange={setAlgorithm}
+                    options={[
+                      { value: 'collaborative', label: 'Collaborative Filtering' },
+                      { value: 'content', label: 'Content-based Filtering' },
+                      { value: 'hybrid', label: 'Hybrid MLOps Model' }
+                    ]}
+                    className="w-full"
+                  />
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <label className="font-medium">Độ ưu tiên sản phẩm mới</label>
-                      <span className="text-indigo-600 font-bold">70%</span>
+                      <span className="text-indigo-600 font-bold">{algoPriority}%</span>
                     </div>
-                    <input type="range" min="0" max="100" defaultValue="70" className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
+                    <input type="range" min="0" max="100" value={algoPriority} onChange={(e) => setAlgoPriority(Number(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <label className="font-medium">Độ đa dạng gợi ý (Exploration)</label>
-                      <span className="text-indigo-600 font-bold">30%</span>
+                      <span className="text-indigo-600 font-bold">{algoExploration}%</span>
                     </div>
-                    <input type="range" min="0" max="100" defaultValue="30" className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
+                    <input type="range" min="0" max="100" value={algoExploration} onChange={(e) => setAlgoExploration(Number(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
                   </div>
                 </div>
               </div>

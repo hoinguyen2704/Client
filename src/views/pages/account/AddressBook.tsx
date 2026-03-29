@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiCheck, FiX } from 'react-icons/fi';
+import { PrimaryButton } from '@/components/ui';
 import { motion, AnimatePresence } from 'motion/react';
 import addressService from '@/apis/services/addressService';
 import type { AddressResponse, AddressRequest } from '@/types';
@@ -50,18 +51,14 @@ export default function AddressBook() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Sổ địa chỉ</h1>
           <p className="text-sm text-slate-500 mt-1">Quản lý địa chỉ nhận hàng của bạn</p>
         </div>
-        <button 
-          onClick={() => { resetForm(); setShowForm(true); }} 
-          className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-purple-500/20 transform hover:-translate-y-0.5"
-        >
-          <FiPlus className="text-xl" /> 
-          <span>Thêm địa chỉ mới</span>
-        </button>
+        <PrimaryButton onClick={() => { resetForm(); setShowForm(true); }} icon={<FiPlus className="text-base" />}>
+          Thêm địa chỉ mới
+        </PrimaryButton>
       </div>
 
       {loading ? (
