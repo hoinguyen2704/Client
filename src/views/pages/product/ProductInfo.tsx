@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus } from 'react-icons/fi';
+import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus, FiZap } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/helpers/format';
@@ -9,6 +9,7 @@ import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 import { cartService } from '@/apis';
+import { PrimaryButton } from '@/components/ui';
 
 export default function ProductInfo({ product }: { product: ProductResponse }) {
   const navigate = useNavigate();
@@ -227,10 +228,11 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
           className="flex-1 h-14 rounded-2xl border-2 border-purple-500 text-purple-600 dark:text-purple-400 font-bold text-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
           <FiShoppingCart className="text-xl" /> Thêm vào giỏ
         </button>
-        <button onClick={handleBuyNow} disabled={stock === 0}
-          className="btn btn-primary flex-1 h-14 text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+        <PrimaryButton onClick={handleBuyNow} disabled={stock === 0}
+          icon={<FiZap className="text-xl" />}
+          className="flex-1 !h-14 !rounded-2xl !text-lg">
           Mua ngay
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   );
