@@ -5,6 +5,7 @@ import LogoIcon from '@/components/ui/LogoIcon';
 import { motion } from 'motion/react';
 import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
+import { SHOP } from '@/constants/shopConstants';
 
 const features = [
   { icon: FiShield, title: 'Bảo mật tuyệt đối', desc: 'Mã hóa SSL 256-bit bảo vệ mọi giao dịch' },
@@ -107,7 +108,7 @@ export default function Register() {
                 <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
                   <LogoIcon className="w-8 h-8" />
                 </div>
-                <span className="text-3xl font-bold">Hozitech</span>
+                <span className="text-3xl font-bold">{SHOP.name}</span>
               </Link>
             </div>
 

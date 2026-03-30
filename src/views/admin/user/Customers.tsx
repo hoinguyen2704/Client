@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
 import CustomSelect from '@/components/ui/CustomSelect';
-import { AdminSearch, AdminPagination } from '@/components/ui';
+import { AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton } from '@/components/ui';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { formatDate } from '@/utils/date';
 
 export default function Customers() {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -58,7 +59,7 @@ export default function Customers() {
     } catch (err) { console.error('Export failed:', err); }
   };
 
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
+
 
   return (
     <div className="space-y-6">
@@ -107,13 +108,7 @@ export default function Customers() {
             </thead>
             <tbody>
               {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                    {Array.from({ length: 7 }).map((_, j) => (
-                      <td key={j} className="p-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    ))}
-                  </tr>
-                ))
+                <TableRowSkeleton rows={5} cols={7} />
               ) : users.length === 0 ? (
                 <tr><td colSpan={7} className="p-12 text-center text-slate-400">Không có người dùng nào</td></tr>
               ) : (
@@ -130,16 +125,11 @@ export default function Customers() {
                     <td className="p-4 text-slate-500">{user.email}</td>
                     <td className="p-4 text-slate-500">{user.phoneNumber || '—'}</td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
-                        user.role === 'ADMIN' ? 'bg-purple-100 text-purple-600' :
-                        'bg-slate-100 text-slate-600'
-                      }`}>{user.role}</span>
+                      <StatusBadge status={user.role === 'ADMIN' ? 'admin' : 'user'} />
                     </td>
                     <td className="p-4 text-slate-500">{formatDate(user.createdAt)}</td>
                     <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        user.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                      }`}>{user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}</span>
+                      <StatusBadge status={user.status === 'ACTIVE' ? 'active' : 'banned'} label={user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'} />
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2">

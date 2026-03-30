@@ -7,6 +7,7 @@ import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import { useClickOutside } from '@/hooks';
 import type { HeaderProps } from './types';
+import { SHOP } from '@/constants/shopConstants';
 
 const navItems = [
   { path: '/', label: 'Trang chủ' },
@@ -54,7 +55,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
               <LogoIcon className="w-6 h-6" />
             </div>
             <span className="text-2xl font-bold text-[#2539e6] hidden sm:block">
-              Hozitech
+              {SHOP.name}
             </span>
           </Link>
 

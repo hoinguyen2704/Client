@@ -9,6 +9,7 @@ import {
   FaCcPaypal,
 } from "react-icons/fa";
 import LogoIcon from "../ui/LogoIcon";
+import { SHOP } from '@/constants/shopConstants';
 
 export default function Footer() {
   return (
@@ -21,11 +22,11 @@ export default function Footer() {
               <LogoIcon className="w-6 h-6" />
             </div>
             <span className="text-2xl font-bold text-[#2539e6] dark:text-white">
-              Hozitech
+              {SHOP.name}
             </span>
           </Link>
           <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-            Hozitech là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm
+            {SHOP.name} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm
             công nghệ chính hãng, uy tín và chất lượng hàng đầu Việt Nam.
           </p>
           <div className="space-y-2 text-sm">
@@ -43,7 +44,7 @@ export default function Footer() {
             </p>
             <p>
               <strong className="text-slate-800 dark:text-white">Email:</strong>{" "}
-              support@hozitech.com
+              {SHOP.supportEmail}
             </p>
           </div>
         </div>
@@ -51,7 +52,7 @@ export default function Footer() {
         {/* Col 2: Về chúng tôi */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-sm">
-            Về Hozitech
+            Về {SHOP.name}
           </h3>
           <ul className="space-y-3 text-sm">
             <li>
@@ -190,7 +191,7 @@ export default function Footer() {
       </div>
 
       <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-        <p>© 2026 Hozitech. All rights reserved.</p>
+        <p>{SHOP.copyright}</p>
         <p>Thiết kế và phát triển bởi Hội Nguyễn</p>
       </div>
     </footer>

@@ -2,6 +2,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { FiGrid, FiShoppingBag, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap, FiSliders } from 'react-icons/fi';
 import LogoIcon from '../ui/LogoIcon';
 import useUIStore from '@/stores/useUIStore';
+import { SHOP } from '@/constants/shopConstants';
 import { cn } from '@/utils/cn';
 
 const menuItems = [
@@ -49,7 +50,7 @@ export default function AdminSidebar() {
               <LogoIcon className="w-6 h-6" />
             </div>
             {!sidebarCollapsed && (
-              <span className="text-xl font-bold text-[#2539e6] whitespace-nowrap">Hozitech Admin</span>
+              <span className="text-xl font-bold text-[#2539e6] whitespace-nowrap">{SHOP.name} Admin</span>
             )}
           </Link>
           <button

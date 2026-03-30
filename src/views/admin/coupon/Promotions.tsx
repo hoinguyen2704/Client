@@ -5,7 +5,8 @@ import adminCouponService from '@/apis/services/adminCouponService';
 import type { CouponResponse, PageResponse } from '@/types';
 import { formatPrice } from '@/helpers/format';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminSearch, AdminPagination, PrimaryButton, ActionButtons } from '@/components/ui';
+import { AdminSearch, AdminPagination, PrimaryButton, ActionButtons, StatusBadge, TableRowSkeleton } from '@/components/ui';
+import { formatDate } from '@/utils/date';
 
 export default function Promotions() {
   const [coupons, setCoupons] = useState<CouponResponse[]>([]);
@@ -39,7 +40,7 @@ export default function Promotions() {
     }
   };
 
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
+
 
   return (
     <div className="space-y-6">
@@ -70,13 +71,7 @@ export default function Promotions() {
             </thead>
             <tbody>
               {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                    {Array.from({ length: 7 }).map((_, j) => (
-                      <td key={j} className="p-4"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    ))}
-                  </tr>
-                ))
+                <TableRowSkeleton rows={5} cols={7} />
               ) : coupons.length === 0 ? (
                 <tr><td colSpan={7} className="p-12 text-center text-slate-400">Không có mã giảm giá nào</td></tr>
               ) : (
@@ -88,9 +83,7 @@ export default function Promotions() {
                     <td className="p-4">{coupon.usedCount}/{coupon.usageLimit}</td>
                     <td className="p-4 text-sm text-slate-500">{formatDate(coupon.startDate)} - {formatDate(coupon.endDate)}</td>
                     <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${coupon.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
-                        {coupon.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm dừng'}
-                      </span>
+                      <StatusBadge status={coupon.status === 'ACTIVE' ? 'active' : 'inactive'} label={coupon.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm dừng'} />
                     </td>
                     <td className="p-4 text-right">
                         <ActionButtons

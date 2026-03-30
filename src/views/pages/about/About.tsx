@@ -1,19 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { SHOP } from '@/constants/shopConstants';
 
 export default function About() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8 text-center">Giới thiệu về Hozitech</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">Giới thiệu về {SHOP.name}</h1>
       
       <div className="prose prose-blue max-w-none dark:prose-invert">
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Về chúng tôi</h2>
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            Hozitech là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm công nghệ, thiết bị điện tử, linh kiện máy tính và phụ kiện chính hãng. Chúng tôi cam kết mang đến cho khách hàng những sản phẩm chất lượng cao với giá cả cạnh tranh nhất trên thị trường.
+            {SHOP.name} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm công nghệ, thiết bị điện tử, linh kiện máy tính và phụ kiện chính hãng. Chúng tôi cam kết mang đến cho khách hàng những sản phẩm chất lượng cao với giá cả cạnh tranh nhất trên thị trường.
           </p>
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            Được thành lập với sứ mệnh kết nối người tiêu dùng với những công nghệ tiên tiến nhất, Hozitech không ngừng nỗ lực cải thiện chất lượng dịch vụ, đa dạng hóa sản phẩm và tối ưu hóa trải nghiệm mua sắm trực tuyến.
+            Được thành lập với sứ mệnh kết nối người tiêu dùng với những công nghệ tiên tiến nhất, {SHOP.name} không ngừng nỗ lực cải thiện chất lượng dịch vụ, đa dạng hóa sản phẩm và tối ưu hóa trải nghiệm mua sắm trực tuyến.
           </p>
         </section>
 
@@ -30,12 +31,12 @@ export default function About() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Về chủ sở hữu</h2>
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            Hozitech được sáng lập và điều hành bởi đội ngũ những người đam mê công nghệ, có nhiều năm kinh nghiệm trong lĩnh vực bán lẻ thiết bị điện tử và thương mại điện tử. Chúng tôi hiểu rõ nhu cầu của khách hàng và luôn đặt lợi ích của người tiêu dùng lên hàng đầu.
+            {SHOP.name} được sáng lập và điều hành bởi đội ngũ những người đam mê công nghệ, có nhiều năm kinh nghiệm trong lĩnh vực bán lẻ thiết bị điện tử và thương mại điện tử. Chúng tôi hiểu rõ nhu cầu của khách hàng và luôn đặt lợi ích của người tiêu dùng lên hàng đầu.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Tại sao chọn Hozitech?</h2>
+          <h2 className="text-2xl font-semibold mb-4">Tại sao chọn {SHOP.name}?</h2>
           <ul className="list-disc pl-6 text-gray-600 dark:text-gray-300 space-y-2">
             <li>Sản phẩm chính hãng 100%, nguồn gốc xuất xứ rõ ràng.</li>
             <li>Chính sách bảo hành uy tín, hỗ trợ đổi trả dễ dàng.</li>

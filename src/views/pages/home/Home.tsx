@@ -4,6 +4,7 @@ import { productService, cmsService } from '@/apis';
 import type { ProductResponse, BannerResponse } from '@/types';
 import HeroBanner from './HeroBanner';
 import ProductSection from './ProductSection';
+import { SHOP } from '@/constants/shopConstants';
 
 export default function Home() {
   const [banners, setBanners] = useState<BannerResponse[]>([]);
@@ -47,7 +48,7 @@ export default function Home() {
           subtitle: '',
         }))
     : [
-        { id: 0, image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1200&h=500&fit=crop', title: 'Công Nghệ Mới Nhất', subtitle: 'Khám phá sản phẩm hot nhất tại Hozitech' },
+        { id: 0, image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1200&h=500&fit=crop', title: 'Công Nghệ Mới Nhất', subtitle: `Khám phá sản phẩm hot nhất tại ${SHOP.name}` },
         { id: 1, image: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=1200&h=500&fit=crop', title: 'Laptop Cao Cấp', subtitle: 'Hiệu năng vượt trội, giá tốt nhất' },
       ];
 

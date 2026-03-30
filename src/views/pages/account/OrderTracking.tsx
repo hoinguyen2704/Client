@@ -4,6 +4,7 @@ import { FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiArrowLeft } from 'react
 import { formatPrice } from '@/helpers/format';
 import orderService from '@/apis/services/orderService';
 import type { OrderResponse } from '@/types';
+import { formatDateFull as formatDate } from '@/utils/date';
 import { ORDER_TRACKING_STEPS, ORDER_STATUS_INDEX } from '@/constants/orderConstants';
 
 export default function OrderTracking() {
@@ -16,9 +17,6 @@ export default function OrderTracking() {
     setLoading(true);
     orderService.getByNumber(id).then(res => setOrder(res.data)).catch(() => setOrder(null)).finally(() => setLoading(false));
   }, [id]);
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch { return d; } };
-
   if (loading) return (
     <div className="space-y-6">
       <div className="h-8 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />

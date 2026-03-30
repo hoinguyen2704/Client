@@ -18,7 +18,25 @@ const statusConfig: Record<StatusType, { label: string; className: string }> = {
   closed:      { label: 'Đóng',        className: 'bg-slate-100 text-slate-600' },
   vip:         { label: 'VIP',         className: 'bg-purple-100 text-purple-600' },
   banned:      { label: 'Bị khóa',    className: 'bg-red-100 text-red-600' },
+
+  // Generic reusable statuses
+  published:   { label: 'Đã xuất bản',  className: 'bg-green-100 text-green-600' },
+  draft:       { label: 'Bản nháp',     className: 'bg-orange-100 text-orange-600' },
+  hidden:      { label: 'Đã ẩn',        className: 'bg-slate-100 text-slate-600' },
+  upcoming:    { label: 'Sắp diễn ra',  className: 'bg-blue-100 text-blue-600' },
+  ended:       { label: 'Đã kết thúc',  className: 'bg-slate-100 text-slate-500' },
+  approved:    { label: 'Đã duyệt',     className: 'bg-green-100 text-green-600' },
+  spam:        { label: 'Spam',          className: 'bg-red-100 text-red-600' },
+  admin:       { label: 'Admin',         className: 'bg-purple-100 text-purple-600' },
+  user:        { label: 'User',          className: 'bg-slate-100 text-slate-600' },
   
+  // Uppercase variants (for enums from backend)
+  ACTIVE:    { label: 'Hoạt động',     className: 'bg-green-100 text-green-600' },
+  INACTIVE:  { label: 'Đã ẩn',        className: 'bg-slate-100 text-slate-600' },
+  UPCOMING:  { label: 'Sắp diễn ra',  className: 'bg-blue-100 text-blue-600' },
+  ENDED:     { label: 'Đã kết thúc',  className: 'bg-slate-100 text-slate-500' },
+  EXPIRED:   { label: 'Hết hạn',      className: 'bg-slate-100 text-slate-500' },
+
   // Order Statuses (Premium Redesign)
   PENDING:   { label: 'Chờ xử lý',   className: 'bg-amber-50 uppercase tracking-wider text-amber-600 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400' },
   CONFIRMED: { label: 'Đã xác nhận', className: 'bg-indigo-50 uppercase tracking-wider text-indigo-600 border border-indigo-200 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400' },

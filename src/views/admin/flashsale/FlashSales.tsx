@@ -6,7 +6,7 @@ import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse, PageResponse } from '@/types';
 import type { FlashSaleRequest } from '@/apis/services/adminFlashSaleService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination, ActionButtons, PrimaryButton } from '@/components/ui';
+import { AdminPagination, ActionButtons, PrimaryButton, ConfirmDialog, StatusBadge } from '@/components/ui';
 
 export default function FlashSales() {
   const [sales, setSales] = useState<FlashSaleResponse[]>([]);
@@ -16,6 +16,7 @@ export default function FlashSales() {
   const [form, setForm] = useState<FlashSaleRequest>({ name: '', startTime: '', endTime: '' });
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<FlashSaleResponse> | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const fetchSales = useCallback(async () => {
     setLoading(true);
@@ -64,7 +65,7 @@ export default function FlashSales() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bạn có chắc muốn xóa Flash Sale này?')) return;
+    setDeleteTarget(null);
     try {
       await adminFlashSaleService.delete(id);
       toast.success('Xóa Flash Sale thành công!');
@@ -75,23 +76,7 @@ export default function FlashSales() {
     }
   };
 
-  const statusColor = (status: string) => {
-    switch (status) {
-      case 'ACTIVE': return 'bg-green-100 text-green-600';
-      case 'UPCOMING': return 'bg-blue-100 text-blue-600';
-      case 'ENDED': return 'bg-slate-100 text-slate-500';
-      default: return 'bg-slate-100 text-slate-500';
-    }
-  };
 
-  const statusLabel = (status: string) => {
-    switch (status) {
-      case 'ACTIVE': return 'Đang diễn ra';
-      case 'UPCOMING': return 'Sắp diễn ra';
-      case 'ENDED': return 'Đã kết thúc';
-      default: return status;
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -132,9 +117,7 @@ export default function FlashSales() {
                   <td className="p-4 text-sm text-slate-500">{new Date(sale.endTime).toLocaleString('vi-VN')}</td>
                   <td className="p-4 text-sm font-medium">{sale.items?.length || 0} SP</td>
                   <td className="p-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColor(sale.status)}`}>
-                      {statusLabel(sale.status)}
-                    </span>
+                    <StatusBadge status={sale.status} />
                   </td>
                   <td className="p-4">
                     <ActionButtons
@@ -145,7 +128,7 @@ export default function FlashSales() {
                         },
                         {
                           type: 'delete',
-                          onClick: () => handleDelete(sale.id)
+                          onClick: () => setDeleteTarget(sale.id)
                         }
                       ]}
                     />
@@ -215,6 +198,16 @@ export default function FlashSales() {
           </div>
         )}
       </AnimatePresence>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Xóa Flash Sale"
+        message="Bạn có chắc muốn xóa Flash Sale này? Thao tác này không thể hoàn tác."
+        confirmLabel="Xóa"
+        variant="danger"
+        onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

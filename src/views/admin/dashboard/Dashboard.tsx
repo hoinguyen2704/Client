@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { formatPrice } from '@/helpers/format';
+import { formatDate } from '@/utils/date';
 import adminDashboardService from '@/apis/services/adminDashboardService';
 import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem } from '@/types';
 import DashboardStats from './DashboardStats';
@@ -80,9 +81,6 @@ export default function Dashboard() {
   }, [period]);
 
   useEffect(() => { fetchStats(); }, [fetchStats]);
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
-
   return (
     <div className="space-y-6 pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiCheck, FiX } from 'react-icons/fi';
-import { PrimaryButton } from '@/components/ui';
+import { PrimaryButton, ConfirmDialog } from '@/components/ui';
 import { motion, AnimatePresence } from 'motion/react';
 import addressService from '@/apis/services/addressService';
 import type { AddressResponse, AddressRequest } from '@/types';
@@ -11,6 +11,7 @@ export default function AddressBook() {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<AddressRequest>({ fullName: '', phoneNumber: '', province: '', district: '', ward: '', detailAddress: '', isDefault: false });
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   useEffect(() => { fetchAddresses(); }, []);
 
@@ -41,7 +42,7 @@ export default function AddressBook() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Xóa địa chỉ này?')) return;
+    setDeleteTarget(null);
     try { await addressService.delete(id); fetchAddresses(); } catch { alert('Xóa thất bại!'); }
   };
 
@@ -96,7 +97,7 @@ export default function AddressBook() {
                 <div className="flex items-center gap-2">
                   {!addr.isDefault && <button onClick={() => handleSetDefault(addr.id)} className="p-2 text-slate-400 hover:text-green-600 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20" title="Đặt mặc định"><FiCheck /></button>}
                   <button onClick={() => handleEdit(addr)} className="p-2 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"><FiEdit2 /></button>
-                  {!addr.isDefault && <button onClick={() => handleDelete(addr.id)} className="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"><FiTrash2 /></button>}
+                  {!addr.isDefault && <button onClick={() => setDeleteTarget(addr.id)} className="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"><FiTrash2 /></button>}
                 </div>
               </div>
             </div>
@@ -174,6 +175,16 @@ export default function AddressBook() {
           </div>
         )}
       </AnimatePresence>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Xóa địa chỉ"
+        message="Bạn có chắc muốn xóa địa chỉ này?"
+        confirmLabel="Xóa"
+        variant="danger"
+        onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

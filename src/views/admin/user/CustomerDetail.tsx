@@ -4,6 +4,8 @@ import { FiArrowLeft, FiMail, FiPhone, FiCalendar, FiShoppingBag, FiDollarSign, 
 import { formatPrice } from '@/helpers/format';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
+import StatusBadge from '@/components/ui/StatusBadge';
+import { formatDate } from '@/utils/date';
 import type { UserResponse } from '@/types';
 
 export default function CustomerDetail() {
@@ -31,9 +33,6 @@ export default function CustomerDetail() {
       toast.error('Cập nhật trạng thái người dùng thất bại!');
     }
   };
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
-
   if (loading) {
     return (
       <div className="space-y-6">
@@ -80,10 +79,8 @@ export default function CustomerDetail() {
             <p className="text-slate-500 text-sm mb-4">@{user.userName || user.email.split('@')[0]}</p>
 
             <div className="flex justify-center gap-2 mb-6">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                {user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}
-              </span>
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-600' : 'bg-slate-100 text-slate-600'}`}>{user.role}</span>
+              <StatusBadge status={user.status === 'ACTIVE' ? 'active' : 'banned'} label={user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'} />
+              <StatusBadge status={user.role === 'ADMIN' ? 'admin' : 'user'} />
             </div>
 
             <button onClick={handleToggle}

@@ -4,7 +4,8 @@ import { toast } from 'sonner';
 import adminCmsService from '@/apis/services/adminCmsService';
 import type { BannerResponse, ArticleResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { PrimaryButton, AdminPagination, ActionButtons } from '@/components/ui';
+import { PrimaryButton, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components/ui';
+import { formatDate } from '@/utils/date';
 
 export default function CMS() {
   const [tab, setTab] = useState<'banners' | 'articles'>('banners');
@@ -13,6 +14,7 @@ export default function CMS() {
   const [loading, setLoading] = useState(true);
   const [articlePage, setArticlePage] = useState(1);
   const [articlePageData, setArticlePageData] = useState<PageResponse<ArticleResponse> | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'banner' | 'article'; id: string } | null>(null);
 
   const fetchBanners = async () => {
     try {
@@ -37,7 +39,7 @@ export default function CMS() {
   useEffect(() => { fetchArticles(articlePage); }, [articlePage]);
 
   const handleDeleteBanner = async (id: string) => {
-    if (!confirm('Xóa banner này?')) return;
+    setDeleteTarget(null);
     try {
       await adminCmsService.deleteBanner(id);
       fetchBanners();
@@ -49,7 +51,7 @@ export default function CMS() {
   };
 
   const handleDeleteArticle = async (id: string) => {
-    if (!confirm('Xóa bài viết này?')) return;
+    setDeleteTarget(null);
     try {
       await adminCmsService.deleteArticle(id);
       fetchArticles(articlePage);
@@ -60,7 +62,7 @@ export default function CMS() {
     }
   };
 
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
+
 
   return (
     <div className="space-y-6">
@@ -99,14 +101,12 @@ export default function CMS() {
                   <img src={banner.imageUrl} alt={banner.title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                     <button className="p-2 bg-white rounded-lg shadow-lg"><FiEdit2 /></button>
-                    <button onClick={() => handleDeleteBanner(banner.id)} className="p-2 bg-white rounded-lg shadow-lg text-red-600"><FiTrash2 /></button>
+                    <button onClick={() => setDeleteTarget({ type: 'banner', id: banner.id })} className="p-2 bg-white rounded-lg shadow-lg text-red-600"><FiTrash2 /></button>
                   </div>
                 </div>
                 <div className="p-4 flex justify-between items-center">
                   <span className="font-bold text-sm">{banner.title}</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${banner.isActive ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
-                    {banner.isActive ? 'Active' : 'Hidden'}
-                  </span>
+                  <StatusBadge status={banner.isActive ? 'active' : 'hidden'} />
                 </div>
               </div>
             ))
@@ -127,13 +127,7 @@ export default function CMS() {
               </thead>
               <tbody>
                 {loading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                      {Array.from({ length: 5 }).map((_, j) => (
-                        <td key={j} className="p-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                      ))}
-                    </tr>
-                  ))
+                  <TableRowSkeleton rows={5} cols={5} />
                 ) : articles.length === 0 ? (
                   <tr><td colSpan={5} className="p-12 text-center text-slate-400">Chưa có bài viết nào</td></tr>
                 ) : (
@@ -148,9 +142,7 @@ export default function CMS() {
                       <td className="p-4 text-slate-500">{a.authorName || '—'}</td>
                       <td className="p-4 text-slate-500">{formatDate(a.createdAt)}</td>
                       <td className="p-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${a.isPublished ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
-                          {a.isPublished ? 'Đã xuất bản' : 'Bản nháp'}
-                        </span>
+                        <StatusBadge status={a.isPublished ? 'published' : 'draft'} />
                       </td>
                       <td className="p-4 text-right">
                         <ActionButtons
@@ -161,7 +153,7 @@ export default function CMS() {
                             },
                             {
                               type: 'delete',
-                              onClick: () => handleDeleteArticle(a.id)
+                              onClick: () => setDeleteTarget({ type: 'article', id: a.id })
                             }
                           ]}
                         />
@@ -184,6 +176,19 @@ export default function CMS() {
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title={deleteTarget?.type === 'banner' ? 'Xóa banner' : 'Xóa bài viết'}
+        message={deleteTarget?.type === 'banner' ? 'Bạn có chắc muốn xóa banner này?' : 'Bạn có chắc muốn xóa bài viết này?'}
+        confirmLabel="Xóa"
+        variant="danger"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'banner') handleDeleteBanner(deleteTarget.id);
+          else if (deleteTarget?.type === 'article') handleDeleteArticle(deleteTarget.id);
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

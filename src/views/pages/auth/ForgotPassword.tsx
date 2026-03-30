@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiMail, FiArrowLeft, FiArrowRight, FiCheckCircle, FiShield, FiLock, FiKey } from 'react-icons/fi';
 import LogoIcon from '@/components/ui/LogoIcon';
 import { motion } from 'motion/react';
+import { SHOP } from '@/constants/shopConstants';
 
 const tips = [
   { icon: FiShield, title: 'Kiểm tra email spam', desc: 'Đôi khi email khôi phục có thể rơi vào thư mục spam' },
@@ -35,7 +36,7 @@ export default function ForgotPassword() {
                 <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
                   <LogoIcon className="w-8 h-8" />
                 </div>
-                <span className="text-3xl font-bold">Hozitech</span>
+                <span className="text-3xl font-bold">{SHOP.name}</span>
               </Link>
             </div>
 

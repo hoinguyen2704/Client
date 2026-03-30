@@ -6,6 +6,7 @@ import { formatPrice } from '@/helpers/format';
 import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import useAuthStore from '@/stores/useAuthStore';
+import { formatDate } from '@/utils/date';
 import type { CouponResponse } from '@/types';
 
 export default function Vouchers() {
@@ -85,9 +86,6 @@ export default function Vouchers() {
       setError(err?.response?.data?.message || 'Mã không tồn tại hoặc đã bị khóa');
     }
   };
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
-
   const daysLeft = (endDate: string): number => {
     try { return Math.max(0, Math.ceil((new Date(endDate).getTime() - Date.now()) / 86400000)); }
     catch { return 0; }

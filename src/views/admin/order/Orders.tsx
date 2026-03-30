@@ -5,6 +5,7 @@ import { formatPrice } from '@/helpers/format';
 import StatusBadge from '@/components/ui/StatusBadge';
 import CustomSelect from '@/components/ui/CustomSelect';
 import { AdminSearch, AdminPagination, ActionButtons } from '@/components/ui';
+import { formatDate } from '@/utils/date';
 import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';
 import type { OrderResponse, PageResponse } from '@/types';
@@ -58,11 +59,6 @@ export default function AdminOrders() {
       window.URL.revokeObjectURL(url);
     } catch (err) { console.error('Export failed:', err); }
   };
-
-  const formatDate = (d: string) => {
-    try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -4,7 +4,8 @@ import { toast } from 'sonner';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { CategoryResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons } from '@/components/ui';
+import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components/ui';
+import { formatDate } from '@/utils/date';
 
 interface SpecTemplateRow {
   specKey: string;
@@ -23,6 +24,7 @@ export default function Categories() {
   const [formData, setFormData] = useState({ name: '', description: '', imageUrl: '', parentId: '' });
   const [specTemplates, setSpecTemplates] = useState<SpecTemplateRow[]>([]);
   const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const fetchCategories = useCallback(async () => {
     setLoading(true);
@@ -86,7 +88,7 @@ export default function Categories() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bạn có chắc muốn xóa danh mục này?')) return;
+    setDeleteTarget(null);
     try {
       await adminCategoryService.delete(id);
       toast.success('Đã xóa danh mục!');
@@ -257,15 +259,7 @@ export default function Categories() {
             </thead>
             <tbody>
               {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                    <td className="p-4"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
-                    <td className="p-4"><div className="h-6 w-16 bg-slate-200 dark:bg-slate-700 rounded-full" /></td>
-                    <td className="p-4"><div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded ml-auto" /></td>
-                  </tr>
-                ))
+                <TableRowSkeleton rows={5} cols={5} />
               ) : categories.length === 0 ? (
                 <tr><td colSpan={5} className="p-12 text-center text-slate-400">Không có danh mục nào</td></tr>
               ) : (
@@ -291,9 +285,7 @@ export default function Categories() {
                       )}
                     </td>
                     <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${cat.active ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
-                        {cat.active ? 'Hoạt động' : 'Đã ẩn'}
-                      </span>
+                      <StatusBadge status={cat.active ? 'active' : 'hidden'} />
                     </td>
                     <td className="p-4 text-right">
                       <ActionButtons
@@ -310,7 +302,7 @@ export default function Categories() {
                           },
                           {
                             type: 'delete',
-                            onClick: () => handleDelete(cat.id)
+                            onClick: () => setDeleteTarget(cat.id)
                           }
                         ]}
                       />
@@ -333,6 +325,16 @@ export default function Categories() {
           />
         )}
       </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Xóa danh mục"
+        message="Bạn có chắc muốn xóa danh mục này? Thao tác này không thể hoàn tác."
+        confirmLabel="Xóa"
+        variant="danger"
+        onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

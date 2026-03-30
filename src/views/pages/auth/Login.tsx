@@ -7,6 +7,7 @@ import LogoIcon from '@/components/ui/LogoIcon';
 import { motion } from 'motion/react';
 import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
+import { SHOP } from '@/constants/shopConstants';
 
 const features = [
   { icon: FiShield, title: 'Bảo mật tuyệt đối', desc: 'Mã hóa SSL 256-bit bảo vệ mọi giao dịch' },
@@ -71,14 +72,14 @@ export default function Login() {
                 <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
                   <LogoIcon className="w-8 h-8" />
                 </div>
-                <span className="text-3xl font-bold">Hozitech</span>
+                <span className="text-3xl font-bold">{SHOP.name}</span>
               </Link>
             </div>
 
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="text-5xl xl:text-6xl font-bold leading-tight mb-6">
               Chào mừng bạn đến với{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">Hozitech</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">{SHOP.name}</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
               className="text-xl text-white/80 mb-10 leading-relaxed">
@@ -118,7 +119,7 @@ export default function Login() {
 
               <div className="text-center lg:text-left">
                 <h2 className="text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Đăng nhập</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-lg">Chào mừng bạn quay trở lại Hozitech</p>
+                <p className="text-slate-500 dark:text-slate-400 text-lg">Chào mừng bạn quay trở lại {SHOP.name}</p>
               </div>
 
               {error && (

@@ -6,6 +6,7 @@ import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/fe
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { AdminPagination } from '@/components/ui';
+import { formatDate } from '@/utils/date';
 
 export default function Feedbacks() {
   const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
@@ -41,9 +42,6 @@ export default function Feedbacks() {
       fetchReviews();
     } catch (err) { console.error('Reply failed:', err); }
   };
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

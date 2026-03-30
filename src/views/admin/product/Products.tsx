@@ -9,7 +9,7 @@ import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminSearch, AdminPagination, ActionButtons } from '@/components/ui';
+import { AdminSearch, AdminPagination, ActionButtons, StatusBadge } from '@/components/ui';
 
 export default function Products() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -271,11 +271,7 @@ export default function Products() {
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          product.status === 'ACTIVE' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-                        }`}>
-                          {product.status === 'ACTIVE' ? 'Đang bán' : 'Đã ẩn'}
-                        </span>
+                        <StatusBadge status={product.status === 'ACTIVE' ? 'active' : 'hidden'} label={product.status === 'ACTIVE' ? 'Đang bán' : 'Đã ẩn'} />
                       </td>
                       <td className="p-4 text-right">
                         <ActionButtons

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo } from 'react-icons/fi';
 import notificationService from '@/apis/services/notificationService';
+import { formatDateShort as formatDate } from '@/utils/date';
 import type { NotificationResponse } from '@/types';
 
 const typeIcons: Record<string, React.ReactNode> = {
@@ -37,11 +38,7 @@ export default function Notifications() {
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
     } catch { /* ignore */ }
   };
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch { return d; } };
-
   const unreadCount = notifications.filter(n => !n.isRead).length;
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

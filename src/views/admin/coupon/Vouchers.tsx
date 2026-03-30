@@ -18,7 +18,8 @@ import adminCouponService from "@/apis/services/adminCouponService";
 import type { CouponResponse, CouponRequest, PageResponse } from "@/types";
 import { formatPrice } from "@/helpers/format";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
-import { PrimaryButton, AdminSearch, AdminPagination, ActionButtons } from "@/components/ui";
+import { PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton } from "@/components/ui";
+import { formatDate } from '@/utils/date';
 
 export default function AdminVouchers() {
   const [vouchers, setVouchers] = useState<CouponResponse[]>([]);
@@ -121,13 +122,7 @@ export default function AdminVouchers() {
     }
   };
 
-  const formatDate = (d: string) => {
-    try {
-      return new Date(d).toLocaleDateString("vi-VN");
-    } catch {
-      return d;
-    }
-  };
+
 
   return (
     <div className="space-y-6">
@@ -170,18 +165,7 @@ export default function AdminVouchers() {
             </thead>
             <tbody>
               {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <tr
-                    key={i}
-                    className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse"
-                  >
-                    {Array.from({ length: 8 }).map((_, j) => (
-                      <td key={j} className="p-4">
-                        <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" />
-                      </td>
-                    ))}
-                  </tr>
-                ))
+                <TableRowSkeleton rows={5} cols={8} />
               ) : vouchers.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="p-12 text-center text-slate-400">
@@ -261,11 +245,7 @@ export default function AdminVouchers() {
                       )}
                     </td>
                     <td className="p-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${v.status === "ACTIVE" ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-600"}`}
-                      >
-                        {v.status === "ACTIVE" ? "Đang hoạt động" : "Tạm dừng"}
-                      </span>
+                      <StatusBadge status={v.status === "ACTIVE" ? 'active' : 'inactive'} label={v.status === "ACTIVE" ? "Đang hoạt động" : "Tạm dừng"} />
                     </td>
                     <td className="p-4 text-right">
                         <ActionButtons

@@ -2,11 +2,10 @@ import { FiStar } from 'react-icons/fi';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Card from '@/components/ui/Card';
 import { formatPrice } from '@/helpers/format';
+import { formatDate } from '@/utils/date';
 import type { DashboardChildProps } from './types';
 
 export default function DashboardBottom({ stats }: DashboardChildProps) {
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
-
   // Build rating distribution from API data
   const ratingDist = stats.ratingDistribution || {};
   const totalReviews = Object.values(ratingDist).reduce((s, c) => s + c, 0) || 1;

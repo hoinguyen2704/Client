@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSettings, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck, FiSearch } from 'react-icons/fi';
+import { FiSettings, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { adminSystemConfigService } from '@/apis';
 import type { SystemConfigResponse, SystemConfigRequest } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import PrimaryButton from '@/components/ui/PrimaryButton';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { AdminSearch } from '@/components/ui';
 
 export default function SystemConfigs() {
   const [configs, setConfigs] = useState<SystemConfigResponse[]>([]);
@@ -14,6 +16,7 @@ export default function SystemConfigs() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingConfig, setEditingConfig] = useState<SystemConfigResponse | null>(null);
   const [form, setForm] = useState<SystemConfigRequest>({ configKey: '', configValue: '', description: '' });
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const fetchConfigs = useCallback(async () => {
     setLoading(true);
@@ -51,7 +54,7 @@ export default function SystemConfigs() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bạn có chắc muốn xóa cấu hình này?')) return;
+    setDeleteTarget(null);
     try {
       await adminSystemConfigService.delete(id);
       fetchConfigs();
@@ -81,10 +84,12 @@ export default function SystemConfigs() {
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="p-4 border-b border-slate-100 dark:border-slate-800">
-          <div className="relative max-w-sm">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input type="text" placeholder="Tìm theo key, value..." value={search} onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
+          <div className="max-w-sm">
+            <AdminSearch
+              placeholder="Tìm theo key, value..."
+              value={search}
+              onChange={setSearch}
+            />
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -116,7 +121,7 @@ export default function SystemConfigs() {
                       <button onClick={() => openEdit(config)} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Sửa">
                         <FiEdit2 />
                       </button>
-                      <button onClick={() => handleDelete(config.id)} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Xóa">
+                      <button onClick={() => setDeleteTarget(config.id)} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Xóa">
                         <FiTrash2 />
                       </button>
                     </div>
@@ -168,6 +173,16 @@ export default function SystemConfigs() {
           </div>
         )}
       </AnimatePresence>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Xóa cấu hình"
+        message="Bạn có chắc muốn xóa cấu hình này? Thao tác này không thể hoàn tác."
+        confirmLabel="Xóa"
+        variant="danger"
+        onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiUser, FiBook } from 'react-icons/fi';
 import cmsService from '@/apis/services/cmsService';
+import { formatDateLong as formatDate } from '@/utils/date';
 import type { ArticleResponse } from '@/types';
 
 export default function BlogDetail() {
@@ -14,9 +15,6 @@ export default function BlogDetail() {
     setLoading(true);
     cmsService.getArticleBySlug(slug).then(r => setArticle(r.data)).catch(() => setArticle(null)).finally(() => setLoading(false));
   }, [slug]);
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: 'long', year: 'numeric' }); } catch { return d; } };
-
   if (loading) return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       <div className="h-8 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />

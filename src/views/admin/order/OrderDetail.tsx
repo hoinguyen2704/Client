@@ -7,7 +7,9 @@ import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
 import CustomSelect from '@/components/ui/CustomSelect';
 import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
+import { formatDateTime as formatDate } from '@/utils/date';
 import type { OrderResponse } from '@/types';
+import { SHOP } from '@/constants/shopConstants';
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
@@ -58,11 +60,6 @@ export default function OrderDetail() {
       toast.error('Xuất hóa đơn thất bại!');
     }
   };
-
-  const formatDate = (d: string) => {
-    try { return new Date(d).toLocaleString('vi-VN'); } catch { return d; }
-  };
-
   if (loading) {
     return (
       <div className="space-y-6">
@@ -247,10 +244,10 @@ export default function OrderDetail() {
     <div className="hidden print:block w-full text-black bg-white p-8">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h2 className="text-3xl font-bold font-serif mb-2 text-[#2539e6]">HoziTech</h2>
+          <h2 className="text-3xl font-bold font-serif mb-2 text-[#2539e6]">{SHOP.fullName}</h2>
           <p className="text-sm">123 Đường Công Nghệ, Quận IT, TP.HCM</p>
           <p className="text-sm">SĐT: 0123.456.789</p>
-          <p className="text-sm">Email: contact@hozitech.com</p>
+          <p className="text-sm">Email: {SHOP.email}</p>
         </div>
         <div className="text-right">
           <h1 className="text-2xl font-bold uppercase tracking-widest text-[#2539e6]">Hóa Đơn</h1>
@@ -321,7 +318,7 @@ export default function OrderDetail() {
       </div>
 
       <div className="mt-20 text-center text-xs text-slate-500 border-t border-slate-200 pt-4">
-        Cảm ơn quý khách đã mua bán tại HoziTech!
+        Cảm ơn quý khách đã mua bán tại {SHOP.fullName}!
       </div>
     </div>
     </>

@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
+import { ConfirmDialog } from '@/components/ui';
+import { formatDate } from '@/utils/date';
 import type { OrderResponse } from '@/types';
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
 
@@ -20,6 +22,7 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<OrderResponse | null>(null);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
+  const [cancelTarget, setCancelTarget] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -47,7 +50,7 @@ export default function Orders() {
   };
 
   const handleCancelOrder = async (orderId: string) => {
-    if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) return;
+    setCancelTarget(null);
     try {
       await orderService.cancel(orderId);
       fetchOrders();
@@ -74,9 +77,6 @@ export default function Orders() {
       setReviewModalOpen(false);
     } catch { alert('Gửi đánh giá thất bại!'); }
   };
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN'); } catch { return d; } };
-
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
@@ -139,7 +139,7 @@ export default function Orders() {
                     <button onClick={() => handleOpenReview(order)} className="px-4 py-2 rounded-lg border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">Đánh giá</button>
                   )}
                   {order.orderStatus === 'PENDING' && (
-                    <button onClick={() => handleCancelOrder(order.id)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Hủy đơn</button>
+                    <button onClick={() => setCancelTarget(order.id)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Hủy đơn</button>
                   )}
                   <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center gap-2">
                     Xem chi tiết <FiChevronRight />
@@ -209,6 +209,16 @@ export default function Orders() {
           </div>
         )}
       </AnimatePresence>
+
+      <ConfirmDialog
+        open={!!cancelTarget}
+        title="Hủy đơn hàng"
+        message="Bạn có chắc muốn hủy đơn hàng này? Hành động này không thể hoàn tác."
+        confirmLabel="Hủy đơn"
+        variant="danger"
+        onConfirm={() => cancelTarget && handleCancelOrder(cancelTarget)}
+        onCancel={() => setCancelTarget(null)}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiMessageSquare, FiPlus, FiChevronRight, FiX, FiSend } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import ticketService from '@/apis/services/ticketService';
+import { formatDateShort as formatDate } from '@/utils/date';
 import type { TicketResponse } from '@/types';
 
 const statusMap: Record<string, { label: string; color: string }> = {
@@ -51,9 +52,6 @@ export default function Support() {
       setReplyText('');
     } catch { alert('Gửi phản hồi thất bại!'); }
   };
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch { return d; } };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

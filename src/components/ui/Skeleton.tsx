@@ -75,3 +75,20 @@ export function TableSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?: nu
     </div>
   );
 }
+
+/** Inline table row skeleton — renders rows inside an existing <tbody> */
+export function TableRowSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?: number }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, i) => (
+        <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
+          {Array.from({ length: cols }).map((_, j) => (
+            <td key={j} className="p-4">
+              <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  );
+}

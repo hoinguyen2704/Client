@@ -1,4 +1,5 @@
 import React from 'react';
+import { SHOP } from '@/constants/shopConstants';
 
 export default function Privacy() {
   return (
@@ -7,7 +8,7 @@ export default function Privacy() {
       
       <div className="prose prose-blue max-w-none dark:prose-invert">
         <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Hozitech tôn trọng và cam kết bảo vệ dữ liệu cá nhân của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng, chia sẻ và bảo vệ thông tin cá nhân của bạn khi bạn sử dụng trang web và dịch vụ của chúng tôi.
+          {SHOP.name} tôn trọng và cam kết bảo vệ dữ liệu cá nhân của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng, chia sẻ và bảo vệ thông tin cá nhân của bạn khi bạn sử dụng trang web và dịch vụ của chúng tôi.
         </p>
 
         <section className="mb-8">
@@ -41,7 +42,7 @@ export default function Privacy() {
           <ul className="list-disc pl-6 text-gray-600 dark:text-gray-300 space-y-2 mt-2">
             <li>Với các đối tác cung cấp dịch vụ (đơn vị vận chuyển, cổng thanh toán) để thực hiện đơn hàng.</li>
             <li>Khi có yêu cầu hợp pháp từ các cơ quan chức năng có thẩm quyền theo quy định của pháp luật.</li>
-            <li>Để bảo vệ quyền lợi, tài sản hoặc sự an toàn của Hozitech và người dùng khác.</li>
+            <li>Để bảo vệ quyền lợi, tài sản hoặc sự an toàn của {SHOP.name} và người dùng khác.</li>
           </ul>
         </section>
 
@@ -62,7 +63,7 @@ export default function Privacy() {
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-3">6. Liên hệ</h2>
           <p className="text-gray-600 dark:text-gray-300">
-            Nếu bạn có bất kỳ câu hỏi hoặc thắc mắc nào về Chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua trang Liên hệ hoặc gửi email đến địa chỉ hỗ trợ của Hozitech.
+            Nếu bạn có bất kỳ câu hỏi hoặc thắc mắc nào về Chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua trang Liên hệ hoặc gửi email đến địa chỉ hỗ trợ của {SHOP.name}.
           </p>
         </section>
 

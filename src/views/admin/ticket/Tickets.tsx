@@ -6,6 +6,7 @@ import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticket
 import type { TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { AdminPagination } from '@/components/ui';
+import { formatDateShort as formatDate } from '@/utils/date';
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
@@ -47,9 +48,6 @@ export default function Tickets() {
     try { await adminTicketService.updateStatus(id, status); fetchTickets(); }
     catch (err) { console.error('Status update failed:', err); }
   };
-
-  const formatDate = (d: string) => { try { return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch { return d; } };
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

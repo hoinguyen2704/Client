@@ -1,267 +1,611 @@
-import { useState } from 'react';
-import { FiMessageCircle, FiCheckCircle, FiClock, FiSettings, FiActivity, FiUsers, FiCpu, FiMessageSquare } from 'react-icons/fi';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { useEffect, useState, useCallback } from 'react';
+import {
+  FiCpu,
+  FiSettings,
+  FiRefreshCw,
+  FiSave,
+  FiToggleLeft,
+  FiToggleRight,
+  FiPlus,
+  FiX,
+  FiMessageCircle,
+  FiCheckCircle,
+  FiClock,
+  FiActivity,
+  FiAlertTriangle,
+} from 'react-icons/fi';
+import { toast } from 'sonner';
+import chatbotService from '@/apis/services/chatbotService';
+import type { ChatbotConfig } from '@/apis/services/chatbotService';
 
-const chatStats = [
-  { name: 'T2', total: 120, resolved: 95 },
-  { name: 'T3', total: 150, resolved: 120 },
-  { name: 'T4', total: 180, resolved: 145 },
-  { name: 'T5', total: 140, resolved: 110 },
-  { name: 'T6', total: 200, resolved: 160 },
-  { name: 'T7', total: 250, resolved: 190 },
-  { name: 'CN', total: 220, resolved: 175 },
-];
+type EditableSection = 'shopInfo' | 'bot' | 'ai';
+import CustomSelect from '@/components/ui/CustomSelect';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
-const recentChats = [
-  { id: 'CHAT-001', user: 'Nguyễn Văn A', intent: 'Hỏi về bảo hành', status: 'resolved_ai', time: '10:30 AM', duration: '2m 15s' },
-  { id: 'CHAT-002', user: 'Trần Thị B', intent: 'Kiểm tra đơn hàng', status: 'transferred', time: '10:15 AM', duration: '5m 30s' },
-  { id: 'CHAT-003', user: 'Lê Văn C', intent: 'Tư vấn sản phẩm', status: 'resolved_ai', time: '09:45 AM', duration: '1m 45s' },
-  { id: 'CHAT-004', user: 'Phạm D', intent: 'Hủy đơn hàng', status: 'transferred', time: '09:20 AM', duration: '8m 10s' },
+/* ─── Model options cho dropdown ─── */
+const MODEL_OPTIONS = [
+  { value: 'gemini-3-flash-preview', label: 'Gemini 3 Flash' },
+  { value: 'gemini-3-pro-preview', label: 'Gemini 3 Pro' },
+  { value: 'gemini-2-flash-preview', label: 'Gemini 2 Flash' },
 ];
 
 export default function Chatbot() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'logs'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'settings'>('settings');
+  const [config, setConfig] = useState<ChatbotConfig | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [newSuggestion, setNewSuggestion] = useState('');
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+  /* ─── Load config on mount ─── */
+  const loadConfig = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await chatbotService.getConfig();
+      setConfig(data);
+      setDirty(false);
+    } catch (err: any) {
+      toast.error('Không thể tải cấu hình chatbot: ' + (err?.message || ''));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadConfig();
+  }, [loadConfig]);
+
+  /* ─── Helpers: cập nhật config local ─── */
+  const updateField = (section: EditableSection, key: string, value: unknown) => {
+    if (!config) return;
+    const currentSection = (config[section] || {}) as Record<string, unknown>;
+    setConfig({
+      ...config,
+      [section]: { ...currentSection, [key]: value },
+    });
+    setDirty(true);
+  };
+
+  const updateTopLevel = (key: keyof ChatbotConfig, value: unknown) => {
+    if (!config) return;
+    setConfig({ ...config, [key]: value });
+    setDirty(true);
+  };
+
+  /* ─── Save ─── */
+  const handleSave = async () => {
+    if (!config || saving) return;
+    try {
+      setSaving(true);
+      const result = await chatbotService.updateConfig(config);
+      setConfig(result.config);
+      setDirty(false);
+      toast.success(result.message || 'Cập nhật cấu hình thành công!');
+    } catch (err: any) {
+      toast.error('Lỗi lưu cấu hình: ' + (err?.response?.data?.error || err?.message || ''));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /* ─── Reset ─── */
+  const handleReset = async () => {
+    setShowResetConfirm(false);
+    try {
+      setSaving(true);
+      const result = await chatbotService.resetConfig();
+      setConfig(result.config);
+      setDirty(false);
+      toast.success(result.message || 'Đã khôi phục mặc định!');
+    } catch (err: any) {
+      toast.error('Lỗi khôi phục: ' + (err?.message || ''));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /* ─── Suggestions CRUD ─── */
+  const addSuggestion = () => {
+    if (!config || !newSuggestion.trim()) return;
+    updateTopLevel('suggestions', [...(config.suggestions || []), newSuggestion.trim()]);
+    setNewSuggestion('');
+  };
+
+  const removeSuggestion = (idx: number) => {
+    if (!config) return;
+    updateTopLevel(
+      'suggestions',
+      config.suggestions.filter((_, i) => i !== idx)
+    );
+  };
+
+  /* ─── Loading / Error states ─── */
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64 gap-3 text-slate-400">
+        <FiRefreshCw className="animate-spin text-xl" /> Đang tải cấu hình...
+      </div>
+    );
+  }
+
+  if (!config) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 gap-4 text-red-500">
+        <FiAlertTriangle className="text-4xl" />
+        <p>Không thể kết nối đến Chatbot Server</p>
+        <button onClick={loadConfig} className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors text-sm">
+          Thử lại
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <FiCpu className="text-purple-600" /> Quản lý AI Chatbot
           </h1>
-          <p className="text-sm text-slate-500 mt-1">Powered by Alibaba Cloud Beebot</p>
+          <p className="text-sm text-slate-500 mt-1">Powered by Gemini AI — Model: {config.ai?.model}</p>
         </div>
         <div className="flex gap-2">
-          <button className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-sm flex items-center gap-2">
-            <FiSettings /> Cấu hình Beebot
+          <button
+            onClick={() => setShowResetConfirm(true)}
+            disabled={saving}
+            className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
+          >
+            <FiRefreshCw className={saving ? 'animate-spin' : ''} /> Khôi phục mặc định
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || !dirty}
+            className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
+          >
+            <FiSave /> {saving ? 'Đang lưu...' : 'Lưu cấu hình'}
           </button>
         </div>
       </div>
 
+      {/* Unsaved indicator */}
+      {dirty && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+          <FiAlertTriangle /> Có thay đổi chưa lưu
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="flex border-b border-slate-200 dark:border-slate-800">
-        <button 
-          onClick={() => setActiveTab('overview')}
-          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'overview' ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}
-        >
-          Tổng quan
-        </button>
-        <button 
+        <button
           onClick={() => setActiveTab('settings')}
           className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'settings' ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}
         >
+          <FiSettings className="inline mr-1.5 -mt-0.5" />
           Cấu hình
         </button>
-        <button 
-          onClick={() => setActiveTab('logs')}
-          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'logs' ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'overview' ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}
         >
-          Lịch sử Chat
+          <FiActivity className="inline mr-1.5 -mt-0.5" />
+          Tổng quan
         </button>
       </div>
 
+      {/* ═══════════ TAB: CẤU HÌNH ═══════════ */}
+      {activeTab === 'settings' && (
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* ──── Cột trái: 2/3 ──── */}
+          <div className="xl:col-span-2 space-y-6">
+            {/* Card: Thông tin cửa hàng */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <h2 className="text-lg font-bold mb-1">🏪 Thông tin cửa hàng</h2>
+              <p className="text-xs text-slate-500 mb-5">Thông tin này được nhúng vào System Prompt để bot giới thiệu cho khách.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Tên cửa hàng</label>
+                  <input
+                    type="text"
+                    value={config.shopInfo?.name || ''}
+                    onChange={(e) => updateField('shopInfo', 'name', e.target.value)}
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Slogan</label>
+                  <input
+                    type="text"
+                    value={config.shopInfo?.slogan || ''}
+                    onChange={(e) => updateField('shopInfo', 'slogan', e.target.value)}
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Địa chỉ</label>
+                  <input
+                    type="text"
+                    value={config.shopInfo?.address || ''}
+                    onChange={(e) => updateField('shopInfo', 'address', e.target.value)}
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Hotline</label>
+                  <input
+                    type="text"
+                    value={config.shopInfo?.hotline || ''}
+                    onChange={(e) => updateField('shopInfo', 'hotline', e.target.value)}
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Email hỗ trợ</label>
+                  <input
+                    type="text"
+                    value={config.shopInfo?.email || ''}
+                    onChange={(e) => updateField('shopInfo', 'email', e.target.value)}
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Website</label>
+                  <input
+                    type="text"
+                    value={config.shopInfo?.website || ''}
+                    onChange={(e) => updateField('shopInfo', 'website', e.target.value)}
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Card: Cấu hình AI */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <h2 className="text-lg font-bold mb-1">🧠 Cấu hình AI</h2>
+              <p className="text-xs text-slate-500 mb-5">Điều chỉnh model, nhiệt độ sáng tạo, và quy tắc hành vi bot.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Model AI</label>
+                  <CustomSelect
+                    value={config.ai?.model || ''}
+                    onChange={(val) => updateField('ai', 'model', val)}
+                    options={MODEL_OPTIONS}
+                    className="w-full h-11"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">
+                    Temperature: <span className="text-purple-600 font-bold">{config.ai?.temperature ?? 0.7}</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={config.ai?.temperature ?? 0.7}
+                    onChange={(e) => updateField('ai', 'temperature', parseFloat(e.target.value))}
+                    className="w-full mt-2 accent-purple-600"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>0 — Chính xác</span>
+                    <span>1 — Sáng tạo</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5">System Prompt (Quy tắc hành vi)</label>
+                <textarea
+                  value={config.ai?.systemRules || ''}
+                  onChange={(e) => updateField('ai', 'systemRules', e.target.value)}
+                  rows={8}
+                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm resize-y font-mono leading-relaxed"
+                  placeholder="Nhập các quy tắc cho chatbot..."
+                />
+                <p className="text-xs text-slate-500 mt-1.5">Mỗi dòng bắt đầu bằng «-» là 1 quy tắc. Thay đổi sẽ ảnh hưởng trực tiếp đến cách bot trả lời.</p>
+              </div>
+
+              {/* Runtime Parameters */}
+              <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-4">
+                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">⚙️ Thông số vận hành</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5">
+                      Số sản phẩm tối đa / lần trả lời
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={20}
+                      value={config.ai?.maxProducts ?? 3}
+                      onChange={(e) => updateField('ai', 'maxProducts', Math.max(1, Math.min(20, parseInt(e.target.value) || 3)))}
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    />
+                    <p className="text-xs text-slate-400 mt-1">Mặc định: 3. Giới hạn sản phẩm hiển thị trong mỗi câu trả lời.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5">
+                      Số lần retry khi AI lỗi
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={5}
+                      value={config.ai?.maxRetries ?? 1}
+                      onChange={(e) => updateField('ai', 'maxRetries', Math.max(0, Math.min(5, parseInt(e.target.value) || 1)))}
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    />
+                    <p className="text-xs text-slate-400 mt-1">Mặc định: 1. Số lần thử lại khi Gemini API timeout/lỗi.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5">
+                      Timeout AI phân tích (ms)
+                    </label>
+                    <input
+                      type="number"
+                      min={5000}
+                      max={60000}
+                      step={1000}
+                      value={config.ai?.planTimeoutMs ?? 25000}
+                      onChange={(e) => updateField('ai', 'planTimeoutMs', Math.max(5000, Math.min(60000, parseInt(e.target.value) || 25000)))}
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    />
+                    <p className="text-xs text-slate-400 mt-1">Mặc định: 25000ms. Thời gian chờ AI phân tích câu hỏi.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5">
+                      Timeout truy vấn DB (ms)
+                    </label>
+                    <input
+                      type="number"
+                      min={1000}
+                      max={30000}
+                      step={1000}
+                      value={config.ai?.dbTimeoutMs ?? 6000}
+                      onChange={(e) => updateField('ai', 'dbTimeoutMs', Math.max(1000, Math.min(30000, parseInt(e.target.value) || 6000)))}
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    />
+                    <p className="text-xs text-slate-400 mt-1">Mặc định: 6000ms. Thời gian chờ truy vấn database.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ──── Cột phải: 1/3 ──── */}
+          <div className="space-y-6">
+            {/* Card: Bật/Tắt chatbot */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold">Trạng thái Chatbot</h2>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {config.isEnabled ? 'Chatbot đang hoạt động trên trang khách hàng' : 'Chatbot đang tắt — khách hàng không thấy widget'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateTopLevel('isEnabled', !config.isEnabled)}
+                  className={`text-3xl transition-colors ${config.isEnabled ? 'text-green-500' : 'text-slate-300 dark:text-slate-600'}`}
+                  title={config.isEnabled ? 'Tắt chatbot' : 'Bật chatbot'}
+                >
+                  {config.isEnabled ? <FiToggleRight /> : <FiToggleLeft />}
+                </button>
+              </div>
+            </div>
+
+            {/* Card: Giao diện Widget */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+              <h2 className="text-lg font-bold">🎨 Giao diện Widget</h2>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Tên Bot</label>
+                <input
+                  type="text"
+                  value={config.bot?.name || ''}
+                  onChange={(e) => updateField('bot', 'name', e.target.value)}
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Subtitle</label>
+                <input
+                  type="text"
+                  value={config.bot?.subtitle || ''}
+                  onChange={(e) => updateField('bot', 'subtitle', e.target.value)}
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Màu sắc chủ đạo</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={config.bot?.themeColor || '#9333ea'}
+                    onChange={(e) => updateField('bot', 'themeColor', e.target.value)}
+                    className="w-12 h-12 rounded-lg cursor-pointer border-0 p-0"
+                  />
+                  <input
+                    type="text"
+                    value={config.bot?.themeColor || '#9333ea'}
+                    onChange={(e) => updateField('bot', 'themeColor', e.target.value)}
+                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm uppercase font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Avatar Bot</label>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700 shrink-0">
+                    {config.bot?.avatarUrl ? (
+                      <img src={config.bot.avatarUrl} alt="Bot" className="w-full h-full object-cover" />
+                    ) : (
+                      <FiCpu className="text-2xl text-purple-500" />
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    value={config.bot?.avatarUrl || ''}
+                    onChange={(e) => updateField('bot', 'avatarUrl', e.target.value)}
+                    placeholder="URL ảnh avatar..."
+                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Card: Tin nhắn chào mừng */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+              <h2 className="text-lg font-bold">💬 Tin nhắn chào mừng</h2>
+              <textarea
+                value={config.bot?.welcomeMessage || ''}
+                onChange={(e) => updateField('bot', 'welcomeMessage', e.target.value)}
+                rows={5}
+                className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm resize-y"
+                placeholder="Tin nhắn chào khách khi mở chatbot..."
+              />
+              <p className="text-xs text-slate-500">Hỗ trợ Markdown: **bold**, *italic*, - danh sách</p>
+            </div>
+
+            {/* Card: Gợi ý nhanh */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
+              <h2 className="text-lg font-bold">⚡ Gợi ý nhanh (Quick Suggestions)</h2>
+              <p className="text-xs text-slate-500">Các chip gợi ý hiển thị dưới tin nhắn chào.</p>
+
+              <div className="space-y-2">
+                {config.suggestions?.map((s, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={s}
+                      onChange={(e) => {
+                        const newSugg = [...(config.suggestions || [])];
+                        newSugg[idx] = e.target.value;
+                        updateTopLevel('suggestions', newSugg);
+                      }}
+                      className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    />
+                    <button
+                      onClick={() => removeSuggestion(idx)}
+                      className="w-8 h-8 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    >
+                      <FiX />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newSuggestion}
+                  onChange={(e) => setNewSuggestion(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addSuggestion()}
+                  placeholder="Thêm gợi ý mới..."
+                  className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                />
+                <button
+                  onClick={addSuggestion}
+                  disabled={!newSuggestion.trim()}
+                  className="h-10 px-3 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 text-sm font-medium flex items-center gap-1"
+                >
+                  <FiPlus /> Thêm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════ TAB: TỔNG QUAN ═══════════ */}
       {activeTab === 'overview' && (
         <div className="space-y-6">
-          {/* Stats Cards */}
+          {/* Stats Cards - placeholder */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">Tổng lượt chat</p>
-                  <h3 className="text-2xl font-bold">1,260</h3>
+                  <p className="text-slate-500 text-sm font-medium mb-1">Trạng thái</p>
+                  <h3 className="text-xl font-bold">
+                    {config.isEnabled ? (
+                      <span className="text-green-500 flex items-center gap-2">
+                        <FiCheckCircle /> Đang hoạt động
+                      </span>
+                    ) : (
+                      <span className="text-red-500">Đã tắt</span>
+                    )}
+                  </h3>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
                   <FiMessageCircle />
                 </div>
               </div>
-              <div className="text-sm text-green-500 font-medium">+15% so với tuần trước</div>
             </div>
 
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">Tỷ lệ giải quyết tự động</p>
-                  <h3 className="text-2xl font-bold">78.5%</h3>
+                  <p className="text-slate-500 text-sm font-medium mb-1">Model AI</p>
+                  <h3 className="text-lg font-bold">{config.ai?.model || 'N/A'}</h3>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
+                  <FiCpu />
+                </div>
+              </div>
+              <div className="text-sm text-slate-500">Temperature: {config.ai?.temperature ?? 'N/A'}</div>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <p className="text-slate-500 text-sm font-medium mb-1">Cửa hàng</p>
+                  <h3 className="text-lg font-bold">{config.shopInfo?.name || 'N/A'}</h3>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl">
                   <FiCheckCircle />
                 </div>
               </div>
-              <div className="text-sm text-green-500 font-medium">+2.4% so với tuần trước</div>
+              <div className="text-sm text-slate-500">Hotline: {config.shopInfo?.hotline || 'N/A'}</div>
             </div>
 
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">Chuyển CSKH</p>
-                  <h3 className="text-2xl font-bold">21.5%</h3>
+                  <p className="text-slate-500 text-sm font-medium mb-1">Gợi ý nhanh</p>
+                  <h3 className="text-2xl font-bold">{config.suggestions?.length ?? 0}</h3>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
-                  <FiUsers />
-                </div>
-              </div>
-              <div className="text-sm text-red-500 font-medium">-1.2% so với tuần trước</div>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">Thời gian phản hồi TB</p>
-                  <h3 className="text-2xl font-bold">1.2s</h3>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
                   <FiClock />
                 </div>
               </div>
-              <div className="text-sm text-slate-500 font-medium">Ổn định</div>
+              <div className="text-sm text-slate-500">suggestions đang hoạt động</div>
             </div>
           </div>
 
-          {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold mb-6">Lưu lượng Chat (7 ngày)</h2>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chatStats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                    <Area type="monotone" dataKey="total" name="Tổng lượt chat" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold mb-6">Tỷ lệ giải quyết (AI vs CSKH)</h2>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chatStats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                    <Bar dataKey="resolved" name="AI Giải quyết" stackId="a" fill="#10b981" radius={[0, 0, 4, 4]} />
-                    <Bar dataKey="total" name="Chuyển CSKH" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+          {/* Current config summary */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h2 className="text-lg font-bold mb-4">📋 Cấu hình hiện tại (JSON)</h2>
+            <pre className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-xs font-mono overflow-x-auto max-h-96 overflow-y-auto">
+              {JSON.stringify(config, null, 2)}
+            </pre>
           </div>
         </div>
       )}
-
-      {activeTab === 'logs' && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-          <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-            <h2 className="text-lg font-bold">Lịch sử Chat gần đây</h2>
-            <div className="flex gap-2">
-              <input type="text" placeholder="Tìm kiếm user, intent..." className="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
-            </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm bg-slate-50/50 dark:bg-slate-800/50">
-                  <th className="p-4 font-medium">Mã Chat</th>
-                  <th className="p-4 font-medium">Khách hàng</th>
-                  <th className="p-4 font-medium">Intent (Ý định)</th>
-                  <th className="p-4 font-medium">Thời gian</th>
-                  <th className="p-4 font-medium">Thời lượng</th>
-                  <th className="p-4 font-medium">Trạng thái</th>
-                  <th className="p-4 font-medium text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentChats.map((chat) => (
-                  <tr key={chat.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td className="p-4 font-medium text-sm">{chat.id}</td>
-                    <td className="p-4 text-sm">{chat.user}</td>
-                    <td className="p-4 text-sm"><span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-medium">{chat.intent}</span></td>
-                    <td className="p-4 text-sm text-slate-500">{chat.time}</td>
-                    <td className="p-4 text-sm text-slate-500">{chat.duration}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        chat.status === 'resolved_ai' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'
-                      }`}>
-                        {chat.status === 'resolved_ai' ? 'AI đã giải quyết' : 'Chuyển CSKH'}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <button className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-400 rounded-lg transition-colors" title="Xem Log">
-                        <FiMessageSquare />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'settings' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
-              <h2 className="text-lg font-bold mb-4">Cấu hình Prompt (Hành vi)</h2>
-              <div>
-                <label className="block font-medium mb-2">System Prompt</label>
-                <textarea 
-                  defaultValue="Bạn là nhân viên tư vấn của cửa hàng TechStore. Nhiệm vụ của bạn là tư vấn sản phẩm, giải đáp thắc mắc về bảo hành, giao hàng một cách lịch sự, chuyên nghiệp và ngắn gọn."
-                  className="w-full h-48 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-y outline-none"
-                ></textarea>
-                <p className="text-sm text-slate-500 mt-2">Định hướng cách Chatbot trả lời khách hàng.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
-              <h2 className="text-lg font-bold mb-4">Cấu hình Giao diện</h2>
-              
-              <div>
-                <label className="block font-medium mb-2">Tên Bot</label>
-                <input type="text" defaultValue="TechStore Support" className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500" />
-              </div>
-
-              <div>
-                <label className="block font-medium mb-2">Màu sắc chủ đạo</label>
-                <div className="flex items-center gap-3">
-                  <input type="color" defaultValue="#9333ea" className="w-12 h-12 rounded-lg cursor-pointer border-0 p-0" />
-                  <input type="text" defaultValue="#9333ea" className="flex-1 h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-medium mb-2">Avatar Bot</label>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=TechStore" alt="Bot Avatar" className="w-full h-full object-cover" />
-                  </div>
-                  <button className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm">
-                    Thay đổi
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <button className="px-6 py-3 bg-purple-600 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors w-full">
-                Lưu cấu hình
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={showResetConfirm}
+        title="Khôi phục mặc định"
+        message="Bạn có chắc muốn khôi phục toàn bộ cấu hình về mặc định? Hành động này không thể hoàn tác."
+        confirmLabel="Khôi phục"
+        variant="warning"
+        onConfirm={handleReset}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </div>
   );
 }
