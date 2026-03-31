@@ -3,7 +3,7 @@ import { FiStar, FiEdit3, FiTrash2, FiMessageSquare, FiImage, FiX } from 'react-
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import feedbackService from '@/apis/services/feedbackService';
-import EmptyState from '@/components/ui/EmptyState';
+import { EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components/ui';
 
 // Note: No server endpoint for "my reviews" list yet - state managed locally
 export default function MyReviews() {
@@ -18,7 +18,6 @@ export default function MyReviews() {
   
   // Form states
   const [rating, setRating] = useState(5);
-  const [hoverRating, setHoverRating] = useState(0);
   const [reviewContent, setReviewContent] = useState('');
 
   const openReviewModal = (item: any, isEdit = false) => {
@@ -171,11 +170,7 @@ export default function MyReviews() {
 
                     {/* Review Content */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-1 text-yellow-400">
-                        {[...Array(5)].map((_, i) => (
-                          <FiStar key={i} className={i < review.rating ? 'fill-current' : 'text-slate-300 dark:text-slate-700'} />
-                        ))}
-                      </div>
+                      <StarRating value={review.rating} onChange={() => {}} readOnly size="sm" />
 
                       <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
                         {review.content}
@@ -235,138 +230,73 @@ export default function MyReviews() {
         </AnimatePresence>
       </div>
 
-      {/* Review Modal */}
-      <AnimatePresence>
-        {isReviewModalOpen && selectedItem && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }} 
-              onClick={closeReviewModal}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-              animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.95, y: 20 }} 
-              className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                  {selectedItem.isEdit ? 'Sửa đánh giá' : 'Viết đánh giá'}
-                </h3>
-                <button onClick={closeReviewModal} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
-                  <FiX />
-                </button>
+      <Modal
+        open={isReviewModalOpen && !!selectedItem}
+        onClose={closeReviewModal}
+        title={selectedItem?.isEdit ? 'Sửa đánh giá' : 'Viết đánh giá'}
+        scrollable
+        footer={
+          <>
+            <ModalCancelButton onClick={closeReviewModal}>Trở lại</ModalCancelButton>
+            <button type="submit" form="review-form" className="btn btn-primary btn-md">Hoàn thành</button>
+          </>
+        }
+      >
+        {selectedItem && (
+          <>
+            <div className="flex items-center gap-4 mb-6">
+              <img src={selectedItem.productImage} alt={selectedItem.productName} className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800" />
+              <h4 className="font-bold text-slate-900 dark:text-white line-clamp-2">{selectedItem.productName}</h4>
+            </div>
+
+            <form id="review-form" onSubmit={handleSubmitReview} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Chất lượng sản phẩm</label>
+                <StarRating value={rating} onChange={setRating} />
               </div>
-              
-              <div className="p-6 overflow-y-auto max-h-[70vh]">
-                <div className="flex items-center gap-4 mb-6">
-                  <img src={selectedItem.productImage} alt={selectedItem.productName} className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800" />
-                  <h4 className="font-bold text-slate-900 dark:text-white line-clamp-2">{selectedItem.productName}</h4>
-                </div>
 
-                <form id="review-form" onSubmit={handleSubmitReview} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Chất lượng sản phẩm</label>
-                    <div className="flex items-center gap-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() => setRating(star)}
-                          onMouseEnter={() => setHoverRating(star)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          className="text-3xl focus:outline-none transition-transform hover:scale-110"
-                        >
-                          <FiStar className={`${(hoverRating || rating) >= star ? 'fill-yellow-400 text-yellow-400' : 'text-slate-300 dark:text-slate-700'}`} />
-                        </button>
-                      ))}
-                      <span className="ml-3 text-sm font-medium text-slate-500">
-                        {rating === 5 ? 'Tuyệt vời' : rating === 4 ? 'Rất tốt' : rating === 3 ? 'Bình thường' : rating === 2 ? 'Kém' : 'Rất tệ'}
-                      </span>
-                    </div>
-                  </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Nội dung đánh giá</label>
+                <textarea
+                  required
+                  value={reviewContent}
+                  onChange={(e) => setReviewContent(e.target.value)}
+                  placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé..."
+                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-none h-32"
+                ></textarea>
+              </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Nội dung đánh giá</label>
-                    <textarea 
-                      required
-                      value={reviewContent}
-                      onChange={(e) => setReviewContent(e.target.value)}
-                      placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé..."
-                      className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-none h-32"
-                    ></textarea>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thêm hình ảnh/video</label>
-                    <div className="flex gap-4">
-                      <button type="button" className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-500 hover:text-purple-600 hover:border-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
-                        <FiImage className="text-xl mb-1" />
-                        <span className="text-xs font-medium">Thêm ảnh</span>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thêm hình ảnh/video</label>
+                <div className="flex gap-4">
+                  <button type="button" className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-500 hover:text-purple-600 hover:border-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                    <FiImage className="text-xl mb-1" />
+                    <span className="text-xs font-medium">Thêm ảnh</span>
+                  </button>
+                  {selectedItem.images?.map((img: string, i: number) => (
+                    <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden group">
+                      <img src={img} alt="Review" className="w-full h-full object-cover" />
+                      <button type="button" className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <FiX className="text-xs" />
                       </button>
-                      {selectedItem.images?.map((img: string, i: number) => (
-                        <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden group">
-                          <img src={img} alt="Review" className="w-full h-full object-cover" />
-                          <button type="button" className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <FiX className="text-xs" />
-                          </button>
-                        </div>
-                      ))}
                     </div>
-                  </div>
-                </form>
+                  ))}
+                </div>
               </div>
-
-              <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900/50">
-                <button type="button" onClick={closeReviewModal} className="px-6 py-2.5 rounded-xl font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                  Trở lại
-                </button>
-                <button type="submit" form="review-form" className="btn btn-primary btn-md">
-                  Hoàn thành
-                </button>
-              </div>
-            </motion.div>
-          </div>
+            </form>
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
 
-      {/* Confirm Delete Modal */}
-      <AnimatePresence>
-        {isConfirmDeleteOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }} 
-              onClick={() => setIsConfirmDeleteOpen(false)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-              animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.95, y: 20 }} 
-              className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 text-center"
-            >
-              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                <FiTrash2 />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Xóa đánh giá?</h3>
-              <p className="text-slate-500 mb-6">Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác.</p>
-              <div className="flex gap-3">
-                <button onClick={() => setIsConfirmDeleteOpen(false)} className="flex-1 py-3 rounded-xl font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                  Hủy
-                </button>
-                <button onClick={executeDelete} className="flex-1 py-3 rounded-xl font-medium text-white bg-red-500 hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/30 transition-all">
-                  Xóa ngay
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <ConfirmDialog
+        open={isConfirmDeleteOpen}
+        title="Xóa đánh giá?"
+        message="Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác."
+        confirmLabel="Xóa ngay"
+        variant="danger"
+        onConfirm={executeDelete}
+        onCancel={() => setIsConfirmDeleteOpen(false)}
+      />
     </div>
   );
 }

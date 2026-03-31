@@ -19,8 +19,7 @@ import chatbotService from '@/apis/services/chatbotService';
 import type { ChatbotConfig } from '@/apis/services/chatbotService';
 
 type EditableSection = 'shopInfo' | 'bot' | 'ai';
-import CustomSelect from '@/components/ui/CustomSelect';
-import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { CustomSelect, ConfirmDialog } from '@/components/ui';
 
 /* ─── Model options cho dropdown ─── */
 const MODEL_OPTIONS = [

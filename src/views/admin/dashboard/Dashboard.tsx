@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiX, FiDownload } from 'react-icons/fi';
+import { FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { motion, AnimatePresence } from 'motion/react';
-import StatusBadge from '@/components/ui/StatusBadge';
+import { StatusBadge, Modal } from '@/components/ui';
 import { formatPrice } from '@/helpers/format';
 import { formatDate } from '@/utils/date';
 import adminDashboardService from '@/apis/services/adminDashboardService';
@@ -143,229 +142,222 @@ export default function Dashboard() {
         <div className="text-center text-slate-400 py-12">Không thể tải dữ liệu dashboard</div>
       )}
 
-      {/* Detail Modal */}
-      <AnimatePresence>
+      <Modal
+        open={!!activeModal}
+        onClose={() => setActiveModal(null)}
+        title={
+          activeModal === 'orders' ? 'Đơn hàng gần đây' :
+          activeModal === 'revenue' ? 'Chi tiết doanh thu' :
+          activeModal === 'customers' ? 'Khách hàng tiềm năng' :
+          activeModal === 'products' ? 'Sản phẩm bán chạy' :
+          activeModal === 'returns' ? 'Thống kê Hoàn / Hủy' :
+          activeModal === 'reviews' ? 'Tổng quan đánh giá' : ''
+        }
+        size="xl"
+        scrollable
+      >
         {activeModal && stats && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-3xl shadow-xl overflow-hidden flex flex-col max-h-[80vh]"
-            >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800 shrink-0 print:hidden">
-                <h3 className="text-lg font-bold">
-                  {activeModal === 'orders' && 'Đơn hàng gần đây'}
-                  {activeModal === 'revenue' && 'Chi tiết doanh thu'}
-                  {activeModal === 'customers' && 'Khách hàng tiềm năng'}
-                  {activeModal === 'products' && 'Sản phẩm bán chạy'}
-                  {activeModal === 'returns' && 'Thống kê Hoàn / Hủy'}
-                  {activeModal === 'reviews' && 'Tổng quan đánh giá'}
-                </h3>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={async () => {
-                      if (!activeModal) return;
-                      try {
-                        toast.loading('Đang tạo báo cáo PDF...', { id: 'pdf-report' });
-                        const blob = await adminDashboardService.exportReportPdf(activeModal, period);
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `report_${activeModal}_${new Date().toISOString().slice(0, 10)}.pdf`;
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        toast.success('Xuất báo cáo PDF thành công!', { id: 'pdf-report' });
-                      } catch (err) {
-                        console.error(err);
-                        toast.error('Xuất báo cáo thất bại!', { id: 'pdf-report' });
-                      }
-                    }}
-                    className="px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors"
-                  >
-                    <FiDownload /> Tải PDF
-                  </button>
-                  <button onClick={() => setActiveModal(null)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-800 rounded-full">
-                    <FiX className="text-xl" />
-                  </button>
-                </div>
+          <>
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={async () => {
+                  if (!activeModal) return;
+                  try {
+                    toast.loading('Đang tạo báo cáo PDF...', { id: 'pdf-report' });
+                    const blob = await adminDashboardService.exportReportPdf(activeModal, period);
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `report_${activeModal}_${new Date().toISOString().slice(0, 10)}.pdf`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    toast.success('Xuất báo cáo PDF thành công!', { id: 'pdf-report' });
+                  } catch (err) {
+                    console.error(err);
+                    toast.error('Xuất báo cáo thất bại!', { id: 'pdf-report' });
+                  }
+                }}
+                className="px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors"
+              >
+                <FiDownload /> Tải PDF
+              </button>
+            </div>
+
+            {activeModal === 'orders' ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                      <th className="pb-3 font-medium">Mã đơn</th>
+                      <th className="pb-3 font-medium">Khách hàng</th>
+                      <th className="pb-3 font-medium">Ngày đặt</th>
+                      <th className="pb-3 font-medium">Tổng tiền</th>
+                      <th className="pb-3 font-medium">Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.recentOrders.map((order: RecentOrderItem, index: number) => (
+                      <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td className="py-4 font-medium">{order.orderNumber}</td>
+                        <td className="py-4">{order.customerName}</td>
+                        <td className="py-4 text-slate-500">{formatDate(order.createdAt)}</td>
+                        <td className="py-4 font-bold">{formatPrice(order.totalAmount)}</td>
+                        <td className="py-4"><StatusBadge status={order.status} /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="p-6 overflow-y-auto flex-1">
-                {activeModal === 'orders' ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                          <th className="pb-3 font-medium">Mã đơn</th>
-                          <th className="pb-3 font-medium">Khách hàng</th>
-                          <th className="pb-3 font-medium">Ngày đặt</th>
-                          <th className="pb-3 font-medium">Tổng tiền</th>
-                          <th className="pb-3 font-medium">Trạng thái</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stats.recentOrders.map((order: RecentOrderItem, index: number) => (
-                          <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="py-4 font-medium">{order.orderNumber}</td>
-                            <td className="py-4">{order.customerName}</td>
-                            <td className="py-4 text-slate-500">{formatDate(order.createdAt)}</td>
-                            <td className="py-4 font-bold">{formatPrice(order.totalAmount)}</td>
-                            <td className="py-4"><StatusBadge status={order.status} /></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : activeModal === 'revenue' ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                          <th className="pb-3 font-medium">Thời gian</th>
-                          <th className="pb-3 font-medium text-center">Số đơn hàng</th>
-                          <th className="pb-3 font-medium text-right">Doanh thu</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stats.revenueChart?.map((item: RevenueChartItem, index: number) => (
-                          <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="py-4 font-medium">{item.label}</td>
-                            <td className="py-4 text-center">{item.orders}</td>
-                            <td className="py-4 text-right font-bold text-green-600">{formatPrice(item.revenue)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      <tfoot>
-                        <tr className="border-t-2 border-slate-200 dark:border-slate-800">
-                          <td className="py-4 font-bold text-right pt-4">Tổng cộng:</td>
-                          <td className="py-4 text-center font-bold pt-4">{stats.revenueChart?.reduce((acc: number, item: RevenueChartItem) => acc + item.orders, 0) || 0}</td>
-                          <td className="py-4 text-right font-bold text-lg pt-4 text-green-600">
-                            {formatPrice(stats.revenueChart?.reduce((acc: number, item: RevenueChartItem) => acc + item.revenue, 0) || 0)}
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                ) : activeModal === 'customers' ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                          <th className="pb-3 font-medium w-16 text-center">Top</th>
-                          <th className="pb-3 font-medium">Khách hàng</th>
-                          <th className="pb-3 font-medium text-center">Số đơn</th>
-                          <th className="pb-3 font-medium text-right">Tổng chi tiêu</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stats.topCustomers?.map((customer: TopCustomerItem, index: number) => (
-                          <tr key={customer.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="py-4 text-center font-bold text-slate-400">#{index + 1}</td>
-                            <td className="py-4">
-                              <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center font-bold text-sm text-purple-600">
-                                  {customer.name?.charAt(0) || '?'}
-                                </div>
-                                <div>
-                                  <p className="font-bold">{customer.name}</p>
-                                  <p className="text-xs text-slate-500">{customer.email || 'Không có email'}</p>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-4 text-center text-slate-500">{customer.totalOrders}</td>
-                            <td className="py-4 text-right font-bold text-purple-600">{formatPrice(customer.totalSpent)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : activeModal === 'products' ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                          <th className="pb-3 font-medium w-16 text-center">Top</th>
-                          <th className="pb-3 font-medium">Sản phẩm</th>
-                          <th className="pb-3 font-medium text-center">Đã bán</th>
-                          <th className="pb-3 font-medium text-right">Doanh thu</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stats.topProducts?.map((p: TopProductItem, index: number) => (
-                          <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="py-4 text-center font-bold text-slate-400">#{index + 1}</td>
-                            <td className="py-4">
-                              <div className="flex items-center gap-3">
-                                {p.imageUrl ? (
-                                  <img src={p.imageUrl} alt={p.name} className="w-10 h-10 rounded-lg object-cover" />
-                                ) : (
-                                  <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-xl text-slate-300">
-                                    ?
-                                  </div>
-                                )}
-                                <span className="font-bold">{p.name}</span>
-                              </div>
-                            </td>
-                            <td className="py-4 text-center font-medium text-slate-600 dark:text-slate-300">{p.totalSold}</td>
-                            <td className="py-4 text-right font-bold text-emerald-600">{formatPrice(p.revenue)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : activeModal === 'returns' ? (
-                  <div className="grid grid-cols-2 gap-6 p-6">
-                    <div className="bg-red-50 dark:bg-red-900/10 rounded-3xl p-8 text-center border border-red-100 dark:border-red-900/30">
-                      <p className="text-red-500 font-bold mb-2 uppercase tracking-wide">Đơn bị hủy</p>
-                      <h2 className="text-6xl font-black text-red-600 mb-2">{stats.cancelledOrders}</h2>
-                      <p className="text-sm text-red-600/70 font-medium">Khách hàng hủy hoặc không thanh toán thành công</p>
-                    </div>
-                    <div className="bg-orange-50 dark:bg-orange-900/10 rounded-3xl p-8 text-center border border-orange-100 dark:border-orange-900/30">
-                      <p className="text-orange-500 font-bold mb-2 uppercase tracking-wide">Yêu cầu hoàn trả</p>
-                      <h2 className="text-6xl font-black text-orange-600 mb-2">{stats.returnedOrders}</h2>
-                      <p className="text-sm text-orange-600/70 font-medium">Yêu cầu trả hàng hoàn tiền từ khách hàng</p>
-                    </div>
-                  </div>
-                ) : activeModal === 'reviews' ? (
-                  <div className="p-8">
-                    <div className="flex items-center justify-center gap-8 mb-8 pb-8 border-b border-slate-100 dark:border-slate-800">
-                      <div className="text-center">
-                        <h2 className="text-7xl font-black text-yellow-500">{stats.totalFeedbacks > 0 ? (
-                            Object.entries(stats.ratingDistribution || {}).reduce((acc, [rating, count]) => acc + Number(rating) * count, 0) / stats.totalFeedbacks
-                          ).toFixed(1) : '5.0'}</h2>
-                        <div className="flex text-yellow-400 text-2xl justify-center my-3">★★★★★</div>
-                        <p className="text-slate-500 font-medium">Từ {stats.totalFeedbacks} lượt đánh giá tổng hợp</p>
-                      </div>
-                    </div>
-                    <div className="space-y-5 max-w-xl mx-auto">
-                      {[5, 4, 3, 2, 1].map(stars => {
-                        const count = stats.ratingDistribution?.[stars] || 0;
-                        const percent = stats.totalFeedbacks ? Math.round((count / stats.totalFeedbacks) * 100) : 0;
-                        return (
-                          <div key={stars} className="flex items-center gap-4">
-                            <div className="flex items-center gap-1.5 w-16 text-sm font-bold text-slate-700 dark:text-slate-300">
-                              {stars} <span className="text-yellow-400 text-lg leading-none">★</span>
+            ) : activeModal === 'revenue' ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                      <th className="pb-3 font-medium">Thời gian</th>
+                      <th className="pb-3 font-medium text-center">Số đơn hàng</th>
+                      <th className="pb-3 font-medium text-right">Doanh thu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.revenueChart?.map((item: RevenueChartItem, index: number) => (
+                      <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td className="py-4 font-medium">{item.label}</td>
+                        <td className="py-4 text-center">{item.orders}</td>
+                        <td className="py-4 text-right font-bold text-green-600">{formatPrice(item.revenue)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-slate-200 dark:border-slate-800">
+                      <td className="py-4 font-bold text-right pt-4">Tổng cộng:</td>
+                      <td className="py-4 text-center font-bold pt-4">{stats.revenueChart?.reduce((acc: number, item: RevenueChartItem) => acc + item.orders, 0) || 0}</td>
+                      <td className="py-4 text-right font-bold text-lg pt-4 text-green-600">
+                        {formatPrice(stats.revenueChart?.reduce((acc: number, item: RevenueChartItem) => acc + item.revenue, 0) || 0)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            ) : activeModal === 'customers' ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                      <th className="pb-3 font-medium w-16 text-center">Top</th>
+                      <th className="pb-3 font-medium">Khách hàng</th>
+                      <th className="pb-3 font-medium text-center">Số đơn</th>
+                      <th className="pb-3 font-medium text-right">Tổng chi tiêu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.topCustomers?.map((customer: TopCustomerItem, index: number) => (
+                      <tr key={customer.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td className="py-4 text-center font-bold text-slate-400">#{index + 1}</td>
+                        <td className="py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center font-bold text-sm text-purple-600">
+                              {customer.name?.charAt(0) || '?'}
                             </div>
-                            <div className="flex-1 h-3.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                              <div className="h-full bg-yellow-400 rounded-full transition-all duration-1000" style={{ width: `${percent}%` }} />
-                            </div>
-                            <div className="w-12 text-sm font-bold text-right text-slate-600 dark:text-slate-400">
-                              {percent}%
-                            </div>
-                            <div className="w-12 text-sm text-right text-slate-400">
-                              ({count})
+                            <div>
+                              <p className="font-bold">{customer.name}</p>
+                              <p className="text-xs text-slate-500">{customer.email || 'Không có email'}</p>
                             </div>
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center text-slate-500 py-8">Dữ liệu chi tiết đang được hiển thị...</div>
-                )}
+                        </td>
+                        <td className="py-4 text-center text-slate-500">{customer.totalOrders}</td>
+                        <td className="py-4 text-right font-bold text-purple-600">{formatPrice(customer.totalSpent)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </motion.div>
-          </div>
+            ) : activeModal === 'products' ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                      <th className="pb-3 font-medium w-16 text-center">Top</th>
+                      <th className="pb-3 font-medium">Sản phẩm</th>
+                      <th className="pb-3 font-medium text-center">Đã bán</th>
+                      <th className="pb-3 font-medium text-right">Doanh thu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.topProducts?.map((p: TopProductItem, index: number) => (
+                      <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td className="py-4 text-center font-bold text-slate-400">#{index + 1}</td>
+                        <td className="py-4">
+                          <div className="flex items-center gap-3">
+                            {p.imageUrl ? (
+                              <img src={p.imageUrl} alt={p.name} className="w-10 h-10 rounded-lg object-cover" />
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-xl text-slate-300">
+                                ?
+                              </div>
+                            )}
+                            <span className="font-bold">{p.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-4 text-center font-medium text-slate-600 dark:text-slate-300">{p.totalSold}</td>
+                        <td className="py-4 text-right font-bold text-emerald-600">{formatPrice(p.revenue)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : activeModal === 'returns' ? (
+              <div className="grid grid-cols-2 gap-6 p-6">
+                <div className="bg-red-50 dark:bg-red-900/10 rounded-3xl p-8 text-center border border-red-100 dark:border-red-900/30">
+                  <p className="text-red-500 font-bold mb-2 uppercase tracking-wide">Đơn bị hủy</p>
+                  <h2 className="text-6xl font-black text-red-600 mb-2">{stats.cancelledOrders}</h2>
+                  <p className="text-sm text-red-600/70 font-medium">Khách hàng hủy hoặc không thanh toán thành công</p>
+                </div>
+                <div className="bg-orange-50 dark:bg-orange-900/10 rounded-3xl p-8 text-center border border-orange-100 dark:border-orange-900/30">
+                  <p className="text-orange-500 font-bold mb-2 uppercase tracking-wide">Yêu cầu hoàn trả</p>
+                  <h2 className="text-6xl font-black text-orange-600 mb-2">{stats.returnedOrders}</h2>
+                  <p className="text-sm text-orange-600/70 font-medium">Yêu cầu trả hàng hoàn tiền từ khách hàng</p>
+                </div>
+              </div>
+            ) : activeModal === 'reviews' ? (
+              <div className="p-8">
+                <div className="flex items-center justify-center gap-8 mb-8 pb-8 border-b border-slate-100 dark:border-slate-800">
+                  <div className="text-center">
+                    <h2 className="text-7xl font-black text-yellow-500">{stats.totalFeedbacks > 0 ? (
+                        Object.entries(stats.ratingDistribution || {}).reduce((acc, [rating, count]) => acc + Number(rating) * count, 0) / stats.totalFeedbacks
+                      ).toFixed(1) : '5.0'}</h2>
+                    <div className="flex text-yellow-400 text-2xl justify-center my-3">★★★★★</div>
+                    <p className="text-slate-500 font-medium">Từ {stats.totalFeedbacks} lượt đánh giá tổng hợp</p>
+                  </div>
+                </div>
+                <div className="space-y-5 max-w-xl mx-auto">
+                  {[5, 4, 3, 2, 1].map(stars => {
+                    const count = stats.ratingDistribution?.[stars] || 0;
+                    const percent = stats.totalFeedbacks ? Math.round((count / stats.totalFeedbacks) * 100) : 0;
+                    return (
+                      <div key={stars} className="flex items-center gap-4">
+                        <div className="flex items-center gap-1.5 w-16 text-sm font-bold text-slate-700 dark:text-slate-300">
+                          {stars} <span className="text-yellow-400 text-lg leading-none">★</span>
+                        </div>
+                        <div className="flex-1 h-3.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                          <div className="h-full bg-yellow-400 rounded-full transition-all duration-1000" style={{ width: `${percent}%` }} />
+                        </div>
+                        <div className="w-12 text-sm font-bold text-right text-slate-600 dark:text-slate-400">
+                          {percent}%
+                        </div>
+                        <div className="w-12 text-sm text-right text-slate-400">
+                          ({count})
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-slate-500 py-8">Dữ liệu chi tiết đang được hiển thị...</div>
+            )}
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
     </div>
   );
 }

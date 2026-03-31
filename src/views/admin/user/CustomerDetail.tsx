@@ -4,7 +4,7 @@ import { FiArrowLeft, FiMail, FiPhone, FiCalendar, FiShoppingBag, FiDollarSign, 
 import { formatPrice } from '@/helpers/format';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import StatusBadge from '@/components/ui/StatusBadge';
+import { StatusBadge } from '@/components/ui';
 import { formatDate } from '@/utils/date';
 import type { UserResponse } from '@/types';
 

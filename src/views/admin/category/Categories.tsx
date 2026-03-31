@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiX, FiList } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminCategoryService from '@/apis/services/adminCategoryService';
-import type { CategoryResponse, PageResponse } from '@/types';
+import type { CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import useAdminList from '@/hooks/useAdminList';
 import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components/ui';
 import { formatDate } from '@/utils/date';
 
@@ -14,29 +15,14 @@ interface SpecTemplateRow {
 }
 
 export default function Categories() {
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState<PageResponse<CategoryResponse> | null>(null);
+  const { items: categories, loading, pageData, searchQuery, setSearchQuery, page, setPage, refetch: fetchCategories } =
+    useAdminList<CategoryResponse>(adminCategoryService.getAll, { size: PAGE_SIZE.LARGE });
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: '', description: '', imageUrl: '', parentId: '' });
   const [specTemplates, setSpecTemplates] = useState<SpecTemplateRow[]>([]);
   const [saving, setSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-
-  const fetchCategories = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await adminCategoryService.getAll({ keyword: searchQuery || undefined, page, size: PAGE_SIZE.LARGE });
-      setPageData(res.data);
-      setCategories(res.data.data || []);
-    } catch (err) { console.error('Failed to fetch categories:', err); }
-    finally { setLoading(false); }
-  }, [searchQuery, page]);
-
-  useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
   const resetForm = () => {
     setShowForm(false);
@@ -102,9 +88,7 @@ export default function Categories() {
   const handleToggle = async (id: string) => {
     try {
       await adminCategoryService.toggleStatus(id);
-      setCategories(prev => prev.map(c =>
-        c.id === id ? { ...c, active: !c.active } : c
-      ));
+      fetchCategories();
       toast.success('Cập nhật trạng thái thành công!');
     } catch (err) {
       console.error('Toggle failed:', err);
@@ -238,10 +222,7 @@ export default function Categories() {
       <AdminSearch
         placeholder="Tìm kiếm danh mục..."
         value={searchQuery}
-        onChange={(val) => {
-          setSearchQuery(val);
-          setPage(1);
-        }}
+        onChange={setSearchQuery}
       />
 
       {/* Categories Table */}

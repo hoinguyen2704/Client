@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
 import { productService } from '@/apis';
 import type { ProductResponse } from '@/types';
-import ProductCard from '@/components/ui/ProductCard';
+import { ProductCard } from '@/components/ui';
 import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';

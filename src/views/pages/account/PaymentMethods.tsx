@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle, FiX } from 'react-icons/fi';
-import { PrimaryButton } from '@/components/ui';
+import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle } from 'react-icons/fi';
+import { PrimaryButton, Modal } from '@/components/ui';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Note: No server endpoint for payment methods - state managed locally
@@ -101,38 +101,32 @@ export default function PaymentMethods() {
         </div>
       )}
 
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-              <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <h2 className="text-xl font-bold">Thêm thẻ thanh toán</h2>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"><FiX className="text-xl" /></button>
-              </div>
-              <div className="p-6 space-y-4">
-                <div>
-                  <label className="block font-medium mb-2">Số thẻ</label>
-                  <div className="relative">
-                    <input type="text" placeholder="0000 0000 0000 0000" className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-mono tracking-widest" maxLength={19} />
-                    <FiCreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
-                  </div>
-                </div>
-                <div><label className="block font-medium mb-2">Tên in trên thẻ</label><input type="text" placeholder="NGUYEN VAN A" className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase" /></div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block font-medium mb-2">Ngày hết hạn</label><input type="text" placeholder="MM/YY" className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center" maxLength={5} /></div>
-                  <div><label className="block font-medium mb-2">CVV/CVC</label><input type="password" placeholder="•••" className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center tracking-widest" maxLength={3} /></div>
-                </div>
-                <label className="flex items-center gap-3 cursor-pointer mt-4">
-                  <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500" />
-                  <span className="font-medium">Đặt làm thẻ mặc định</span>
-                </label>
-                <button onClick={() => setIsModalOpen(false)} className="btn btn-primary w-full py-4 mt-6">Lưu thẻ</button>
-              </div>
-            </motion.div>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Thêm thẻ thanh toán"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block font-medium mb-2">Số thẻ</label>
+            <div className="relative">
+              <input type="text" placeholder="0000 0000 0000 0000" className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-mono tracking-widest" maxLength={19} />
+              <FiCreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+            </div>
           </div>
-        )}
-      </AnimatePresence>
+          <div><label className="block font-medium mb-2">Tên in trên thẻ</label><input type="text" placeholder="NGUYEN VAN A" className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase" /></div>
+          <div className="grid grid-cols-2 gap-4">
+            <div><label className="block font-medium mb-2">Ngày hết hạn</label><input type="text" placeholder="MM/YY" className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center" maxLength={5} /></div>
+            <div><label className="block font-medium mb-2">CVV/CVC</label><input type="password" placeholder="•••" className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center tracking-widest" maxLength={3} /></div>
+          </div>
+          <label className="flex items-center gap-3 cursor-pointer mt-4">
+            <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500" />
+            <span className="font-medium">Đặt làm thẻ mặc định</span>
+          </label>
+          <button onClick={() => setIsModalOpen(false)} className="btn btn-primary w-full py-4 mt-6">Lưu thẻ</button>
+        </div>
+      </Modal>
     </div>
   );
 }

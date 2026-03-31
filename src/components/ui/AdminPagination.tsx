@@ -1,11 +1,4 @@
-interface AdminPaginationProps {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  perPage: number;
-  label?: string;
-  onPageChange: (page: number) => void;
-}
+import type { AdminPaginationProps } from './types';
 
 export default function AdminPagination({
   currentPage,

@@ -50,7 +50,7 @@ export default function ProductCard({ product }: { product: any }) {
   // Badges
   const isNew: boolean = product.isNew ?? (product.createdAt ? (Date.now() - new Date(product.createdAt).getTime()) < 30 * 86400000 : false);
   const isFlashSale: boolean = product.isFlashSale || false;
-  const sold: number = product.sold || 0;
+  const totalSold: number = product.totalSold || product.sold || 0;
 
   useEffect(() => {
     if (!isFlashSale) return;
@@ -148,6 +148,11 @@ export default function ProductCard({ product }: { product: any }) {
               {reviews > 0 && <span className="text-[9px] sm:text-[10px] font-medium text-slate-400">({reviews})</span>}
             </div>
           )}
+          {totalSold > 0 && (
+            <span className={`text-[9px] sm:text-[10px] font-medium text-slate-400 ${rating > 0 ? 'ml-0.5' : 'mt-1.5 sm:mt-2 block'}`}>
+              {rating > 0 && '· '}Đã bán {totalSold > 999 ? `${(totalSold / 1000).toFixed(1)}k` : totalSold}
+            </span>
+          )}
         </Link>
         
         {/* Price & Status — same row */}
@@ -194,12 +199,12 @@ export default function ProductCard({ product }: { product: any }) {
               <span className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-slate-900 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg shadow-sm">
                 <FiClock className="animate-pulse" /> {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
               </span>
-              <span>Đã bán {sold}%</span>
+              <span>Đã bán {totalSold}%</span>
             </div>
             <div className="w-full bg-white dark:bg-slate-900 rounded-full h-1.5 sm:h-2 overflow-hidden shadow-inner">
               <div 
                 className="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full"
-                style={{ width: `${sold}%` }}
+                style={{ width: `${totalSold}%` }}
               ></div>
             </div>
           </div>

@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { FiPlus, FiX, FiCheck, FiStar, FiSearch, FiInfo, FiShoppingCart, FiCopy, FiTrash2 } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import productService from '@/apis/services/productService';
 import { toast } from 'sonner';
+import { Modal } from '@/components/ui';
 
 interface CompareProduct {
   id: string;
@@ -294,93 +295,84 @@ export default function Compare() {
         </div>
       )}
 
-      {/* ─── Search Modal ──────────────────────────────────── */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}>
-            <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl h-[80vh] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800">
-              {/* Modal Header */}
-              <div className="p-5 border-b border-slate-100 dark:border-slate-800">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-lg font-bold">Chọn sản phẩm</h2>
-                  <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"><FiX className="text-lg" /></button>
-                </div>
-                {lockedCategoryName && (
-                  <div className="flex items-center gap-2 text-xs text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-xl mb-3">
-                    <FiInfo className="shrink-0" />
-                    Chỉ hiển thị sản phẩm trong danh mục <strong>{lockedCategoryName}</strong>
-                  </div>
-                )}
-                <div className="relative">
-                  <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input type="text"
-                    placeholder={lockedCategoryName ? `Tìm trong ${lockedCategoryName}...` : 'Tìm sản phẩm...'}
-                    value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} autoFocus
-                    className="w-full h-11 pl-11 pr-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
-                </div>
-              </div>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Chọn sản phẩm"
+        size="lg"
+        scrollable
+      >
+        <div className="space-y-3">
+          {lockedCategoryName && (
+            <div className="flex items-center gap-2 text-xs text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-xl">
+              <FiInfo className="shrink-0" />
+              Chỉ hiển thị sản phẩm trong danh mục <strong>{lockedCategoryName}</strong>
+            </div>
+          )}
+          <div className="relative">
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input type="text"
+              placeholder={lockedCategoryName ? `Tìm trong ${lockedCategoryName}...` : 'Tìm sản phẩm...'}
+              value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} autoFocus
+              className="w-full h-11 pl-11 pr-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+          </div>
+        </div>
 
-              {/* Results */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
-                {searching ? (
-                  <div className="flex flex-col items-center py-12 text-slate-400">
-                    <div className="w-8 h-8 border-2 border-purple-300 border-t-purple-600 rounded-full animate-spin mb-3" />
-                    <span className="text-sm">Đang tìm...</span>
+        <div className="mt-4 space-y-1.5 max-h-[50vh] overflow-y-auto">
+          {searching ? (
+            <div className="flex flex-col items-center py-12 text-slate-400">
+              <div className="w-8 h-8 border-2 border-purple-300 border-t-purple-600 rounded-full animate-spin mb-3" />
+              <span className="text-sm">Đang tìm...</span>
+            </div>
+          ) : searchResults.length === 0 ? (
+            <div className="flex flex-col items-center py-12 text-slate-400">
+              <FiSearch className="text-3xl mb-3" />
+              <span className="text-sm">{searchQuery ? 'Không tìm thấy sản phẩm' : 'Nhập tên sản phẩm để tìm'}</span>
+            </div>
+          ) : (
+            searchResults.map(product => {
+              const isSelected = !!compareItems.find(p => p.id === product.id);
+              const isDiffCat = lockedCategoryId != null && product.categoryId !== lockedCategoryId;
+              return (
+                <motion.div key={product.id}
+                  initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+                  className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${
+                    isSelected
+                      ? 'border-purple-300 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-700'
+                      : isDiffCat
+                        ? 'border-transparent opacity-30 cursor-not-allowed'
+                        : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer'
+                  }`}
+                  onClick={() => !isSelected && !isDiffCat && addItem(product)}>
+                  {product.image ? (
+                    <img src={product.image} alt={product.name} className="w-14 h-14 rounded-xl object-cover bg-slate-50 dark:bg-slate-800" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><FiShoppingCart /></div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-sm line-clamp-1">{product.name}</h4>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-purple-600 font-bold text-sm">{formatPrice(product.price)}</span>
+                      {product.categoryName && (
+                        <span className="text-[11px] text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">{product.categoryName}</span>
+                      )}
+                    </div>
+                    {isDiffCat && <span className="text-[11px] text-red-400">Khác danh mục</span>}
                   </div>
-                ) : searchResults.length === 0 ? (
-                  <div className="flex flex-col items-center py-12 text-slate-400">
-                    <FiSearch className="text-3xl mb-3" />
-                    <span className="text-sm">{searchQuery ? 'Không tìm thấy sản phẩm' : 'Nhập tên sản phẩm để tìm'}</span>
-                  </div>
-                ) : (
-                  searchResults.map(product => {
-                    const isSelected = !!compareItems.find(p => p.id === product.id);
-                    const isDiffCat = lockedCategoryId != null && product.categoryId !== lockedCategoryId;
-                    return (
-                      <motion.div key={product.id}
-                        initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                        className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${
-                          isSelected
-                            ? 'border-purple-300 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-700'
-                            : isDiffCat
-                              ? 'border-transparent opacity-30 cursor-not-allowed'
-                              : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer'
-                        }`}
-                        onClick={() => !isSelected && !isDiffCat && addItem(product)}>
-                        {product.image ? (
-                          <img src={product.image} alt={product.name} className="w-14 h-14 rounded-xl object-cover bg-slate-50 dark:bg-slate-800" />
-                        ) : (
-                          <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><FiShoppingCart /></div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-sm line-clamp-1">{product.name}</h4>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-purple-600 font-bold text-sm">{formatPrice(product.price)}</span>
-                            {product.categoryName && (
-                              <span className="text-[11px] text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">{product.categoryName}</span>
-                            )}
-                          </div>
-                          {isDiffCat && <span className="text-[11px] text-red-400">Khác danh mục</span>}
-                        </div>
-                        {isSelected ? (
-                          <div className="w-8 h-8 rounded-xl bg-purple-500 text-white flex items-center justify-center shrink-0"><FiCheck className="text-sm" /></div>
-                        ) : isDiffCat ? (
-                          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><FiX className="text-sm" /></div>
-                        ) : (
-                          <div className="w-8 h-8 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:border-purple-500 hover:text-purple-500 shrink-0 transition-colors"><FiPlus className="text-sm" /></div>
-                        )}
-                      </motion.div>
-                    );
-                  })
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  {isSelected ? (
+                    <div className="w-8 h-8 rounded-xl bg-purple-500 text-white flex items-center justify-center shrink-0"><FiCheck className="text-sm" /></div>
+                  ) : isDiffCat ? (
+                    <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><FiX className="text-sm" /></div>
+                  ) : (
+                    <div className="w-8 h-8 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:border-purple-500 hover:text-purple-500 shrink-0 transition-colors"><FiPlus className="text-sm" /></div>
+                  )}
+                </motion.div>
+              );
+            })
+          )}
+        </div>
+      </Modal>
     </div>
   );
 }
+

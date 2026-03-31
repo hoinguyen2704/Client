@@ -4,8 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
-import ProductCard from '@/components/ui/ProductCard';
-import CustomSelect from '@/components/ui/CustomSelect';
+import { ProductCard, CustomSelect } from '@/components/ui';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();

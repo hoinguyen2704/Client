@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle } from 'react-icons/fi';
 import adminTicketService from '@/apis/services/adminTicketService';
-import CustomSelect from '@/components/ui/CustomSelect';
+import { CustomSelect, AdminPagination } from '@/components/ui';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
 import type { TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination } from '@/components/ui';
 import { formatDateShort as formatDate } from '@/utils/date';
 
 export default function Tickets() {

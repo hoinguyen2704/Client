@@ -1,13 +1,6 @@
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import { type ReactNode } from 'react';
-
-interface AdminSearchProps {
-  placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
-  /** Extra filter elements (selects, buttons) rendered on the right */
-  filters?: ReactNode;
-}
+import type { AdminSearchProps } from './types';
 
 export default function AdminSearch({
   placeholder = 'Tìm kiếm...',

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import {
   FiPlus,
   FiSearch,
@@ -6,29 +6,23 @@ import {
   FiTag,
   FiToggleLeft,
   FiToggleRight,
-  FiX,
   FiCheck,
   FiGlobe,
   FiLock,
   FiPackage,
 } from "react-icons/fi";
-import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import adminCouponService from "@/apis/services/adminCouponService";
-import type { CouponResponse, CouponRequest, PageResponse } from "@/types";
+import type { CouponResponse, CouponRequest } from "@/types";
 import { formatPrice } from "@/helpers/format";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
-import { PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton } from "@/components/ui";
+import { PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton, Modal, FormInput } from "@/components/ui";
+import useAdminList from '@/hooks/useAdminList';
 import { formatDate } from '@/utils/date';
 
 export default function AdminVouchers() {
-  const [vouchers, setVouchers] = useState<CouponResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState<PageResponse<CouponResponse> | null>(
-    null,
-  );
+  const { items: vouchers, loading, pageData, searchQuery, setSearchQuery, page, setPage, refetch: fetchVouchers } =
+    useAdminList<CouponResponse>(adminCouponService.getAll, { size: PAGE_SIZE.MEDIUM });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<CouponRequest>>({
@@ -38,37 +32,10 @@ export default function AdminVouchers() {
     applicableProductIds: [],
   });
 
-  const fetchVouchers = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await adminCouponService.getAll({
-        keyword: searchQuery || undefined,
-        page,
-        size: PAGE_SIZE.MEDIUM,
-      });
-      setPageData(res.data);
-      setVouchers(res.data.data || []);
-    } catch (err) {
-      console.error("Failed:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [searchQuery, page]);
-
-  useEffect(() => {
-    fetchVouchers();
-  }, [fetchVouchers]);
-
   const handleToggle = async (id: string) => {
     try {
       await adminCouponService.toggleStatus(id);
-      setVouchers((prev) =>
-        prev.map((v) =>
-          v.id === id
-            ? { ...v, status: v.status === "ACTIVE" ? "INACTIVE" : "ACTIVE" }
-            : v,
-        ),
-      );
+      fetchVouchers();
       toast.success("Cập nhật trạng thái voucher thành công!");
     } catch (err) {
       console.error(err);
@@ -282,44 +249,41 @@ export default function AdminVouchers() {
         )}
       </div>
 
-      {/* Create/Edit Voucher Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col"
+      <Modal
+        open={isModalOpen}
+        onClose={() => { setIsModalOpen(false); resetForm(); }}
+        title={editingId ? "Chỉnh sửa Voucher" : "Tạo Voucher Mới"}
+        size="lg"
+        scrollable
+        footer={
+          <>
+            <button
+              onClick={() => { setIsModalOpen(false); resetForm(); }}
+              className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 transition-colors"
             >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <h3 className="text-xl font-bold">
-                  {editingId ? "Chỉnh sửa Voucher" : "Tạo Voucher Mới"}
-                </h3>
-                <button
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    resetForm();
-                  }}
-                  className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"
-                >
-                  <FiX className="text-xl" />
-                </button>
-              </div>
-              <div className="p-6 overflow-y-auto flex-1 space-y-5">
+              Hủy
+            </button>
+            <PrimaryButton
+              onClick={handleSubmit}
+              icon={<FiCheck className="text-base" />}
+            >
+              {editingId ? "Cập nhật" : "Lưu Voucher"}
+            </PrimaryButton>
+          </>
+        }
+      >
+              <div className="space-y-5">
                 {/* Code */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Mã Voucher</label>
-                  <input
-                    type="text"
-                    placeholder="VD: SUMMER2024"
-                    value={form.code || ""}
-                    onChange={(e) =>
-                      setForm({ ...form, code: e.target.value.toUpperCase() })
-                    }
-                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none uppercase font-mono"
-                  />
-                </div>
+                <FormInput
+                  label="Mã Voucher"
+                  type="text"
+                  placeholder="VD: SUMMER2024"
+                  value={form.code || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, code: e.target.value.toUpperCase() })
+                  }
+                  inputClassName="uppercase font-mono"
+                />
 
                 {/* Discount Type */}
                 <div className="space-y-2">
@@ -354,89 +318,69 @@ export default function AdminVouchers() {
 
                 {/* Value + Min */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Giá trị giảm</label>
-                    <input
-                      type="number"
-                      placeholder="VD: 10"
-                      value={form.discountValue || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, discountValue: +e.target.value })
-                      }
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Đơn tối thiểu</label>
-                    <input
-                      type="number"
-                      placeholder="500000"
-                      value={form.minOrderValue || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, minOrderValue: +e.target.value })
-                      }
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
-                    />
-                  </div>
+                  <FormInput
+                    label="Giá trị giảm"
+                    type="number"
+                    placeholder="VD: 10"
+                    value={form.discountValue || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, discountValue: +e.target.value })
+                    }
+                  />
+                  <FormInput
+                    label="Đơn tối thiểu"
+                    type="number"
+                    placeholder="500000"
+                    value={form.minOrderValue || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, minOrderValue: +e.target.value })
+                    }
+                  />
                 </div>
 
                 {/* Limit + Max */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Giới hạn sử dụng
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="100"
-                      value={form.usageLimit || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, usageLimit: +e.target.value })
-                      }
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Giảm tối đa</label>
-                    <input
-                      type="number"
-                      placeholder="100000"
-                      value={form.maxDiscountAmount || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, maxDiscountAmount: +e.target.value })
-                      }
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
-                    />
-                  </div>
+                  <FormInput
+                    label="Giới hạn sử dụng"
+                    type="number"
+                    placeholder="100"
+                    value={form.usageLimit || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, usageLimit: +e.target.value })
+                    }
+                  />
+                  <FormInput
+                    label="Giảm tối đa"
+                    type="number"
+                    placeholder="100000"
+                    value={form.maxDiscountAmount || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, maxDiscountAmount: +e.target.value })
+                    }
+                  />
                 </div>
 
                 {/* Dates */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Ngày bắt đầu</label>
-                    <input
-                      type="date"
-                      value={form.startDate || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, startDate: e.target.value })
-                      }
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Ngày kết thúc</label>
-                    <input
-                      type="date"
-                      value={form.endDate || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, endDate: e.target.value })
-                      }
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
-                    />
-                  </div>
+                  <FormInput
+                    label="Ngày bắt đầu"
+                    type="date"
+                    value={form.startDate || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, startDate: e.target.value })
+                    }
+                  />
+                  <FormInput
+                    label="Ngày kết thúc"
+                    type="date"
+                    value={form.endDate || ""}
+                    onChange={(e) =>
+                      setForm({ ...form, endDate: e.target.value })
+                    }
+                  />
                 </div>
 
-                {/* ═══ NEW: Visibility ═══ */}
+                {/* Visibility */}
                 <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-100 dark:border-blue-900/50 space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -468,7 +412,7 @@ export default function AdminVouchers() {
                   </div>
                 </div>
 
-                {/* ═══ NEW: Apply Type ═══ */}
+                {/* Apply Type */}
                 <div className="space-y-3">
                   <label className="text-sm font-medium">Phạm vi áp dụng</label>
                   <div className="grid grid-cols-2 gap-3">
@@ -522,27 +466,7 @@ export default function AdminVouchers() {
                   )}
                 </div>
               </div>
-              <div className="p-6 border-t border-slate-100 dark:border-slate-800 shrink-0 flex justify-end gap-3">
-                <button
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    resetForm();
-                  }}
-                  className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 transition-colors"
-                >
-                  Hủy
-                </button>
-                <PrimaryButton
-                  onClick={handleSubmit}
-                  icon={<FiCheck className="text-base" />}
-                >
-                  {editingId ? "Cập nhật" : "Lưu Voucher"}
-                </PrimaryButton>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      </Modal>
     </div>
   );
 }

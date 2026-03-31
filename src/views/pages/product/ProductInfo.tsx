@@ -103,7 +103,7 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
     <div className="w-full lg:w-7/12 flex flex-col">
       <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">{product.name}</h1>
 
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-6 flex-wrap">
         {rating > 0 && (
           <>
             <div className="flex items-center gap-1 text-yellow-400">
@@ -114,6 +114,12 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
             <span className="font-medium">{rating.toFixed(1)}/5</span>
             <span className="text-slate-300 dark:text-slate-600">|</span>
             <span className="text-slate-500">{reviews} Đánh giá</span>
+          </>
+        )}
+        {(product.totalSold ?? 0) > 0 && (
+          <>
+            <span className="text-slate-300 dark:text-slate-600">|</span>
+            <span className="text-slate-500">Đã bán <strong>{(product.totalSold ?? 0) > 999 ? `${((product.totalSold ?? 0) / 1000).toFixed(1)}k` : product.totalSold}</strong></span>
           </>
         )}
         {product.brandName && (

@@ -16,6 +16,7 @@ export interface ProductResponse {
   isFeatured?: boolean;
   specsJson?: string;
   outOfStock?: boolean;
+  totalSold?: number;
   images?: ProductImageResponse[];
   variants: ProductVariantResponse[];
   createdAt: string;

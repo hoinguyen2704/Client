@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import userService from '@/apis/services/userService';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
-import CustomSelect from '@/components/ui/CustomSelect';
+import { CustomSelect } from '@/components/ui';
 import type { UserResponse } from '@/types';
 
 export default function Profile() {

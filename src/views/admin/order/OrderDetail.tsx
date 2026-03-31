@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
-import StatusBadge from '@/components/ui/StatusBadge';
+import { StatusBadge, CustomSelect } from '@/components/ui';
 import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
-import CustomSelect from '@/components/ui/CustomSelect';
 import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
 import { formatDateTime as formatDate } from '@/utils/date';
 import type { OrderResponse } from '@/types';
 import { SHOP } from '@/constants/shopConstants';
+import { Modal, ModalCancelButton } from '@/components/ui';
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
@@ -214,30 +214,28 @@ export default function OrderDetail() {
         </div>
       </div>
 
-      {/* Status Modal */}
-      {isStatusModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-xl">
-            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-lg font-bold">Cập nhật trạng thái</h3>
-              <button onClick={() => setIsStatusModalOpen(false)} className="text-slate-400 hover:text-slate-600"><FiX className="text-xl" /></button>
-            </div>
-            <div className="p-6">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trạng thái mới</label>
-              <CustomSelect 
-                value={editStatus} 
-                onChange={(val) => setEditStatus(val)}
-                options={ORDER_STATUS_OPTIONS}
-                className="w-full"
-              />
-            </div>
-            <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-800/50 rounded-b-2xl">
-              <button onClick={() => setIsStatusModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium hover:bg-slate-200 transition-colors">Hủy</button>
-              <button onClick={handleUpdateStatus} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">Cập nhật</button>
-            </div>
-          </div>
+      <Modal
+        open={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        title="Cập nhật trạng thái"
+        size="sm"
+        footer={
+          <>
+            <ModalCancelButton onClick={() => setIsStatusModalOpen(false)} />
+            <button onClick={handleUpdateStatus} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">Cập nhật</button>
+          </>
+        }
+      >
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trạng thái mới</label>
+          <CustomSelect 
+            value={editStatus} 
+            onChange={(val) => setEditStatus(val)}
+            options={ORDER_STATUS_OPTIONS}
+            className="w-full"
+          />
         </div>
-      )}
+      </Modal>
     </div>
 
     {/* ===== PRINT INVOICE TEMPLATE ===== */}

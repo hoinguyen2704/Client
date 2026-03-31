@@ -45,6 +45,14 @@ const adminProductService = {
 
   deleteImage: (productId: string, imageId: string): Promise<ApiResponse<void>> =>
     adminAxios.delete(`${URL}/${productId}/images/${imageId}`),
+
+  /** Xuất danh sách sản phẩm ra Excel */
+  export: (params?: {
+    keyword?: string;
+    categoryId?: string;
+    status?: string;
+  }): Promise<Blob> =>
+    adminAxios.get(`${URL}/export`, { params, responseType: 'blob' }),
 };
 
 export default adminProductService;

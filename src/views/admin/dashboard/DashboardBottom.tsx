@@ -1,6 +1,5 @@
 import { FiStar } from 'react-icons/fi';
-import StatusBadge from '@/components/ui/StatusBadge';
-import Card from '@/components/ui/Card';
+import { StatusBadge, Card } from '@/components/ui';
 import { formatPrice } from '@/helpers/format';
 import { formatDate } from '@/utils/date';
 import type { DashboardChildProps } from './types';

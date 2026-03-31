@@ -1,4 +1,6 @@
+// ─── Component exports ──────────────────────────────────────────
 export { default as Card } from './Card';
+export { default as CustomSelect } from './CustomSelect';
 export { default as EmptyState } from './EmptyState';
 export { default as StatusBadge } from './StatusBadge';
 export { default as ProductCard } from './ProductCard';
@@ -13,4 +15,12 @@ export { default as ConfirmDialog } from './ConfirmDialog';
 export { default as OptimizedImage } from './OptimizedImage';
 export { default as PrimaryButton } from './PrimaryButton';
 export { default as TrashButton } from './TrashButton';
+export { default as Modal, ModalCancelButton, ModalSubmitButton } from './Modal';
+export { default as StarRating } from './StarRating';
+export { FormInput, FormTextarea, FormSelect } from './FormInput';
+
+// ─── Types (re-export for convenience) ──────────────────────────
 export * from './types';
+
+// ─── Constants (re-export for convenience) ──────────────────────
+export { STATUS_CONFIG, STAR_LABELS, CONFIRM_VARIANT_CONFIG } from './constants';

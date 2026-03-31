@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiStar, FiMessageCircle, FiDownload } from 'react-icons/fi';
+import { FiSearch, FiMessageCircle, FiDownload } from 'react-icons/fi';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
-import CustomSelect from '@/components/ui/CustomSelect';
+import { CustomSelect, AdminPagination, StarRating } from '@/components/ui';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination } from '@/components/ui';
 import { formatDate } from '@/utils/date';
 
 export default function Feedbacks() {
@@ -73,9 +72,7 @@ export default function Feedbacks() {
                       <span className="text-slate-400 text-sm ml-2">{formatDate(review.createdAt)}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <FiStar key={i} className={`text-sm ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300'}`} />
-                      ))}
+                      <StarRating value={review.rating} onChange={() => {}} readOnly size="sm" showLabel={false} />
                     </div>
                   </div>
                   <p className="text-sm text-slate-500 mb-1">SP: <span className="font-medium text-slate-700 dark:text-slate-300">{review.productName}</span></p>

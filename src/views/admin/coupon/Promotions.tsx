@@ -1,38 +1,22 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { FiPlus, FiSearch, FiEdit2, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminCouponService from '@/apis/services/adminCouponService';
-import type { CouponResponse, PageResponse } from '@/types';
+import type { CouponResponse } from '@/types';
 import { formatPrice } from '@/helpers/format';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { AdminSearch, AdminPagination, PrimaryButton, ActionButtons, StatusBadge, TableRowSkeleton } from '@/components/ui';
+import useAdminList from '@/hooks/useAdminList';
 import { formatDate } from '@/utils/date';
 
 export default function Promotions() {
-  const [coupons, setCoupons] = useState<CouponResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState<PageResponse<CouponResponse> | null>(null);
-
-  const fetchCoupons = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await adminCouponService.getAll({ keyword: searchQuery || undefined, page, size: PAGE_SIZE.LARGE });
-      setPageData(res.data);
-      setCoupons(res.data.data || []);
-    } catch (err) { console.error('Failed to fetch coupons:', err); }
-    finally { setLoading(false); }
-  }, [searchQuery, page]);
-
-  useEffect(() => { fetchCoupons(); }, [fetchCoupons]);
+  const { items: coupons, loading, pageData, searchQuery, setSearchQuery, page, setPage, refetch: fetchCoupons } =
+    useAdminList<CouponResponse>(adminCouponService.getAll, { size: PAGE_SIZE.LARGE });
 
   const handleToggle = async (id: string) => {
     try {
       await adminCouponService.toggleStatus(id);
-      setCoupons(prev => prev.map(c =>
-        c.id === id ? { ...c, status: c.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' } : c
-      ));
+      fetchCoupons();
       toast.success('Cập nhật trạng thái khuyến mãi thành công!');
     } catch (err) {
       console.error('Toggle failed:', err);
@@ -52,7 +36,7 @@ export default function Promotions() {
       <AdminSearch
         placeholder="Tìm kiếm mã giảm giá..."
         value={searchQuery}
-        onChange={(val) => { setSearchQuery(val); setPage(1); }}
+        onChange={setSearchQuery}
       />
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">

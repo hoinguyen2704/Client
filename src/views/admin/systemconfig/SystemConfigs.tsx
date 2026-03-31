@@ -1,13 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSettings, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
+import { FiSettings, FiPlus, FiEdit2, FiTrash2, FiCheck } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { adminSystemConfigService } from '@/apis';
 import type { SystemConfigResponse, SystemConfigRequest } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import PrimaryButton from '@/components/ui/PrimaryButton';
-import ConfirmDialog from '@/components/ui/ConfirmDialog';
-import { AdminSearch } from '@/components/ui';
+import { PrimaryButton, ConfirmDialog, AdminSearch, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea } from '@/components/ui';
 
 export default function SystemConfigs() {
   const [configs, setConfigs] = useState<SystemConfigResponse[]>([]);
@@ -133,46 +130,42 @@ export default function SystemConfigs() {
         </div>
       </div>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold">{editingConfig ? 'Sửa cấu hình' : 'Thêm cấu hình mới'}</h3>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-                  <FiX className="text-xl" />
-                </button>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Config Key *</label>
-                  <input type="text" value={form.configKey} onChange={(e) => setForm({ ...form, configKey: e.target.value })}
-                    disabled={!!editingConfig}
-                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none disabled:opacity-50 font-mono" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Giá trị</label>
-                  <textarea value={form.configValue || ''} onChange={(e) => setForm({ ...form, configValue: e.target.value })}
-                    className="w-full h-24 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none resize-none font-mono" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Mô tả</label>
-                  <input type="text" value={form.description || ''} onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
-                </div>
-              </div>
-              <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
-                <button onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Hủy</button>
-                <button onClick={handleSubmit} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors flex items-center gap-2">
-                  <FiCheck /> {editingConfig ? 'Cập nhật' : 'Lưu'}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={editingConfig ? 'Sửa cấu hình' : 'Thêm cấu hình mới'}
+        footer={
+          <>
+            <ModalCancelButton onClick={() => setIsModalOpen(false)} />
+            <ModalSubmitButton onClick={handleSubmit} icon={<FiCheck />}>
+              {editingConfig ? 'Cập nhật' : 'Lưu'}
+            </ModalSubmitButton>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <FormInput
+            label="Config Key *"
+            type="text"
+            value={form.configKey}
+            onChange={(e) => setForm({ ...form, configKey: e.target.value })}
+            disabled={!!editingConfig}
+            inputClassName="font-mono"
+          />
+          <FormTextarea
+            label="Giá trị"
+            value={form.configValue || ''}
+            onChange={(e) => setForm({ ...form, configValue: e.target.value })}
+            inputClassName="h-24 font-mono"
+          />
+          <FormInput
+            label="Mô tả"
+            type="text"
+            value={form.description || ''}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </div>
+      </Modal>
 
       <ConfirmDialog
         open={!!deleteTarget}

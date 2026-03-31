@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { FiMessageSquare, FiPlus, FiChevronRight, FiX, FiSend } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
+import { FiMessageSquare, FiPlus, FiChevronRight, FiSend } from 'react-icons/fi';
 import ticketService from '@/apis/services/ticketService';
 import { formatDateShort as formatDate } from '@/utils/date';
 import type { TicketResponse } from '@/types';
+import { Modal, ModalCancelButton } from '@/components/ui';
 
 const statusMap: Record<string, { label: string; color: string }> = {
   OPEN: { label: 'Mở', color: 'bg-blue-100 text-blue-600' },
@@ -88,64 +88,53 @@ export default function Support() {
       )}
 
       {/* Create Ticket Modal */}
-      <AnimatePresence>
-        {showCreate && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-lg">
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold">Tạo yêu cầu hỗ trợ</h3>
-                <button onClick={() => setShowCreate(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><FiX /></button>
-              </div>
-              <div className="p-6 space-y-4">
-                <input className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" placeholder="Tiêu đề" value={newSubject} onChange={(e) => setNewSubject(e.target.value)} />
-                <textarea className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 resize-none" placeholder="Mô tả chi tiết vấn đề..." value={newContent} onChange={(e) => setNewContent(e.target.value)} />
-              </div>
-              <div className="flex justify-end gap-3 p-6 border-t border-slate-100 dark:border-slate-800">
-                <button onClick={() => setShowCreate(false)} className="px-6 py-2.5 rounded-xl text-slate-600 hover:bg-slate-200 transition-colors">Hủy</button>
-                <button onClick={handleCreate} className="btn btn-primary btn-md">Gửi</button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <Modal
+        open={showCreate}
+        onClose={() => setShowCreate(false)}
+        title="Tạo yêu cầu hỗ trợ"
+        footer={
+          <>
+            <ModalCancelButton onClick={() => setShowCreate(false)} />
+            <button onClick={handleCreate} className="btn btn-primary btn-md">Gửi</button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <input className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" placeholder="Tiêu đề" value={newSubject} onChange={(e) => setNewSubject(e.target.value)} />
+          <textarea className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 resize-none" placeholder="Mô tả chi tiết vấn đề..." value={newContent} onChange={(e) => setNewContent(e.target.value)} />
+        </div>
+      </Modal>
 
       {/* Ticket Detail Modal */}
-      <AnimatePresence>
-        {selectedTicket && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <div>
-                  <h3 className="font-bold">{selectedTicket.subject}</h3>
-                  <span className="text-xs text-slate-500">{selectedTicket.ticketNumber}</span>
+      <Modal
+        open={!!selectedTicket}
+        onClose={() => setSelectedTicket(null)}
+        title={selectedTicket?.subject || ''}
+        scrollable
+      >
+        <div className="space-y-4">
+          {selectedTicket && (
+            <>
+              <span className="text-xs text-slate-500">{selectedTicket.ticketNumber}</span>
+              {(selectedTicket.messages || []).map(msg => (
+                <div key={msg.id} className={`flex ${msg.senderType === 'USER' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] rounded-2xl p-4 ${msg.senderType === 'USER' ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}`}>
+                    <p className="text-sm">{msg.content}</p>
+                    <span className={`text-xs mt-1 block ${msg.senderType === 'USER' ? 'text-white/60' : 'text-slate-400'}`}>{formatDate(msg.createdAt)}</span>
+                  </div>
                 </div>
-                <button onClick={() => setSelectedTicket(null)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><FiX /></button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {(selectedTicket.messages || []).map(msg => (
-                  <div key={msg.id} className={`flex ${msg.senderType === 'USER' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-2xl p-4 ${msg.senderType === 'USER' ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800'}`}>
-                      <p className="text-sm">{msg.content}</p>
-                      <span className={`text-xs mt-1 block ${msg.senderType === 'USER' ? 'text-white/60' : 'text-slate-400'}`}>{formatDate(msg.createdAt)}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              ))}
               {selectedTicket.status !== 'CLOSED' && selectedTicket.status !== 'RESOLVED' && (
-                <div className="p-4 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                  <div className="flex gap-2">
-                    <input className="flex-1 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" placeholder="Nhập phản hồi..."
-                      value={replyText} onChange={(e) => setReplyText(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleReply()} />
-                    <button onClick={handleReply} className="btn btn-primary btn-md"><FiSend /></button>
-                  </div>
+                <div className="flex gap-2 pt-2">
+                  <input className="flex-1 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" placeholder="Nhập phản hồi..."
+                    value={replyText} onChange={(e) => setReplyText(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleReply()} />
+                  <button onClick={handleReply} className="btn btn-primary btn-md"><FiSend /></button>
                 </div>
               )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+            </>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 }

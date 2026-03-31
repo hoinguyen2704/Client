@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiChevronRight, FiStar, FiX } from 'react-icons/fi';
+import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiChevronRight } from 'react-icons/fi';
 import { formatPrice } from '@/helpers/format';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import { ConfirmDialog } from '@/components/ui';
+import { ConfirmDialog, Modal, ModalCancelButton, StarRating } from '@/components/ui';
 import { formatDate } from '@/utils/date';
 import type { OrderResponse } from '@/types';
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
@@ -169,46 +168,33 @@ export default function Orders() {
         )}
       </div>
 
-      {/* Review Modal */}
-      <AnimatePresence>
-        {reviewModalOpen && selectedOrder && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold">Đánh giá sản phẩm</h3>
-                <button onClick={() => setReviewModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><FiX className="text-xl" /></button>
-              </div>
-              <div className="p-6 space-y-6">
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-                  <h4 className="font-bold">{selectedOrder.items[0]?.productName}</h4>
-                  <p className="text-sm text-slate-500 mt-1">Phân loại: {selectedOrder.items[0]?.variantName}</p>
-                </div>
-                <div className="flex flex-col items-center gap-3">
-                  <p className="font-medium text-slate-700 dark:text-slate-300">Chất lượng sản phẩm</p>
-                  <div className="flex items-center gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button key={star} onClick={() => setRating(star)} className="text-4xl focus:outline-none transition-transform hover:scale-110">
-                        <FiStar className={star <= rating ? "fill-yellow-400 text-yellow-400" : "text-slate-200 dark:text-slate-700"} />
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-sm text-yellow-600 dark:text-yellow-500 font-medium">
-                    {rating === 5 ? 'Tuyệt vời' : rating === 4 ? 'Hài lòng' : rating === 3 ? 'Bình thường' : rating === 2 ? 'Không hài lòng' : 'Tệ'}
-                  </p>
-                </div>
-                <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                  placeholder="Hãy chia sẻ nhận xét của bạn về sản phẩm này nhé..."
-                  className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none" />
-              </div>
-              <div className="flex items-center justify-end gap-3 p-6 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/20">
-                <button onClick={() => setReviewModalOpen(false)} className="px-6 py-2.5 rounded-xl font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Trở lại</button>
-                <button onClick={handleSubmitReview} className="btn btn-primary btn-md">Gửi đánh giá</button>
-              </div>
-            </motion.div>
+      <Modal
+        open={reviewModalOpen && !!selectedOrder}
+        onClose={() => setReviewModalOpen(false)}
+        title="Đánh giá sản phẩm"
+        footer={
+          <>
+            <ModalCancelButton onClick={() => setReviewModalOpen(false)}>Trở lại</ModalCancelButton>
+            <button onClick={handleSubmitReview} className="btn btn-primary btn-md">Gửi đánh giá</button>
+          </>
+        }
+      >
+        {selectedOrder && (
+          <div className="space-y-6">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+              <h4 className="font-bold">{selectedOrder.items[0]?.productName}</h4>
+              <p className="text-sm text-slate-500 mt-1">Phân loại: {selectedOrder.items[0]?.variantName}</p>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <p className="font-medium text-slate-700 dark:text-slate-300">Chất lượng sản phẩm</p>
+              <StarRating value={rating} onChange={setRating} size="lg" />
+            </div>
+            <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+              placeholder="Hãy chia sẻ nhận xét của bạn về sản phẩm này nhé..."
+              className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none" />
           </div>
         )}
-      </AnimatePresence>
+      </Modal>
 
       <ConfirmDialog
         open={!!cancelTarget}

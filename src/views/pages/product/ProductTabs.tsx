@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { FiStar, FiCheck, FiThumbsUp, FiMessageSquare, FiImage, FiX, FiPlus } from 'react-icons/fi';
+import { FiStar, FiCheck, FiThumbsUp, FiMessageSquare, FiImage, FiPlus } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import type { ProductResponse } from '@/types';
+import { Modal, StarRating } from '@/components/ui';
 
 export default function ProductTabs({ product, images }: { product: ProductResponse; images: string[] }) {
   const [activeTab, setActiveTab] = useState('description');
@@ -72,7 +73,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                   <div className="text-center md:w-1/4">
                     <div className="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 mb-2">{rating.toFixed(1)}</div>
                     <div className="flex justify-center gap-1 text-yellow-400 text-xl mb-2">
-                      {[1, 2, 3, 4, 5].map(star => <FiStar key={star} className={star <= Math.round(rating) ? 'fill-current' : ''} />)}
+                      <StarRating value={Math.round(rating)} onChange={() => {}} readOnly size="sm" />
                     </div>
                     <div className="text-slate-500">{reviews} đánh giá</div>
                   </div>
@@ -100,37 +101,27 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
         </div>
       </div>
 
-      {/* Write Review Modal */}
-      <AnimatePresence>
-        {isReviewModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-              <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <h2 className="text-xl font-bold">Viết đánh giá</h2>
-                <button onClick={() => setIsReviewModalOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full"><FiX className="text-xl" /></button>
-              </div>
-              <div className="p-6 space-y-6">
-                <div className="flex items-center gap-4">
-                  <img src={product.mainImageUrl || ''} alt={product.name} className="w-16 h-16 rounded-xl object-cover" referrerPolicy="no-referrer" />
-                  <h3 className="font-bold line-clamp-2">{product.name}</h3>
-                </div>
-                <div>
-                  <label className="block font-medium mb-2">Đánh giá của bạn</label>
-                  <div className="flex gap-2 text-3xl text-slate-300 dark:text-slate-600 cursor-pointer">
-                    {[1, 2, 3, 4, 5].map(star => <FiStar key={star} className="hover:text-yellow-400 hover:fill-yellow-400 transition-colors" />)}
-                  </div>
-                </div>
-                <div>
-                  <label className="block font-medium mb-2">Nội dung đánh giá</label>
-                  <textarea rows={4} placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..." className="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
-                </div>
-                <button onClick={() => setIsReviewModalOpen(false)} className="btn btn-primary w-full py-4">Gửi đánh giá</button>
-              </div>
-            </motion.div>
+      <Modal
+        open={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        title="Viết đánh giá"
+      >
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <img src={product.mainImageUrl || ''} alt={product.name} className="w-16 h-16 rounded-xl object-cover" referrerPolicy="no-referrer" />
+            <h3 className="font-bold line-clamp-2">{product.name}</h3>
           </div>
-        )}
-      </AnimatePresence>
+          <div>
+            <label className="block font-medium mb-2">Đánh giá của bạn</label>
+            <StarRating value={0} onChange={() => {}} />
+          </div>
+          <div>
+            <label className="block font-medium mb-2">Nội dung đánh giá</label>
+            <textarea rows={4} placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..." className="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
+          </div>
+          <button onClick={() => setIsReviewModalOpen(false)} className="btn btn-primary w-full py-4">Gửi đánh giá</button>
+        </div>
+      </Modal>
     </>
   );
 }

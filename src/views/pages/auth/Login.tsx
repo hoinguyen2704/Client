@@ -3,11 +3,11 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiTruck, FiHeadphones, FiAlertCircle } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
-import LogoIcon from '@/components/ui/LogoIcon';
 import { motion } from 'motion/react';
 import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
 import { SHOP } from '@/constants/shopConstants';
+import AuthLayout from './AuthLayout';
 
 const features = [
   { icon: FiShield, title: 'Bảo mật tuyệt đối', desc: 'Mã hóa SSL 256-bit bảo vệ mọi giao dịch' },
@@ -58,165 +58,111 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
-      <div className="relative w-full max-w-[1400px]">
-        {/* Left Hero Panel — absolute so form determines height */}
-        <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-[calc(50%-8px)] bg-gradient-to-br from-purple-700 via-purple-600 to-blue-600 dark:from-purple-950 dark:via-slate-900 dark:to-blue-950 text-white rounded-[3rem] overflow-hidden">
-          <div className="absolute top-[-20%] left-[-10%] w-[40rem] h-[40rem] bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[40rem] h-[40rem] bg-blue-400/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-purple-400/10 rounded-full blur-3xl" />
+    <AuthLayout
+      heroGradient="from-purple-700 via-purple-600 to-blue-600 dark:from-purple-950 dark:via-slate-900 dark:to-blue-950"
+      accentBlobClass="bg-blue-400/10"
+      heroTitle={<>Chào mừng bạn đến với{' '}<span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">{SHOP.name}</span></>}
+      heroSubtitle="Nền tảng mua sắm công nghệ hàng đầu Việt Nam với hàng ngàn sản phẩm chính hãng."
+      features={features}
+      mobileLogoGradient="from-purple-600 to-blue-600"
+      mobileLogoShadow="shadow-purple-500/30"
+    >
+      <div className="text-center lg:text-left">
+        <h2 className="text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Đăng nhập</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-lg">Chào mừng bạn quay trở lại {SHOP.name}</p>
+      </div>
 
-          <div className="relative z-10 h-full flex flex-col justify-center p-16 xl:p-20">
-            <div className="mb-8">
-              <Link to="/" className="inline-flex items-center gap-4 hover:scale-105 transition-transform">
-                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <LogoIcon className="w-8 h-8" />
-                </div>
-                <span className="text-3xl font-bold">{SHOP.name}</span>
-              </Link>
+      {error && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-2xl text-lg">
+          <FiAlertCircle className="text-xl shrink-0" />
+          <span>{error}</span>
+        </motion.div>
+      )}
+
+      <form className="space-y-8" onSubmit={handleLogin}>
+        <div className="space-y-6">
+          <div>
+            <label className="block text-lg font-medium text-slate-700 dark:text-slate-300 mb-3 ml-2">Email / Số điện thoại</label>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                <FiMail className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-2xl" />
+              </div>
+              <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}
+                className="block w-full pl-16 pr-6 py-5 text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
+                placeholder="Nhập email hoặc SĐT" />
             </div>
+          </div>
 
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="text-5xl xl:text-6xl font-bold leading-tight mb-6">
-              Chào mừng bạn đến với{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">{SHOP.name}</span>
-            </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="text-xl text-white/80 mb-10 leading-relaxed">
-              Nền tảng mua sắm công nghệ hàng đầu Việt Nam với hàng ngàn sản phẩm chính hãng.
-            </motion.p>
-
-            <div className="space-y-6">
-              {features.map((f, i) => (
-                <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.1 }}
-                  className="flex items-start gap-5">
-                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center shrink-0">
-                    <f.icon className="text-2xl" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg">{f.title}</h3>
-                    <p className="text-white/70 text-sm mt-1">{f.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
+          <div>
+            <label className="block text-lg font-medium text-slate-700 dark:text-slate-300 mb-3 ml-2">Mật khẩu</label>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                <FiLock className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-2xl" />
+              </div>
+              <input type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)}
+                className="block w-full pl-16 pr-16 py-5 text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
+                placeholder="Nhập mật khẩu" />
+              <button type="button" onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                {showPassword ? <FiEyeOff className="text-2xl" /> : <FiEye className="text-2xl" />}
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Right Form Panel — in normal flow, determines container height */}
-        <div className="lg:ml-[50%] lg:pl-4">
-          <div className="flex items-center justify-center p-4 sm:p-8 lg:p-12">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-              className="w-full max-w-[680px] bg-white dark:bg-slate-800 p-10 sm:p-16 lg:p-20 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700/50 space-y-10">
-              {/* Mobile Logo */}
-              <div className="text-center lg:hidden mb-6">
-                <Link to="/" className="inline-flex items-center gap-3 justify-center hover:scale-105 transition-transform">
-                  <div className="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
-                    <LogoIcon className="w-10 h-10" />
-                  </div>
-                </Link>
-              </div>
-
-              <div className="text-center lg:text-left">
-                <h2 className="text-5xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Đăng nhập</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-lg">Chào mừng bạn quay trở lại {SHOP.name}</p>
-              </div>
-
-              {error && (
-                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-2xl text-lg">
-                  <FiAlertCircle className="text-xl shrink-0" />
-                  <span>{error}</span>
-                </motion.div>
-              )}
-
-              <form className="space-y-8" onSubmit={handleLogin}>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-lg font-medium text-slate-700 dark:text-slate-300 mb-3 ml-2">Email / Số điện thoại</label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                        <FiMail className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-2xl" />
-                      </div>
-                      <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}
-                        className="block w-full pl-16 pr-6 py-5 text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
-                        placeholder="Nhập email hoặc SĐT" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-lg font-medium text-slate-700 dark:text-slate-300 mb-3 ml-2">Mật khẩu</label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                        <FiLock className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-2xl" />
-                      </div>
-                      <input type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)}
-                        className="block w-full pl-16 pr-16 py-5 text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
-                        placeholder="Nhập mật khẩu" />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-                        {showPassword ? <FiEyeOff className="text-2xl" /> : <FiEye className="text-2xl" />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <div className="flex items-center">
-                    <input id="remember-me" name="remember-me" type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}
-                      className="h-5 w-5 appearance-none border-2 border-slate-300 dark:border-slate-600 rounded-md cursor-pointer checked:bg-purple-600 checked:border-purple-600 relative
-                        after:content-[''] after:absolute after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-white after:border-r-[3px] after:border-b-[3px] after:rotate-45 after:opacity-0 checked:after:opacity-100 transition-all" />
-                    <label htmlFor="remember-me" className="ml-3 block text-lg text-slate-600 dark:text-slate-400 cursor-pointer select-none">
-                      Ghi nhớ đăng nhập
-                    </label>
-                  </div>
-                  <Link to="/forgot-password" className="text-lg font-medium text-purple-600 hover:text-purple-500 transition-colors">
-                    Quên mật khẩu?
-                  </Link>
-                </div>
-
-                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={loading}
-                  className="group relative w-full flex justify-center items-center py-5 px-8 text-xl font-bold rounded-2xl text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 mt-6 disabled:opacity-60 disabled:cursor-not-allowed">
-                  {loading ? (
-                    <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>Đăng nhập <FiArrowRight className="ml-3 h-7 w-7 group-hover:translate-x-1 transition-transform" /></>
-                  )}
-                </motion.button>
-              </form>
-
-              {/* Social Login */}
-              <div className="pt-4">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200 dark:border-slate-700" />
-                  </div>
-                  <div className="relative flex justify-center text-lg">
-                    <span className="px-5 bg-white dark:bg-slate-800 text-slate-500 rounded-full">Hoặc đăng nhập với</span>
-                  </div>
-                </div>
-                <div className="mt-8 grid grid-cols-2 gap-5">
-                  <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                    className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
-                    <FcGoogle className="text-3xl" /> Google
-                  </motion.button>
-                  <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                    className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
-                    <FaFacebook className="text-3xl text-blue-600" /> Facebook
-                  </motion.button>
-                </div>
-              </div>
-
-              <div className="text-center pt-4">
-                <p className="text-lg text-slate-600 dark:text-slate-400">
-                  Chưa có tài khoản?{' '}
-                  <Link to="/register" className="font-semibold text-purple-600 hover:text-purple-500 transition-colors">Đăng ký ngay</Link>
-                </p>
-              </div>
-            </motion.div>
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center">
+            <input id="remember-me" name="remember-me" type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-5 w-5 appearance-none border-2 border-slate-300 dark:border-slate-600 rounded-md cursor-pointer checked:bg-purple-600 checked:border-purple-600 relative
+                after:content-[''] after:absolute after:left-[5px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-white after:border-r-[3px] after:border-b-[3px] after:rotate-45 after:opacity-0 checked:after:opacity-100 transition-all" />
+            <label htmlFor="remember-me" className="ml-3 block text-lg text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+              Ghi nhớ đăng nhập
+            </label>
           </div>
+          <Link to="/forgot-password" className="text-lg font-medium text-purple-600 hover:text-purple-500 transition-colors">
+            Quên mật khẩu?
+          </Link>
+        </div>
+
+        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={loading}
+          className="group relative w-full flex justify-center items-center py-5 px-8 text-xl font-bold rounded-2xl text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 mt-6 disabled:opacity-60 disabled:cursor-not-allowed">
+          {loading ? (
+            <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            <>Đăng nhập <FiArrowRight className="ml-3 h-7 w-7 group-hover:translate-x-1 transition-transform" /></>
+          )}
+        </motion.button>
+      </form>
+
+      {/* Social Login */}
+      <div className="pt-4">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-slate-200 dark:border-slate-700" />
+          </div>
+          <div className="relative flex justify-center text-lg">
+            <span className="px-5 bg-white dark:bg-slate-800 text-slate-500 rounded-full">Hoặc đăng nhập với</span>
+          </div>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-5">
+          <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+            <FcGoogle className="text-3xl" /> Google
+          </motion.button>
+          <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+            <FaFacebook className="text-3xl text-blue-600" /> Facebook
+          </motion.button>
         </div>
       </div>
-    </div>
+
+      <div className="text-center pt-4">
+        <p className="text-lg text-slate-600 dark:text-slate-400">
+          Chưa có tài khoản?{' '}
+          <Link to="/register" className="font-semibold text-purple-600 hover:text-purple-500 transition-colors">Đăng ký ngay</Link>
+        </p>
+      </div>
+    </AuthLayout>
   );
 }

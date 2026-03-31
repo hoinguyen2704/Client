@@ -1,15 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo, FiChevronUp, FiChevronDown } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo, FiChevronUp, FiChevronDown, FiDownload } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/helpers/format';
-import CustomSelect from '@/components/ui/CustomSelect';
-import PrimaryButton from '@/components/ui/PrimaryButton';
+import { CustomSelect, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge } from '@/components/ui';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminSearch, AdminPagination, ActionButtons, StatusBadge } from '@/components/ui';
 
 export default function Products() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -97,6 +95,26 @@ export default function Products() {
     }
   };
 
+  const handleExport = async () => {
+    try {
+      const blob = await adminProductService.export({
+        keyword: searchQuery || undefined,
+        categoryId: categoryFilter || undefined,
+        status: statusFilter || undefined,
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `products_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success('Đã xuất báo cáo sản phẩm!');
+    } catch (err) {
+      toast.error('Không thể xuất báo cáo!');
+      console.error('Export failed:', err);
+    }
+  };
+
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedItems(e.target.checked ? products.map(p => p.id) : []);
   };
@@ -157,6 +175,9 @@ export default function Products() {
               Xóa ({selectedItems.length})
             </button>
           )}
+          <button onClick={handleExport} className="px-5 h-11 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center gap-2 text-sm">
+            <FiDownload className="text-base" /> Xuất Excel
+          </button>
           <PrimaryButton href="/admin/products/new" icon={<FiPlus className="text-base" />}>
             Thêm sản phẩm
           </PrimaryButton>
@@ -215,6 +236,9 @@ export default function Products() {
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('totalStock')}>
                   <div className="flex items-center gap-1">Tồn kho {sortBy === 'totalStock' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
+                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('totalSold')}>
+                  <div className="flex items-center gap-1">Đã bán {sortBy === 'totalSold' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('status')}>
                   <div className="flex items-center gap-1">Trạng thái {sortBy === 'status' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
@@ -230,12 +254,13 @@ export default function Products() {
                     <td className="p-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></td>
                     <td className="p-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></td>
                     <td className="p-4"><div className="h-4 w-12 bg-slate-200 dark:bg-slate-700 rounded" /></td>
+                    <td className="p-4"><div className="h-4 w-10 bg-slate-200 dark:bg-slate-700 rounded" /></td>
                     <td className="p-4"><div className="h-6 w-16 bg-slate-200 dark:bg-slate-700 rounded-full" /></td>
                     <td className="p-4"><div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded ml-auto" /></td>
                   </tr>
                 ))
               ) : products.length === 0 ? (
-                <tr><td colSpan={7} className="p-12 text-center text-slate-400">Không có sản phẩm nào</td></tr>
+                <tr><td colSpan={8} className="p-12 text-center text-slate-400">Không có sản phẩm nào</td></tr>
               ) : (
                 products.map((product) => {
                   const stock = totalStock(product);
@@ -269,6 +294,11 @@ export default function Products() {
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-600 uppercase tracking-wider">Cạn kho</span>
                           )}
                         </div>
+                      </td>
+                      <td className="p-4">
+                        <span className={`font-semibold ${(product.totalSold ?? 0) > 50 ? 'text-emerald-600' : (product.totalSold ?? 0) > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400'}`}>
+                          {product.totalSold ?? 0}
+                        </span>
                       </td>
                       <td className="p-4">
                         <StatusBadge status={product.status === 'ACTIVE' ? 'active' : 'hidden'} label={product.status === 'ACTIVE' ? 'Đang bán' : 'Đã ẩn'} />

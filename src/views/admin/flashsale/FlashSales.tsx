@@ -1,34 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
-import { FiZap, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState } from 'react';
+import { FiZap, FiPlus, FiCheck } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { adminFlashSaleService } from '@/apis';
-import type { FlashSaleResponse, PageResponse } from '@/types';
+import type { FlashSaleResponse } from '@/types';
 import type { FlashSaleRequest } from '@/apis/services/adminFlashSaleService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination, ActionButtons, PrimaryButton, ConfirmDialog, StatusBadge } from '@/components/ui';
+import { AdminPagination, ActionButtons, PrimaryButton, ConfirmDialog, StatusBadge, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea } from '@/components/ui';
+import useAdminList from '@/hooks/useAdminList';
 
 export default function FlashSales() {
-  const [sales, setSales] = useState<FlashSaleResponse[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { items: sales, loading, pageData, page, setPage, refetch: fetchSales } =
+    useAdminList<FlashSaleResponse>(adminFlashSaleService.getAll, { size: PAGE_SIZE.LARGE });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSale, setEditingSale] = useState<FlashSaleResponse | null>(null);
   const [form, setForm] = useState<FlashSaleRequest>({ name: '', startTime: '', endTime: '' });
-  const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState<PageResponse<FlashSaleResponse> | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-
-  const fetchSales = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await adminFlashSaleService.getAll({ page, size: PAGE_SIZE.LARGE });
-      setSales(res.data?.data || []);
-      setPageData(res.data);
-    } catch { /* ignore */ }
-    setLoading(false);
-  }, [page]);
-
-  useEffect(() => { fetchSales(); }, [fetchSales]);
 
   const openCreate = () => {
     setEditingSale(null);
@@ -152,52 +138,48 @@ export default function FlashSales() {
         )}
       </div>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold">{editingSale ? 'Sửa Flash Sale' : 'Tạo Flash Sale mới'}</h3>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-                  <FiX className="text-xl" />
-                </button>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Tên sự kiện *</label>
-                  <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Mô tả</label>
-                  <textarea value={form.description || ''} onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="w-full h-24 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none resize-none" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Bắt đầu *</label>
-                    <input type="datetime-local" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Kết thúc *</label>
-                    <input type="datetime-local" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })}
-                      className="w-full h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none" />
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
-                <button onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Hủy</button>
-                <button onClick={handleSubmit} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors flex items-center gap-2">
-                  <FiCheck /> {editingSale ? 'Cập nhật' : 'Tạo mới'}
-                </button>
-              </div>
-            </motion.div>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={editingSale ? 'Sửa Flash Sale' : 'Tạo Flash Sale mới'}
+        footer={
+          <>
+            <ModalCancelButton onClick={() => setIsModalOpen(false)} />
+            <ModalSubmitButton onClick={handleSubmit} icon={<FiCheck />}>
+              {editingSale ? 'Cập nhật' : 'Tạo mới'}
+            </ModalSubmitButton>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <FormInput
+            label="Tên sự kiện *"
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+          <FormTextarea
+            label="Mô tả"
+            value={form.description || ''}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            inputClassName="h-24"
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <FormInput
+              label="Bắt đầu *"
+              type="datetime-local"
+              value={form.startTime}
+              onChange={(e) => setForm({ ...form, startTime: e.target.value })}
+            />
+            <FormInput
+              label="Kết thúc *"
+              type="datetime-local"
+              value={form.endTime}
+              onChange={(e) => setForm({ ...form, endTime: e.target.value })}
+            />
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      </Modal>
 
       <ConfirmDialog
         open={!!deleteTarget}

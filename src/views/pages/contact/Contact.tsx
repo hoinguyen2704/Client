@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi';
 import { motion } from 'motion/react';
+import { FormInput, FormTextarea } from '@/components/ui';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -113,70 +114,61 @@ export default function Contact() {
               <h3 className="text-2xl font-bold mb-6">Gửi tin nhắn cho chúng tôi</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Họ và tên *</label>
-                    <input 
-                      type="text" 
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-                      placeholder="Nhập họ và tên"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email *</label>
-                    <input 
-                      type="email" 
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-                      placeholder="Nhập địa chỉ email"
-                    />
-                  </div>
+                  <FormInput
+                    label="Họ và tên *"
+                    type="text"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    inputClassName="h-12"
+                    placeholder="Nhập họ và tên"
+                  />
+                  <FormInput
+                    label="Email *"
+                    type="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    inputClassName="h-12"
+                    placeholder="Nhập địa chỉ email"
+                  />
+
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Số điện thoại</label>
-                    <input 
-                      type="tel" 
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-                      placeholder="Nhập số điện thoại"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Chủ đề *</label>
-                    <input 
-                      type="text" 
-                      name="subject"
-                      required
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-                      placeholder="Nhập chủ đề liên hệ"
-                    />
-                  </div>
+                  <FormInput
+                    label="Số điện thoại"
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    inputClassName="h-12"
+                    placeholder="Nhập số điện thoại"
+                  />
+                  <FormInput
+                    label="Chủ đề *"
+                    type="text"
+                    name="subject"
+                    required
+                    value={formData.subject}
+                    onChange={handleChange}
+                    inputClassName="h-12"
+                    placeholder="Nhập chủ đề liên hệ"
+                  />
+
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Nội dung tin nhắn *</label>
-                  <textarea 
-                    name="message"
-                    required
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={5}
-                    className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none"
-                    placeholder="Nhập nội dung tin nhắn của bạn..."
-                  ></textarea>
-                </div>
+                <FormTextarea
+                  label="Nội dung tin nhắn *"
+                  name="message"
+                  required
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={5}
+                  placeholder="Nhập nội dung tin nhắn của bạn..."
+                />
 
                 <button 
                   type="submit"

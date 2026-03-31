@@ -1,4 +1,4 @@
-import Card from '@/components/ui/Card';
+import { Card } from '@/components/ui';
 import { formatPrice } from '@/helpers/format';
 import type { DashboardChildProps } from './types';
 
