@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiArrowLeft } from 'react-icons/fi';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatDateFull as formatDate } from '@/utils/format';
 import orderService from '@/apis/services/orderService';
 import type { OrderResponse } from '@/types';
-import { formatDateFull as formatDate } from '@/utils/date';
+
 import { ORDER_TRACKING_STEPS, ORDER_STATUS_INDEX } from '@/constants/orderConstants';
 
 export default function OrderTracking() {

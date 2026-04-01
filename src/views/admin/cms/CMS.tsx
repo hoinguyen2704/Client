@@ -5,7 +5,7 @@ import adminCmsService from '@/apis/services/adminCmsService';
 import type { BannerResponse, ArticleResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { PrimaryButton, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components/ui';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/format';
 
 export default function CMS() {
   const [tab, setTab] = useState<'banners' | 'articles'>('banners');

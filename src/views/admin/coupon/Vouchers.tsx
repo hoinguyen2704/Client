@@ -14,11 +14,11 @@ import {
 import { toast } from "sonner";
 import adminCouponService from "@/apis/services/adminCouponService";
 import type { CouponResponse, CouponRequest } from "@/types";
-import { formatPrice } from "@/utils/format";
+import { formatPrice, formatDate } from "@/utils/format";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import { PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton, Modal, FormInput } from "@/components/ui";
 import useAdminList from '@/hooks/useAdminList';
-import { formatDate } from '@/utils/date';
+
 
 export default function AdminVouchers() {
   const { items: vouchers, loading, pageData, searchQuery, setSearchQuery, page, setPage, refetch: fetchVouchers } =
@@ -62,8 +62,8 @@ export default function AdminVouchers() {
       minOrderValue: v.minOrderValue,
       maxDiscountAmount: v.maxDiscountAmount,
       usageLimit: v.usageLimit,
-      startDate: v.startDate?.slice(0, 10) as any,
-      endDate: v.endDate?.slice(0, 10) as any,
+      startDate: v.startDate?.slice(0, 10) ?? '',
+      endDate: v.endDate?.slice(0, 10) ?? '',
       isPublic: v.isPublic || false,
       applyType: v.applyType || "ALL",
       applicableProductIds: v.applicableProducts?.map((p) => p.id) || [],

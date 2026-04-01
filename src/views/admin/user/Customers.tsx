@@ -6,7 +6,7 @@ import adminUserService from '@/apis/services/adminUserService';
 import { CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton } from '@/components/ui';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/format';
 
 export default function Customers() {
   const [users, setUsers] = useState<UserResponse[]>([]);

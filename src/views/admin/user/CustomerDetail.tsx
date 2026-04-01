@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiMail, FiPhone, FiCalendar, FiShoppingBag, FiDollarSign, FiLock, FiUnlock } from 'react-icons/fi';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
 import { StatusBadge } from '@/components/ui';
-import { formatDate } from '@/utils/date';
+
 import type { UserResponse } from '@/types';
 
 export default function CustomerDetail() {

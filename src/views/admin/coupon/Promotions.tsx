@@ -3,11 +3,11 @@ import { FiPlus, FiSearch, FiEdit2, FiToggleLeft, FiToggleRight } from 'react-ic
 import { toast } from 'sonner';
 import adminCouponService from '@/apis/services/adminCouponService';
 import type { CouponResponse } from '@/types';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatDate } from '@/utils/format';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { AdminSearch, AdminPagination, PrimaryButton, ActionButtons, StatusBadge, TableRowSkeleton } from '@/components/ui';
 import useAdminList from '@/hooks/useAdminList';
-import { formatDate } from '@/utils/date';
+
 
 export default function Promotions() {
   const { items: coupons, loading, pageData, searchQuery, setSearchQuery, page, setPage, refetch: fetchCoupons } =

@@ -35,7 +35,7 @@ export default function Search() {
       if (brandRes.status === 'fulfilled') {
         const d = brandRes.value.data;
         // getAll() trả về PageResponse hoặc array tuỳ server
-        setBrands(Array.isArray(d) ? d : (d as any)?.content || []);
+        setBrands(Array.isArray(d) ? d : (d as { content?: BrandResponse[] })?.content || []);
       }
     });
   }, []);

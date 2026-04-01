@@ -6,7 +6,7 @@ import { CustomSelect, AdminPagination } from '@/components/ui';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
 import type { TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { formatDateShort as formatDate } from '@/utils/date';
+import { formatDateShort as formatDate } from '@/utils/format';
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<TicketResponse[]>([]);

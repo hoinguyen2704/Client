@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { FiMessageSquare, FiPlus, FiChevronRight, FiSend } from 'react-icons/fi';
 import ticketService from '@/apis/services/ticketService';
-import { formatDateShort as formatDate } from '@/utils/date';
+import { formatDateShort as formatDate } from '@/utils/format';
 import type { TicketResponse } from '@/types';
 import { Modal, ModalCancelButton } from '@/components/ui';
+import { toast } from 'sonner';
 
 const statusMap: Record<string, { label: string; color: string }> = {
   OPEN: { label: 'Mở', color: 'bg-blue-100 text-blue-600' },
@@ -36,12 +37,12 @@ export default function Support() {
       await ticketService.create({ subject: newSubject, content: newContent });
       setShowCreate(false); setNewSubject(''); setNewContent('');
       fetchTickets();
-    } catch { alert('Gửi yêu cầu thất bại!'); }
+    } catch { toast.error('Gửi yêu cầu thất bại!'); }
   };
 
   const handleViewDetail = async (id: string) => {
     try { const res = await ticketService.getDetail(id); setSelectedTicket(res.data); }
-    catch { alert('Không tải được chi tiết'); }
+    catch { toast.error('Không tải được chi tiết'); }
   };
 
   const handleReply = async () => {
@@ -50,7 +51,7 @@ export default function Support() {
       const res = await ticketService.reply(selectedTicket.id, { content: replyText });
       setSelectedTicket(res.data);
       setReplyText('');
-    } catch { alert('Gửi phản hồi thất bại!'); }
+    } catch { toast.error('Gửi phản hồi thất bại!'); }
   };
   return (
     <div className="space-y-6">

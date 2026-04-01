@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiCheck } from 'react-icons/fi';
 import { PrimaryButton, ConfirmDialog, Modal } from '@/components/ui';
 import addressService from '@/apis/services/addressService';
+import { toast } from 'sonner';
 import type { AddressResponse, AddressRequest } from '@/types';
 
 export default function AddressBook() {
@@ -37,16 +38,16 @@ export default function AddressBook() {
       else { await addressService.create(form); }
       resetForm();
       fetchAddresses();
-    } catch { alert('Lưu địa chỉ thất bại!'); }
+    } catch { toast.error('Lưu địa chỉ thất bại!'); }
   };
 
   const handleDelete = async (id: string) => {
     setDeleteTarget(null);
-    try { await addressService.delete(id); fetchAddresses(); } catch { alert('Xóa thất bại!'); }
+    try { await addressService.delete(id); fetchAddresses(); } catch { toast.error('Xóa địa chỉ thất bại!'); }
   };
 
   const handleSetDefault = async (id: string) => {
-    try { await addressService.setDefault(id); fetchAddresses(); } catch { alert('Thao tác thất bại!'); }
+    try { await addressService.setDefault(id); fetchAddresses(); } catch { toast.error('Đặt mặc định thất bại!'); }
   };
 
   return (

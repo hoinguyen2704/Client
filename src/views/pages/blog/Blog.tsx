@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiBook, FiCalendar, FiUser } from 'react-icons/fi';
 import cmsService from '@/apis/services/cmsService';
-import { formatDateLong as formatDate } from '@/utils/date';
+import { formatDateLong as formatDate } from '@/utils/format';
 import type { ArticleResponse } from '@/types';
 
 export default function Blog() {

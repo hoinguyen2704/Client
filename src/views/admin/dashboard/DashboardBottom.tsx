@@ -1,7 +1,6 @@
 import { FiStar } from 'react-icons/fi';
 import { StatusBadge, Card } from '@/components/ui';
-import { formatPrice } from '@/utils/format';
-import { formatDate } from '@/utils/date';
+import { formatPrice, formatDate } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 
 export default function DashboardBottom({ stats }: DashboardChildProps) {

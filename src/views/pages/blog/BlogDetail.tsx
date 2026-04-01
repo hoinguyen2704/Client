@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiUser, FiBook } from 'react-icons/fi';
 import cmsService from '@/apis/services/cmsService';
-import { formatDateLong as formatDate } from '@/utils/date';
+import { formatDateLong as formatDate } from '@/utils/format';
 import type { ArticleResponse } from '@/types';
 
 export default function BlogDetail() {

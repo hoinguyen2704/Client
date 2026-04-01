@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiChevronRight } from 'react-icons/fi';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatDate } from '@/utils/format';
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
 import { ConfirmDialog, Modal, ModalCancelButton, StarRating } from '@/components/ui';
-import { formatDate } from '@/utils/date';
-import type { OrderResponse } from '@/types';
+import { toast } from 'sonner';
+
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
+import type { OrderResponse } from '@/types';
 
 export default function Orders() {
   const [activeTab, setActiveTab] = useState('all');
@@ -53,7 +54,7 @@ export default function Orders() {
     try {
       await orderService.cancel(orderId);
       fetchOrders();
-    } catch { alert('Hủy đơn hàng thất bại!'); }
+    } catch { toast.error('Hủy đơn hàng thất bại!'); }
   };
 
   const handleOpenReview = (order: OrderResponse) => {
@@ -67,14 +68,14 @@ export default function Orders() {
     if (!selectedOrder || !selectedOrder.items[0]) return;
     const firstItem = selectedOrder.items[0];
     if (!firstItem.productId) {
-      alert('Không xác định được sản phẩm để đánh giá!');
+      toast.error('Không xác định được sản phẩm để đánh giá!');
       return;
     }
     try {
       await feedbackService.submit({ productId: firstItem.productId, orderId: selectedOrder.id, rating, content: reviewText });
-      alert('Cảm ơn bạn đã đánh giá sản phẩm!');
+      toast.success('Cảm ơn bạn đã đánh giá sản phẩm!');
       setReviewModalOpen(false);
-    } catch { alert('Gửi đánh giá thất bại!'); }
+    } catch { toast.error('Gửi đánh giá thất bại!'); }
   };
   return (
     <div className="space-y-6">

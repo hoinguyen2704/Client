@@ -26,7 +26,7 @@ export default function Login() {
   const location = useLocation();
   const login = useAuthStore((s) => s.login);
 
-  const from = (location.state as any)?.from || '/';
+  const from = (location.state as { from?: string })?.from || '/';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

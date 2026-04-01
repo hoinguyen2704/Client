@@ -6,7 +6,7 @@ import type { CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import useAdminList from '@/hooks/useAdminList';
 import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components/ui';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/format';
 
 interface SpecTemplateRow {
   specKey: string;

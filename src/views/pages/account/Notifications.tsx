@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo } from 'react-icons/fi';
 import notificationService from '@/apis/services/notificationService';
-import { formatDateShort as formatDate } from '@/utils/date';
+import { formatDateShort as formatDate } from '@/utils/format';
 import type { NotificationResponse } from '@/types';
 
 const typeIcons: Record<string, React.ReactNode> = {

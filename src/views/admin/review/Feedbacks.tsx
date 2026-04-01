@@ -6,7 +6,7 @@ import { CustomSelect, AdminPagination, StarRating } from '@/components/ui';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/format';
 
 export default function Feedbacks() {
   const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
