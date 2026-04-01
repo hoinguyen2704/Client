@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus, FiZap } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import type { ProductResponse, FlashSaleItemResponse } from '@/types';
 
 import useCartStore from '@/stores/useCartStore';

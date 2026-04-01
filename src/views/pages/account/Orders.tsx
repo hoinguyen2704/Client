@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiChevronRight } from 'react-icons/fi';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';

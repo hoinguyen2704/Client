@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2 } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { Modal } from '@/components/ui';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import addressService from '@/apis/services/addressService';
 import couponService from '@/apis/services/couponService';

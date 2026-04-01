@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
+import { toast } from 'sonner';
 import { productService } from '@/apis';
 import flashSaleService from '@/apis/services/flashSaleService';
 import type { ProductResponse, FlashSaleResponse } from '@/types';
@@ -44,6 +45,7 @@ export default function ProductDetail() {
         }
       } catch (err) {
         console.error('Lỗi load sản phẩm:', err);
+        toast.error('Không thể tải thông tin sản phẩm!');
         setActiveFlashSale(null);
       } finally {
         setLoading(false);

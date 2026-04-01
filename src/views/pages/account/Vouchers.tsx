@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiTag, FiClock, FiCheck, FiBookmark, FiCopy, FiGift, FiPackage } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import useAuthStore from '@/stores/useAuthStore';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiPlus, FiX, FiCheck, FiStar, FiSearch, FiInfo, FiShoppingCart, FiCopy, FiTrash2 } from 'react-icons/fi';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import productService from '@/apis/services/productService';

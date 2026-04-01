@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 
 export default function DashboardLists({ stats }: DashboardChildProps) {

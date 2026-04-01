@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiHeart, FiStar, FiClock } from 'react-icons/fi';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import cartService from '@/apis/services/cartService';

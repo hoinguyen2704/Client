@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
 import { ProductCard, CustomSelect } from '@/components/ui';
+import { toast } from 'sonner';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -59,6 +60,7 @@ export default function Search() {
         setTotalElements(pageData?.total || 0);
       } catch (err) {
         console.error('Lỗi tìm kiếm:', err);
+        toast.error('Tìm kiếm thất bại!');
         setProducts([]);
       } finally {
         setLoading(false);

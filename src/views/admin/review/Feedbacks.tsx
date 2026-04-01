@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle, FiDownload } from 'react-icons/fi';
+import { toast } from 'sonner';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
 import { CustomSelect, AdminPagination, StarRating } from '@/components/ui';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
@@ -22,7 +23,7 @@ export default function Feedbacks() {
       const res = await adminFeedbackService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data);
       setReviews(res.data.data || []);
-    } catch (err) { console.error('Failed to fetch feedbacks:', err); }
+    } catch (err) { console.error('Failed to fetch feedbacks:', err); toast.error('Tải danh sách đánh giá thất bại!'); }
     finally { setLoading(false); }
   }, [statusFilter, page]);
 
@@ -30,7 +31,7 @@ export default function Feedbacks() {
 
   const handleStatusChange = async (id: string, status: string) => {
     try { await adminFeedbackService.updateStatus(id, status); fetchReviews(); }
-    catch (err) { console.error('Update failed:', err); }
+    catch (err) { console.error('Update failed:', err); toast.error('Cập nhật trạng thái đánh giá thất bại!'); }
   };
 
   const handleReply = async (id: string) => {
@@ -39,7 +40,7 @@ export default function Feedbacks() {
       await adminFeedbackService.reply(id, replyText);
       setReplyId(null); setReplyText('');
       fetchReviews();
-    } catch (err) { console.error('Reply failed:', err); }
+    } catch (err) { console.error('Reply failed:', err); toast.error('Phản hồi đánh giá thất bại!'); }
   };
   return (
     <div className="space-y-6">

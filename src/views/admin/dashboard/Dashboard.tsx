@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { StatusBadge, Modal } from '@/components/ui';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import { formatDate } from '@/utils/date';
 import adminDashboardService from '@/apis/services/adminDashboardService';
 import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem } from '@/types';

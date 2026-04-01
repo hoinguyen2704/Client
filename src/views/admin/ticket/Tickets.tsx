@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle } from 'react-icons/fi';
+import { toast } from 'sonner';
 import adminTicketService from '@/apis/services/adminTicketService';
 import { CustomSelect, AdminPagination } from '@/components/ui';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
@@ -21,7 +22,7 @@ export default function Tickets() {
     try {
       const res = await adminTicketService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data); setTickets(res.data.data || []);
-    } catch (err) { console.error('Failed to fetch tickets:', err); }
+    } catch (err) { console.error('Failed to fetch tickets:', err); toast.error('Tải danh sách hỗ trợ thất bại!'); }
     finally { setLoading(false); }
   }, [statusFilter, page]);
 
@@ -40,12 +41,12 @@ export default function Tickets() {
       const res = await adminTicketService.reply(selectedTicket.id, { content: replyText });
       setSelectedTicket(res.data);
       setReplyText(''); fetchTickets();
-    } catch (err) { console.error('Reply failed:', err); }
+    } catch (err) { console.error('Reply failed:', err); toast.error('Gửi phản hồi thất bại!'); }
   };
 
   const handleStatusChange = async (id: string, status: string) => {
     try { await adminTicketService.updateStatus(id, status); fetchTickets(); }
-    catch (err) { console.error('Status update failed:', err); }
+    catch (err) { console.error('Status update failed:', err); toast.error('Cập nhật trạng thái thất bại!'); }
   };
   return (
     <div className="space-y-6">

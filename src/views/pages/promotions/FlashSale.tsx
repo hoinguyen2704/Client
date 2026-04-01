@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiZap, FiClock } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import flashSaleService from '@/apis/services/flashSaleService';
 import type { FlashSaleResponse } from '@/types';
 

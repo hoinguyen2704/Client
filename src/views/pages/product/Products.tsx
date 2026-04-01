@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { ProductCard, CustomSelect } from '@/components/ui';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
+import { toast } from 'sonner';
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -76,6 +77,7 @@ export default function Products() {
       }
     } catch (err) {
       console.error('[Products] Failed to fetch products:', err);
+      toast.error('Tải sản phẩm thất bại!');
       setProducts([]);
     } finally {
       setIsLoading(false);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag, FiInfo } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
 import type { CartResponse } from '@/types';

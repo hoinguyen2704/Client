@@ -1,5 +1,5 @@
 import { FiTrendingUp, FiDollarSign, FiShoppingBag, FiUsers, FiBox, FiRefreshCcw, FiStar } from 'react-icons/fi';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import type { DashboardStatsProps } from './types';
 
 export default function DashboardStats({ stats, onOpenModal }: DashboardStatsProps) {

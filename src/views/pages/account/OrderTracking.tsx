@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiArrowLeft } from 'react-icons/fi';
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import orderService from '@/apis/services/orderService';
 import type { OrderResponse } from '@/types';
 import { formatDateFull as formatDate } from '@/utils/date';

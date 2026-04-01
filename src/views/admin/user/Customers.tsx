@@ -28,6 +28,7 @@ export default function Customers() {
       setUsers(res.data.data || []);
     } catch (err) {
       console.error('Failed to fetch users:', err);
+      toast.error('Tải danh sách người dùng thất bại!');
     } finally {
       setLoading(false);
     }
@@ -55,7 +56,7 @@ export default function Customers() {
       const a = document.createElement('a');
       a.href = url; a.download = 'users.xlsx'; a.click();
       window.URL.revokeObjectURL(url);
-    } catch (err) { console.error('Export failed:', err); }
+    } catch (err) { console.error('Export failed:', err); toast.error('Xuất báo cáo thất bại!'); }
   };
 
 

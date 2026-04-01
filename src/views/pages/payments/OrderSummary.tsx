@@ -1,4 +1,4 @@
-import { formatPrice } from '@/helpers/format';
+import { formatPrice } from '@/utils/format';
 import { FiChevronRight } from 'react-icons/fi';
 
 interface CartItem {

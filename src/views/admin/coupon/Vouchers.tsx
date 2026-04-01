@@ -14,7 +14,7 @@ import {
 import { toast } from "sonner";
 import adminCouponService from "@/apis/services/adminCouponService";
 import type { CouponResponse, CouponRequest } from "@/types";
-import { formatPrice } from "@/helpers/format";
+import { formatPrice } from "@/utils/format";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import { PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton, Modal, FormInput } from "@/components/ui";
 import useAdminList from '@/hooks/useAdminList';

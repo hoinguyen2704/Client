@@ -20,7 +20,7 @@ export default function CMS() {
     try {
       const res = await adminCmsService.getBanners();
       setBanners(res.data || []);
-    } catch (err) { console.error('Failed to fetch banners:', err); }
+    } catch (err) { console.error('Failed to fetch banners:', err); toast.error('Tải banner thất bại!'); }
   };
 
   const fetchArticles = async (p = 1) => {
@@ -28,7 +28,7 @@ export default function CMS() {
       const res = await adminCmsService.getArticles({ page: p, size: PAGE_SIZE.LARGE });
       setArticlePageData(res.data);
       setArticles(res.data.data || []);
-    } catch (err) { console.error('Failed to fetch articles:', err); }
+    } catch (err) { console.error('Failed to fetch articles:', err); toast.error('Tải bài viết thất bại!'); }
   };
 
   useEffect(() => {
