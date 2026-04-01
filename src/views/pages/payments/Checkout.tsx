@@ -1,22 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2 } from 'react-icons/fi';
+import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2, FiBookmark } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { Modal } from '@/components/ui';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import addressService from '@/apis/services/addressService';
 import couponService from '@/apis/services/couponService';
+import userCouponService from '@/apis/services/userCouponService';
 import orderService from '@/apis/services/orderService';
-import type { CartResponse, AddressResponse, AddressRequest } from '@/types';
+import type { CartResponse, AddressResponse, AddressRequest, CouponResponse } from '@/types';
+import useAuthStore from '@/stores/useAuthStore';
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [cartItems, setCartItems] = useState<CartResponse[]>([]);
   const [addresses, setAddresses] = useState<AddressResponse[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [couponCode, setCouponCode] = useState('');
+  const [validatedCoupon, setValidatedCoupon] = useState<CouponResponse | null>(null);
+  const [savedCouponIds, setSavedCouponIds] = useState<string[]>([]);
+  const [savingCoupon, setSavingCoupon] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
@@ -49,21 +55,37 @@ export default function Checkout() {
   };
 
   useEffect(() => {
-    Promise.all([
+    const tasks: Promise<unknown>[] = [
       cartService.getMyCart().then(r => setCartItems(r.data || [])),
       addressService.getMyAddresses().then(r => {
         setAddresses(r.data || []);
         const def = (r.data || []).find(a => a.isDefault);
         if (def) setSelectedAddressId(def.id);
       }),
-    ]).finally(() => setLoading(false));
-  }, []);
+    ];
+
+    if (user) {
+      tasks.push(
+        userCouponService.getMySavedCoupons()
+          .then((r) => setSavedCouponIds((r.data || []).map((coupon) => coupon.id)))
+          .catch(() => setSavedCouponIds([])),
+      );
+    } else {
+      setSavedCouponIds([]);
+    }
+
+    Promise.all(tasks).finally(() => setLoading(false));
+  }, [user]);
+
+  const getErrorMessage = (err: any, fallback: string) =>
+    err?.message || err?.error || err?.data?.message || fallback;
 
   const handleApplyCoupon = async () => {
     if (!couponCode) return;
     try {
       const res = await couponService.validate(couponCode, subtotal);
       const coupon = res.data;
+      setValidatedCoupon(coupon || null);
       if (coupon.discountType === 'PERCENTAGE') {
         let d = subtotal * coupon.discountValue / 100;
         if (coupon.maxDiscountAmount) d = Math.min(d, coupon.maxDiscountAmount);
@@ -72,7 +94,30 @@ export default function Checkout() {
         setDiscount(coupon.discountValue);
       }
       toast.success('Áp dụng mã giảm giá thành công!');
-    } catch { toast.error('Mã giảm giá không hợp lệ!'); setDiscount(0); }
+    } catch (err: any) {
+      toast.error(getErrorMessage(err, 'Mã giảm giá không hợp lệ!'));
+      setValidatedCoupon(null);
+      setDiscount(0);
+    }
+  };
+
+  const handleSaveAppliedCoupon = async () => {
+    if (!user) {
+      toast.error('Vui lòng đăng nhập để lưu voucher');
+      return;
+    }
+    if (!validatedCoupon?.id) return;
+
+    setSavingCoupon(true);
+    try {
+      await userCouponService.saveCoupon(validatedCoupon.id);
+      setSavedCouponIds((prev) => prev.includes(validatedCoupon.id) ? prev : [...prev, validatedCoupon.id]);
+      toast.success('Đã lưu mã giảm giá vào ví voucher!');
+    } catch (err: any) {
+      toast.error(getErrorMessage(err, 'Không thể lưu mã vào ví'));
+    } finally {
+      setSavingCoupon(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -99,6 +144,7 @@ export default function Checkout() {
   const subtotal = cartItems.reduce((s, i) => s + i.subtotal, 0);
   const shippingFee = subtotal > 500000 ? 0 : 30000;
   const total = subtotal + shippingFee - discount;
+  const isAppliedCouponSaved = !!validatedCoupon?.id && savedCouponIds.includes(validatedCoupon.id);
 
   if (loading) return <div className="w-full max-w-[1440px] mx-auto px-4 py-12"><div className="h-96 bg-slate-200 dark:bg-slate-700 rounded-2xl animate-pulse" /></div>;
 
@@ -198,9 +244,36 @@ export default function Checkout() {
         <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800 h-fit sticky top-28 space-y-6 shadow-sm">
           <h2 className="text-xl font-bold border-b border-slate-100 dark:border-slate-800 pb-4">Tóm tắt đơn hàng</h2>
           <div className="flex gap-2">
-            <input className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-sm uppercase focus:ring-2 focus:ring-purple-500 outline-none transition-all placeholder:font-sans" placeholder="Mã giảm giá" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} />
+            <input className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-sm uppercase focus:ring-2 focus:ring-purple-500 outline-none transition-all placeholder:font-sans" placeholder="Mã giảm giá" value={couponCode} onChange={(e) => {
+              setCouponCode(e.target.value.toUpperCase());
+              setValidatedCoupon(null);
+            }} />
             <button onClick={handleApplyCoupon} className="px-5 py-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-bold hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"><FiTag className="text-lg" /></button>
           </div>
+          {validatedCoupon && (
+            <div className="flex items-center justify-between gap-3 text-sm p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+              <span className="text-slate-600 dark:text-slate-300">
+                Mã <strong className="font-mono">{validatedCoupon.code}</strong> đã áp dụng.
+              </span>
+              {user ? (
+                isAppliedCouponSaved ? (
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Đã lưu trong ví</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleSaveAppliedCoupon}
+                    disabled={savingCoupon}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 disabled:opacity-60"
+                  >
+                    <FiBookmark className="text-sm" />
+                    {savingCoupon ? 'Đang lưu...' : 'Lưu vào ví'}
+                  </button>
+                )
+              ) : (
+                <span className="text-slate-400">Đăng nhập để lưu mã</span>
+              )}
+            </div>
+          )}
           <div className="space-y-4 text-[15px]">
             <div className="flex justify-between"><span className="text-slate-500">Tạm tính</span><span className="font-medium">{formatPrice(subtotal)}</span></div>
             <div className="flex justify-between"><span className="text-slate-500">Phí vận chuyển</span><span className="font-medium">{shippingFee === 0 ? <span className="text-emerald-500 font-bold tracking-wide uppercase text-xs">Miễn phí</span> : formatPrice(shippingFee)}</span></div>

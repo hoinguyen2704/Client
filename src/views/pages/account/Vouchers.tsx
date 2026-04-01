@@ -20,6 +20,9 @@ export default function Vouchers() {
   const [activeTab, setActiveTab] = useState<'discover' | 'saved' | 'search'>('discover');
   const [savingId, setSavingId] = useState<string | null>(null);
 
+  const getErrorMessage = (err: any, fallback: string) =>
+    err?.message || err?.error || err?.data?.message || fallback;
+
   // Fetch public vouchers (no auth needed)
   const fetchPublicVouchers = useCallback(async () => {
     try {
@@ -54,20 +57,23 @@ export default function Vouchers() {
     try {
       await userCouponService.saveCoupon(couponId);
       setPublicVouchers(prev => prev.map(v => v.id === couponId ? { ...v, saved: true } : v));
+      setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: true } : prev);
       fetchSavedVouchers();
       toast.success('Đã lưu voucher vào ví!');
-    } catch { toast.error('Lưu voucher thất bại'); }
+    } catch (err: any) { toast.error(getErrorMessage(err, 'Lưu voucher thất bại')); }
     finally { setSavingId(null); }
   };
 
   const handleUnsave = async (couponId: string) => {
+    if (!user) { toast.error('Vui lòng đăng nhập để quản lý voucher'); return; }
     setSavingId(couponId);
     try {
       await userCouponService.unsaveCoupon(couponId);
       setPublicVouchers(prev => prev.map(v => v.id === couponId ? { ...v, saved: false } : v));
+      setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: false } : prev);
       setSavedVouchers(prev => prev.filter(v => v.id !== couponId));
       toast.success('Đã xóa voucher khỏi ví');
-    } catch { toast.error('Thao tác thất bại'); }
+    } catch (err: any) { toast.error(getErrorMessage(err, 'Thao tác thất bại')); }
     finally { setSavingId(null); }
   };
 
@@ -81,9 +87,11 @@ export default function Vouchers() {
     setError(''); setSearchResult(null);
     try {
       const res = await couponService.getByCode(couponCode);
-      setSearchResult(res.data);
+      const coupon = res.data;
+      const isSaved = !!coupon?.id && savedVouchers.some(v => v.id === coupon.id);
+      setSearchResult(coupon ? { ...coupon, saved: isSaved } : null);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Mã không tồn tại hoặc đã bị khóa');
+      setError(getErrorMessage(err, 'Mã không tồn tại hoặc đã bị khóa'));
     }
   };
   const daysLeft = (endDate: string): number => {
@@ -258,7 +266,7 @@ export default function Vouchers() {
           <AnimatePresence>
             {searchResult && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-                <VoucherCard v={searchResult} />
+                <VoucherCard v={searchResult} showSaveBtn />
               </motion.div>
             )}
           </AnimatePresence>
