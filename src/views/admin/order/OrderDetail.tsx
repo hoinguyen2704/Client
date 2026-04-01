@@ -9,13 +9,12 @@ import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
 
 import type { OrderResponse } from '@/types';
 import { SHOP } from '@/constants/shopConstants';
-import { Modal, ModalCancelButton } from '@/components/ui';
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+ const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [editStatus, setEditStatus] = useState('');
 
   useEffect(() => {
@@ -31,16 +30,22 @@ export default function OrderDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleUpdateStatus = async () => {
-    if (!order) return;
+  const handleUpdateStatus = async (newStatus: string) => {
+    if (!order || isUpdatingStatus || !newStatus || newStatus === order.orderStatus) return;
+    const previousStatus = order.orderStatus;
+    setEditStatus(newStatus);
+    setIsUpdatingStatus(true);
     try {
-      const res = await adminOrderService.updateStatus(order.id, editStatus);
+      const res = await adminOrderService.updateStatus(order.id, newStatus);
       setOrder(res.data);
-      setIsStatusModalOpen(false);
+      setEditStatus(res.data.orderStatus);
       toast.success('Cập nhật trạng thái đơn hàng thành công!');
     } catch (err) {
       console.error(err);
+      setEditStatus(previousStatus);
       toast.error('Cập nhật trạng thái đơn hàng thất bại!');
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
@@ -92,12 +97,19 @@ export default function OrderDetail() {
             <p className="text-slate-500 text-sm mt-1">{formatDate(order.createdAt)}</p>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+          <div className="w-full sm:w-56">
+            <label className="block text-xs font-semibold text-slate-500 mb-1.5">Trạng thái đơn hàng</label>
+            <CustomSelect
+              value={editStatus || order.orderStatus}
+              onChange={handleUpdateStatus}
+              options={ORDER_STATUS_OPTIONS}
+              className="w-full"
+              disabled={isUpdatingStatus}
+            />
+          </div>
           <button onClick={handleExportInvoice} className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2">
             <FiDownload /> Tải hóa đơn PDF
-          </button>
-          <button onClick={() => setIsStatusModalOpen(true)} className="btn btn-md btn-primary">
-            Cập nhật trạng thái
           </button>
         </div>
       </div>
@@ -213,29 +225,6 @@ export default function OrderDetail() {
           </div>
         </div>
       </div>
-
-      <Modal
-        open={isStatusModalOpen}
-        onClose={() => setIsStatusModalOpen(false)}
-        title="Cập nhật trạng thái"
-        size="sm"
-        footer={
-          <>
-            <ModalCancelButton onClick={() => setIsStatusModalOpen(false)} />
-            <button onClick={handleUpdateStatus} className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors">Cập nhật</button>
-          </>
-        }
-      >
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Trạng thái mới</label>
-          <CustomSelect 
-            value={editStatus} 
-            onChange={(val) => setEditStatus(val)}
-            options={ORDER_STATUS_OPTIONS}
-            className="w-full"
-          />
-        </div>
-      </Modal>
     </div>
 
     {/* ===== PRINT INVOICE TEMPLATE ===== */}

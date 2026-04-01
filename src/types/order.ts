@@ -18,6 +18,7 @@ export interface OrderResponse {
   customerPhone?: string;
   items: OrderItemResponse[];
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface OrderItemResponse {

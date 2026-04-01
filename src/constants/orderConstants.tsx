@@ -19,6 +19,7 @@ export const ORDER_FILTER_OPTIONS = [
 export const CLIENT_ORDER_TABS = [
   { id: 'all', label: 'Tất cả' },
   { id: 'PENDING', label: 'Chờ xác nhận' },
+    { id: 'CONFIRMED', label: 'Đã xác nhận' },
   { id: 'PROCESSING', label: 'Người gửi đang chuẩn bị hàng' },
   { id: 'SHIPPING', label: 'Đang giao' },
   { id: 'SHIPPED', label: 'Đã giao' },
@@ -27,6 +28,7 @@ export const CLIENT_ORDER_TABS = [
 
 export const ORDER_TRACKING_STEPS = [
   { key: 'PENDING', label: 'Chờ xác nhận', icon: FiPackage },
+  { key: 'CONFIRMED', label: 'Đã xác nhận', icon: FiCheckCircle },
   { key: 'PROCESSING', label: 'Người gửi đang chuẩn bị hàng', icon: FiPackage },
   { key: 'SHIPPING', label: 'Đang giao', icon: FiTruck },
   { key: 'SHIPPED', label: 'Đã giao', icon: FiCheckCircle },
@@ -34,15 +36,17 @@ export const ORDER_TRACKING_STEPS = [
 
 export const ORDER_STATUS_INDEX: Record<string, number> = { 
   PENDING: 0, 
-  PROCESSING: 1, 
-  SHIPPING: 2, 
-  SHIPPED: 3 
+  CONFIRMED: 1,
+  PROCESSING: 2, 
+  SHIPPING: 3, 
+  SHIPPED: 4,
 };
 
 // Define status badge render helper for client UI
 export const getClientStatusBadge = (status: string) => {
   switch (status) {
     case 'PENDING': return <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-600 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400 text-xs font-bold uppercase tracking-wider"><FiPackage /> Chờ xác nhận</span>;
+    case 'CONFIRMED': return <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider"><FiCheckCircle /> Đã xác nhận</span>;
     case 'PROCESSING': return <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400 text-xs font-bold uppercase tracking-wider"><FiPackage /> Người gửi đang chuẩn bị hàng</span>;
     case 'SHIPPING': return <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 text-violet-600 dark:bg-violet-500/10 dark:border-violet-500/20 dark:text-violet-400 text-xs font-bold uppercase tracking-wider"><FiTruck /> Đang giao</span>;
     case 'SHIPPED': return <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider"><FiCheckCircle /> Đã giao</span>;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiChevronRight } from 'react-icons/fi';
-import { formatPrice, formatDate } from '@/utils/format';
+import { FiSearch, FiPackage, FiChevronRight } from 'react-icons/fi';
+import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/utils/format';
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
@@ -112,7 +112,8 @@ export default function Orders() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
                 <div>
                   <span className="font-bold text-lg mr-4">{order.orderNumber}</span>
-                  <span className="text-slate-500 text-sm">Ngày đặt: {formatDate(order.createdAt)}</span>
+                   <div className="text-slate-500 text-sm mt-1">Ngày đặt: {formatDate(order.createdAt)}</div>
+                  <div className="text-slate-500 text-sm mt-1">Cập nhật: {formatDateTime(order.updatedAt || order.createdAt)}</div>
                 </div>
                 <div>{getClientStatusBadge(order.orderStatus)}</div>
               </div>

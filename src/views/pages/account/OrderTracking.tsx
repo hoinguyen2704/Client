@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiArrowLeft } from 'react-icons/fi';
+import { FiPackage, FiXCircle, FiArrowLeft } from 'react-icons/fi';
 import { formatPrice, formatDateFull as formatDate } from '@/utils/format';
 import orderService from '@/apis/services/orderService';
 import type { OrderResponse } from '@/types';
@@ -101,8 +101,8 @@ export default function OrderTracking() {
             <h2 className="text-lg font-bold mb-4">Thông tin đơn hàng</h2>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between"><span className="text-slate-500">Ngày đặt</span><span className="font-medium">{formatDate(order.createdAt)}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Cập nhật lần cuối</span><span className="font-medium">{formatDate(order.updatedAt || order.createdAt)}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Thanh toán</span><span className="font-medium">{order.paymentMethod}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Trạng thái TT</span><span className="font-medium">{order.paymentStatus}</span></div>
               <hr className="border-slate-100 dark:border-slate-800" />
               <div className="flex justify-between"><span className="text-slate-500">Tạm tính</span><span>{formatPrice(order.subtotal)}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Phí ship</span><span>{formatPrice(order.shippingFee)}</span></div>
