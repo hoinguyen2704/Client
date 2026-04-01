@@ -1,40 +1,61 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
 import { productService } from '@/apis';
-import type { ProductResponse } from '@/types';
+import flashSaleService from '@/apis/services/flashSaleService';
+import type { ProductResponse, FlashSaleResponse } from '@/types';
 import { ProductCard } from '@/components/ui';
 import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';
+import { buildFlashSaleItemMap, resolveVariantPricing } from '@/utils/pricing';
 
 export default function ProductDetail() {
   const { slug } = useParams();
   const [product, setProduct] = useState<ProductResponse | null>(null);
   const [related, setRelated] = useState<ProductResponse[]>([]);
+  const [activeFlashSale, setActiveFlashSale] = useState<FlashSaleResponse | null>(null);
+  const [activeImage, setActiveImage] = useState(0);
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
   const [loading, setLoading] = useState(true);
+  const flashItemsByVariantId = useMemo(
+    () => buildFlashSaleItemMap(activeFlashSale),
+    [activeFlashSale],
+  );
 
   useEffect(() => {
     if (!slug) return;
     const load = async () => {
       setLoading(true);
       try {
-        const res = await productService.getBySlug(slug);
-        setProduct(res.data);
+        const [productRes, flashSaleRes] = await Promise.all([
+          productService.getBySlug(slug),
+          flashSaleService.getActive().catch(() => null),
+        ]);
+
+        const loadedProduct = productRes.data;
+        setProduct(loadedProduct);
+        setActiveFlashSale(flashSaleRes?.data || null);
 
         // Fetch related products from same category
-        if (res.data?.category?.slug) {
-          const relRes = await productService.search({ categorySlug: res.data.category.slug, size: 6 });
+        if (loadedProduct?.category?.slug) {
+          const relRes = await productService.search({ categorySlug: loadedProduct.category.slug, size: 6 });
           setRelated((relRes.data?.data || []).filter((p: ProductResponse) => p.slug !== slug));
         }
       } catch (err) {
         console.error('Lỗi load sản phẩm:', err);
+        setActiveFlashSale(null);
       } finally {
         setLoading(false);
       }
     };
     load();
   }, [slug]);
+
+  useEffect(() => {
+    setActiveImage(0);
+    setSelectedVariantIdx(0);
+  }, [product?.id]);
 
   if (loading) {
     return (
@@ -73,17 +94,13 @@ export default function ProductDetail() {
   });
   if (allImages.length === 0) allImages.push('https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image');
 
-  // Calc price/discount using variant compareAtPrice
-  const lowestPrice = product.variants?.length
-    ? Math.min(...product.variants.map((v: any) => v.price))
-    : product.originPrice;
-  const highestComparePrice = product.variants?.length
-    ? Math.max(...product.variants.map((v: any) => v.compareAtPrice || v.price))
-    : product.originPrice;
-  const referencePrice = highestComparePrice > lowestPrice ? highestComparePrice : product.originPrice;
-  const discount = referencePrice > lowestPrice
-    ? Math.round((1 - lowestPrice / referencePrice) * 100)
-    : 0;
+  const activeVariant = product.variants?.[selectedVariantIdx] || null;
+  const activeFlashItem = activeVariant ? flashItemsByVariantId[activeVariant.id] : undefined;
+  const { discount } = resolveVariantPricing({
+    product,
+    variant: activeVariant,
+    flashItem: activeFlashItem,
+  });
 
   return (
     <div className="w-full px-4 md:px-8 lg:px-12 py-8">
@@ -102,12 +119,17 @@ export default function ProductDetail() {
         <div className="flex flex-col lg:flex-row gap-12">
           <ProductGallery
             images={allImages}
-            activeImage={0}
-            onImageChange={() => {}}
+            activeImage={activeImage}
+            onImageChange={setActiveImage}
             productName={product.name}
             discount={discount}
           />
-          <ProductInfo product={product} />
+          <ProductInfo
+            product={product}
+            flashItemsByVariantId={flashItemsByVariantId}
+            selectedVariantIdx={selectedVariantIdx}
+            onSelectedVariantIdxChange={setSelectedVariantIdx}
+          />
         </div>
       </div>
 

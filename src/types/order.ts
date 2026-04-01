@@ -124,6 +124,8 @@ export interface FlashSaleResponse {
 
 export interface FlashSaleItemResponse {
   id: string;
+  productId: string;
+  productSlug: string;
   variantId: string;
   productName: string;
   variantName?: string;

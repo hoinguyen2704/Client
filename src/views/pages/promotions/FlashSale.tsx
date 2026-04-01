@@ -71,7 +71,7 @@ export default function FlashSale() {
           const discount = item.originalPrice > 0 ? Math.round(((item.originalPrice - item.flashPrice) / item.originalPrice) * 100) : 0;
 
           return (
-            <div key={item.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-lg transition-shadow group">
+            <Link to={`/product/${item.productSlug || item.productId}`} key={item.id} className="block bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-lg transition-shadow group">
               <div className="relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800">
                 {item.imageUrl ? (
                   <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -83,7 +83,7 @@ export default function FlashSale() {
                 )}
               </div>
               <div className="p-4">
-                <h3 className="font-bold line-clamp-2 mb-2 text-sm">{item.productName}</h3>
+                <h3 className="font-bold line-clamp-2 mb-2 text-sm group-hover:text-red-500 transition-colors">{item.productName}</h3>
                 {item.variantName && <p className="text-xs text-slate-500 mb-2">{item.variantName}</p>}
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg font-bold text-red-600">{formatPrice(item.flashPrice)}</span>
@@ -94,7 +94,7 @@ export default function FlashSale() {
                 </div>
                 <p className="text-xs text-slate-500">{item.remainingStock > 0 ? `Còn ${item.remainingStock} sản phẩm` : 'Đã hết'}</p>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

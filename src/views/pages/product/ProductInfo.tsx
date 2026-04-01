@@ -1,31 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus, FiZap } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/helpers/format';
-import type { ProductResponse } from '@/types';
+import type { ProductResponse, FlashSaleItemResponse } from '@/types';
 
 import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 import { cartService } from '@/apis';
 import { PrimaryButton } from '@/components/ui';
+import { resolveVariantPricing } from '@/utils/pricing';
 
-export default function ProductInfo({ product }: { product: ProductResponse }) {
+interface ProductInfoProps {
+  product: ProductResponse;
+  flashItemsByVariantId?: Record<string, FlashSaleItemResponse>;
+  selectedVariantIdx?: number;
+  onSelectedVariantIdxChange?: (idx: number) => void;
+}
+
+export default function ProductInfo({
+  product,
+  flashItemsByVariantId = {},
+  selectedVariantIdx: selectedVariantIdxProp,
+  onSelectedVariantIdxChange,
+}: ProductInfoProps) {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
+  const [localSelectedVariantIdx, setLocalSelectedVariantIdx] = useState(0);
+
+  const selectedVariantIdx = selectedVariantIdxProp ?? localSelectedVariantIdx;
+  const setSelectedVariantIdx = onSelectedVariantIdxChange ?? setLocalSelectedVariantIdx;
 
   const variants = product.variants || [];
   const activeVariant = variants[selectedVariantIdx] || null;
+  const activeFlashItem = activeVariant ? flashItemsByVariantId[activeVariant.id] : undefined;
+  const pricing = resolveVariantPricing({
+    product,
+    variant: activeVariant,
+    flashItem: activeFlashItem,
+  });
 
-  const price = activeVariant?.price || product.originPrice;
-  const comparePrice = activeVariant?.compareAtPrice || product.originPrice;
+  const price = pricing.salePrice;
+  const comparePrice = pricing.originPrice;
   const rating = product.averageRating || 0;
   const reviews = product.totalReviews || 0;
   const stock = activeVariant?.stockQuantity || 0;
 
-  const incrementItems = useCartStore((state) => state.incrementItems);
+  useEffect(() => {
+    if (selectedVariantIdxProp === undefined) {
+      setLocalSelectedVariantIdx(0);
+    }
+    setQuantity(1);
+  }, [product.id, selectedVariantIdxProp]);
+
   const syncFromServer = useCartStore((state) => state.syncFromServer);
 
   const { toggleItem: toggleWishlist, items: wishlistItems } = useWishlistStore();
@@ -36,10 +64,6 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
   let specs: Record<string, string> = {};
   try { specs = product.specsJson ? JSON.parse(product.specsJson) : {}; } catch { /* ignore */ }
   const highlightSpecs = Object.entries(specs).slice(0, 4);
-
-  // Group variants by type: unique colors and unique capacities
-  const uniqueColors = [...new Set(variants.map(v => v.color).filter(Boolean))];
-  const uniqueCapacities = [...new Set(variants.map(v => v.storageCapacity).filter(Boolean))];
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -138,6 +162,12 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
           <span className="text-xl text-slate-400 line-through mb-1">{formatPrice(comparePrice)}</span>
         )}
       </div>
+      {pricing.isFlashSale && (
+        <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold text-sm">
+          <FiZap className="text-base" />
+          Flash Sale -{pricing.discount}%{activeFlashItem ? ` • Còn ${activeFlashItem.remainingStock} suất giá sốc` : ''}
+        </div>
+      )}
 
       {/* Highlighted Specs from specsJson */}
       {highlightSpecs.length > 0 && (
@@ -157,13 +187,26 @@ export default function ProductInfo({ product }: { product: ProductResponse }) {
           <div>
             <h3 className="font-bold mb-3">Phiên bản</h3>
             <div className="flex flex-wrap gap-3">
-              {variants.map((v, idx) => (
-                <button key={v.id} onClick={() => setSelectedVariantIdx(idx)}
-                  className={`px-6 py-2.5 rounded-xl border-2 font-medium transition-all ${selectedVariantIdx === idx ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'}`}>
-                  {v.variantName || v.sku}
-                  <span className="block text-xs mt-0.5">{formatPrice(v.price)}</span>
-                </button>
-              ))}
+              {variants.map((v, idx) => {
+                const variantFlashItem = flashItemsByVariantId[v.id];
+                const variantPricing = resolveVariantPricing({
+                  product,
+                  variant: v,
+                  flashItem: variantFlashItem,
+                });
+                return (
+                  <button key={v.id} onClick={() => setSelectedVariantIdx(idx)}
+                    className={`px-6 py-2.5 rounded-xl border-2 font-medium transition-all ${selectedVariantIdx === idx ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'}`}>
+                    {v.variantName || v.sku}
+                    <span className="block text-xs mt-0.5">{formatPrice(variantPricing.salePrice)}</span>
+                    {variantPricing.originPrice > variantPricing.salePrice && (
+                      <span className="block text-[11px] mt-0.5 text-slate-400 line-through">
+                        {formatPrice(variantPricing.originPrice)}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
