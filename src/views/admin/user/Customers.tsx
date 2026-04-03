@@ -3,7 +3,7 @@ import { FiSearch, FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton } from '@/components/ui';
+import { CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components/ui';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';
@@ -114,9 +114,7 @@ export default function Customers() {
                   <tr key={user.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-bold text-sm">
-                          {user.avatarUrl ? <img src={user.avatarUrl} className="w-10 h-10 rounded-full object-cover" /> : user.fullName?.charAt(0)?.toUpperCase()}
-                        </div>
+                        <UserAvatar name={user.fullName} src={user.avatarUrl} />
                         <span className="font-bold">{user.fullName}</span>
                       </div>
                     </td>

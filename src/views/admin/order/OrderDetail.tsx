@@ -207,9 +207,7 @@ export default function OrderDetail() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-500">Trạng thái:</span>
-                <span className={`px-2 py-1 rounded-md text-xs font-bold ${order.paymentStatus === 'PAID' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}`}>
-                  {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}
-                </span>
+                <StatusBadge status={order.paymentStatus} />
               </div>
               {order.couponCode && (
                 <div className="flex items-center justify-between">

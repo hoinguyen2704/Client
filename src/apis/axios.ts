@@ -1,5 +1,9 @@
 import axios from 'axios';
+import { toast } from 'sonner';
 import useAuthStore from '@/stores/useAuthStore';
+
+// Flag chống gọi logout() nhiều lần khi nhiều request cùng nhận 401
+let isLoggingOut = false;
 
 // ─── Shared interceptor setup ───────────────────────────────────
 function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
@@ -16,8 +20,12 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
   instance.interceptors.response.use(
     (response) => response.data, // unwrap AxiosResponse → ApiResponse
     (error) => {
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 && !isLoggingOut) {
+        isLoggingOut = true;
+        toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
         useAuthStore.getState().logout();
+        // Reset flag sau 2s để cho phép logout lại sau khi đã redirect
+        setTimeout(() => { isLoggingOut = false; }, 2000);
       }
       return Promise.reject(error.response?.data || error);
     },

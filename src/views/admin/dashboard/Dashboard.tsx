@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { StatusBadge, Modal } from '@/components/ui';
+import { StatusBadge, Modal, UserAvatar } from '@/components/ui';
 import { formatPrice, formatDate } from '@/utils/format';
 import adminDashboardService from '@/apis/services/adminDashboardService';
 import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem } from '@/types';
@@ -245,9 +245,7 @@ export default function Dashboard() {
                         <td className="py-4 text-center font-bold text-slate-400">#{index + 1}</td>
                         <td className="py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center font-bold text-sm text-purple-600">
-                              {customer.name?.charAt(0) || '?'}
-                            </div>
+                            <UserAvatar name={customer.name} size="sm" />
                             <div>
                               <p className="font-bold">{customer.name}</p>
                               <p className="text-xs text-slate-500">{customer.email || 'Không có email'}</p>

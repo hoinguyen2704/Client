@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui';
+import { Card, UserAvatar } from '@/components/ui';
 import { formatPrice } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 
@@ -70,9 +70,7 @@ export default function DashboardLists({ stats }: DashboardChildProps) {
             ) : (
               stats.topCustomers.slice(0, 5).map((customer) => (
                 <div key={customer.id} className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-bold text-sm">
-                    {customer.name?.charAt(0)?.toUpperCase()}
-                  </div>
+                  <UserAvatar name={customer.name} />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium text-sm truncate">{customer.name}</h4>
                     <p className="text-xs text-slate-500">{customer.totalOrders} đơn hàng</p>

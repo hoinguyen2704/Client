@@ -4,7 +4,7 @@ import { FiArrowLeft, FiMail, FiPhone, FiCalendar, FiShoppingBag, FiDollarSign, 
 import { formatPrice, formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { StatusBadge } from '@/components/ui';
+import { StatusBadge, UserAvatar } from '@/components/ui';
 
 import type { UserResponse } from '@/types';
 
@@ -69,9 +69,7 @@ export default function CustomerDetail() {
               {user.avatarUrl ? (
                 <img src={user.avatarUrl} alt={user.fullName} className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-md" />
               ) : (
-                <div className="w-24 h-24 rounded-full border-4 border-white dark:border-slate-800 shadow-md bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-3xl font-bold text-purple-600">
-                  {user.fullName?.charAt(0)?.toUpperCase()}
-                </div>
+                <UserAvatar name={user.fullName} size="xl" className="border-4 border-white dark:border-slate-800 shadow-md" />
               )}
               <span className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-800 ${user.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'}`} />
             </div>

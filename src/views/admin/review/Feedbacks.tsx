@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle, FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
-import { CustomSelect, AdminPagination, StarRating } from '@/components/ui';
+import { CustomSelect, AdminPagination, StarRating, UserAvatar } from '@/components/ui';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
@@ -63,9 +63,7 @@ export default function Feedbacks() {
           reviews.map((review) => (
             <div key={review.id} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-bold text-sm shrink-0">
-                  {review.userAvatar ? <img src={review.userAvatar} className="w-10 h-10 rounded-full object-cover" /> : review.userName?.charAt(0)?.toUpperCase()}
-                </div>
+                <UserAvatar name={review.userName} src={review.userAvatar} className="shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <div>

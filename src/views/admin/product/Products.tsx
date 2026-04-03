@@ -284,10 +284,10 @@ export default function Products() {
                         <div className="flex items-center gap-2">
                           <span className={`font-medium ${stock === 0 ? 'text-red-500' : stock < 10 ? 'text-orange-500' : ''}`}>{stock}</span>
                           {stock < 10 && stock > 0 && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-600 uppercase tracking-wider">Sắp hết</span>
+                            <StatusBadge status="low_stock" />
                           )}
                           {stock === 0 && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-600 uppercase tracking-wider">Cạn kho</span>
+                            <StatusBadge status="out_of_stock" />
                           )}
                         </div>
                       </td>

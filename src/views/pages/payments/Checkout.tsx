@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2, FiBookmark } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { Modal } from '@/components/ui';
@@ -14,7 +14,10 @@ import useAuthStore from '@/stores/useAuthStore';
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthStore();
+  const buyNowItem = location.state?.buyNowItem;
+  
   const [cartItems, setCartItems] = useState<CartResponse[]>([]);
   const [addresses, setAddresses] = useState<AddressResponse[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
@@ -56,7 +59,22 @@ export default function Checkout() {
 
   useEffect(() => {
     const tasks: Promise<unknown>[] = [
-      cartService.getMyCart().then(r => setCartItems(r.data || [])),
+      // If we have a buyNowItem, skip fetching cart items and use the single item instead
+      buyNowItem 
+        ? Promise.resolve().then(() => setCartItems([{
+            id: 'buy-now',
+            productId: buyNowItem.productId,
+            variantId: buyNowItem.variantId,
+            productName: buyNowItem.name,
+            imageUrl: buyNowItem.image,
+            price: buyNowItem.price,
+            quantity: buyNowItem.quantity,
+            subtotal: buyNowItem.price * buyNowItem.quantity,
+            variantName: buyNowItem.variantName,
+            productSlug: '',
+            stockQuantity: 999
+          } as unknown as CartResponse]))
+        : cartService.getMyCart().then(r => setCartItems(r.data || [])),
       addressService.getMyAddresses().then(r => {
         setAddresses(r.data || []);
         const def = (r.data || []).find(a => a.isDefault);

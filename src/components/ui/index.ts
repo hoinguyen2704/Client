@@ -17,6 +17,7 @@ export { default as PrimaryButton } from './PrimaryButton';
 export { default as TrashButton } from './TrashButton';
 export { default as Modal, ModalCancelButton, ModalSubmitButton } from './Modal';
 export { default as StarRating } from './StarRating';
+export { default as UserAvatar } from './UserAvatar';
 export { FormInput, FormTextarea, FormSelect } from './FormInput';
 
 // ─── Types (re-export for convenience) ──────────────────────────
