@@ -83,7 +83,13 @@ export default function OrderTracking() {
             <div className="space-y-4">
               {order.items.map(item => (
                 <div key={item.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-400"><FiPackage /></div>
+                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                    ) : (
+                      <FiPackage className="text-slate-400 text-xl" />
+                    )}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium truncate">{item.productName}</h4>
                     <p className="text-sm text-slate-500">{item.variantName} | x{item.quantity}</p>

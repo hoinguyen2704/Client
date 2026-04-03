@@ -5,6 +5,7 @@ import { StatusBadge, Modal } from '@/components/ui';
 import { formatPrice, formatDate } from '@/utils/format';
 import adminDashboardService from '@/apis/services/adminDashboardService';
 import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem } from '@/types';
+import { downloadBlob } from '@/utils/download';
 import DashboardStats from './DashboardStats';
 import RevenueChart from './RevenueChart';
 import OrderChart from './OrderChart';
@@ -100,12 +101,7 @@ export default function Dashboard() {
             onClick={async () => {
               try {
                 const blob = await adminDashboardService.exportReport(period);
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `revenue_report_${new Date().toISOString().slice(0, 10)}.xlsx`;
-                a.click();
-                window.URL.revokeObjectURL(url);
+                downloadBlob(blob, `revenue_report_${new Date().toISOString().slice(0, 10)}.xlsx`);
                 toast.success('Xuất báo cáo thành công!');
               } catch (err) {
                 console.error(err);
@@ -164,12 +160,7 @@ export default function Dashboard() {
                   try {
                     toast.loading('Đang tạo báo cáo PDF...', { id: 'pdf-report' });
                     const blob = await adminDashboardService.exportReportPdf(activeModal, period);
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `report_${activeModal}_${new Date().toISOString().slice(0, 10)}.pdf`;
-                    a.click();
-                    window.URL.revokeObjectURL(url);
+                    downloadBlob(blob, `report_${activeModal}_${new Date().toISOString().slice(0, 10)}.pdf`);
                     toast.success('Xuất báo cáo PDF thành công!', { id: 'pdf-report' });
                   } catch (err) {
                     console.error(err);

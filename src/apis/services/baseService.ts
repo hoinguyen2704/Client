@@ -12,7 +12,7 @@ class BaseService<T, C = Partial<T>> {
     protected http: AxiosInstance = clientAxios,
   ) {}
 
-  async getAll(params?: PaginationParams): Promise<ApiResponse<PageResponse<T>>> {
+  async getAll(params?: PaginationParams & Record<string, unknown>): Promise<ApiResponse<PageResponse<T>>> {
     return this.http.get(this.endpoint, { params });
   }
 

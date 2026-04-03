@@ -8,6 +8,7 @@ import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { downloadBlob } from '@/utils/download';
 
 export default function Products() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -20,7 +21,7 @@ export default function Products() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [sortBy, setSortBy] = useState('createdAt');
-  const [sortDir, setSortDir] = useState('DESC');
+  const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('DESC');
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -102,12 +103,7 @@ export default function Products() {
         categoryId: categoryFilter || undefined,
         status: statusFilter || undefined,
       });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `products_${new Date().toISOString().slice(0, 10)}.xlsx`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(blob, `products_${new Date().toISOString().slice(0, 10)}.xlsx`);
       toast.success('Đã xuất báo cáo sản phẩm!');
     } catch (err) {
       toast.error('Không thể xuất báo cáo!');

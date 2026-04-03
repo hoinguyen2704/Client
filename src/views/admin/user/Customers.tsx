@@ -7,6 +7,7 @@ import { CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkelet
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';
+import { downloadBlob } from '@/utils/download';
 
 export default function Customers() {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -52,10 +53,7 @@ export default function Customers() {
   const handleExport = async () => {
     try {
       const blob = await adminUserService.export({ keyword: searchQuery || undefined, role: roleFilter || undefined });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'users.xlsx'; a.click();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(blob, 'users.xlsx');
     } catch (err) { console.error('Export failed:', err); toast.error('Xuất báo cáo thất bại!'); }
   };
 

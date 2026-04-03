@@ -9,6 +9,7 @@ import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
 
 import type { OrderResponse } from '@/types';
 import { SHOP } from '@/constants/shopConstants';
+import { downloadBlob } from '@/utils/download';
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
@@ -53,12 +54,7 @@ export default function OrderDetail() {
     if (!order) return;
     try {
       const blob = await adminOrderService.exportInvoice(order.id);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `invoice_${order.orderNumber}.pdf`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(blob, `invoice_${order.orderNumber}.pdf`);
       toast.success('Xuất hóa đơn PDF thành công!');
     } catch (err) {
       console.error(err);

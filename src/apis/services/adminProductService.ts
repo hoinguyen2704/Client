@@ -1,58 +1,40 @@
+import BaseService from './baseService';
 import { adminAxios } from '../axios';
 import type {
   ApiResponse,
-  PageResponse,
   ProductResponse,
   ProductRequest,
 } from '@/types';
 
-const URL = '/products';
+class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
+  constructor() {
+    super('/products', adminAxios);
+  }
 
-const adminProductService = {
-  getAll: (params?: {
-    keyword?: string;
-    categoryId?: string;
-    status?: string;
-    page?: number;
-    size?: number;
-    sortBy?: string;
-    sortDir?: string;
-  }): Promise<ApiResponse<PageResponse<ProductResponse>>> =>
-    adminAxios.get(URL, { params }),
+  async toggleStatus(id: string): Promise<ApiResponse<ProductResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/status`);
+  }
 
-  getById: (id: string): Promise<ApiResponse<ProductResponse>> =>
-    adminAxios.get(`${URL}/${id}`),
-
-  create: (data: ProductRequest): Promise<ApiResponse<ProductResponse>> =>
-    adminAxios.post(URL, data),
-
-  update: (id: string, data: ProductRequest): Promise<ApiResponse<ProductResponse>> =>
-    adminAxios.put(`${URL}/${id}`, data),
-
-  delete: (id: string): Promise<ApiResponse<void>> =>
-    adminAxios.delete(`${URL}/${id}`),
-
-  toggleStatus: (id: string): Promise<ApiResponse<ProductResponse>> =>
-    adminAxios.patch(`${URL}/${id}/status`),
-
-  uploadImages: (productId: string, files: File[]): Promise<ApiResponse<{id: string; imageUrl: string}[]>> => {
+  async uploadImages(productId: string, files: File[]): Promise<ApiResponse<{id: string; imageUrl: string}[]>> {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
-    return adminAxios.post(`${URL}/${productId}/images`, formData, {
+    return this.http.post(`${this.endpoint}/${productId}/images`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-  },
+  }
 
-  deleteImage: (productId: string, imageId: string): Promise<ApiResponse<void>> =>
-    adminAxios.delete(`${URL}/${productId}/images/${imageId}`),
+  async deleteImage(productId: string, imageId: string): Promise<ApiResponse<void>> {
+    return this.http.delete(`${this.endpoint}/${productId}/images/${imageId}`);
+  }
 
   /** Xuất danh sách sản phẩm ra Excel */
-  export: (params?: {
+  async export(params?: {
     keyword?: string;
     categoryId?: string;
     status?: string;
-  }): Promise<Blob> =>
-    adminAxios.get(`${URL}/export`, { params, responseType: 'blob' }),
-};
+  }): Promise<Blob> {
+    return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
+  }
+}
 
-export default adminProductService;
+export default new AdminProductService();

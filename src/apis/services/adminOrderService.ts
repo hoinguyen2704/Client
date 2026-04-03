@@ -1,34 +1,33 @@
+import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { ApiResponse, PageResponse, OrderResponse } from '@/types';
+import type { ApiResponse, OrderResponse } from '@/types';
 
-const URL = '/orders';
+class AdminOrderService extends BaseService<OrderResponse> {
+  constructor() {
+    super('/orders', adminAxios);
+  }
 
-const adminOrderService = {
-  getAll: (params?: {
-    status?: string;
-    keyword?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<OrderResponse>>> =>
-    adminAxios.get(URL, { params }),
+  async getByNumber(orderNumber: string): Promise<ApiResponse<OrderResponse>> {
+    return this.http.get(`${this.endpoint}/${orderNumber}`);
+  }
 
-  getByNumber: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
-    adminAxios.get(`${URL}/${orderNumber}`),
+  async updateStatus(id: string, status: string): Promise<ApiResponse<OrderResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/status`, { status });
+  }
 
-  updateStatus: (id: string, status: string): Promise<ApiResponse<OrderResponse>> =>
-    adminAxios.patch(`${URL}/${id}/status`, { status }),
-
-  export: (params?: {
+  async export(params?: {
     status?: string;
     keyword?: string;
     from?: string;
     to?: string;
-  }): Promise<Blob> =>
-    adminAxios.get(`${URL}/export`, { params, responseType: 'blob' }),
+  }): Promise<Blob> {
+    return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
+  }
 
   /** Xuất hóa đơn PDF cho 1 đơn hàng */
-  exportInvoice: (orderId: string): Promise<Blob> =>
-    adminAxios.get(`${URL}/${orderId}/invoice`, { responseType: 'blob' }),
-};
+  async exportInvoice(orderId: string): Promise<Blob> {
+    return this.http.get(`${this.endpoint}/${orderId}/invoice`, { responseType: 'blob' });
+  }
+}
 
-export default adminOrderService;
+export default new AdminOrderService();

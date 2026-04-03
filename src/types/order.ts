@@ -27,6 +27,8 @@ export interface OrderItemResponse {
   productId?: string;
   productName: string;
   variantName: string;
+  imageUrl?: string;
+  sku?: string;
   unitPrice: number;
   quantity: number;
   subtotal: number;

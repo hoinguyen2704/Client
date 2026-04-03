@@ -1,27 +1,19 @@
+import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { ApiResponse, PageResponse, UserResponse } from '@/types';
+import type { ApiResponse, UserResponse } from '@/types';
 
-const URL = '/users';
+class AdminUserService extends BaseService<UserResponse> {
+  constructor() {
+    super('/users', adminAxios);
+  }
 
-const adminUserService = {
-  getAll: (params?: {
-    keyword?: string;
-    role?: string;
-    page?: number;
-    size?: number;
-    sortBy?: string;
-    sortDir?: string;
-  }): Promise<ApiResponse<PageResponse<UserResponse>>> =>
-    adminAxios.get(URL, { params }),
+  async toggleStatus(id: string): Promise<ApiResponse<UserResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/status`);
+  }
 
-  getById: (id: string): Promise<ApiResponse<UserResponse>> =>
-    adminAxios.get(`${URL}/${id}`),
+  async export(params?: { keyword?: string; role?: string }): Promise<Blob> {
+    return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
+  }
+}
 
-  toggleStatus: (id: string): Promise<ApiResponse<UserResponse>> =>
-    adminAxios.patch(`${URL}/${id}/status`),
-
-  export: (params?: { keyword?: string; role?: string }): Promise<Blob> =>
-    adminAxios.get(`${URL}/export`, { params, responseType: 'blob' }),
-};
-
-export default adminUserService;
+export default new AdminUserService();

@@ -1,25 +1,23 @@
+import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { ApiResponse, PageResponse, FeedbackResponse } from '@/types';
+import type { ApiResponse, FeedbackResponse } from '@/types';
 
-const URL = '/feedbacks';
+class AdminFeedbackService extends BaseService<FeedbackResponse> {
+  constructor() {
+    super('/feedbacks', adminAxios);
+  }
 
-const adminFeedbackService = {
-  getAll: (params?: {
-    status?: string;
-    productId?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<FeedbackResponse>>> =>
-    adminAxios.get(URL, { params }),
+  async updateStatus(id: string, status: string): Promise<ApiResponse<FeedbackResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/status`, { status });
+  }
 
-  updateStatus: (id: string, status: string): Promise<ApiResponse<FeedbackResponse>> =>
-    adminAxios.patch(`${URL}/${id}/status`, { status }),
+  async reply(id: string, reply: string): Promise<ApiResponse<FeedbackResponse>> {
+    return this.http.post(`${this.endpoint}/${id}/reply`, { reply });
+  }
 
-  reply: (id: string, reply: string): Promise<ApiResponse<FeedbackResponse>> =>
-    adminAxios.post(`${URL}/${id}/reply`, { reply }),
+  async export(params?: { status?: string; productId?: string }): Promise<Blob> {
+    return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
+  }
+}
 
-  export: (params?: { status?: string; productId?: string }): Promise<Blob> =>
-    adminAxios.get(`${URL}/export`, { params, responseType: 'blob' }),
-};
-
-export default adminFeedbackService;
+export default new AdminFeedbackService();

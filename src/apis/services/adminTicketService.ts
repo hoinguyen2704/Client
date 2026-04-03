@@ -1,24 +1,19 @@
+import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { ApiResponse, PageResponse, TicketResponse, TicketMessageRequest } from '@/types';
+import type { ApiResponse, TicketResponse, TicketMessageRequest } from '@/types';
 
-const URL = '/tickets';
+class AdminTicketService extends BaseService<TicketResponse> {
+  constructor() {
+    super('/tickets', adminAxios);
+  }
 
-const adminTicketService = {
-  getAll: (params?: {
-    status?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<TicketResponse>>> =>
-    adminAxios.get(URL, { params }),
+  async reply(id: string, data: TicketMessageRequest): Promise<ApiResponse<TicketResponse>> {
+    return this.http.post(`${this.endpoint}/${id}/reply`, data);
+  }
 
-  getById: (id: string): Promise<ApiResponse<TicketResponse>> =>
-    adminAxios.get(`${URL}/${id}`),
+  async updateStatus(id: string, status: string): Promise<ApiResponse<TicketResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/status`, { status });
+  }
+}
 
-  reply: (id: string, data: TicketMessageRequest): Promise<ApiResponse<TicketResponse>> =>
-    adminAxios.post(`${URL}/${id}/reply`, data),
-
-  updateStatus: (id: string, status: string): Promise<ApiResponse<TicketResponse>> =>
-    adminAxios.patch(`${URL}/${id}/status`, { status }),
-};
-
-export default adminTicketService;
+export default new AdminTicketService();

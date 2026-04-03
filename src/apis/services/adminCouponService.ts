@@ -1,27 +1,15 @@
+import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { ApiResponse, PageResponse, CouponResponse, CouponRequest } from '@/types';
+import type { ApiResponse, CouponResponse, CouponRequest } from '@/types';
 
-const URL = '/coupons';
+class AdminCouponService extends BaseService<CouponResponse, CouponRequest> {
+  constructor() {
+    super('/coupons', adminAxios);
+  }
 
-const adminCouponService = {
-  getAll: (params?: {
-    keyword?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<CouponResponse>>> =>
-    adminAxios.get(URL, { params }),
+  async toggleStatus(id: string): Promise<ApiResponse<CouponResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/status`);
+  }
+}
 
-  getById: (id: string): Promise<ApiResponse<CouponResponse>> =>
-    adminAxios.get(`${URL}/${id}`),
-
-  create: (data: CouponRequest): Promise<ApiResponse<CouponResponse>> =>
-    adminAxios.post(URL, data),
-
-  update: (id: string, data: CouponRequest): Promise<ApiResponse<CouponResponse>> =>
-    adminAxios.put(`${URL}/${id}`, data),
-
-  toggleStatus: (id: string): Promise<ApiResponse<CouponResponse>> =>
-    adminAxios.patch(`${URL}/${id}/status`),
-};
-
-export default adminCouponService;
+export default new AdminCouponService();

@@ -8,6 +8,7 @@ import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';
 import type { OrderResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { downloadBlob } from '@/utils/download';
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
@@ -49,12 +50,7 @@ export default function AdminOrders() {
         status: statusFilter || undefined,
         keyword: searchQuery || undefined,
       });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `orders_${new Date().toISOString().slice(0, 10)}.xlsx`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(blob, `orders_${new Date().toISOString().slice(0, 10)}.xlsx`);
     } catch (err) { console.error('Export failed:', err); }
   };
   return (

@@ -1,32 +1,15 @@
+import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type {
-  ApiResponse,
-  PageResponse,
-  CategoryResponse,
-  CategoryRequest,
-} from '@/types';
+import type { ApiResponse, CategoryResponse, CategoryRequest } from '@/types';
 
-const URL = '/categories';
+class AdminCategoryService extends BaseService<CategoryResponse, CategoryRequest> {
+  constructor() {
+    super('/categories', adminAxios);
+  }
 
-const adminCategoryService = {
-  getAll: (params?: {
-    keyword?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<CategoryResponse>>> =>
-    adminAxios.get(URL, { params }),
+  async toggleStatus(id: string): Promise<ApiResponse<CategoryResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/status`);
+  }
+}
 
-  create: (data: CategoryRequest): Promise<ApiResponse<CategoryResponse>> =>
-    adminAxios.post(URL, data),
-
-  update: (id: string, data: CategoryRequest): Promise<ApiResponse<CategoryResponse>> =>
-    adminAxios.put(`${URL}/${id}`, data),
-
-  delete: (id: string): Promise<ApiResponse<void>> =>
-    adminAxios.delete(`${URL}/${id}`),
-
-  toggleStatus: (id: string): Promise<ApiResponse<CategoryResponse>> =>
-    adminAxios.patch(`${URL}/${id}/status`),
-};
-
-export default adminCategoryService;
+export default new AdminCategoryService();

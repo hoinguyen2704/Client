@@ -1,20 +1,29 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { PageResponse, ApiResponse, PaginationParams } from '@/types';
 
 /**
- * Generic hook for admin list pages with search + pagination.
+ * Generic hook for admin list pages with search + pagination + filters.
  *
  * Usage:
  * ```tsx
  * const { items, loading, pageData, searchQuery, setSearchQuery, page, setPage, refetch } =
  *   useAdminList(adminCategoryService.getAll, { size: PAGE_SIZE.LARGE });
+ *
+ * // With reactive filters:
+ * const { items, ... } = useAdminList(adminTicketService.getAll, {
+ *   size: PAGE_SIZE.LARGE,
+ *   extraParams: { status: statusFilter },
+ * });
  * ```
  */
 
 interface UseAdminListOptions {
   /** Items per page (default: 10) */
   size?: number;
-  /** Extra fixed params merged into every request */
+  /**
+   * Extra params merged into every request.
+   * Changes to these values will trigger a re-fetch and reset page to 1.
+   */
   extraParams?: Record<string, any>;
   /** Whether to fetch on mount (default: true) */
   fetchOnMount?: boolean;
@@ -38,7 +47,7 @@ export default function useAdminList<T>(
   fetchFn: FetchFn<T>,
   options: UseAdminListOptions = {},
 ): UseAdminListReturn<T> {
-  const { size = 10, extraParams = {}, fetchOnMount = true } = options;
+  const { size = 10, extraParams, fetchOnMount = true } = options;
 
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,14 +55,27 @@ export default function useAdminList<T>(
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<T> | null>(null);
 
+  // Serialize extraParams for stable dependency tracking
+  const extraParamsKey = JSON.stringify(extraParams ?? {});
+  const prevExtraParamsKey = useRef(extraParamsKey);
+
+  // Reset page to 1 when extraParams change
+  useEffect(() => {
+    if (prevExtraParamsKey.current !== extraParamsKey) {
+      prevExtraParamsKey.current = extraParamsKey;
+      setPage(1);
+    }
+  }, [extraParamsKey]);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      const parsedExtra = JSON.parse(extraParamsKey);
       const res = await fetchFn({
         keyword: searchQuery || undefined,
         page,
         size,
-        ...extraParams,
+        ...parsedExtra,
       });
       setPageData(res.data);
       setItems(res.data?.data || []);
@@ -62,8 +84,7 @@ export default function useAdminList<T>(
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, page, size]);
+  }, [fetchFn, searchQuery, page, size, extraParamsKey]);
 
   useEffect(() => {
     if (fetchOnMount) fetchData();
