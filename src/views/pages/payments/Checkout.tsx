@@ -57,42 +57,53 @@ export default function Checkout() {
     setShowForm(true);
   };
 
-  useEffect(() => {
-    const tasks: Promise<unknown>[] = [
-      // If we have a buyNowItem, skip fetching cart items and use the single item instead
-      buyNowItem 
-        ? Promise.resolve().then(() => setCartItems([{
-            id: 'buy-now',
-            productId: buyNowItem.productId,
-            variantId: buyNowItem.variantId,
-            productName: buyNowItem.name,
-            imageUrl: buyNowItem.image,
-            price: buyNowItem.price,
-            quantity: buyNowItem.quantity,
-            subtotal: buyNowItem.price * buyNowItem.quantity,
-            variantName: buyNowItem.variantName,
-            productSlug: '',
-            stockQuantity: 999
-          } as unknown as CartResponse]))
-        : cartService.getMyCart().then(r => setCartItems(r.data || [])),
-      addressService.getMyAddresses().then(r => {
-        setAddresses(r.data || []);
-        const def = (r.data || []).find(a => a.isDefault);
-        if (def) setSelectedAddressId(def.id);
-      }),
-    ];
-
-    if (user) {
-      tasks.push(
-        userCouponService.getMySavedCoupons()
-          .then((r) => setSavedCouponIds((r.data || []).map((coupon) => coupon.id)))
-          .catch(() => setSavedCouponIds([])),
-      );
+  const loadCartData = async () => {
+    if (buyNowItem) {
+      setCartItems([{
+        id: 'buy-now',
+        productId: buyNowItem.productId,
+        variantId: buyNowItem.variantId,
+        productName: buyNowItem.name,
+        imageUrl: buyNowItem.image,
+        price: buyNowItem.price,
+        quantity: buyNowItem.quantity,
+        subtotal: buyNowItem.price * buyNowItem.quantity,
+        variantName: buyNowItem.variantName,
+        productSlug: '',
+        stockQuantity: 999
+      } as unknown as CartResponse]);
     } else {
+      const r = await cartService.getMyCart();
+      setCartItems(r.data || []);
+    }
+  };
+
+  const loadAddressData = async () => {
+    const r = await addressService.getMyAddresses();
+    setAddresses(r.data || []);
+    const def = (r.data || []).find(a => a.isDefault);
+    if (def) setSelectedAddressId(def.id);
+  };
+
+  const loadCouponData = async () => {
+    if (!user) {
+      setSavedCouponIds([]);
+      return;
+    }
+    try {
+      const r = await userCouponService.getMySavedCoupons();
+      setSavedCouponIds((r.data || []).map(coupon => coupon.id));
+    } catch {
       setSavedCouponIds([]);
     }
+  };
 
-    Promise.all(tasks).finally(() => setLoading(false));
+  useEffect(() => {
+    Promise.all([
+      loadCartData(),
+      loadAddressData(),
+      loadCouponData()
+    ]).finally(() => setLoading(false));
   }, [user]);
 
   const getErrorMessage = (err: any, fallback: string) =>
