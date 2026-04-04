@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { FiGrid, FiShoppingBag, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap, FiSliders } from 'react-icons/fi';
+import { FiGrid, FiShoppingBag, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap } from 'react-icons/fi';
 import LogoIcon from '../ui/LogoIcon';
 import useUIStore from '@/stores/useUIStore';
 import { SHOP } from '@/constants/shopConstants';
@@ -17,7 +17,6 @@ const menuItems = [
   { path: '/admin/tickets', icon: FiHeadphones, label: 'Hỗ trợ (Tickets)' },
   { path: '/admin/chatbot', icon: FiCpu, label: 'AI Chatbot' },
   { path: '/admin/cms', icon: FiFileText, label: 'Nội dung (CMS)' },
-  { path: '/admin/system-configs', icon: FiSliders, label: 'Cấu hình hệ thống' },
   { path: '/admin/settings', icon: FiSettings, label: 'Cài đặt' },
 ];
 

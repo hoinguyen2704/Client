@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Header from './Header';
 import MobileMenu from './MobileMenu';
 import Footer from './Footer';
-import Chatbot from '../ui/Chatbot';
+import Chatbot from '../chat/Chatbot';
 import useAuthStore from '@/stores/useAuthStore';
 import useUIStore from '@/stores/useUIStore';
 import { useScrollToTop } from '@/hooks';

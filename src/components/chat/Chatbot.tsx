@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import chatbotService from '@/apis/services/chatbotService';
 import type { ChatbotMessage, ChatbotResponse, WidgetConfig } from '@/apis/services/chatbotService';
-import type { Message } from './types';
+import type { Message } from '../ui/types';
 import { SHOP } from '@/constants/shopConstants';
 
 /* ─── Defaults nếu API chưa tải được ─── */

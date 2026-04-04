@@ -273,10 +273,14 @@ export default function ProductInfo({
         >
           <FiHeart className={`text-2xl ${liked ? 'fill-red-500 cursor-pointer' : ''}`} />
         </button>
-        <button onClick={handleAddToCart} disabled={stock === 0}
-          className="flex-1 h-14 rounded-2xl border-2 border-purple-500 text-purple-600 dark:text-purple-400 font-bold text-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-          <FiShoppingCart className="text-xl" /> Thêm vào giỏ
-        </button>
+        <PrimaryButton 
+          variant="outline"
+          onClick={handleAddToCart} 
+          disabled={stock === 0}
+          icon={<FiShoppingCart className="text-xl" />}
+          className="flex-1 !h-14 !rounded-2xl !text-lg !font-bold">
+          Thêm vào giỏ
+        </PrimaryButton>
         <PrimaryButton onClick={handleBuyNow} disabled={stock === 0}
           icon={<FiZap className="text-xl" />}
           className="flex-1 !h-14 !rounded-2xl !text-lg">

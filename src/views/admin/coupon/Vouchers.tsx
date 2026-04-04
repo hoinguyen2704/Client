@@ -62,8 +62,8 @@ export default function AdminVouchers() {
       minOrderValue: v.minOrderValue,
       maxDiscountAmount: v.maxDiscountAmount,
       usageLimit: v.usageLimit,
-      startDate: v.startDate?.slice(0, 10) ?? '',
-      endDate: v.endDate?.slice(0, 10) ?? '',
+      startDate: v.startDate?.slice(0, 16) ?? '',
+      endDate: v.endDate?.slice(0, 16) ?? '',
       isPublic: v.isPublic || false,
       applyType: v.applyType || "ALL",
       applicableProductIds: v.applicableProducts?.map((p) => p.id) || [],
@@ -363,16 +363,16 @@ export default function AdminVouchers() {
                 {/* Dates */}
                 <div className="grid grid-cols-2 gap-4">
                   <FormInput
-                    label="Ngày bắt đầu"
-                    type="date"
+                    label="Thời gian bắt đầu"
+                    type="datetime-local"
                     value={form.startDate || ""}
                     onChange={(e) =>
                       setForm({ ...form, startDate: e.target.value })
                     }
                   />
                   <FormInput
-                    label="Ngày kết thúc"
-                    type="date"
+                    label="Thời gian kết thúc"
+                    type="datetime-local"
                     value={form.endDate || ""}
                     onChange={(e) =>
                       setForm({ ...form, endDate: e.target.value })
@@ -403,10 +403,10 @@ export default function AdminVouchers() {
                       onClick={() =>
                         setForm({ ...form, isPublic: !form.isPublic })
                       }
-                      className={`relative w-12 h-6 rounded-full transition-colors ${form.isPublic ? "bg-blue-500" : "bg-slate-300 dark:bg-slate-600"}`}
+                      className={`relative w-12 h-6 flex-shrink-0 rounded-full transition-colors ${form.isPublic ? "bg-blue-500" : "bg-slate-300 dark:bg-slate-600"}`}
                     >
                       <span
-                        className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.isPublic ? "translate-x-6" : "translate-x-0.5"}`}
+                        className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.isPublic ? "translate-x-6" : "translate-x-0"}`}
                       />
                     </button>
                   </div>

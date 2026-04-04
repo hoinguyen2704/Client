@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
-import type { BackButtonProps } from './types';
+import type { BackButtonProps } from '../ui/types';
 export default function BackButton({ to, label, className = '' }: BackButtonProps) {
   if (label) {
     return (

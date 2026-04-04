@@ -66,16 +66,20 @@ export interface FeedbackResponse {
   createdAt: string;
   productId: string;
   productName?: string;
+  variantId?: string;
+  variantName?: string;
   userId: string;
   userName: string;
   userAvatar?: string;
   orderId?: string;
   adminReply?: string;
   repliedAt?: string;
+  editCount?: number;
 }
 
 export interface FeedbackRequest {
   productId: string;
+  variantId?: string;
   orderId?: string;
   rating: number;
   content: string;
@@ -340,17 +344,25 @@ export interface UpdateUserRequest {
   gender?: string;
 }
 
-// ─── SystemConfig ───────────────────────────────────────────────
-export interface SystemConfigResponse {
+// ─── Setting ────────────────────────────────────────────────────
+export interface SettingResponse {
   id: string;
-  configKey: string;
-  configValue: string;
+  groupName: string;
+  settingKey: string;
+  settingValue: string;
+  valueType: string;
   description?: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
-export interface SystemConfigRequest {
-  configKey: string;
-  configValue?: string;
-  description?: string;
+export interface ShippingConfig {
+  defaultShippingFee: number;
+  freeShippingThreshold: number;
 }
+
+export interface PaymentMethodConfig {
+  id: string;
+  label: string;
+  enabled: boolean;
+}
+

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiStar } from 'react-icons/fi';
-import type { StarRatingProps } from './types';
-import { STAR_LABELS, STAR_SIZE_CLASS } from './constants';
+import type { StarRatingProps } from '../ui/types';
+import { STAR_LABELS, STAR_SIZE_CLASS } from '../ui/constants';
 
 export default function StarRating({
   value,

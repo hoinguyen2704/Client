@@ -1,8 +1,8 @@
 import { useEffect, type ReactNode } from 'react';
 import { FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import type { ModalProps, ModalCancelButtonProps, ModalSubmitButtonProps } from './types';
-import { MODAL_SIZE_MAP } from './constants';
+import type { ModalProps, ModalCancelButtonProps, ModalSubmitButtonProps } from '../ui/types';
+import { MODAL_SIZE_MAP } from '../ui/constants';
 
 export default function Modal({
   open,

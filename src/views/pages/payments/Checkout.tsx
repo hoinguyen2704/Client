@@ -9,7 +9,8 @@ import addressService from '@/apis/services/addressService';
 import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import orderService from '@/apis/services/orderService';
-import type { CartResponse, AddressResponse, AddressRequest, CouponResponse } from '@/types';
+import settingService from '@/apis/services/settingService';
+import type { CartResponse, AddressResponse, AddressRequest, CouponResponse, PaymentMethodConfig, ShippingConfig } from '@/types';
 import useAuthStore from '@/stores/useAuthStore';
 
 export default function Checkout() {
@@ -30,6 +31,8 @@ export default function Checkout() {
   const [discount, setDiscount] = useState(0);
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodConfig[]>([]);
+  const [shippingConfig, setShippingConfig] = useState<ShippingConfig>({ defaultShippingFee: 30000, freeShippingThreshold: 500000 });
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<AddressRequest>({ fullName: '', phoneNumber: '', province: '', district: '', ward: '', detailAddress: '', isDefault: false });
@@ -105,7 +108,15 @@ export default function Checkout() {
     Promise.all([
       loadCartData(),
       loadAddressData(),
-      loadCouponData()
+      loadCouponData(),
+      settingService.getShipping().then(res => { if (res.data) setShippingConfig(res.data); }).catch(() => {}),
+      settingService.getPaymentMethods().then(res => {
+        if (res.data) {
+          setPaymentMethods(res.data.filter(pm => pm.enabled));
+          const first = res.data.find(pm => pm.enabled);
+          if (first) setPaymentMethod(first.id);
+        }
+      }).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, [user]);
 
@@ -174,7 +185,7 @@ export default function Checkout() {
   };
 
   const subtotal = cartItems.reduce((s, i) => s + i.subtotal, 0);
-  const shippingFee = subtotal > 500000 ? 0 : 30000;
+  const shippingFee = subtotal >= shippingConfig.freeShippingThreshold ? 0 : shippingConfig.defaultShippingFee;
   const total = subtotal + shippingFee - discount;
   const isAppliedCouponSaved = !!validatedCoupon?.id && savedCouponIds.includes(validatedCoupon.id);
 
@@ -256,7 +267,7 @@ export default function Checkout() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4">Phương thức thanh toán</h2>
             <div className="grid grid-cols-2 gap-3">
-              {[{ id: 'COD', label: 'Thanh toán khi nhận hàng' }, { id: 'VNPAY', label: 'VNPay' }, { id: 'MOMO', label: 'MoMo' }, { id: 'BANK_TRANSFER', label: 'Chuyển khoản' }].map(pm => (
+              {paymentMethods.map(pm => (
                 <label key={pm.id} className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${paymentMethod === pm.id ? 'border-purple-500 bg-purple-50/30 dark:bg-purple-900/10' : 'border-slate-200 dark:border-slate-700'}`}>
                   <input type="radio" name="payment" checked={paymentMethod === pm.id} onChange={() => setPaymentMethod(pm.id)} />
                   <span className="font-medium text-sm">{pm.label}</span>

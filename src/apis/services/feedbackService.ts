@@ -13,6 +13,9 @@ const feedbackService = {
   checkProduct: (productId: string): Promise<ApiResponse<boolean>> =>
     axios.get(`${FEEDBACK_URL}/check/${productId}`),
 
+  getMyFeedback: (productId: string, variantId: string, orderId: string): Promise<ApiResponse<FeedbackResponse[]>> =>
+    axios.get(`${FEEDBACK_URL}/my-feedback`, { params: { productId, variantId, orderId } }),
+
   delete: (feedbackId: string): Promise<ApiResponse<void>> =>
     axios.delete(`${FEEDBACK_URL}/${feedbackId}`),
 };

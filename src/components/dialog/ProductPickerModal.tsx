@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiCheck, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import adminProductService from '@/apis/services/adminProductService';
 import type { ProductResponse, ProductVariantResponse } from '@/types';
-import { Modal, FormInput, PrimaryButton } from '.';
+import { Modal, FormInput, PrimaryButton } from '../ui';
 import { formatPrice } from '@/utils/format';
 import { useDebounce } from '@/hooks/useDebounce';
 

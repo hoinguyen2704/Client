@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import Modal from './Modal';
-import type { ConfirmDialogProps } from './types';
-import { CONFIRM_VARIANT_CONFIG } from './constants';
+import Modal from '../dialog/Modal';
+import type { ConfirmDialogProps } from '../ui/types';
+import { CONFIRM_VARIANT_CONFIG } from '../ui/constants';
 
 export default function ConfirmDialog({
   open,

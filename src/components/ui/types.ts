@@ -146,6 +146,8 @@ export interface PrimaryButtonProps {
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
+  variant?: 'primary' | 'outline';
+  isLoading?: boolean;
 }
 
 // ─── BackButton ──────────────────────────────────────────────────

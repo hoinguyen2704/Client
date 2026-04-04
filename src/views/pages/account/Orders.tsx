@@ -20,8 +20,10 @@ export default function Orders() {
   
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<OrderResponse | null>(null);
+  const [selectedItem, setSelectedItem] = useState<{ productId: string, variantId: string, productName: string, variantName: string } | null>(null);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
+  const [oldFeedbacks, setOldFeedbacks] = useState<any[]>([]);
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
 
   useEffect(() => {
@@ -57,25 +59,33 @@ export default function Orders() {
     } catch { toast.error('Hủy đơn hàng thất bại!'); }
   };
 
-  const handleOpenReview = (order: OrderResponse) => {
+  const handleOpenReview = async (order: OrderResponse, item: any) => {
     setSelectedOrder(order);
+    setSelectedItem({ productId: item.productId, variantId: item.variantId, productName: item.productName, variantName: item.variantName });
     setRating(5);
     setReviewText('');
+    setOldFeedbacks([]);
     setReviewModalOpen(true);
+
+    try {
+      const res = await feedbackService.getMyFeedback(item.productId, item.variantId, order.id);
+      if (res.data) {
+        setOldFeedbacks(res.data);
+      }
+    } catch {
+      // proceed with defaults
+    }
   };
 
   const handleSubmitReview = async () => {
-    if (!selectedOrder || !selectedOrder.items[0]) return;
-    const firstItem = selectedOrder.items[0];
-    if (!firstItem.productId) {
-      toast.error('Không xác định được sản phẩm để đánh giá!');
-      return;
-    }
+    if (!selectedOrder || !selectedItem) return;
     try {
-      await feedbackService.submit({ productId: firstItem.productId, orderId: selectedOrder.id, rating, content: reviewText });
+      await feedbackService.submit({ productId: selectedItem.productId, variantId: selectedItem.variantId, orderId: selectedOrder.id, rating, content: reviewText });
       toast.success('Cảm ơn bạn đã đánh giá sản phẩm!');
       setReviewModalOpen(false);
-    } catch { toast.error('Gửi đánh giá thất bại!'); }
+    } catch (e: any) { 
+      toast.error(e.response?.data?.message || 'Gửi đánh giá thất bại!'); 
+    }
   };
   return (
     <div className="space-y-6">
@@ -126,7 +136,14 @@ export default function Orders() {
                       <h3 className="font-bold line-clamp-1">{item.productName}</h3>
                       <p className="text-sm text-slate-500 mt-1">Phân loại: {item.variantName} | Số lượng: x{item.quantity}</p>
                     </div>
-                    <div className="font-bold text-purple-600 text-right">{formatPrice(item.unitPrice)}</div>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="font-bold text-purple-600">{formatPrice(item.unitPrice)}</div>
+                      {order.orderStatus === 'SHIPPED' && (
+                        <button onClick={() => handleOpenReview(order, item)} className="px-3 py-1 text-sm rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                          Đánh giá
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -136,9 +153,6 @@ export default function Orders() {
                   Tổng tiền: <span className="text-xl font-bold text-purple-600 ml-2">{formatPrice(order.totalAmount)}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  {order.orderStatus === 'SHIPPED' && (
-                    <button onClick={() => handleOpenReview(order)} className="px-4 py-2 rounded-lg border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">Đánh giá</button>
-                  )}
                   {order.orderStatus === 'PENDING' && (
                     <button onClick={() => setCancelTarget(order.id)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Hủy đơn</button>
                   )}
@@ -177,26 +191,44 @@ export default function Orders() {
         footer={
           <>
             <ModalCancelButton onClick={() => setReviewModalOpen(false)}>Trở lại</ModalCancelButton>
-                    <PrimaryButton
-                      onClick={() => {handleSubmitReview}}>
-                      Gửi đánh giá
-                    </PrimaryButton>
+            {oldFeedbacks.length < 2 ? (
+               <PrimaryButton onClick={handleSubmitReview}>Gửi đánh giá</PrimaryButton>
+            ) : (
+               <PrimaryButton disabled>Đã đánh giá tối đa</PrimaryButton>
+            )}
           </>
         }
       >
-        {selectedOrder && (
+        {selectedOrder && selectedItem && (
           <div className="space-y-6">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-              <h4 className="font-bold">{selectedOrder.items[0]?.productName}</h4>
-              <p className="text-sm text-slate-500 mt-1">Phân loại: {selectedOrder.items[0]?.variantName}</p>
+              <h4 className="font-bold">{selectedItem.productName}</h4>
+              <p className="text-sm text-slate-500 mt-1">Phân loại: {selectedItem.variantName}</p>
             </div>
-            <div className="flex flex-col items-center gap-3">
-              <p className="font-medium text-slate-700 dark:text-slate-300">Chất lượng sản phẩm</p>
-              <StarRating value={rating} onChange={setRating} size="lg" />
-            </div>
-            <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-              placeholder="Hãy chia sẻ nhận xét của bạn về sản phẩm này nhé..."
-              className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none" />
+            
+            {oldFeedbacks.map((fb, idx) => (
+              <div key={fb.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 opacity-80">
+                 <div className="flex items-center justify-between mb-2">
+                    <p className="font-bold text-sm text-slate-700 dark:text-slate-300">Đánh giá {idx === 0 ? 'lần 1' : 'lần ' + (idx + 1)}</p>
+                    <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
+                 </div>
+                 <p className="text-sm text-slate-600 dark:text-slate-400">{fb.content}</p>
+              </div>
+            ))}
+
+            {oldFeedbacks.length < 2 && (
+              <div className="space-y-4 pt-2">
+                <div className="flex flex-col items-center gap-2">
+                  <p className="font-medium text-slate-700 dark:text-slate-300">
+                    {oldFeedbacks.length === 1 ? 'Đánh giá bổ sung (Lần 2)' : 'Chất lượng sản phẩm'}
+                  </p>
+                  <StarRating value={rating} onChange={setRating} size="lg" />
+                </div>
+                <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+                  placeholder="Hãy chia sẻ nhận xét của bạn về sản phẩm này nhé..."
+                  className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none" />
+              </div>
+            )}
           </div>
         )}
       </Modal>

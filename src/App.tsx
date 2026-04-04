@@ -4,7 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'sonner';
 import MainLayout from './components/layout/MainLayout';
 import ErrorBoundary from './components/ui/ErrorBoundary';
-import { LoadingScreen } from './components/ui/Skeleton';
+import { LoadingScreen } from './components/loading/Skeleton';
 import { publicRoutes } from './routers/publicRoutes';
 import { userRoutes } from './routers/userRoutes';
 import { adminRoutes } from './routers/adminRoutes';

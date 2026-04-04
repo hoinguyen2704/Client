@@ -1,31 +1,103 @@
-import { useState } from 'react';
-import { FiSave, FiSettings, FiGlobe, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiCheck } from 'react-icons/fi';
+import { useState, useEffect, useCallback } from 'react';
+import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiCheck, FiLoader } from 'react-icons/fi';
 import { CustomSelect, Modal, ModalCancelButton, FormInput } from '@/components/ui';
+import { toast } from 'sonner';
+import adminSettingService from '@/apis/services/adminSettingService';
+import type { SettingResponse } from '@/types';
+import type { SettingUpdateRequest } from '@/apis/services/adminSettingService';
 
 export default function Settings() {
-  const [paymentMethods, setPaymentMethods] = useState({
-    cod: true,
-    vnpay: true,
-    momo: false,
-  });
-
-  const [aiSettings, setAiSettings] = useState({
-    recommendation: true,
-    aiContent: false,
-  });
-
+  const [settings, setSettings] = useState<Record<string, string>>({});
+  const [original, setOriginal] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
-  const [currency, setCurrency] = useState('VND');
-  const [algorithm, setAlgorithm] = useState('collaborative');
-  const [algoPriority, setAlgoPriority] = useState(70);
-  const [algoExploration, setAlgoExploration] = useState(30);
+
+  // Helper: lấy giá trị setting
+  const val = useCallback((key: string, fallback = '') => settings[key] ?? fallback, [settings]);
+  const bool = useCallback((key: string) => val(key) === 'true', [val]);
+  const num = useCallback((key: string, fallback = 0) => Number(val(key)) || fallback, [val]);
+
+  // Helper: cập nhật giá trị setting
+  const set = (key: string, value: string) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Load settings từ API
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await adminSettingService.getAll();
+        const flat: Record<string, string> = {};
+        if (res.data) {
+          Object.values(res.data).flat().forEach((s: SettingResponse) => {
+            flat[s.settingKey] = s.settingValue;
+          });
+        }
+        setSettings(flat);
+        setOriginal(flat);
+      } catch {
+        toast.error('Không thể tải cấu hình hệ thống');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  // Lưu settings — chỉ gửi những key đã thay đổi
+  const handleSave = async () => {
+    const changed: SettingUpdateRequest[] = [];
+    for (const key of Object.keys(settings)) {
+      if (settings[key] !== original[key]) {
+        changed.push({ settingKey: key, settingValue: settings[key] });
+      }
+    }
+    if (changed.length === 0) {
+      toast.info('Không có thay đổi nào để lưu');
+      return;
+    }
+    setSaving(true);
+    try {
+      await adminSettingService.batchUpdate(changed);
+      setOriginal({ ...settings });
+      toast.success(`Đã lưu ${changed.length} cấu hình thành công!`);
+    } catch {
+      toast.error('Lưu cấu hình thất bại!');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const hasChanges = Object.keys(settings).some(k => settings[k] !== original[k]);
+
+  // Toggle component
+  const Toggle = ({ settingKey, color = 'purple' }: { settingKey: string; color?: string }) => (
+    <label className="relative inline-flex items-center cursor-pointer">
+      <input type="checkbox" className="sr-only peer" checked={bool(settingKey)} onChange={(e) => set(settingKey, String(e.target.checked))} />
+      <div className={`w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-${color}-600`}></div>
+    </label>
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <FiLoader className="animate-spin text-3xl text-purple-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Cài Đặt Hệ Thống & AI</h1>
-        <button className="px-6 py-2.5 bg-purple-600 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors flex items-center gap-2 w-fit">
-          <FiSave /> Lưu cấu hình
+        <button
+          onClick={handleSave}
+          disabled={saving || !hasChanges}
+          className="px-6 py-2.5 bg-purple-600 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors flex items-center gap-2 w-fit disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {saving ? <FiLoader className="animate-spin" /> : <FiSave />}
+          {saving ? 'Đang lưu...' : 'Lưu cấu hình'}
         </button>
       </div>
 
@@ -40,13 +112,13 @@ export default function Settings() {
           </div>
 
           <div className="space-y-4">
-            <FormInput label="Tên cửa hàng" type="text" defaultValue="TechStore" />
+            <FormInput label="Tên cửa hàng" type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Đơn vị tiền tệ</label>
                 <CustomSelect
-                  value={currency}
-                  onChange={setCurrency}
+                  value={val('CURRENCY', 'VND')}
+                  onChange={(v) => set('CURRENCY', v)}
                   options={[
                     { value: 'VND', label: 'VNĐ (Việt Nam Đồng)' },
                     { value: 'USD', label: 'USD (Đô la Mỹ)' }
@@ -54,9 +126,12 @@ export default function Settings() {
                   className="w-full"
                 />
               </div>
-              <FormInput label="Thuế mặc định (%)" type="number" defaultValue="10" />
+              <FormInput label="Thuế mặc định (%)" type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
             </div>
-            <FormInput label="Email liên hệ" type="email" defaultValue="support@techstore.com" />
+            <FormInput label="Email liên hệ" type="email" value={val('SHOP_EMAIL')} onChange={(e) => set('SHOP_EMAIL', e.target.value)} />
+            <FormInput label="Email hỗ trợ" type="email" value={val('SUPPORT_EMAIL')} onChange={(e) => set('SUPPORT_EMAIL', e.target.value)} />
+            <FormInput label="Hotline" type="text" value={val('HOTLINE')} onChange={(e) => set('HOTLINE', e.target.value)} />
+            <FormInput label="Địa chỉ" type="text" value={val('SHOP_ADDRESS')} onChange={(e) => set('SHOP_ADDRESS', e.target.value)} />
           </div>
         </div>
 
@@ -69,7 +144,7 @@ export default function Settings() {
               </div>
               <h2 className="text-lg font-bold">AI Dashboard (ML Ops)</h2>
             </div>
-            <button 
+            <button
               onClick={() => setIsAiModalOpen(true)}
               className="text-sm text-indigo-600 font-medium hover:underline"
             >
@@ -83,10 +158,7 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">Recommendation Engine</h3>
                 <p className="text-xs text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={aiSettings.recommendation} onChange={(e) => setAiSettings({...aiSettings, recommendation: e.target.checked})} />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-indigo-600"></div>
-              </label>
+              <Toggle settingKey="RECOMMENDATION_ENABLED" color="indigo" />
             </div>
 
             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
@@ -94,26 +166,23 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">AI Content Generator</h3>
                 <p className="text-xs text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={aiSettings.aiContent} onChange={(e) => setAiSettings({...aiSettings, aiContent: e.target.checked})} />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-indigo-600"></div>
-              </label>
+              <Toggle settingKey="AI_CONTENT_ENABLED" color="indigo" />
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-2">
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                 <div className="text-indigo-500 mb-1 flex justify-center"><FiTrendingUp /></div>
-                <div className="text-xl font-bold">12.5K</div>
+                <div className="text-xl font-bold">—</div>
                 <div className="text-xs text-slate-500">Lần gợi ý</div>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                 <div className="text-blue-500 mb-1 flex justify-center"><FiMousePointer /></div>
-                <div className="text-xl font-bold">8.2%</div>
+                <div className="text-xl font-bold">—</div>
                 <div className="text-xs text-slate-500">Tỷ lệ click</div>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                 <div className="text-green-500 mb-1 flex justify-center"><FiShoppingCart /></div>
-                <div className="text-xl font-bold">3.4%</div>
+                <div className="text-xl font-bold">—</div>
                 <div className="text-xs text-slate-500">Chuyển đổi</div>
               </div>
             </div>
@@ -130,38 +199,20 @@ export default function Settings() {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-              <div>
-                <h3 className="font-bold text-sm">Thanh toán khi nhận hàng (COD)</h3>
-                <p className="text-xs text-slate-500 mt-1">Cho phép khách hàng thanh toán tiền mặt</p>
+            {[
+              { key: 'COD_ENABLED', title: 'Thanh toán khi nhận hàng (COD)', desc: 'Cho phép khách hàng thanh toán tiền mặt' },
+              { key: 'VNPAY_ENABLED', title: 'Thanh toán qua VNPay', desc: 'Cổng thanh toán nội địa và quốc tế' },
+              { key: 'MOMO_ENABLED', title: 'Thanh toán qua MoMo', desc: 'Ví điện tử phổ biến tại Việt Nam' },
+              { key: 'BANK_TRANSFER_ENABLED', title: 'Chuyển khoản ngân hàng', desc: 'Chuyển khoản trực tiếp qua ngân hàng' },
+            ].map(pm => (
+              <div key={pm.key} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                <div>
+                  <h3 className="font-bold text-sm">{pm.title}</h3>
+                  <p className="text-xs text-slate-500 mt-1">{pm.desc}</p>
+                </div>
+                <Toggle settingKey={pm.key} />
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={paymentMethods.cod} onChange={(e) => setPaymentMethods({...paymentMethods, cod: e.target.checked})} />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-              <div>
-                <h3 className="font-bold text-sm">Thanh toán qua VNPay</h3>
-                <p className="text-xs text-slate-500 mt-1">Cổng thanh toán nội địa và quốc tế</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={paymentMethods.vnpay} onChange={(e) => setPaymentMethods({...paymentMethods, vnpay: e.target.checked})} />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-              <div>
-                <h3 className="font-bold text-sm">Thanh toán qua Momo</h3>
-                <p className="text-xs text-slate-500 mt-1">Ví điện tử phổ biến tại Việt Nam</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={paymentMethods.momo} onChange={(e) => setPaymentMethods({...paymentMethods, momo: e.target.checked})} />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -175,9 +226,9 @@ export default function Settings() {
           </div>
 
           <div className="space-y-4">
-            <FormInput label="Phí ship mặc định (VNĐ)" type="number" defaultValue={30000} />
+            <FormInput label="Phí ship mặc định (VNĐ)" type="number" value={val('DEFAULT_SHIPPING_FEE', '30000')} onChange={(e) => set('DEFAULT_SHIPPING_FEE', e.target.value)} />
             <div className="space-y-2">
-              <FormInput label="Ngưỡng Freeship (VNĐ)" type="number" defaultValue={500000} />
+              <FormInput label="Ngưỡng Freeship (VNĐ)" type="number" value={val('FREE_SHIPPING_THRESHOLD', '500000')} onChange={(e) => set('FREE_SHIPPING_THRESHOLD', e.target.value)} />
               <p className="text-xs text-slate-500">Đơn hàng có giá trị lớn hơn hoặc bằng ngưỡng này sẽ được miễn phí vận chuyển.</p>
             </div>
           </div>
@@ -192,7 +243,7 @@ export default function Settings() {
           <>
             <ModalCancelButton onClick={() => setIsAiModalOpen(false)} />
             <button onClick={() => setIsAiModalOpen(false)} className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2">
-              <FiCheck /> Lưu thay đổi
+              <FiCheck /> Đóng
             </button>
           </>
         }
@@ -201,12 +252,12 @@ export default function Settings() {
           <div className="space-y-2">
             <label className="text-sm font-medium">Thuật toán cốt lõi</label>
             <CustomSelect
-              value={algorithm}
-              onChange={setAlgorithm}
+              value={val('ALGORITHM', 'COLLABORATIVE')}
+              onChange={(v) => set('ALGORITHM', v)}
               options={[
-                { value: 'collaborative', label: 'Collaborative Filtering' },
-                { value: 'content', label: 'Content-based Filtering' },
-                { value: 'hybrid', label: 'Hybrid MLOps Model' }
+                { value: 'COLLABORATIVE', label: 'Collaborative Filtering' },
+                { value: 'CONTENT', label: 'Content-based Filtering' },
+                { value: 'HYBRID', label: 'Hybrid MLOps Model' }
               ]}
               className="w-full"
             />
@@ -216,17 +267,17 @@ export default function Settings() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <label className="font-medium">Độ ưu tiên sản phẩm mới</label>
-                <span className="text-indigo-600 font-bold">{algoPriority}%</span>
+                <span className="text-indigo-600 font-bold">{num('NEW_PRODUCT_PRIORITY', 70)}%</span>
               </div>
-              <input type="range" min="0" max="100" value={algoPriority} onChange={(e) => setAlgoPriority(Number(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
+              <input type="range" min="0" max="100" value={num('NEW_PRODUCT_PRIORITY', 70)} onChange={(e) => set('NEW_PRODUCT_PRIORITY', e.target.value)} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <label className="font-medium">Độ đa dạng gợi ý (Exploration)</label>
-                <span className="text-indigo-600 font-bold">{algoExploration}%</span>
+                <span className="text-indigo-600 font-bold">{num('EXPLORATION_RATE', 30)}%</span>
               </div>
-              <input type="range" min="0" max="100" value={algoExploration} onChange={(e) => setAlgoExploration(Number(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
+              <input type="range" min="0" max="100" value={num('EXPLORATION_RATE', 30)} onChange={(e) => set('EXPLORATION_RATE', e.target.value)} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
             </div>
           </div>
         </div>

@@ -17,9 +17,9 @@ export { default as cmsService } from './services/cmsService';
 export { default as dashboardService } from './services/dashboardService';
 export { default as chatbotService } from './services/chatbotService';
 export { default as adminFlashSaleService } from './services/adminFlashSaleService';
-export { default as adminSystemConfigService } from './services/adminSystemConfigService';
-
+export { default as settingService } from './services/settingService';
 // ─── Admin services ─────────────────────────────────────────────
+export { default as adminSettingService } from './services/adminSettingService';
 export { default as adminBrandService } from './services/adminBrandService';
 export { default as adminCategoryService } from './services/adminCategoryService';
 export { default as adminCmsService } from './services/adminCmsService';

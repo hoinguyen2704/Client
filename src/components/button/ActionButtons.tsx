@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import type { ActionButtonsProps } from './types';
-import { ACTION_STYLES, ACTION_ICONS, ACTION_TITLES } from './constants';
+import type { ActionButtonsProps } from '../ui/types';
+import { ACTION_STYLES, ACTION_ICONS, ACTION_TITLES } from '../ui/constants';
 
 export default function ActionButtons({ actions }: ActionButtonsProps) {
   return (
