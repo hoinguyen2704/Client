@@ -27,6 +27,7 @@ export default function AdminVouchers() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<CouponRequest>>({
     discountType: "PERCENTAGE",
+    couponCategory: "PRODUCT",
     isPublic: false,
     applyType: "ALL",
     applicableProductIds: [],
@@ -35,7 +36,7 @@ export default function AdminVouchers() {
   const handleToggle = async (id: string) => {
     try {
       await adminCouponService.toggleStatus(id);
-      fetchVouchers();
+      fetchVouchers({ silent: true });
       toast.success("Cập nhật trạng thái voucher thành công!");
     } catch (err) {
       console.error(err);
@@ -46,6 +47,7 @@ export default function AdminVouchers() {
   const resetForm = () => {
     setForm({
       discountType: "PERCENTAGE",
+      couponCategory: "PRODUCT",
       isPublic: false,
       applyType: "ALL",
       applicableProductIds: [],
@@ -58,6 +60,7 @@ export default function AdminVouchers() {
     setForm({
       code: v.code,
       discountType: v.discountType,
+      couponCategory: v.couponCategory || "PRODUCT",
       discountValue: v.discountValue,
       minOrderValue: v.minOrderValue,
       maxDiscountAmount: v.maxDiscountAmount,
@@ -73,16 +76,21 @@ export default function AdminVouchers() {
 
   const handleSubmit = async () => {
     try {
+      const payload = { ...form };
+      if (payload.discountType !== "PERCENTAGE") {
+        delete payload.maxDiscountAmount;
+      }
+
       if (editingId) {
-        await adminCouponService.update(editingId, form as CouponRequest);
+        await adminCouponService.update(editingId, payload as CouponRequest);
         toast.success("Cập nhật voucher thành công!");
       } else {
-        await adminCouponService.create(form as CouponRequest);
+        await adminCouponService.create(payload as CouponRequest);
         toast.success("Tạo voucher thành công!");
       }
       setIsModalOpen(false);
       resetForm();
-      fetchVouchers();
+      fetchVouchers({ silent: true });
     } catch (err: any) {
       console.error(err);
       toast.error(err?.response?.data?.message || "Thao tác voucher thất bại!");
@@ -161,10 +169,14 @@ export default function AdminVouchers() {
                           ? `${v.discountValue}%`
                           : formatPrice(v.discountValue)}
                       </div>
-                      <div className="text-xs text-slate-500">
-                        {v.discountType === "PERCENTAGE"
-                          ? "Giảm giá"
-                          : "Cố định"}
+                      <div className="text-xs text-slate-500 flex gap-1 items-center mt-1">
+                        <span className={`px-1.5 py-0.5 rounded ${v.couponCategory === "SHIPPING" ? "bg-teal-100 text-teal-600" : "bg-purple-100 text-purple-600"}`}>
+                           {v.couponCategory === "SHIPPING" ? "Freeship" : "Sản phẩm"}
+                        </span>
+                        <span>-</span>
+                        <span>
+                           {v.discountType === "PERCENTAGE" ? "Giảm %" : "Cố định"}
+                        </span>
                       </div>
                     </td>
                     <td className="p-4">
@@ -316,12 +328,43 @@ export default function AdminVouchers() {
                   </div>
                 </div>
 
+                {/* Coupon Category */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">Nhóm Voucher</label>
+                  <div className="flex gap-6">
+                     <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="couponCategory"
+                        checked={form.couponCategory === "PRODUCT"}
+                        onChange={() =>
+                          setForm({ ...form, couponCategory: "PRODUCT" })
+                        }
+                        className="text-purple-600"
+                      />
+                      <span className="text-sm">Voucher Sản Phẩm (Nền tảng / Shop)</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="couponCategory"
+                        checked={form.couponCategory === "SHIPPING"}
+                        onChange={() =>
+                          setForm({ ...form, couponCategory: "SHIPPING" })
+                        }
+                        className="text-purple-600"
+                      />
+                      <span className="text-sm">Voucher Freeship</span>
+                    </label>
+                  </div>
+                </div>
+
                 {/* Value + Min */}
                 <div className="grid grid-cols-2 gap-4">
                   <FormInput
-                    label="Giá trị giảm"
+                    label={form.couponCategory === "SHIPPING" && form.discountType !== "PERCENTAGE" ? "Hỗ trợ phí ship tối đa" : "Giá trị giảm"}
                     type="number"
-                    placeholder="VD: 10"
+                    placeholder={form.couponCategory === "SHIPPING" && form.discountType !== "PERCENTAGE" ? "K/Trống = Freeship 100%" : "VD: 10"}
                     value={form.discountValue || ""}
                     onChange={(e) =>
                       setForm({ ...form, discountValue: +e.target.value })
@@ -349,15 +392,18 @@ export default function AdminVouchers() {
                       setForm({ ...form, usageLimit: +e.target.value })
                     }
                   />
-                  <FormInput
-                    label="Giảm tối đa"
-                    type="number"
-                    placeholder="100000"
-                    value={form.maxDiscountAmount || ""}
-                    onChange={(e) =>
-                      setForm({ ...form, maxDiscountAmount: +e.target.value })
-                    }
-                  />
+                  <div className={form.discountType !== "PERCENTAGE" ? "opacity-50 pointer-events-none" : ""}>
+                    <FormInput
+                      label="Giảm tối đa (chỉ dành cho loại %)"
+                      type="number"
+                      placeholder="Trống = Không giới hạn"
+                      value={form.maxDiscountAmount || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, maxDiscountAmount: +e.target.value })
+                      }
+                      disabled={form.discountType !== "PERCENTAGE"}
+                    />
+                  </div>
                 </div>
 
                 {/* Dates */}
@@ -403,8 +449,7 @@ export default function AdminVouchers() {
                       onClick={() =>
                         setForm({ ...form, isPublic: !form.isPublic })
                       }
-                      className={`relative w-12 h-6 flex-shrink-0 rounded-full transition-colors ${form.isPublic ? "bg-blue-500" : "bg-slate-300 dark:bg-slate-600"}`}
-                    >
+                      className={`relative w-12 h-6 flex-shrink-0 rounded-full transition-colors ${form.isPublic ? "bg-blue-500" : "bg-slate-300 dark:bg-slate-600"}`}>
                       <span
                         className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.isPublic ? "translate-x-6" : "translate-x-0"}`}
                       />

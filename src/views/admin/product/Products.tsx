@@ -34,8 +34,8 @@ export default function Products() {
 
   useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
+  const fetchProducts = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) setLoading(true);
     try {
       const res = await adminProductService.getAll({
         keyword: searchQuery || undefined,
@@ -75,7 +75,7 @@ export default function Products() {
           try {
             await adminProductService.delete(id);
             toast.success('Đã xóa sản phẩm thành công!');
-            fetchProducts();
+            fetchProducts({ silent: true });
           } catch (err) { toast.error('Không thể xóa sản phẩm này!'); console.error('Delete failed:', err); }
         }
       },
@@ -155,7 +155,7 @@ export default function Products() {
                         } catch { /* skip failed */ }
                       }
                       setSelectedItems([]);
-                      fetchProducts();
+                      fetchProducts({ silent: true });
                       if (successCount === toDelete.length) {
                         toast.success(`Đã xóa ${successCount} sản phẩm thành công!`);
                       } else {

@@ -77,7 +77,7 @@ export default function FlashSales() {
         toast.success('Tạo Flash Sale thành công!');
       }
       setIsModalOpen(false);
-      fetchSales();
+      fetchSales({ silent: true });
     } catch (err: any) {
       console.error(err);
       toast.error(err?.response?.data?.message || 'Lưu Flash Sale thất bại!');
@@ -89,7 +89,7 @@ export default function FlashSales() {
     try {
       await adminFlashSaleService.delete(id);
       toast.success('Xóa Flash Sale thành công!');
-      fetchSales();
+      fetchSales({ silent: true });
     } catch (err: any) {
       console.error(err);
       toast.error(err?.response?.data?.message || 'Xóa Flash Sale thất bại!');

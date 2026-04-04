@@ -51,7 +51,7 @@ export default function Categories() {
         toast.success('Đã tạo danh mục mới!');
       }
       resetForm();
-      fetchCategories();
+      fetchCategories({ silent: true });
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Lưu danh mục thất bại!');
       console.error('Save failed:', err);
@@ -78,7 +78,7 @@ export default function Categories() {
     try {
       await adminCategoryService.delete(id);
       toast.success('Đã xóa danh mục!');
-      fetchCategories();
+      fetchCategories({ silent: true });
     } catch (err) {
       toast.error('Không thể xóa danh mục này!');
       console.error('Delete failed:', err);
@@ -88,7 +88,7 @@ export default function Categories() {
   const handleToggle = async (id: string) => {
     try {
       await adminCategoryService.toggleStatus(id);
-      fetchCategories();
+      fetchCategories({ silent: true });
       toast.success('Cập nhật trạng thái thành công!');
     } catch (err) {
       console.error('Toggle failed:', err);

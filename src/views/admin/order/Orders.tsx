@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiEye, FiDownload, FiPackage } from 'react-icons/fi';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { formatPrice, formatDate } from '@/utils/format';
 import { StatusBadge, CustomSelect, AdminSearch, AdminPagination, ActionButtons } from '@/components/ui';
@@ -18,8 +19,8 @@ export default function AdminOrders() {
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<OrderResponse> | null>(null);
 
-  const fetchOrders = useCallback(async () => {
-    setLoading(true);
+  const fetchOrders = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) setLoading(true);
     try {
       const res = await adminOrderService.getAll({
         keyword: searchQuery || undefined,
@@ -40,7 +41,8 @@ export default function AdminOrders() {
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     try {
       await adminOrderService.updateStatus(orderId, newStatus);
-      fetchOrders();
+      toast.success('Đã cập nhật trạng thái!');
+      fetchOrders({ silent: true });
     } catch (err) { console.error('Update status failed:', err); }
   };
 

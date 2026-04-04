@@ -71,8 +71,7 @@ export default function Settings() {
 
   const hasChanges = Object.keys(settings).some(k => settings[k] !== original[k]);
 
-  // Toggle component
-  const Toggle = ({ settingKey, color = 'purple' }: { settingKey: string; color?: string }) => (
+  const renderToggle = (settingKey: string, color = 'purple') => (
     <label className="relative inline-flex items-center cursor-pointer">
       <input type="checkbox" className="sr-only peer" checked={bool(settingKey)} onChange={(e) => set(settingKey, String(e.target.checked))} />
       <div className={`w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-${color}-600`}></div>
@@ -158,7 +157,7 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">Recommendation Engine</h3>
                 <p className="text-xs text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
               </div>
-              <Toggle settingKey="RECOMMENDATION_ENABLED" color="indigo" />
+              {renderToggle("RECOMMENDATION_ENABLED", "indigo")}
             </div>
 
             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
@@ -166,7 +165,7 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">AI Content Generator</h3>
                 <p className="text-xs text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
               </div>
-              <Toggle settingKey="AI_CONTENT_ENABLED" color="indigo" />
+              {renderToggle("AI_CONTENT_ENABLED", "indigo")}
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-2">
@@ -210,7 +209,7 @@ export default function Settings() {
                   <h3 className="font-bold text-sm">{pm.title}</h3>
                   <p className="text-xs text-slate-500 mt-1">{pm.desc}</p>
                 </div>
-                <Toggle settingKey={pm.key} />
+                {renderToggle(pm.key)}
               </div>
             ))}
           </div>

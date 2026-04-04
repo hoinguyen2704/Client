@@ -17,8 +17,8 @@ export default function Feedbacks() {
   const [replyId, setReplyId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
 
-  const fetchReviews = useCallback(async () => {
-    setLoading(true);
+  const fetchReviews = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) setLoading(true);
     try {
       const res = await adminFeedbackService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data);
@@ -30,7 +30,7 @@ export default function Feedbacks() {
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
   const handleStatusChange = async (id: string, status: string) => {
-    try { await adminFeedbackService.updateStatus(id, status); fetchReviews(); }
+    try { await adminFeedbackService.updateStatus(id, status); fetchReviews({ silent: true }); }
     catch (err) { console.error('Update failed:', err); toast.error('Cập nhật trạng thái đánh giá thất bại!'); }
   };
 
@@ -39,7 +39,7 @@ export default function Feedbacks() {
     try {
       await adminFeedbackService.reply(id, replyText);
       setReplyId(null); setReplyText('');
-      fetchReviews();
+      fetchReviews({ silent: true });
     } catch (err) { console.error('Reply failed:', err); toast.error('Phản hồi đánh giá thất bại!'); }
   };
   return (

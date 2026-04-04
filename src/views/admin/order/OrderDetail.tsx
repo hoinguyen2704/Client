@@ -153,7 +153,8 @@ export default function OrderDetail() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-slate-500"><span>Tạm tính</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
                 <div className="flex justify-between text-slate-500"><span>Phí vận chuyển</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
-                <div className="flex justify-between text-slate-500"><span>Giảm giá</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>
+                {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm giá sản phẩm</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
+                {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm phí vận chuyển</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
                 <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-purple-600">
                   <span>Tổng cộng</span><span>{formatPrice(order.totalAmount)}</span>
                 </div>
@@ -276,8 +277,9 @@ export default function OrderDetail() {
 
       <div className="flex justify-end mb-12">
         <div className="w-64 space-y-2 text-sm">
-          <div className="flex justify-between"><span>Tạm tính:</span> <span>{formatPrice(order.totalAmount + (order.discountAmount || 0))}</span></div>
-          {(order.discountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm giá:</span> <span>-{formatPrice(order.discountAmount!)}</span></div>}
+          <div className="flex justify-between"><span>Tạm tính:</span> <span>{formatPrice(order.subtotal + order.shippingFee)}</span></div>
+          {(order.discountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm giá sản phẩm:</span> <span>-{formatPrice(order.discountAmount!)}</span></div>}
+          {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm phí vận chuyển:</span> <span>-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
           <div className="flex justify-between font-bold text-lg pt-3 border-t-2 border-slate-800 mt-2">
             <span>Tổng cộng:</span>
             <span>{formatPrice(order.totalAmount)}</span>

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiTag, FiClock, FiCheck, FiBookmark, FiCopy, FiGift, FiPackage } from 'react-icons/fi';
+import { FiTag, FiClock, FiCheck, FiBookmark, FiCopy, FiGift, FiPackage, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { formatPrice, formatDate } from '@/utils/format';
 import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import useAuthStore from '@/stores/useAuthStore';
+import { Card, EmptyState, PrimaryButton, TrashButton } from '@/components/ui';
 
 import type { CouponResponse } from '@/types';
 
@@ -17,7 +18,8 @@ export default function Vouchers() {
   const [searchResult, setSearchResult] = useState<CouponResponse | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'discover' | 'saved' | 'search'>('discover');
+  const [expandPublic, setExpandPublic] = useState(false);
+  const [expandSaved, setExpandSaved] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
 
   const getErrorMessage = (err: any, fallback: string) =>
@@ -58,6 +60,12 @@ export default function Vouchers() {
       await userCouponService.saveCoupon(couponId);
       setPublicVouchers(prev => prev.map(v => v.id === couponId ? { ...v, saved: true } : v));
       setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: true } : prev);
+      setSavedVouchers(prev => {
+        const existed = prev.some(v => v.id === couponId);
+        const found = publicVouchers.find(v => v.id === couponId) || searchResult;
+        if (existed || !found) return prev;
+        return [{ ...found, saved: true }, ...prev];
+      });
       fetchSavedVouchers();
       toast.success('Đã lưu voucher vào ví!');
     } catch (err: any) { toast.error(getErrorMessage(err, 'Lưu voucher thất bại')); }
@@ -99,6 +107,18 @@ export default function Vouchers() {
     catch { return 0; }
   };
 
+  const getVoucherType = (voucher: CouponResponse): 'FREESHIP' | 'PRODUCT' => {
+    const code = (voucher.code || '').toUpperCase();
+    if (code.includes('FREESHIP') || code.includes('SHIP') || code.startsWith('FS_') || code.startsWith('SHIP_')) {
+      return 'FREESHIP';
+    }
+    return 'PRODUCT';
+  };
+
+  const getVisibleVouchers = (items: CouponResponse[], expanded: boolean) => (
+    expanded ? items : items.slice(0, 1)
+  );
+
   const VoucherCard = ({ v, showSaveBtn = false }: { v: CouponResponse; showSaveBtn?: boolean }) => (
     <motion.div
       initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
@@ -115,9 +135,15 @@ export default function Vouchers() {
           </div>
           {/* Right - info */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="font-mono font-bold text-lg tracking-wider">{v.code}</span>
               <button onClick={() => copyCode(v.code)} className="p-1 text-slate-400 hover:text-purple-500 transition-colors"><FiCopy className="text-sm" /></button>
+              <span className={`px-2 py-1 rounded-md text-[10px] font-bold tracking-wide uppercase ${getVoucherType(v) === 'FREESHIP'
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                : 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300'
+                }`}>
+                {getVoucherType(v) === 'FREESHIP' ? 'Freeship' : 'Giảm giá SP'}
+              </span>
             </div>
             <div className={`text-xl font-black ${v.discountType === 'PERCENTAGE' ? 'text-purple-600' : 'text-amber-600'}`}>
               {v.discountType === 'PERCENTAGE' ? `Giảm ${v.discountValue}%` : `Giảm ${formatPrice(v.discountValue)}`}
@@ -161,15 +187,28 @@ export default function Vouchers() {
         {showSaveBtn && (
           <div className="mt-3">
             {v.saved ? (
-              <button onClick={() => handleUnsave(v.id)} disabled={savingId === v.id}
-                className="w-full py-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 text-sm font-bold flex items-center justify-center gap-2 hover:bg-green-100 transition-colors">
-                <FiCheck /> Đã lưu · Nhấn để bỏ
-              </button>
+              <div className="w-full h-10 px-3 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-between">
+                <span className="text-green-600 text-sm font-semibold inline-flex items-center gap-2">
+                  <FiCheck />
+                  Đã lưu trong ví
+                </span>
+                <TrashButton
+                  onClick={() => handleUnsave(v.id)}
+                  disabled={savingId === v.id}
+                  title="Bỏ lưu mã"
+                  className="w-8 h-8 rounded-lg"
+                />
+              </div>
             ) : (
-              <button onClick={() => handleSave(v.id)} disabled={savingId === v.id}
-                className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-sm">
-                <FiBookmark /> {savingId === v.id ? 'Đang lưu...' : 'Lưu voucher'}
-              </button>
+              <PrimaryButton
+                onClick={() => handleSave(v.id)}
+                disabled={savingId === v.id}
+                icon={<FiBookmark />}
+                className="w-full h-10 text-sm"
+                isLoading={savingId === v.id}
+              >
+                {savingId === v.id ? 'Đang lưu...' : 'Lưu voucher'}
+              </PrimaryButton>
             )}
           </div>
         )}
@@ -186,95 +225,117 @@ export default function Vouchers() {
         <h1 className="text-2xl font-bold">Ví voucher</h1>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl w-fit">
-        {[
-          { key: 'discover' as const, label: 'Khám phá', icon: FiGift, count: publicVouchers.length },
-          { key: 'saved' as const, label: 'Đã lưu', icon: FiBookmark, count: savedVouchers.length },
-          { key: 'search' as const, label: 'Nhập mã', icon: FiTag },
-        ].map(tab => (
-          <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
-              ${activeTab === tab.key ? 'bg-white dark:bg-slate-900 shadow-sm text-purple-600' : 'text-slate-500 hover:text-slate-700'}`}>
-            <tab.icon className="text-sm" />
-            {tab.label}
-            {tab.count !== undefined && tab.count > 0 && (
-              <span className="bg-purple-100 dark:bg-purple-900/40 text-purple-600 text-xs px-1.5 rounded-full">{tab.count}</span>
-            )}
-          </button>
-        ))}
+      {/* Top: Input coupon */}
+      <div className="space-y-4">
+        <Card className="rounded-2xl p-6">
+          <h2 className="text-lg font-bold mb-4">Nhập mã giảm giá</h2>
+          <div className="flex gap-3">
+            <input type="text" placeholder="Nhập mã giảm giá..." value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 uppercase font-mono text-lg" />
+            <PrimaryButton onClick={handleSearch} icon={<FiTag />} className="h-12 px-8">
+              Kiểm tra
+            </PrimaryButton>
+          </div>
+          {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+        </Card>
+
+        <AnimatePresence>
+          {searchResult && (
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide">Kết quả kiểm tra mã</h3>
+              </div>
+              <VoucherCard v={searchResult} showSaveBtn />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Tab: Discover */}
-      {activeTab === 'discover' && (
-        <div>
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-48 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse" />
-              ))}
-            </div>
-          ) : publicVouchers.length === 0 ? (
-            <div className="text-center py-16">
-              <FiGift className="text-4xl text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-400">Chưa có voucher nào đang hoạt động</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {publicVouchers.map(v => <VoucherCard key={v.id} v={v} showSaveBtn />)}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Tab: Saved */}
-      {activeTab === 'saved' && (
-        <div>
-          {!user ? (
-            <div className="text-center py-16">
-              <FiBookmark className="text-4xl text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-400">Đăng nhập để xem voucher đã lưu</p>
-            </div>
-          ) : savedVouchers.length === 0 ? (
-            <div className="text-center py-16">
-              <FiBookmark className="text-4xl text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-400">Bạn chưa lưu voucher nào</p>
-              <button onClick={() => setActiveTab('discover')} className="mt-3 text-sm text-purple-600 font-medium hover:underline">Khám phá voucher →</button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {savedVouchers.map(v => <VoucherCard key={v.id} v={v} showSaveBtn />)}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Tab: Search */}
-      {activeTab === 'search' && (
-        <div className="space-y-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">Nhập mã giảm giá</h2>
-            <div className="flex gap-3">
-              <input type="text" placeholder="Nhập mã giảm giá..." value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 uppercase font-mono text-lg" />
-              <button onClick={handleSearch} className="btn btn-primary btn-md px-8">Kiểm tra</button>
-            </div>
-            {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+      {/* Middle: Public voucher vault */}
+      <Card className="rounded-2xl p-6 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <FiGift className="text-purple-600" />
+            <h2 className="text-lg font-bold">Kho voucher</h2>
+            <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+              {publicVouchers.length}
+            </span>
           </div>
-
-          <AnimatePresence>
-            {searchResult && (
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-                <VoucherCard v={searchResult} showSaveBtn />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {publicVouchers.length > 1 && (
+            <PrimaryButton
+              onClick={() => setExpandPublic(prev => !prev)}
+              variant="outline"
+              icon={expandPublic ? <FiChevronUp /> : <FiChevronDown />}
+              className="h-8 px-3 text-xs shadow-none"
+            >
+              {expandPublic ? 'Thu gọn' : 'Mở rộng'}
+            </PrimaryButton>
+          )}
         </div>
-      )}
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="h-48 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse" />
+            ))}
+          </div>
+        ) : publicVouchers.length === 0 ? (
+          <EmptyState
+            icon={<FiGift />}
+            title="Chưa có voucher nào đang hoạt động"
+            description="Bạn có thể quay lại sau để xem thêm ưu đãi mới."
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {getVisibleVouchers(publicVouchers, expandPublic).map(v => <VoucherCard key={v.id} v={v} showSaveBtn />)}
+          </div>
+        )}
+      </Card>
+
+      {/* Bottom: Saved vouchers */}
+      <Card className="rounded-2xl p-6 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <FiBookmark className="text-purple-600" />
+            <h2 className="text-lg font-bold">Mã đã lưu</h2>
+            <span className="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+              {savedVouchers.length}
+            </span>
+          </div>
+          {savedVouchers.length > 1 && user && (
+            <PrimaryButton
+              onClick={() => setExpandSaved(prev => !prev)}
+              variant="outline"
+              icon={expandSaved ? <FiChevronUp /> : <FiChevronDown />}
+              className="h-8 px-3 text-xs shadow-none"
+            >
+              {expandSaved ? 'Thu gọn' : 'Mở rộng'}
+            </PrimaryButton>
+          )}
+        </div>
+
+        {!user ? (
+          <EmptyState
+            icon={<FiBookmark />}
+            title="Đăng nhập để xem mã đã lưu"
+            description="Các voucher bạn lưu sẽ hiển thị tại đây."
+          />
+        ) : savedVouchers.length === 0 ? (
+          <EmptyState
+            icon={<FiBookmark />}
+            title="Bạn chưa lưu voucher nào"
+            description="Hãy lưu voucher từ Kho voucher để dùng nhanh ở Checkout."
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {getVisibleVouchers(savedVouchers, expandSaved).map(v => <VoucherCard key={v.id} v={v} showSaveBtn />)}
+          </div>
+        )}
+      </Card>
 
       {/* Notes */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+      <Card className="rounded-2xl p-6">
         <h2 className="text-lg font-bold mb-3">Lưu ý</h2>
         <ul className="space-y-2 text-sm text-slate-500">
           <li>• Mỗi mã giảm giá chỉ áp dụng 1 lần cho mỗi đơn hàng</li>
@@ -282,7 +343,7 @@ export default function Vouchers() {
           <li>• Lưu voucher để sử dụng nhanh chóng tại trang Checkout</li>
           <li>• Một số voucher chỉ áp dụng cho sản phẩm cụ thể</li>
         </ul>
-      </div>
+      </Card>
     </div>
   );
 }

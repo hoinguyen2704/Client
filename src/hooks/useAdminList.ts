@@ -38,7 +38,7 @@ interface UseAdminListReturn<T> {
   page: number;
   setPage: (p: number) => void;
   /** Manually trigger a refetch */
-  refetch: () => void;
+  refetch: (options?: { silent?: boolean }) => void;
 }
 
 type FetchFn<T> = (params: PaginationParams & Record<string, any>) => Promise<ApiResponse<PageResponse<T>>>;
@@ -67,8 +67,10 @@ export default function useAdminList<T>(
     }
   }, [extraParamsKey]);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchData = useCallback(async (opts?: { silent?: boolean }) => {
+    if (opts?.silent !== true) {
+      setLoading(true);
+    }
     try {
       const parsedExtra = JSON.parse(extraParamsKey);
       const res = await fetchFn({

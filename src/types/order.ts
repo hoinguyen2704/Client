@@ -9,8 +9,10 @@ export interface OrderResponse {
   subtotal: number;
   shippingFee: number;
   discountAmount: number;
+  shippingDiscountAmount?: number;
   totalAmount: number;
   couponCode?: string;
+  shippingCouponCode?: string;
   note?: string;
   shippingAddress: string;
   paymentUrl?: string;
@@ -47,6 +49,7 @@ export interface CheckoutRequest {
   addressId: string;
   paymentMethod: string;
   couponCode?: string;
+  shippingCouponCode?: string;
   note?: string;
   items: CheckoutItem[];
 }
@@ -98,6 +101,7 @@ export interface CouponResponse {
   id: string;
   code: string;
   discountType: string;
+  couponCategory?: string; // PRODUCT, SHIPPING
   discountValue: number;
   minOrderValue?: number;
   maxDiscountAmount?: number;
@@ -115,6 +119,7 @@ export interface CouponResponse {
 export interface CouponRequest {
   code: string;
   discountType: string;
+  couponCategory?: string;
   discountValue: number;
   minOrderValue?: number;
   maxDiscountAmount?: number;

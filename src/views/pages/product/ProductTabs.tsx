@@ -65,8 +65,8 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
     <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-12 overflow-hidden">
       <div className="flex border-b border-slate-200 dark:border-slate-800">
         {[
-          { id: 'description', label: 'Mô tả sản phẩm' },
           { id: 'specs', label: 'Thông số kỹ thuật' },
+          { id: 'description', label: 'Mô tả sản phẩm' },
           { id: 'reviews', label: `Đánh giá (${reviews})` },
         ].map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -79,17 +79,6 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
 
       <div className="p-4 md:p-8">
         <AnimatePresence mode="wait">
-          {activeTab === 'description' && (
-            <motion.div key="desc" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}
-              className="prose dark:prose-invert max-w-none prose-img:w-full prose-img:rounded-2xl prose-img:mx-auto prose-a:text-purple-600 w-full overflow-hidden [&_.cps-block-content]:!max-h-none [&>div>div]:!max-h-none">
-              {product.description ? (
-                <div dangerouslySetInnerHTML={{ __html: product.description.replace(/style="[^"]*max-height[^"]*"/g, '') }} />
-              ) : (
-                <p className="text-slate-500">Chưa có mô tả cho sản phẩm này.</p>
-              )}
-            </motion.div>
-          )}
-
           {activeTab === 'specs' && (
             <motion.div key="specs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="w-full">
               {specEntries.length > 0 ? (
@@ -110,7 +99,16 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
               )}
             </motion.div>
           )}
-
+          {activeTab === 'description' && (
+            <motion.div key="desc" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}
+              className="prose dark:prose-invert max-w-none prose-img:w-full prose-img:rounded-2xl prose-img:mx-auto prose-a:text-purple-600 w-full overflow-hidden [&_.cps-block-content]:!max-h-none [&>div>div]:!max-h-none">
+              {product.description ? (
+                <div dangerouslySetInnerHTML={{ __html: product.description.replace(/style="[^"]*max-height[^"]*"/g, '') }} />
+              ) : (
+                <p className="text-slate-500">Chưa có mô tả cho sản phẩm này.</p>
+              )}
+            </motion.div>
+          )}
           {activeTab === 'reviews' && (
             <motion.div key="reviews" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="w-full">
               {/* Summary */}

@@ -17,8 +17,8 @@ export default function Tickets() {
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse | null>(null);
   const [replyText, setReplyText] = useState('');
 
-  const fetchTickets = useCallback(async () => {
-    setLoading(true);
+  const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) setLoading(true);
     try {
       const res = await adminTicketService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data); setTickets(res.data.data || []);
@@ -40,12 +40,12 @@ export default function Tickets() {
     try {
       const res = await adminTicketService.reply(selectedTicket.id, { content: replyText });
       setSelectedTicket(res.data);
-      setReplyText(''); fetchTickets();
+      setReplyText(''); fetchTickets({ silent: true });
     } catch (err) { console.error('Reply failed:', err); toast.error('Gửi phản hồi thất bại!'); }
   };
 
   const handleStatusChange = async (id: string, status: string) => {
-    try { await adminTicketService.updateStatus(id, status); fetchTickets(); }
+    try { await adminTicketService.updateStatus(id, status); fetchTickets({ silent: true }); }
     catch (err) { console.error('Status update failed:', err); toast.error('Cập nhật trạng thái thất bại!'); }
   };
   return (
