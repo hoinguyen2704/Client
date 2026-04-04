@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiPackage, FiXCircle, FiArrowLeft } from 'react-icons/fi';
+import { FiPackage, FiXCircle, FiCheck, FiTruck, FiClock } from 'react-icons/fi';
 import { formatPrice, formatDateFull as formatDate } from '@/utils/format';
 import orderService from '@/apis/services/orderService';
 import type { OrderResponse } from '@/types';
 
 import { ORDER_TRACKING_STEPS, ORDER_STATUS_INDEX } from '@/constants/orderConstants';
+import { BackButton } from '@/components/ui';
 
 export default function OrderTracking() {
   const { id } = useParams<{ id: string }>();
@@ -41,12 +42,73 @@ export default function OrderTracking() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link to="/user/orders" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><FiArrowLeft className="text-xl" /></Link>
+        <BackButton to="/user/orders" />
         <h1 className="text-2xl font-bold">Chi tiết đơn hàng #{order.orderNumber}</h1>
       </div>
 
-      {/* Status Progress */}
-      {!isCancelled && (
+      {/* Tracking Header */}
+      {!isCancelled && order.trackingCode && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-bold">Thông tin vận chuyển</h2>
+              <p className="text-slate-500 mt-1">Mã vận đơn: <span className="font-semibold text-slate-800 dark:text-slate-200">{order.trackingCode}</span></p>
+            </div>
+            <FiTruck className="text-3xl text-purple-600 opacity-20" />
+          </div>
+        </div>
+      )}
+
+      {/* Vertical Timeline */}
+      {!isCancelled && order.statusHistories && order.statusHistories.length > 0 && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="relative">
+            {order.statusHistories.map((history, idx) => {
+              const time = new Date(history.createdAt);
+              const isFirst = idx === 0;
+              const isLast = idx === order.statusHistories!.length - 1;
+
+              return (
+                <div key={history.id} className="flex gap-4">
+                  {/* Left: Time */}
+                  <div className="w-20 flex-shrink-0 text-right pt-1">
+                    <div className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                      {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="text-xs text-slate-500 mt-1">
+                      {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                    </div>
+                  </div>
+
+                  {/* Middle: Line & Dot */}
+                  <div className="relative flex flex-col items-center">
+                    {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
+                    
+                    <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                    
+                    {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
+                  </div>
+
+                  {/* Right: Content */}
+                  <div className="pb-8 pt-1 flex-1">
+                    <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                      {history.status === 'SHIPPED' ? 'Giao hàng thành công' : history.description}
+                    </h4>
+                    {isFirst && history.status === 'SHIPPED' && (
+                      <div className="inline-flex items-center gap-1 text-sm text-purple-600 mt-1 cursor-pointer hover:underline">
+                        <FiCheck /> Đơn hàng đã được giao thành công
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Fallback progress bar for legacy orders without histories */}
+      {!isCancelled && (!order.statusHistories || order.statusHistories.length === 0) && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between">
             {ORDER_TRACKING_STEPS.map((step, idx) => {
@@ -54,9 +116,7 @@ export default function OrderTracking() {
               const isActive = idx <= currentStep;
               return (
                 <div key={step.key} className="flex-1 flex flex-col items-center relative">
-                  {idx > 0 && (
-                    <div className={`absolute top-5 right-1/2 w-full h-0.5 ${idx <= currentStep ? 'bg-purple-600' : 'bg-slate-200 dark:bg-slate-700'}`} />
-                  )}
+                  {idx > 0 && <div className={`absolute top-5 right-1/2 w-full h-0.5 ${idx <= currentStep ? 'bg-purple-600' : 'bg-slate-200 dark:bg-slate-700'}`} />}
                   <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
                     <Icon />
                   </div>

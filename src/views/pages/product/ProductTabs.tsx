@@ -3,7 +3,7 @@ import { FiStar, FiCheck, FiThumbsUp, FiMessageSquare, FiImage, FiPlus } from 'r
 import { motion, AnimatePresence } from 'motion/react';
 import type { ProductResponse } from '@/types';
 import { Modal, StarRating } from '@/components/ui';
-
+import { PrimaryButton } from '@/components/ui';
 export default function ProductTabs({ product, images }: { product: ProductResponse; images: string[] }) {
   const [activeTab, setActiveTab] = useState('description');
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -119,7 +119,10 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
             <label className="block font-medium mb-2">Nội dung đánh giá</label>
             <textarea rows={4} placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..." className="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
           </div>
-          <button onClick={() => setIsReviewModalOpen(false)} className="btn btn-primary w-full py-4">Gửi đánh giá</button>
+        <PrimaryButton
+          onClick={() => {setIsReviewModalOpen(false)}}>
+          Gửi đánh giá
+        </PrimaryButton>
         </div>
       </Modal>
     </>

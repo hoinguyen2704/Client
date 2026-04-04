@@ -17,6 +17,7 @@ export default function Checkout() {
   const location = useLocation();
   const { user } = useAuthStore();
   const buyNowItem = location.state?.buyNowItem;
+  const selectedCartItems = location.state?.selectedCartItems;
   
   const [cartItems, setCartItems] = useState<CartResponse[]>([]);
   const [addresses, setAddresses] = useState<AddressResponse[]>([]);
@@ -72,6 +73,8 @@ export default function Checkout() {
         productSlug: '',
         stockQuantity: 999
       } as unknown as CartResponse]);
+    } else if (selectedCartItems && selectedCartItems.length > 0) {
+      setCartItems(selectedCartItems);
     } else {
       const r = await cartService.getMyCart();
       setCartItems(r.data || []);
@@ -347,21 +350,21 @@ export default function Checkout() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-3">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Tỉnh/Thành phố</label>
-              <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: TP. Hồ Chí Minh" value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
+              <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: Hà Nội" value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
             </div>
             <div className="space-y-3">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quận/Huyện</label>
-              <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: Quận 1" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
+              <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: Cầu Giấy" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
             </div>
             <div className="space-y-3">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Phường/Xã</label>
-              <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: Phường Bến Nghé" value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
+              <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: Dịch Vọng Hậu" value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
             </div>
           </div>
 
           <div className="space-y-3">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Địa chỉ cụ thể (Số nhà, tên đường)</label>
-            <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: 123 Đường Nguyễn Hữu Cảnh" value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
+            <input className="w-full h-16 px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-lg" placeholder="Ví dụ: 123 Xuân Thủy" value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
           </div>
 
           <div className="pt-4">

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage } from 'react-icons/fi';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
-import { StatusBadge, CustomSelect } from '@/components/ui';
+import { StatusBadge, CustomSelect, BackButton } from '@/components/ui';
 import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
@@ -82,9 +82,7 @@ export default function OrderDetail() {
     <div className="space-y-6 print:hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link to="/admin/orders" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-            <FiArrowLeft className="text-xl" />
-          </Link>
+          <BackButton to="/admin/orders" />
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-3">
               Đơn hàng {order.orderNumber}

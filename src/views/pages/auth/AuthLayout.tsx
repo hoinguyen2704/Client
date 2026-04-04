@@ -53,9 +53,7 @@ export default function AuthLayout({
             {/* Logo */}
             <div className="mb-8">
               <Link to="/" className="inline-flex items-center gap-4 hover:scale-105 transition-transform">
-                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <LogoIcon className="w-8 h-8" />
-                </div>
+                <LogoIcon size="md" containerClassName="bg-white/20 backdrop-blur-sm shadow-none" />
                 <span className="text-3xl font-bold">{SHOP.name}</span>
               </Link>
             </div>
@@ -113,9 +111,7 @@ export default function AuthLayout({
             {/* Mobile Logo */}
             <div className="text-center lg:hidden mb-6">
               <Link to="/" className="inline-flex items-center gap-3 justify-center hover:scale-105 transition-transform">
-                <div className={`w-20 h-20 rounded-[1.5rem] bg-gradient-to-br ${mobileLogoGradient} flex items-center justify-center text-white shadow-lg ${mobileLogoShadow}`}>
-                  <LogoIcon className="w-10 h-10" />
-                </div>
+                <LogoIcon size="lg" containerClassName={`bg-gradient-to-br ${mobileLogoGradient} ${mobileLogoShadow}`} />
               </Link>
             </div>
 

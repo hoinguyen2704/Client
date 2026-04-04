@@ -51,9 +51,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
         <div className="h-20 flex items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/50">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#6338f0] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-purple-500/30">
-              <LogoIcon className="w-6 h-6" />
-            </div>
+              <LogoIcon />
             <span className="text-2xl font-bold text-[#2539e6] hidden sm:block">
               {SHOP.name}
             </span>

@@ -1,14 +1,43 @@
-import React from 'react';
+import { cn } from '@/utils/cn';
 
-export default function LogoIcon({ className = "" }: { className?: string }) {
+interface LogoIconProps {
+  /** Size of the outer container: sm (w-10), md (w-14), lg (w-20) */
+  size?: 'sm' | 'md' | 'lg';
+  /** Override container className (bg, shadow, etc.) */
+  containerClassName?: string;
+  /** Override img className */
+  className?: string;
+  /** If true, render only the raw <img> without the wrapper */
+  raw?: boolean;
+}
+
+const sizeMap = {
+  sm: { container: 'w-10 h-10 rounded-2xl', icon: 'w-6 h-6' },
+  md: { container: 'w-14 h-14 rounded-2xl', icon: 'w-8 h-8' },
+  lg: { container: 'w-20 h-20 rounded-[1.5rem]', icon: 'w-10 h-10' },
+};
+
+export default function LogoIcon({
+  size = 'sm',
+  containerClassName,
+  className,
+  raw = false,
+}: LogoIconProps) {
+  const s = sizeMap[size];
+
+  if (raw) {
+    return <img src="/logo.svg" alt="HoziTech Logo" className={cn(s.icon, className)} />;
+  }
+
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 24 24" 
-      fill="currentColor" 
-      className={className}
+    <div
+      className={cn(
+        s.container,
+        'bg-[#6338f0] flex items-center justify-center shrink-0 shadow-purple-500/30',
+        containerClassName
+      )}
     >
-      <path d="M10 15h5.88c.27-.31.67-.5 1.12-.5.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5c-.44 0-.84-.19-1.12-.5H11.9A5 5 0 1 1 6 11.1v2.07c-1.16.41-2 1.53-2 2.83 0 1.65 1.35 3 3 3s3-1.35 3-3v-1zm2.5-11c1.65 0 3 1.35 3 3h2c0-2.76-2.24-5-5-5a5.002 5.002 0 0 0-3.45 8.62l-2.35 3.9c-.68.14-1.2.75-1.2 1.48 0 .83.67 1.5 1.5 1.5a1.498 1.498 0 0 0 1.43-1.95l3.38-5.63A3.003 3.003 0 0 1 9.5 7c0-1.65 1.35-3 3-3zm4.5 9c-.64 0-1.23.2-1.72.54l-3.05-5.07C11.53 8.35 11 7.74 11 7c0-.83.67-1.5 1.5-1.5S14 6.17 14 7c0 .15-.02.29-.06.43l2.19 3.65c.28-.05.57-.08.87-.08 2.76 0 5 2.24 5 5s-2.24 5-5 5a5 5 0 0 1-4.33-2.5h2.67c.48.32 1.05.5 1.66.5 1.65 0 3-1.35 3-3s-1.35-3-3-3z" />
-    </svg>
+      <img src="/logo.svg" alt="HoziTech Logo" className={cn(s.icon, className)} />
+    </div>
   );
 }

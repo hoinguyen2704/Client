@@ -18,9 +18,7 @@ export default function Footer() {
         {/* Col 1: Brand & Contact */}
         <div className="space-y-6">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#6338f0] flex items-center justify-center text-white font-bold shadow-lg shadow-purple-500/30">
-              <LogoIcon className="w-6 h-6" />
-            </div>
+              <LogoIcon />
             <span className="text-2xl font-bold text-[#2539e6] dark:text-white">
               {SHOP.name}
             </span>

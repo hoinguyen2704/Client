@@ -7,9 +7,9 @@ class AdminCategoryService extends BaseService<CategoryResponse, CategoryRequest
     super('/categories', adminAxios);
   }
 
-  async toggleStatus(id: string): Promise<ApiResponse<CategoryResponse>> {
+  toggleStatus = async (id: string): Promise<ApiResponse<CategoryResponse>> => {
     return this.http.patch(`${this.endpoint}/${id}/status`);
-  }
+  };
 }
 
 export default new AdminCategoryService();

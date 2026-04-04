@@ -83,8 +83,10 @@ export default function FlashSale() {
                 )}
               </div>
               <div className="p-4">
-                <h3 className="font-bold line-clamp-2 mb-2 text-sm group-hover:text-red-500 transition-colors">{item.productName}</h3>
-                {item.variantName && <p className="text-xs text-slate-500 mb-2">{item.variantName}</p>}
+                <h3 className="font-bold line-clamp-2 text-sm group-hover:text-red-500 transition-colors h-[40px] mb-2">{item.productName}</h3>
+                <div className="text-xs text-slate-500 mb-2 h-[32px] line-clamp-2">
+                  {item.variantName || ''}
+                </div>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg font-bold text-red-600">{formatPrice(item.flashPrice)}</span>
                   <span className="text-sm text-slate-400 line-through">{formatPrice(item.originalPrice)}</span>

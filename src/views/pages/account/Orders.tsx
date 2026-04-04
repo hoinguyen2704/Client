@@ -4,7 +4,7 @@ import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/uti
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import { ConfirmDialog, Modal, ModalCancelButton, StarRating } from '@/components/ui';
+import { ConfirmDialog, Modal, ModalCancelButton, PrimaryButton, StarRating } from '@/components/ui';
 import { toast } from 'sonner';
 
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
@@ -177,7 +177,10 @@ export default function Orders() {
         footer={
           <>
             <ModalCancelButton onClick={() => setReviewModalOpen(false)}>Trở lại</ModalCancelButton>
-            <button onClick={handleSubmitReview} className="btn btn-primary btn-md">Gửi đánh giá</button>
+                    <PrimaryButton
+                      onClick={() => {handleSubmitReview}}>
+                      Gửi đánh giá
+                    </PrimaryButton>
           </>
         }
       >

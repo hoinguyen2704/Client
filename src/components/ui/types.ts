@@ -47,7 +47,7 @@ export interface ConfirmDialogProps {
 }
 
 // ─── Modal ───────────────────────────────────────────────────────
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
+export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
 
 export interface ModalProps {
   open: boolean;
@@ -146,6 +146,15 @@ export interface PrimaryButtonProps {
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
+}
+
+// ─── BackButton ──────────────────────────────────────────────────
+export interface BackButtonProps {
+  /** Navigation target path */
+  to: string;
+  /** Optional text label — if provided, renders inline text link instead of icon-only */
+  label?: string;
+  className?: string;
 }
 
 // ─── ProductCard ─────────────────────────────────────────────────

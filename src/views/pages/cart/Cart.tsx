@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag, FiInfo } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
+import { PrimaryButton } from '@/components/ui';
 import type { CartResponse } from '@/types';
 
 export default function Cart() {
   const [items, setItems] = useState<(CartResponse & { selected: boolean })[]>([]);
   const [loading, setLoading] = useState(true);
   const syncFromServer = useCartStore((s) => s.syncFromServer);
+  const navigate = useNavigate();
 
   useEffect(() => { fetchCart(); }, []);
 
@@ -129,9 +131,19 @@ export default function Cart() {
               <hr className="border-slate-100 dark:border-slate-800" />
               <div className="flex justify-between text-lg"><span className="font-bold">Tổng cộng</span><span className="font-bold text-purple-600">{formatPrice(total)}</span></div>
             </div>
-            <Link to="/checkout" className="btn btn-primary btn-lg w-full text-center block">
+            <PrimaryButton 
+              onClick={() => {
+                if (selectedItems.length === 0) {
+                  toast.warning('Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!');
+                  return;
+                }
+                navigate('/checkout', { state: { selectedCartItems: selectedItems } });
+              }}
+              disabled={false}
+              className={`w-full !h-14 !text-lg !rounded-2xl mt-4 ${selectedItems.length === 0 ? 'opacity-60 cursor-not-allowed' : ''}`}
+            >
               Thanh toán ({selectedItems.length})
-            </Link>
+            </PrimaryButton>
           </div>
         </div>
       )}

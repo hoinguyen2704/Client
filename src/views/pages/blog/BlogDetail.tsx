@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiCalendar, FiUser, FiBook } from 'react-icons/fi';
+import { FiCalendar, FiUser, FiBook } from 'react-icons/fi';
 import cmsService from '@/apis/services/cmsService';
 import { formatDateLong as formatDate } from '@/utils/format';
 import type { ArticleResponse } from '@/types';
+import { BackButton } from '@/components/ui';
 
 export default function BlogDetail() {
   const { slug } = useParams();
@@ -33,7 +34,7 @@ export default function BlogDetail() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <Link to="/blog" className="inline-flex items-center gap-2 text-slate-500 hover:text-purple-600 mb-6 transition-colors"><FiArrowLeft /> Quay lại Blog</Link>
+      <BackButton to="/blog" label="Quay lại Blog" className="mb-6" />
 
       <article className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
         {article.thumbnailUrl && (

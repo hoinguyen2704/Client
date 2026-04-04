@@ -12,25 +12,25 @@ class BaseService<T, C = Partial<T>> {
     protected http: AxiosInstance = clientAxios,
   ) {}
 
-  async getAll(params?: PaginationParams & Record<string, unknown>): Promise<ApiResponse<PageResponse<T>>> {
+  getAll = async (params?: PaginationParams & Record<string, unknown>): Promise<ApiResponse<PageResponse<T>>> => {
     return this.http.get(this.endpoint, { params });
-  }
+  };
 
-  async getById(id: string): Promise<ApiResponse<T>> {
+  getById = async (id: string): Promise<ApiResponse<T>> => {
     return this.http.get(`${this.endpoint}/${id}`);
-  }
+  };
 
-  async create(data: C): Promise<ApiResponse<T>> {
+  create = async (data: C): Promise<ApiResponse<T>> => {
     return this.http.post(this.endpoint, data);
-  }
+  };
 
-  async update(id: string, data: Partial<C>): Promise<ApiResponse<T>> {
+  update = async (id: string, data: Partial<C>): Promise<ApiResponse<T>> => {
     return this.http.put(`${this.endpoint}/${id}`, data);
-  }
+  };
 
-  async delete(id: string): Promise<ApiResponse<void>> {
+  delete = async (id: string): Promise<ApiResponse<void>> => {
     return this.http.delete(`${this.endpoint}/${id}`);
-  }
+  };
 }
 
 export default BaseService;

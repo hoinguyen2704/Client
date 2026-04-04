@@ -11,7 +11,6 @@ const ProductForm = lazy(() => import('@/views/admin/product/ProductForm'));
 const Categories = lazy(() => import('@/views/admin/category/Categories'));
 const Customers = lazy(() => import('@/views/admin/user/Customers'));
 const CustomerDetail = lazy(() => import('@/views/admin/user/CustomerDetail'));
-const Promotions = lazy(() => import('@/views/admin/coupon/Promotions'));
 const AdminVouchers = lazy(() => import('@/views/admin/coupon/Vouchers'));
 const Settings = lazy(() => import('@/views/admin/setting/Settings'));
 const Feedbacks = lazy(() => import('@/views/admin/review/Feedbacks'));
@@ -33,7 +32,6 @@ export const adminRoutes = (
     <Route path="categories" element={<Categories />} />
     <Route path="customers" element={<Customers />} />
     <Route path="customers/:id" element={<CustomerDetail />} />
-    <Route path="promotions" element={<Promotions />} />
     <Route path="vouchers" element={<AdminVouchers />} />
     <Route path="flash-sales" element={<FlashSales />} />
     <Route path="settings" element={<Settings />} />

@@ -4,7 +4,7 @@ import { FiArrowLeft, FiMail, FiPhone, FiCalendar, FiShoppingBag, FiDollarSign, 
 import { formatPrice, formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { StatusBadge, UserAvatar } from '@/components/ui';
+import { StatusBadge, UserAvatar, BackButton } from '@/components/ui';
 
 import type { UserResponse } from '@/types';
 
@@ -37,7 +37,7 @@ export default function CustomerDetail() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link to="/admin/customers" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><FiArrowLeft className="text-xl" /></Link>
+          <BackButton to="/admin/customers" />
           <div className="h-6 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
         </div>
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 animate-pulse">
@@ -57,7 +57,7 @@ export default function CustomerDetail() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link to="/admin/customers" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><FiArrowLeft className="text-xl" /></Link>
+        <BackButton to="/admin/customers" />
         <h1 className="text-2xl font-bold">Chi tiết khách hàng</h1>
       </div>
 

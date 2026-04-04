@@ -7,9 +7,9 @@ class AdminCouponService extends BaseService<CouponResponse, CouponRequest> {
     super('/coupons', adminAxios);
   }
 
-  async toggleStatus(id: string): Promise<ApiResponse<CouponResponse>> {
+  toggleStatus = async (id: string): Promise<ApiResponse<CouponResponse>> => {
     return this.http.patch(`${this.endpoint}/${id}/status`);
-  }
+  };
 }
 
 export default new AdminCouponService();

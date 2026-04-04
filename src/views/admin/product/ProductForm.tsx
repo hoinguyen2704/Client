@@ -13,7 +13,7 @@ import type {
 } from '@/types';
 import { toast } from 'sonner';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { TrashButton } from '@/components/ui';
+import { TrashButton, PrimaryButton, BackButton } from '@/components/ui';
 
 interface VariantFormData {
   id?: string;
@@ -302,7 +302,11 @@ export default function ProductForm() {
         // Upload pending files for edit mode too
         if (pendingFiles.length > 0) {
           await adminProductService.uploadImages(id, pendingFiles);
+          setPendingFiles([]);
         }
+        toast.success('Cập nhật sản phẩm thành công!');
+        // Reload latest data to reflect changes
+        fetchProduct();
       } else {
         const res = await adminProductService.create(payload);
         // After creating, upload pending files with the new product ID
@@ -310,8 +314,9 @@ export default function ProductForm() {
         if (newProductId && pendingFiles.length > 0) {
           await adminProductService.uploadImages(newProductId, pendingFiles);
         }
+        toast.success('Tạo sản phẩm thành công!');
+        navigate('/admin/products');
       }
-      navigate('/admin/products');
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi khi lưu sản phẩm');
     } finally {
@@ -336,9 +341,7 @@ export default function ProductForm() {
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link to="/admin/products" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-            <FiArrowLeft className="text-xl" />
-          </Link>
+          <BackButton to="/admin/products" />
           <h1 className="text-2xl font-bold">
             {isEditMode ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới'}
           </h1>
@@ -350,14 +353,13 @@ export default function ProductForm() {
           >
             Hủy
           </button>
-          <button
+          <PrimaryButton
             onClick={handleSubmit}
             disabled={saving}
-            className="btn btn-primary btn-md gap-2"
+            icon={saving ? <FiLoader className="animate-spin" /> : <FiSave />}
           >
-            {saving ? <FiLoader className="animate-spin" /> : <FiSave />}
             {isEditMode ? 'Cập nhật' : 'Lưu sản phẩm'}
-          </button>
+          </PrimaryButton>
         </div>
       </div>
 

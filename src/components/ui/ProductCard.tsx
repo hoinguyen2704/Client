@@ -10,10 +10,6 @@ import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 
-/**
- * ProductCard linh hoạt — chấp nhận cả mock data lẫn ProductResponse từ server.
- * Tự detect và map field phù hợp.
- */
 export default function ProductCard({ product }: { product: any }) {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 45, seconds: 12 });
@@ -25,19 +21,12 @@ export default function ProductCard({ product }: { product: any }) {
   const productId: string = product.id || '';
   const firstVariantId: string = product.variants?.[0]?.id || '';
   const liked = wishlistItems.some(item => item.productId === productId);
-
-  // ── Normalize fields: support cả mock data lẫn ProductResponse ──
   const name: string = product.name || '';
   const slug: string = product.slug || '';
-
-  // Image: server trả mainImageUrl, mock trả image
   const image: string = product.mainImageUrl || product.image || '';
-
-  // Price: server trả originPrice + lowestPrice (hoặc variants[0].price)
   const lowestVariantPrice = product.variants?.length
     ? Math.min(...product.variants.map((v: any) => v.price))
     : null;
-  // Ưu tiên: lowestPrice (server tính sẵn) > variant price thấp nhất > price > originPrice
   const salePrice: number = product.lowestPrice || lowestVariantPrice || product.price || product.originPrice || 0;
   const originPrice: number = product.originPrice || product.compareAtPrice || product.oldPrice || 0;
   const hasDiscount = originPrice > 0 && salePrice > 0 && originPrice > salePrice;

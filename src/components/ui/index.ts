@@ -15,6 +15,7 @@ export { default as ConfirmDialog } from './ConfirmDialog';
 export { default as OptimizedImage } from './OptimizedImage';
 export { default as PrimaryButton } from './PrimaryButton';
 export { default as TrashButton } from './TrashButton';
+export { default as BackButton } from './BackButton';
 export { default as Modal, ModalCancelButton, ModalSubmitButton } from './Modal';
 export { default as StarRating } from './StarRating';
 export { default as UserAvatar } from './UserAvatar';
@@ -25,3 +26,4 @@ export * from './types';
 
 // ─── Constants (re-export for convenience) ──────────────────────
 export { STATUS_CONFIG, STAR_LABELS, CONFIRM_VARIANT_CONFIG } from './constants';
+export { default as ProductPickerModal } from './ProductPickerModal';

@@ -2,6 +2,7 @@
 export interface OrderResponse {
   id: string;
   orderNumber: string;
+  trackingCode?: string;
   orderStatus: string;
   paymentMethod: string;
   paymentStatus: string;
@@ -17,8 +18,16 @@ export interface OrderResponse {
   customerEmail?: string;
   customerPhone?: string;
   items: OrderItemResponse[];
+  statusHistories?: OrderStatusHistory[];
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface OrderStatusHistory {
+  id: string;
+  status: string;
+  description: string;
+  createdAt: string;
 }
 
 export interface OrderItemResponse {

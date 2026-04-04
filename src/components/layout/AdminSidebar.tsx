@@ -11,7 +11,6 @@ const menuItems = [
   { path: '/admin/products', icon: FiBox, label: 'Sản phẩm & Kho' },
   { path: '/admin/categories', icon: FiList, label: 'Danh mục' },
   { path: '/admin/customers', icon: FiUsers, label: 'Khách hàng' },
-  { path: '/admin/promotions', icon: FiTag, label: 'Khuyến mãi' },
   { path: '/admin/vouchers', icon: FiTag, label: 'Voucher' },
   { path: '/admin/flash-sales', icon: FiZap, label: 'Flash Sale' },
   { path: '/admin/feedbacks', icon: FiMessageSquare, label: 'Đánh giá' },
@@ -46,9 +45,7 @@ export default function AdminSidebar() {
         {/* Logo */}
         <div className="h-20 flex items-center px-6 border-b border-slate-200 dark:border-slate-800 justify-between">
           <Link to="/admin" className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-2xl bg-[#6338f0] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-purple-500/30 shrink-0">
-              <LogoIcon className="w-6 h-6" />
-            </div>
+              <LogoIcon />
             {!sidebarCollapsed && (
               <span className="text-xl font-bold text-[#2539e6] whitespace-nowrap">{SHOP.name} Admin</span>
             )}
