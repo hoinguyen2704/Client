@@ -6,7 +6,7 @@ import { formatPrice, formatDate } from '@/utils/format';
 import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import useAuthStore from '@/stores/useAuthStore';
-import { Card, EmptyState, PrimaryButton, TrashButton } from '@/components/ui';
+import { Card, EmptyState, PrimaryButton, TrashButton } from '@/components';
 
 import type { CouponResponse } from '@/types';
 

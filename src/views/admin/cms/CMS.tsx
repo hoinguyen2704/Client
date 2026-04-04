@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import adminCmsService from '@/apis/services/adminCmsService';
 import type { BannerResponse, ArticleResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { PrimaryButton, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components/ui';
+import { PrimaryButton, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components';
 import { formatDate } from '@/utils/format';
 
 export default function CMS() {

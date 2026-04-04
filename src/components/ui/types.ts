@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { InputHTMLAttributes, ReactNode } from 'react';
 
 // ─── Card ────────────────────────────────────────────────────────
 export interface CardProps {
@@ -148,6 +148,67 @@ export interface PrimaryButtonProps {
   disabled?: boolean;
   variant?: 'primary' | 'outline';
   isLoading?: boolean;
+}
+
+// ─── Button ───────────────────────────────────────────────────────
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline' | 'success';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+export interface ButtonProps {
+  children?: ReactNode;
+  icon?: ReactNode;
+  iconRight?: ReactNode;
+  onClick?: () => void;
+  href?: string;
+  className?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  loading?: boolean;
+  fullWidth?: boolean;
+  title?: string;
+  ariaLabel?: string;
+}
+
+// ─── IconButton ───────────────────────────────────────────────────
+export type IconButtonVariant = 'neutral' | 'primary' | 'danger' | 'ghost';
+export type IconButtonSize = 'sm' | 'md' | 'lg';
+
+export interface IconButtonProps {
+  icon: ReactNode;
+  onClick?: () => void;
+  href?: string;
+  className?: string;
+  title?: string;
+  ariaLabel?: string;
+  disabled?: boolean;
+  variant?: IconButtonVariant;
+  size?: IconButtonSize;
+  loading?: boolean;
+}
+
+// ─── SwitchToggle ────────────────────────────────────────────────
+export type SwitchTone = 'primary' | 'success' | 'blue' | 'slate';
+
+export interface SwitchToggleProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  tone?: SwitchTone;
+  className?: string;
+  size?: 'sm' | 'md';
+  ariaLabel?: string;
+}
+
+// ─── Checkbox ────────────────────────────────────────────────────
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  onCheckedChange?: (checked: boolean) => void;
+}
+
+// ─── Radio ───────────────────────────────────────────────────────
+export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  onCheckedChange?: (checked: boolean) => void;
 }
 
 // ─── BackButton ──────────────────────────────────────────────────

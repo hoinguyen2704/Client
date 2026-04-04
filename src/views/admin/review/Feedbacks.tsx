@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle, FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
-import { CustomSelect, AdminPagination, StarRating, UserAvatar } from '@/components/ui';
+import { CustomSelect, AdminPagination, StarRating, UserAvatar } from '@/components';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';

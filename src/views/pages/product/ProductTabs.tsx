@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiStar, FiUser, FiMessageSquare } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import type { ProductResponse, FeedbackResponse } from '@/types';
-import { StarRating } from '@/components/ui';
+import { StarRating } from '@/components';
 import feedbackService from '@/apis/services/feedbackService';
 
 export default function ProductTabs({ product, images }: { product: ProductResponse; images: string[] }) {

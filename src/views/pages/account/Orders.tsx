@@ -4,7 +4,7 @@ import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/uti
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import { ConfirmDialog, Modal, ModalCancelButton, PrimaryButton, StarRating } from '@/components/ui';
+import { ConfirmDialog, Modal, ModalCancelButton, PrimaryButton, StarRating } from '@/components';
 import { toast } from 'sonner';
 
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';

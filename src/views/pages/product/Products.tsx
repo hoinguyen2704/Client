@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiCheck, FiLoader } from 'react-icons/fi';
 import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ProductCard, CustomSelect } from '@/components/ui';
+import { ProductCard, CustomSelect } from '@/components';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
 import { toast } from 'sonner';

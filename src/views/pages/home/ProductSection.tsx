@@ -1,4 +1,4 @@
-import { ProductCard } from '@/components/ui';
+import { ProductCard } from '@/components';
 import { Link } from 'react-router-dom';
 
 interface ProductSectionProps {

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
-import { PrimaryButton } from '@/components/ui';
+import { PrimaryButton } from '@/components';
 import type { CartResponse } from '@/types';
 
 export default function Cart() {

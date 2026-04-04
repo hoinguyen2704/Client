@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FiClock, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { EmptyState } from '@/components/ui';
+import { EmptyState } from '@/components';
 import { formatPrice } from '@/utils/format';
 
 // Recently viewed products stored in localStorage

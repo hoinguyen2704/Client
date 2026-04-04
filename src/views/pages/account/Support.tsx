@@ -3,7 +3,7 @@ import { FiMessageSquare, FiPlus, FiChevronRight, FiSend } from 'react-icons/fi'
 import ticketService from '@/apis/services/ticketService';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { TicketResponse } from '@/types';
-import { Modal, ModalCancelButton } from '@/components/ui';
+import { Modal, ModalCancelButton } from '@/components';
 import { toast } from 'sonner';
 
 const statusMap: Record<string, { label: string; color: string }> = {

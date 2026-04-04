@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import productService from '@/apis/services/productService';
 import { toast } from 'sonner';
-import { Modal } from '@/components/ui';
+import { Modal } from '@/components';
 
 interface CompareProduct {
   id: string;

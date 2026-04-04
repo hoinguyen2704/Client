@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LogoIcon } from '@/components/ui';
+import { LogoIcon } from '@/components';
 import { motion } from 'motion/react';
 import { SHOP } from '@/constants/shopConstants';
 import type { IconType } from 'react-icons';

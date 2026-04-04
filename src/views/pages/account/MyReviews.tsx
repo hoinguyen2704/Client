@@ -3,7 +3,7 @@ import { FiStar, FiEdit3, FiTrash2, FiMessageSquare, FiImage, FiX } from 'react-
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import feedbackService from '@/apis/services/feedbackService';
-import { EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components/ui';
+import { EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components';
 
 // Note: No server endpoint for "my reviews" list yet - state managed locally
 export default function MyReviews() {

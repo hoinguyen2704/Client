@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import { Route, Navigate } from 'react-router-dom';
-import ProtectedRoute from '@/components/guards/ProtectedRoute';
+import { ProtectedRoute } from '@/components';
 
 const UserLayout = lazy(() => import('@/components/layout/UserLayout'));
 const Profile = lazy(() => import('@/views/pages/account/Profile'));

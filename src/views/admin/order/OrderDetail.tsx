@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiArrowLeft, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage } from 'react-icons/fi';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
-import { StatusBadge, CustomSelect, BackButton } from '@/components/ui';
+import { StatusBadge, CustomSelect, BackButton } from '@/components';
 import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';

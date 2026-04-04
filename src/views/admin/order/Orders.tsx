@@ -3,7 +3,7 @@ import { FiSearch, FiEye, FiDownload, FiPackage } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { formatPrice, formatDate } from '@/utils/format';
-import { StatusBadge, CustomSelect, AdminSearch, AdminPagination, ActionButtons } from '@/components/ui';
+import { StatusBadge, CustomSelect, AdminSearch, AdminPagination, ActionButtons } from '@/components';
 
 import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';

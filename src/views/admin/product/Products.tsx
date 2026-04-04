@@ -3,7 +3,7 @@ import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiInf
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
-import { CustomSelect, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge } from '@/components/ui';
+import { CustomSelect, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge } from '@/components';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';

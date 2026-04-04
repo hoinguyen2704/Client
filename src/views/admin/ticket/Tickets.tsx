@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminTicketService from '@/apis/services/adminTicketService';
-import { CustomSelect, AdminPagination } from '@/components/ui';
+import { CustomSelect, AdminPagination } from '@/components';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
 import type { TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';

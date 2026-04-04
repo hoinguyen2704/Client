@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import userService from '@/apis/services/userService';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
-import { CustomSelect } from '@/components/ui';
+import { Button, CustomSelect, SwitchToggle } from '@/components';
 import type { UserResponse } from '@/types';
 
 export default function Profile() {
@@ -187,12 +187,14 @@ export default function Profile() {
                 }}
               />
             </div>
-            <button
+            <Button
               onClick={() => avatarInputRef.current?.click()}
-              className="text-sm font-medium text-purple-600 hover:underline"
+              variant="ghost"
+              size="sm"
+              className="text-sm text-purple-600 hover:underline"
             >
               Thay đổi ảnh đại diện
-            </button>
+            </Button>
           </div>
 
           {/* Profile Form */}
@@ -250,14 +252,15 @@ export default function Profile() {
               </div>
             </div>
 
-            <button
+            <Button
               onClick={handleSaveProfile}
               disabled={saving}
-              className="h-12 px-6 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center gap-2 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50"
+              icon={saving ? <FiLoader className="animate-spin" /> : <FiSave />}
+              size="lg"
+              className="h-12 px-6"
             >
-              {saving ? <FiLoader className="animate-spin" /> : <FiSave />}
               {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -303,14 +306,17 @@ export default function Profile() {
                 className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
-            <button
+            <Button
               onClick={handleChangePassword}
               disabled={savingPassword}
-              className="w-full py-3 rounded-xl bg-slate-900 dark:bg-slate-700 text-white font-medium hover:bg-purple-600 dark:hover:bg-purple-600 transition-colors mt-4 disabled:opacity-50 flex items-center justify-center gap-2"
+              icon={savingPassword ? <FiLoader className="animate-spin" /> : undefined}
+              variant="secondary"
+              size="md"
+              fullWidth
+              className="mt-4 bg-slate-900 dark:bg-slate-700 text-white hover:bg-purple-600 dark:hover:bg-purple-600"
             >
-              {savingPassword && <FiLoader className="animate-spin" />}
               {savingPassword ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -328,16 +334,12 @@ export default function Profile() {
                   <p className="text-sm text-slate-500">Tăng cường bảo mật tài khoản</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIs2FAEnabled(!is2FAEnabled)}
-                className={`w-12 h-6 rounded-full transition-colors relative ${is2FAEnabled ? 'bg-green-500' : 'bg-slate-300 dark:bg-slate-700'}`}
-              >
-                <motion.div
-                  layout
-                  className="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 shadow-sm"
-                  animate={{ x: is2FAEnabled ? 24 : 0 }}
-                />
-              </button>
+              <SwitchToggle
+                checked={is2FAEnabled}
+                onChange={setIs2FAEnabled}
+                tone="success"
+                ariaLabel="Bật tắt xác thực 2 lớp"
+              />
             </div>
 
             <AnimatePresence>
@@ -353,7 +355,7 @@ export default function Profile() {
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Quét mã QR này bằng ứng dụng Google Authenticator hoặc Authy để thiết lập 2FA.</p>
                     <div className="flex gap-2 w-full">
                       <input type="text" placeholder="Nhập mã 6 số..." className="flex-1 h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 text-center tracking-widest font-mono" maxLength={6} />
-                      <button className="px-4 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-colors">Xác nhận</button>
+                      <Button variant="success" size="sm" className="px-4">Xác nhận</Button>
                     </div>
                   </div>
                 </motion.div>
@@ -373,16 +375,12 @@ export default function Profile() {
                   </div>
                   <span className="font-medium">Chế độ tối (Dark Mode)</span>
                 </div>
-                <button
-                  onClick={toggleDarkMode}
-                  className={`w-12 h-6 rounded-full transition-colors relative ${isDarkMode ? 'bg-purple-500' : 'bg-slate-300 dark:bg-slate-700'}`}
-                >
-                  <motion.div
-                    layout
-                    className="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 shadow-sm"
-                    animate={{ x: isDarkMode ? 24 : 0 }}
-                  />
-                </button>
+                <SwitchToggle
+                  checked={isDarkMode}
+                  onChange={toggleDarkMode}
+                  tone="primary"
+                  ariaLabel="Bật tắt chế độ tối"
+                />
               </div>
 
               <div className="flex items-center justify-between">
@@ -410,16 +408,12 @@ export default function Profile() {
                   </div>
                   <span className="font-medium">Nhận thông báo khuyến mãi</span>
                 </div>
-                <button
-                  onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-                  className={`w-12 h-6 rounded-full transition-colors relative ${notificationsEnabled ? 'bg-purple-500' : 'bg-slate-300 dark:bg-slate-700'}`}
-                >
-                  <motion.div
-                    layout
-                    className="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 shadow-sm"
-                    animate={{ x: notificationsEnabled ? 24 : 0 }}
-                  />
-                </button>
+                <SwitchToggle
+                  checked={notificationsEnabled}
+                  onChange={setNotificationsEnabled}
+                  tone="primary"
+                  ariaLabel="Bật tắt thông báo khuyến mãi"
+                />
               </div>
             </div>
           </div>

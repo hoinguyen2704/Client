@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2, FiBookmark, FiGift, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { Modal, ModalCancelButton, PrimaryButton, TrashButton } from '@/components/ui';
+import { Button, Checkbox, IconButton, Modal, ModalCancelButton, PrimaryButton, Radio, TrashButton } from '@/components';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import addressService from '@/apis/services/addressService';
@@ -396,9 +396,16 @@ export default function Checkout() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold flex items-center gap-2"><FiMapPin /> Địa chỉ giao hàng</h2>
-              <button type="button" onClick={() => { resetForm(); setShowForm(true); }} className="text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-700 flex items-center gap-1 group">
-                <FiPlus className="group-hover:rotate-90 transition-transform" /> Thêm địa chỉ mới
-              </button>
+              <Button
+                type="button"
+                onClick={() => { resetForm(); setShowForm(true); }}
+                variant="ghost"
+                size="sm"
+                icon={<FiPlus className="group-hover:rotate-90 transition-transform" />}
+                className="group text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700"
+              >
+                Thêm địa chỉ mới
+              </Button>
             </div>
             
             {addresses.length === 0 ? (
@@ -409,20 +416,27 @@ export default function Checkout() {
                 </div>
                 <h3 className="text-lg font-bold mb-2 relative z-10 text-slate-800 dark:text-white">Bạn chưa có địa chỉ giao hàng nào</h3>
                 <p className="text-sm text-slate-500 mb-6 max-w-sm relative z-10">Vui lòng thêm địa chỉ để chúng tôi có thể giao hàng đến tận nơi cho bạn.</p>
-                <button
+                <Button
                   type="button"
                   onClick={() => { resetForm(); setShowForm(true); }}
-                  className="px-6 py-2.5 bg-white dark:bg-slate-800 border-2 border-purple-100 dark:border-purple-900/50 hover:border-purple-500 hover:text-purple-700 text-purple-600 dark:text-purple-400 font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 shadow-sm hover:shadow-md"
+                  variant="outline"
+                  size="sm"
+                  icon={<FiPlus />}
+                  className="px-6 border-purple-100 dark:border-purple-900/50 hover:border-purple-500 hover:text-purple-700 text-purple-600 dark:text-purple-400 relative z-10 shadow-sm hover:shadow-md"
                 >
-                  <FiPlus />
                   Thêm địa chỉ ngay
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar p-1">
                 {addresses.map(addr => (
                   <label key={addr.id} className={`flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all ${selectedAddressId === addr.id ? 'border-purple-500 bg-purple-50/20 dark:bg-purple-900/10 shadow-sm' : 'border-slate-100 dark:border-slate-800 hover:border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
-                    <input type="radio" name="address" checked={selectedAddressId === addr.id} onChange={() => setSelectedAddressId(addr.id)} className="mt-1" />
+                    <Radio
+                      name="address"
+                      checked={selectedAddressId === addr.id}
+                      onCheckedChange={(checked) => checked && setSelectedAddressId(addr.id)}
+                      className="mt-1"
+                    />
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center flex-wrap gap-2">
@@ -464,7 +478,11 @@ export default function Checkout() {
             <div className="grid grid-cols-2 gap-3">
               {paymentMethods.map(pm => (
                 <label key={pm.id} className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${paymentMethod === pm.id ? 'border-purple-500 bg-purple-50/30 dark:bg-purple-900/10' : 'border-slate-200 dark:border-slate-700'}`}>
-                  <input type="radio" name="payment" checked={paymentMethod === pm.id} onChange={() => setPaymentMethod(pm.id)} />
+                  <Radio
+                    name="payment"
+                    checked={paymentMethod === pm.id}
+                    onCheckedChange={(checked) => checked && setPaymentMethod(pm.id)}
+                  />
                   <span className="font-medium text-sm">{pm.label}</span>
                 </label>
               ))}
@@ -485,7 +503,13 @@ export default function Checkout() {
             <input className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-sm uppercase focus:ring-2 focus:ring-purple-500 outline-none transition-all placeholder:font-sans" placeholder="Mã giảm giá" value={inputCouponCode} onChange={(e) => {
               setInputCouponCode(e.target.value.toUpperCase());
             }} />
-            <button onClick={handleApplyCoupon} className="px-5 py-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-bold hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"><FiTag className="text-lg" /></button>
+            <IconButton
+              onClick={handleApplyCoupon}
+              icon={<FiTag className="text-lg" />}
+              variant="ghost"
+              className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+              title="Áp dụng mã giảm giá"
+            />
           </div>
           <PrimaryButton
             onClick={() => setShowVoucherModal(true)}
@@ -509,25 +533,25 @@ export default function Checkout() {
                     <div className="flex items-center gap-2">
                     {isAppliedProductCouponSaved ? (
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold">Đã lưu trong ví</span>
-                    ) : (
-                      <button
+                    ) : validatedProductCoupon.isPublic ? (
+                      <Button
                         type="button"
                         onClick={() => handleSaveVoucher(validatedProductCoupon)}
                         disabled={savingVoucherId === validatedProductCoupon.id}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 disabled:opacity-60"
+                        size="sm"
+                        icon={<FiBookmark className="text-sm" />}
+                        className="h-8 px-3 rounded-lg from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700"
                       >
-                        <FiBookmark className="text-sm" />
                         Lưu vào ví
-                      </button>
-                    )}
-                      <button
-                        type="button"
+                      </Button>
+                    ) : null}
+                      <IconButton
                         onClick={() => handleRemoveCoupon('PRODUCT')}
-                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                        icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>}
+                        className="w-7 h-7 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
                         title="Bỏ áp dụng"
-                      >
-                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                      </button>
+                        variant="ghost"
+                      />
                     </div>
                   ) : (
                     <span className="text-slate-400">Đăng nhập để lưu mã</span>
@@ -546,25 +570,25 @@ export default function Checkout() {
                     <div className="flex items-center gap-2">
                     {isAppliedShippingCouponSaved ? (
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold">Đã lưu trong ví</span>
-                    ) : (
-                      <button
+                    ) : validatedShippingCoupon.isPublic ? (
+                      <Button
                         type="button"
                         onClick={() => handleSaveVoucher(validatedShippingCoupon)}
                         disabled={savingVoucherId === validatedShippingCoupon.id}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-60"
+                        size="sm"
+                        icon={<FiBookmark className="text-sm" />}
+                        className="h-8 px-3 rounded-lg from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700"
                       >
-                        <FiBookmark className="text-sm" />
                         Lưu vào ví
-                      </button>
-                    )}
-                      <button
-                        type="button"
+                      </Button>
+                    ) : null}
+                      <IconButton
                         onClick={() => handleRemoveCoupon('SHIPPING')}
-                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                        icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>}
+                        className="w-7 h-7 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
                         title="Bỏ áp dụng"
-                      >
-                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                      </button>
+                        variant="ghost"
+                      />
                     </div>
                   ) : (
                     <span className="text-slate-400">Đăng nhập để lưu mã</span>
@@ -582,9 +606,17 @@ export default function Checkout() {
             <div className="flex justify-between text-xl items-end"><span className="font-bold">Tổng thanh toán</span><span className="font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 leading-none">{formatPrice(total)}</span></div>
             <p className="text-right text-xs text-slate-400 mt-1">(Đã bao gồm VAT nếu có)</p>
           </div>
-          <button onClick={handleSubmit} disabled={submitting} className="w-full h-14 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-purple-500/25 transform hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed">
-            {submitting ? 'Đang xử lý...' : <><span className="text-lg">Xác nhận Đặt hàng</span> <FiCheck className="text-xl" /></>}
-          </button>
+          <Button
+            onClick={handleSubmit}
+            disabled={submitting}
+            loading={submitting}
+            iconRight={!submitting ? <FiCheck className="text-xl" /> : undefined}
+            fullWidth
+            size="lg"
+            className="h-14 rounded-2xl font-bold text-lg"
+          >
+            {submitting ? 'Đang xử lý...' : 'Xác nhận Đặt hàng'}
+          </Button>
         </div>
       </div>
 
@@ -699,10 +731,12 @@ export default function Checkout() {
         scrollable
         footer={
           <>
-            <button onClick={resetForm} className="px-10 py-4 rounded-2xl font-bold text-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Hủy bỏ</button>
-            <button onClick={handleSaveAddress} className="px-10 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-lg font-bold rounded-2xl transition-all shadow-xl shadow-purple-500/30 transform hover:-translate-y-1">
+            <Button onClick={resetForm} variant="secondary" className="h-14 px-10 rounded-2xl font-bold text-lg">
+              Hủy bỏ
+            </Button>
+            <Button onClick={handleSaveAddress} variant="primary" className="h-14 px-10 text-lg font-bold rounded-2xl shadow-xl shadow-purple-500/30">
               Lưu địa chỉ
-            </button>
+            </Button>
           </>
         }
       >
@@ -741,8 +775,11 @@ export default function Checkout() {
           <div className="pt-4">
             <label className="inline-flex items-center gap-4 cursor-pointer p-5 rounded-2xl border-2 border-transparent hover:border-slate-100 dark:hover:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all">
               <div className="relative flex items-center justify-center w-7 h-7 shrink-0">
-                <input type="checkbox" checked={form.isDefault || false} onChange={(e) => setForm({ ...form, isDefault: e.target.checked })} className="peer appearance-none w-7 h-7 rounded-[8px] border-2 border-slate-300 dark:border-slate-600 checked:bg-purple-600 checked:border-purple-600 transition-all cursor-pointer" />
-                <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none stroke-[3] text-lg" />
+                <Checkbox
+                  checked={form.isDefault || false}
+                  onCheckedChange={(checked) => setForm({ ...form, isDefault: checked })}
+                  className="w-7 h-7 rounded-[8px]"
+                />
               </div>
               <div>
                 <span className="text-lg font-bold text-slate-800 dark:text-slate-200">Đặt làm địa chỉ mặc định</span>

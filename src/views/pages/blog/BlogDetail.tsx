@@ -4,7 +4,7 @@ import { FiCalendar, FiUser, FiBook } from 'react-icons/fi';
 import cmsService from '@/apis/services/cmsService';
 import { formatDateLong as formatDate } from '@/utils/format';
 import type { ArticleResponse } from '@/types';
-import { BackButton } from '@/components/ui';
+import { BackButton } from '@/components';
 
 export default function BlogDetail() {
   const { slug } = useParams();

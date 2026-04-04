@@ -5,7 +5,7 @@ import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import useAdminList from '@/hooks/useAdminList';
-import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components/ui';
+import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components';
 import { formatDate } from '@/utils/format';
 
 interface SpecTemplateRow {

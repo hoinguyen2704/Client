@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
-import { ProductCard, CustomSelect } from '@/components/ui';
+import { ProductCard, CustomSelect } from '@/components';
 import { toast } from 'sonner';
 
 export default function Search() {

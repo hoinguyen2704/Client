@@ -5,9 +5,10 @@ import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse } from '@/types';
 import type { FlashSaleRequest, FlashSaleItemRequest } from '@/apis/services/adminFlashSaleService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination, ActionButtons, PrimaryButton, ConfirmDialog, StatusBadge, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea } from '@/components/ui';
+import { AdminPagination, ActionButtons, PrimaryButton, ConfirmDialog, StatusBadge, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea } from '@/components';
 import useAdminList from '@/hooks/useAdminList';
-import ProductPickerModal, { SelectedVariant } from '@/components/dialog/ProductPickerModal';
+import { ProductPickerModal } from '@/components';
+import type { SelectedVariant } from '@/components';
 import { formatPrice } from '@/utils/format';
 import { FiTrash2 } from 'react-icons/fi';
 

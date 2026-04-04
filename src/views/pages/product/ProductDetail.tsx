@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { productService } from '@/apis';
 import flashSaleService from '@/apis/services/flashSaleService';
 import type { ProductResponse, FlashSaleResponse, ProductImageResponse } from '@/types';
-import { ProductCard } from '@/components/ui';
+import { ProductCard } from '@/components';
 import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';

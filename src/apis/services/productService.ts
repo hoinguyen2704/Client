@@ -35,9 +35,9 @@ class ProductService extends BaseService<ProductResponse, ProductRequest> {
     return axios.get(`${this.endpoint}/top-rated`, { params: { limit } });
   }
 
-  async getById(id: string): Promise<ApiResponse<ProductResponse>> {
+  getById = async (id: string): Promise<ApiResponse<ProductResponse>> => {
     return axios.get(`${this.endpoint}/id/${id}`);
-  }
+  };
 }
 
 export default new ProductService();

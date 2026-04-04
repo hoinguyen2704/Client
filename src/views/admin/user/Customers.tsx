@@ -3,7 +3,7 @@ import { FiSearch, FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components/ui';
+import { CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';

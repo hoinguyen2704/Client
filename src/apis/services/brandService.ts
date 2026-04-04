@@ -11,9 +11,9 @@ class BrandService extends BaseService<BrandResponse, BrandRequest> {
     return axios.get(`${this.endpoint}/${slug}`);
   }
 
-  async getById(id: string): Promise<ApiResponse<BrandResponse>> {
+  getById = async (id: string): Promise<ApiResponse<BrandResponse>> => {
     return axios.get(`${this.endpoint}/id/${id}`);
-  }
+  };
 }
 
 export default new BrandService();

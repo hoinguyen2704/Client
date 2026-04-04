@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi';
 import { motion } from 'motion/react';
-import { FormInput, FormTextarea } from '@/components/ui';
+import { FormInput, FormTextarea } from '@/components';
 import { toast } from 'sonner';
 
 export default function Contact() {

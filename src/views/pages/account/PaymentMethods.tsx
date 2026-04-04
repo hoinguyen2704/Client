@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle } from 'react-icons/fi';
-import { PrimaryButton, Modal } from '@/components/ui';
+import { PrimaryButton, Modal } from '@/components';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Note: No server endpoint for payment methods - state managed locally

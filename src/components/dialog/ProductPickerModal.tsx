@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiCheck, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import adminProductService from '@/apis/services/adminProductService';
 import type { ProductResponse, ProductVariantResponse } from '@/types';
-import { Modal, FormInput, PrimaryButton } from '../ui';
+import { Modal, FormInput, PrimaryButton } from '..';
 import { formatPrice } from '@/utils/format';
 import { useDebounce } from '@/hooks/useDebounce';
+import type { SelectedVariant } from './SelectedVariant';
 
 interface ProductPickerModalProps {
   open: boolean;
@@ -12,15 +13,6 @@ interface ProductPickerModalProps {
   onConfirm: (selectedVariants: SelectedVariant[]) => void;
   // pre-selected variant ids
   initialSelectedIds?: string[];
-}
-
-export interface SelectedVariant {
-  variantId: string;
-  productId: string;
-  productName: string;
-  variantName: string;
-  originalPrice: number;
-  imageUrl: string;
 }
 
 export default function ProductPickerModal({ open, onClose, onConfirm, initialSelectedIds = [] }: ProductPickerModalProps) {

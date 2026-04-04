@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { FiBell, FiLock, FiSmartphone, FiMail, FiShield, FiKey, FiAlertTriangle, FiCheck, FiX } from 'react-icons/fi';
+import { FiBell, FiLock, FiSmartphone, FiMail, FiShield, FiKey, FiAlertTriangle } from 'react-icons/fi';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { motion } from 'motion/react';
+import { Button, SwitchToggle } from '@/components';
 
 export default function Settings() {
   const [notifications, setNotifications] = useState({
@@ -47,10 +48,12 @@ export default function Settings() {
                     <p className="text-sm text-slate-500">Nhận thông báo qua email</p>
                   </div>
                 </div>
-                <div className={`w-12 h-6 rounded-full transition-colors relative ${notifications.email ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${notifications.email ? 'left-7' : 'left-1'}`}></div>
-                </div>
-                <input type="checkbox" className="hidden" checked={notifications.email} onChange={() => handleNotificationChange('email')} />
+                <SwitchToggle
+                  checked={notifications.email}
+                  onChange={() => handleNotificationChange('email')}
+                  tone="blue"
+                  ariaLabel="Bật tắt thông báo email"
+                />
               </label>
 
               <label className="flex items-center justify-between cursor-pointer group">
@@ -63,10 +66,12 @@ export default function Settings() {
                     <p className="text-sm text-slate-500">Nhận tin nhắn văn bản</p>
                   </div>
                 </div>
-                <div className={`w-12 h-6 rounded-full transition-colors relative ${notifications.sms ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${notifications.sms ? 'left-7' : 'left-1'}`}></div>
-                </div>
-                <input type="checkbox" className="hidden" checked={notifications.sms} onChange={() => handleNotificationChange('sms')} />
+                <SwitchToggle
+                  checked={notifications.sms}
+                  onChange={() => handleNotificationChange('sms')}
+                  tone="blue"
+                  ariaLabel="Bật tắt thông báo SMS"
+                />
               </label>
 
               <label className="flex items-center justify-between cursor-pointer group">
@@ -79,10 +84,12 @@ export default function Settings() {
                     <p className="text-sm text-slate-500">Nhận thông báo trên ứng dụng</p>
                   </div>
                 </div>
-                <div className={`w-12 h-6 rounded-full transition-colors relative ${notifications.app ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${notifications.app ? 'left-7' : 'left-1'}`}></div>
-                </div>
-                <input type="checkbox" className="hidden" checked={notifications.app} onChange={() => handleNotificationChange('app')} />
+                <SwitchToggle
+                  checked={notifications.app}
+                  onChange={() => handleNotificationChange('app')}
+                  tone="blue"
+                  ariaLabel="Bật tắt thông báo ứng dụng"
+                />
               </label>
             </div>
 
@@ -94,10 +101,12 @@ export default function Settings() {
                   <p className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Cập nhật đơn hàng</p>
                   <p className="text-sm text-slate-500">Trạng thái giao hàng, thanh toán</p>
                 </div>
-                <div className={`w-12 h-6 rounded-full transition-colors relative ${notifications.orders ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${notifications.orders ? 'left-7' : 'left-1'}`}></div>
-                </div>
-                <input type="checkbox" className="hidden" checked={notifications.orders} onChange={() => handleNotificationChange('orders')} />
+                <SwitchToggle
+                  checked={notifications.orders}
+                  onChange={() => handleNotificationChange('orders')}
+                  tone="blue"
+                  ariaLabel="Bật tắt thông báo đơn hàng"
+                />
               </label>
 
               <label className="flex items-center justify-between cursor-pointer group">
@@ -105,10 +114,12 @@ export default function Settings() {
                   <p className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Khuyến mãi & Ưu đãi</p>
                   <p className="text-sm text-slate-500">Mã giảm giá, chương trình sale</p>
                 </div>
-                <div className={`w-12 h-6 rounded-full transition-colors relative ${notifications.promotions ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${notifications.promotions ? 'left-7' : 'left-1'}`}></div>
-                </div>
-                <input type="checkbox" className="hidden" checked={notifications.promotions} onChange={() => handleNotificationChange('promotions')} />
+                <SwitchToggle
+                  checked={notifications.promotions}
+                  onChange={() => handleNotificationChange('promotions')}
+                  tone="blue"
+                  ariaLabel="Bật tắt thông báo khuyến mãi"
+                />
               </label>
             </div>
           </div>
@@ -137,12 +148,14 @@ export default function Settings() {
                       <p className="text-sm text-slate-500">Cập nhật lần cuối: 30 ngày trước</p>
                     </div>
                   </div>
-                  <button 
+                  <Button
                     onClick={() => setIsChangingPassword(!isChangingPassword)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    variant="secondary"
+                    size="sm"
+                    className="px-4 border border-slate-200 dark:border-slate-700"
                   >
                     {isChangingPassword ? 'Hủy' : 'Đổi mật khẩu'}
-                  </button>
+                  </Button>
                 </div>
 
                 {isChangingPassword && (
@@ -163,9 +176,15 @@ export default function Settings() {
                       <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Xác nhận mật khẩu mới</label>
                       <input type="password" placeholder="••••••••" className="w-full h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500" />
                     </div>
-                    <button type="button" className="w-full py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors">
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="sm"
+                      fullWidth
+                      className="h-10 from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700"
+                    >
                       Lưu mật khẩu mới
-                    </button>
+                    </Button>
                   </motion.form>
                 )}
               </div>
@@ -181,12 +200,12 @@ export default function Settings() {
                     <p className="text-sm text-slate-500">Tăng cường bảo mật tài khoản</p>
                   </div>
                 </div>
-                <label className="cursor-pointer">
-                  <div className={`w-12 h-6 rounded-full transition-colors relative ${twoFactor ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}`}>
-                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${twoFactor ? 'left-7' : 'left-1'}`}></div>
-                  </div>
-                  <input type="checkbox" className="hidden" checked={twoFactor} onChange={() => setTwoFactor(!twoFactor)} />
-                </label>
+                <SwitchToggle
+                  checked={twoFactor}
+                  onChange={setTwoFactor}
+                  tone="success"
+                  ariaLabel="Bật tắt xác thực 2 lớp"
+                />
               </div>
             </div>
           </div>
@@ -205,7 +224,13 @@ export default function Settings() {
                     <p className="text-sm text-slate-500">Đã liên kết</p>
                   </div>
                 </div>
-                <button className="text-sm font-medium text-slate-500 hover:text-red-500 transition-colors">Hủy liên kết</button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm text-slate-500 hover:text-red-500"
+                >
+                  Hủy liên kết
+                </Button>
               </div>
 
               <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
@@ -218,7 +243,13 @@ export default function Settings() {
                     <p className="text-sm text-slate-500">Chưa liên kết</p>
                   </div>
                 </div>
-                <button className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">Liên kết ngay</button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Liên kết ngay
+                </Button>
               </div>
             </div>
           </div>
@@ -234,9 +265,9 @@ export default function Settings() {
                 <p className="text-sm text-red-500/80 dark:text-red-400/80 mb-4">
                   Khi xóa tài khoản, tất cả dữ liệu cá nhân, lịch sử đơn hàng và điểm tích lũy sẽ bị xóa vĩnh viễn và không thể khôi phục.
                 </p>
-                <button className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-colors text-sm">
+                <Button variant="danger" size="sm" className="px-4 text-sm">
                   Yêu cầu xóa tài khoản
-                </button>
+                </Button>
               </div>
             </div>
           </div>

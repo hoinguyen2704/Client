@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiCheck, FiLoader } from 'react-icons/fi';
-import { CustomSelect, Modal, ModalCancelButton, FormInput } from '@/components/ui';
+import { CustomSelect, Modal, ModalCancelButton, FormInput } from '@/components';
 import { toast } from 'sonner';
 import adminSettingService from '@/apis/services/adminSettingService';
 import type { SettingResponse } from '@/types';

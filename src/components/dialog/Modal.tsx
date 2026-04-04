@@ -3,6 +3,7 @@ import { FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import type { ModalProps, ModalCancelButtonProps, ModalSubmitButtonProps } from '../ui/types';
 import { MODAL_SIZE_MAP } from '../ui/constants';
+import Button from '../button/Button';
 
 export default function Modal({
   open,
@@ -92,12 +93,13 @@ export default function Modal({
 
 export function ModalCancelButton({ onClick, children = 'Hủy' }: ModalCancelButtonProps) {
   return (
-    <button
+    <Button
       onClick={onClick}
-      className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300"
+      variant="secondary"
+      className="h-10 px-6 font-medium"
     >
       {children}
-    </button>
+    </Button>
   );
 }
 
@@ -107,18 +109,14 @@ export function ModalSubmitButton({
   children = 'Lưu',
   variant = 'primary',
 }: ModalSubmitButtonProps) {
-  const colors =
-    variant === 'danger'
-      ? 'bg-red-600 hover:bg-red-700'
-      : 'bg-purple-600 hover:bg-purple-700';
-
   return (
-    <button
+    <Button
       onClick={onClick}
-      className={`px-6 py-2.5 rounded-xl text-white font-medium transition-colors flex items-center gap-2 ${colors}`}
+      icon={icon}
+      variant={variant === 'danger' ? 'danger' : 'primary'}
+      className="h-10 px-6 font-medium"
     >
-      {icon}
       {children}
-    </button>
+    </Button>
   );
 }

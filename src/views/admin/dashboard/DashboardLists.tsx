@@ -1,4 +1,4 @@
-import { Card, UserAvatar } from '@/components/ui';
+import { Card, UserAvatar } from '@/components';
 import { formatPrice } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 

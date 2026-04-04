@@ -1,5 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Card } from '@/components/ui';
+import { Card } from '@/components';
 import type { DashboardChildProps } from './types';
 
 export default function RevenueChart({ stats }: DashboardChildProps) {

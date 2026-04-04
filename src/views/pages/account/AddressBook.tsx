@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiCheck } from 'react-icons/fi';
-import { PrimaryButton, ConfirmDialog, Modal } from '@/components/ui';
+import { PrimaryButton, ConfirmDialog, Modal } from '@/components';
 import addressService from '@/apis/services/addressService';
 import { toast } from 'sonner';
 import type { AddressResponse, AddressRequest } from '@/types';

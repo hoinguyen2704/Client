@@ -15,7 +15,7 @@ import type {
 } from '@/types';
 import { toast } from 'sonner';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { TrashButton, PrimaryButton, BackButton } from '@/components/ui';
+import { TrashButton, PrimaryButton, BackButton } from '@/components';
 
 interface VariantFormData {
   id?: string;

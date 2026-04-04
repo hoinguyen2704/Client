@@ -6,7 +6,7 @@ import orderService from '@/apis/services/orderService';
 import type { OrderResponse } from '@/types';
 
 import { ORDER_TRACKING_STEPS, ORDER_STATUS_INDEX } from '@/constants/orderConstants';
-import { BackButton } from '@/components/ui';
+import { BackButton } from '@/components';
 
 export default function OrderTracking() {
   const { id } = useParams<{ id: string }>();
