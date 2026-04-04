@@ -27,6 +27,18 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
     return this.http.delete(`${this.endpoint}/${productId}/images/${imageId}`);
   }
 
+  async uploadVariantImages(productId: string, variantId: string, files: File[]): Promise<ApiResponse<{id: string; imageUrl: string}[]>> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('files', file));
+    return this.http.post(`${this.endpoint}/${productId}/variants/${variantId}/images`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  }
+
+  async deleteVariantImage(productId: string, variantId: string, imageId: string): Promise<ApiResponse<void>> {
+    return this.http.delete(`${this.endpoint}/${productId}/variants/${variantId}/images/${imageId}`);
+  }
+
   /** Xuất danh sách sản phẩm ra Excel */
   async export(params?: {
     keyword?: string;

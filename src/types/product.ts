@@ -38,7 +38,10 @@ export interface ProductVariantResponse {
 export interface ProductImageResponse {
   id: string;
   imageUrl: string;
+  altText?: string;
+  sortOrder?: number;
   isPrimary?: boolean;
+  variantId?: string | null;
 }
 
 export interface ProductRequest {

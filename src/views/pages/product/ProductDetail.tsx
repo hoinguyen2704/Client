@@ -4,7 +4,7 @@ import { FiChevronRight } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { productService } from '@/apis';
 import flashSaleService from '@/apis/services/flashSaleService';
-import type { ProductResponse, FlashSaleResponse } from '@/types';
+import type { ProductResponse, FlashSaleResponse, ProductImageResponse } from '@/types';
 import { ProductCard } from '@/components/ui';
 import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';
@@ -59,6 +59,10 @@ export default function ProductDetail() {
     setSelectedVariantIdx(0);
   }, [product?.id]);
 
+  useEffect(() => {
+    setActiveImage(0);
+  }, [selectedVariantIdx]);
+
   if (loading) {
     return (
       <div className="w-full px-4 md:px-8 lg:px-12 py-8">
@@ -86,17 +90,28 @@ export default function ProductDetail() {
     );
   }
 
-  // Collect all images from product + variants
-  const allImages: string[] = [];
-  if (product.mainImageUrl) allImages.push(product.mainImageUrl);
-  product.variants?.forEach(v => {
-    v.images?.forEach(img => {
-      if (img.imageUrl && !allImages.includes(img.imageUrl)) allImages.push(img.imageUrl);
-    });
-  });
-  if (allImages.length === 0) allImages.push('https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image');
-
   const activeVariant = product.variants?.[selectedVariantIdx] || null;
+  const sortImages = (images: ProductImageResponse[]) =>
+    [...images].sort((a, b) => {
+      const aPrimary = Boolean(a.isPrimary);
+      const bPrimary = Boolean(b.isPrimary);
+      if (aPrimary !== bPrimary) return aPrimary ? -1 : 1;
+      const aOrder = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
+      const bOrder = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return a.id.localeCompare(b.id);
+    });
+
+  const toImageUrls = (images: ProductImageResponse[]): string[] =>
+    images
+      .map((img) => img.imageUrl)
+      .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
+
+  const productImages = toImageUrls(sortImages(product.images || []));
+  const variantImages = activeVariant?.images ? toImageUrls(sortImages(activeVariant.images)) : [];
+  const galleryImages = variantImages.length > 0 ? variantImages : productImages;
+  const finalGalleryImages = galleryImages.length > 0 ? galleryImages : ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
+
   const activeFlashItem = activeVariant ? flashItemsByVariantId[activeVariant.id] : undefined;
   const { discount } = resolveVariantPricing({
     product,
@@ -120,7 +135,7 @@ export default function ProductDetail() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 mb-12">
         <div className="flex flex-col lg:flex-row gap-12">
           <ProductGallery
-            images={allImages}
+            images={finalGalleryImages}
             activeImage={activeImage}
             onImageChange={setActiveImage}
             productName={product.name}
@@ -135,7 +150,7 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      <ProductTabs product={product} images={allImages} />
+      <ProductTabs product={product} images={finalGalleryImages} />
 
       {/* Related Products */}
       {related.length > 0 && (

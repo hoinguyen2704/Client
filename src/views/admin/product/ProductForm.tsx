@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback, useRef, ChangeEvent, DragEvent } from 'react';
-import { FiArrowLeft, FiImage, FiPlus, FiTrash2, FiSave, FiLoader, FiCheckSquare, FiSquare, FiChevronDown, FiCheck, FiSearch, FiUploadCloud, FiStar, FiEye, FiEyeOff } from 'react-icons/fi';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { FiPlus, FiTrash2, FiSave, FiLoader, FiCheckSquare, FiSquare, FiChevronDown, FiCheck, FiSearch, FiUploadCloud, FiStar, FiEye, FiEyeOff } from 'react-icons/fi';
+import { useNavigate, useParams } from 'react-router-dom';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import adminBrandService from '@/apis/services/adminBrandService';
 import type {
   ProductRequest,
+  ProductResponse,
   ProductVariantRequest,
+  ProductImageResponse,
   CategoryResponse,
   BrandResponse,
   SpecTemplateResponse,
@@ -23,6 +25,8 @@ interface VariantFormData {
   compareAtPrice: number | '';
   stock: number | '';
   active: boolean;
+  images: ProductImageResponse[];
+  pendingFiles: File[];
 }
 
 interface SpecRow {
@@ -32,7 +36,16 @@ interface SpecRow {
 
 // Spec templates are now loaded from API (category.specTemplates)
 
-const emptyVariant: VariantFormData = { sku: '', variantName: '', price: '', compareAtPrice: '', stock: '', active: true };
+const emptyVariant: VariantFormData = {
+  sku: '',
+  variantName: '',
+  price: '',
+  compareAtPrice: '',
+  stock: '',
+  active: true,
+  images: [],
+  pendingFiles: [],
+};
 
 export default function ProductForm() {
   const { id } = useParams<{ id: string }>();
@@ -60,9 +73,11 @@ export default function ProductForm() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [uploadingVariantKeys, setUploadingVariantKeys] = useState<Record<string, boolean>>({});
   const [isDragging, setIsDragging] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const variantFileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [showTemplatePopup, setShowTemplatePopup] = useState(false);
   const templatePopupRef = useRef<HTMLDivElement>(null);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -202,6 +217,15 @@ export default function ProductForm() {
             compareAtPrice: v.compareAtPrice ?? '',
             stock: v.stockQuantity ?? '',
             active: v.active ?? true,
+            images: (v.images || []).map((img: any) => ({
+              id: img.id,
+              imageUrl: img.imageUrl,
+              altText: img.altText,
+              sortOrder: img.sortOrder,
+              isPrimary: img.isPrimary,
+              variantId: v.id,
+            })),
+            pendingFiles: [],
           }))
         );
       } else {
@@ -260,12 +284,102 @@ export default function ProductForm() {
     );
   };
 
+  const getVariantUiKey = (variant: VariantFormData, index: number): string =>
+    variant.id || `variant-${index}-${variant.sku || 'new'}`;
+
+  const handleVariantFilesSelected = async (index: number, files: File[]) => {
+    if (files.length === 0) return;
+    const currentVariant = variants[index];
+    if (!currentVariant) return;
+
+    if (isEditMode && id && currentVariant.id) {
+      const variantUiKey = getVariantUiKey(currentVariant, index);
+      setUploadingVariantKeys(prev => ({ ...prev, [variantUiKey]: true }));
+      try {
+        const res = await adminProductService.uploadVariantImages(id, currentVariant.id, files);
+        const uploadedImages = (res.data || []).map((img, uploadedIndex) => ({
+          id: img.id,
+          imageUrl: img.imageUrl,
+          isPrimary: currentVariant.images.length === 0 && uploadedIndex === 0,
+          variantId: currentVariant.id,
+        }));
+        setVariants(prev => prev.map((v, i) => i === index ? { ...v, images: [...v.images, ...uploadedImages] } : v));
+        toast.success(`Đã tải ${files.length} ảnh cho phân loại "${currentVariant.variantName || currentVariant.sku}"`);
+      } catch {
+        toast.error('Upload ảnh phân loại thất bại.');
+      } finally {
+        setUploadingVariantKeys(prev => ({ ...prev, [variantUiKey]: false }));
+      }
+      return;
+    }
+
+    setVariants(prev => prev.map((v, i) => i === index ? { ...v, pendingFiles: [...v.pendingFiles, ...files] } : v));
+  };
+
+  const removeVariantPendingFile = (variantIndex: number, fileIndex: number) => {
+    setVariants(prev => prev.map((v, i) => {
+      if (i !== variantIndex) return v;
+      return { ...v, pendingFiles: v.pendingFiles.filter((_, idx) => idx !== fileIndex) };
+    }));
+  };
+
+  const deleteVariantImage = async (variantIndex: number, imageId: string) => {
+    const currentVariant = variants[variantIndex];
+    if (!currentVariant) return;
+
+    if (!id || !currentVariant.id) {
+      setVariants(prev => prev.map((v, i) => i === variantIndex ? { ...v, images: v.images.filter(img => img.id !== imageId) } : v));
+      return;
+    }
+
+    try {
+      await adminProductService.deleteVariantImage(id, currentVariant.id, imageId);
+      setVariants(prev => prev.map((v, i) => i === variantIndex ? { ...v, images: v.images.filter(img => img.id !== imageId) } : v));
+      toast.success('Xóa ảnh phân loại thành công!');
+    } catch {
+      toast.error('Xóa ảnh phân loại thất bại.');
+    }
+  };
+
+  const uploadPendingVariantImages = async (productId: string, responseVariants: ProductResponse['variants'] | undefined) => {
+    const variantsFromResponse = responseVariants || [];
+    const skuToVariantId = new Map(variantsFromResponse.map(v => [v.sku, v.id]));
+    const uploadedIndexes = new Set<number>();
+
+    for (const [index, variant] of variants.entries()) {
+      if (variant.pendingFiles.length === 0) continue;
+      const resolvedVariantId = variant.id || skuToVariantId.get(variant.sku);
+      if (!resolvedVariantId) continue;
+      await adminProductService.uploadVariantImages(productId, resolvedVariantId, variant.pendingFiles);
+      uploadedIndexes.add(index);
+    }
+
+    if (uploadedIndexes.size > 0) {
+      setVariants(prev => prev.map((variant, index) =>
+        uploadedIndexes.has(index) ? { ...variant, pendingFiles: [] } : variant,
+      ));
+    }
+  };
+
   // ─── Submit ───────────────────────────────────────────────────
   const handleSubmit = async () => {
     if (!name.trim()) {
       setError('Vui lòng nhập tên sản phẩm');
       return;
     }
+
+    const missingSku = variants.find(v => v.variantName.trim() && !v.sku.trim());
+    if (missingSku) {
+      setError('Mỗi phân loại có tên phải có SKU.');
+      return;
+    }
+
+    const invalidPendingVariant = variants.find(v => v.pendingFiles.length > 0 && (!v.variantName.trim() || !v.sku.trim()));
+    if (invalidPendingVariant) {
+      setError('Phân loại có ảnh chờ tải phải nhập đầy đủ tên phân loại và SKU.');
+      return;
+    }
+
     setSaving(true);
     setError('');
 
@@ -298,12 +412,13 @@ export default function ProductForm() {
 
     try {
       if (isEditMode && id) {
-        await adminProductService.update(id, payload);
+        const updated = await adminProductService.update(id, payload);
         // Upload pending files for edit mode too
         if (pendingFiles.length > 0) {
           await adminProductService.uploadImages(id, pendingFiles);
           setPendingFiles([]);
         }
+        await uploadPendingVariantImages(id, updated.data?.variants);
         toast.success('Cập nhật sản phẩm thành công!');
         // Reload latest data to reflect changes
         fetchProduct();
@@ -313,6 +428,9 @@ export default function ProductForm() {
         const newProductId = res.data?.id;
         if (newProductId && pendingFiles.length > 0) {
           await adminProductService.uploadImages(newProductId, pendingFiles);
+        }
+        if (newProductId) {
+          await uploadPendingVariantImages(newProductId, res.data?.variants);
         }
         toast.success('Tạo sản phẩm thành công!');
         navigate('/admin/products');
@@ -766,9 +884,12 @@ export default function ProductForm() {
             </div>
 
             <div className="space-y-4">
-              {variants.map((variant, index) => (
+              {variants.map((variant, index) => {
+                const variantUiKey = getVariantUiKey(variant, index);
+                const isVariantUploading = Boolean(uploadingVariantKeys[variantUiKey]);
+                return (
                 <div
-                  key={index}
+                  key={variantUiKey}
                   className="relative rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden group hover:border-purple-300 dark:hover:border-purple-700 transition-colors"
                 >
                   {/* Card header */}
@@ -858,9 +979,83 @@ export default function ProductForm() {
                         </button>
                       </div>
                     </div>
+
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-3 bg-slate-50/70 dark:bg-slate-800/40">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Ảnh theo phân loại</p>
+                          <p className="text-xs text-slate-500">Ảnh trong khung này thuộc riêng SKU: <span className="font-semibold">{variant.sku || 'chưa có SKU'}</span></p>
+                        </div>
+                        {isVariantUploading && <FiLoader className="animate-spin text-purple-500" />}
+                      </div>
+
+                      <input
+                        ref={(el) => { variantFileInputRefs.current[variantUiKey] = el; }}
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        multiple
+                        className="hidden"
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                          const files = Array.from(e.target.files || []);
+                          void handleVariantFilesSelected(index, files);
+                          e.target.value = '';
+                        }}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => variantFileInputRefs.current[variantUiKey]?.click()}
+                        className="h-9 px-3 rounded-lg text-sm font-medium bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-600 text-slate-700 dark:text-slate-200 transition-colors"
+                      >
+                        Tải ảnh cho phân loại
+                      </button>
+
+                      {variant.pendingFiles.length > 0 && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {variant.pendingFiles.map((file, fileIndex) => (
+                            <div key={`${variantUiKey}-pending-${fileIndex}`} className="relative aspect-square rounded-lg overflow-hidden border border-amber-300 dark:border-amber-700">
+                              <img src={URL.createObjectURL(file)} alt={`Pending ${fileIndex + 1}`} className="w-full h-full object-cover" />
+                              <span className="absolute left-1.5 bottom-1.5 text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded">
+                                Chờ lưu
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => removeVariantPendingFile(index, fileIndex)}
+                                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-red-500/90 text-white flex items-center justify-center"
+                              >
+                                <FiTrash2 className="text-xs" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {variant.images.length > 0 && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {variant.images.map((img) => (
+                            <div key={`${variantUiKey}-${img.id}`} className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                              <img src={img.imageUrl} alt={variant.variantName || variant.sku || 'Variant image'} className="w-full h-full object-cover" />
+                              {img.isPrimary && (
+                                <span className="absolute left-1.5 top-1.5 text-[10px] font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-1.5 py-0.5 rounded">
+                                  Chính
+                                </span>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => deleteVariantImage(index, img.id)}
+                                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-red-500/90 text-white flex items-center justify-center"
+                              >
+                                <FiTrash2 className="text-xs" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
 
               {variants.length === 0 && (
                 <div className="text-center py-10 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl mt-2">
