@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { StatusBadge, Modal, UserAvatar } from '@/components';
+import { Button, StatusBadge, Modal, UserAvatar } from '@/components';
 import { formatPrice, formatDate } from '@/utils/format';
 import adminDashboardService from '@/apis/services/adminDashboardService';
 import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem } from '@/types';
@@ -97,7 +97,7 @@ export default function Dashboard() {
               </button>
             ))}
           </div>
-          <button
+          <Button
             onClick={async () => {
               try {
                 const blob = await adminDashboardService.exportReport(period);
@@ -108,10 +108,13 @@ export default function Dashboard() {
                 toast.error('Xuất báo cáo thất bại!');
               }
             }}
-            className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2 print:hidden"
+            variant="success"
+            size="md"
+            icon={<FiDownload />}
+            className="print:hidden"
           >
-            <FiDownload /> Xuất báo cáo
-          </button>
+            Xuất báo cáo
+          </Button>
         </div>
       </div>
 
@@ -154,7 +157,7 @@ export default function Dashboard() {
         {activeModal && stats && (
           <>
             <div className="flex justify-end mb-4">
-              <button
+              <Button
                 onClick={async () => {
                   if (!activeModal) return;
                   try {
@@ -167,10 +170,12 @@ export default function Dashboard() {
                     toast.error('Xuất báo cáo thất bại!', { id: 'pdf-report' });
                   }
                 }}
-                className="px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors"
+                variant="outline"
+                size="sm"
+                icon={<FiDownload />}
               >
-                <FiDownload /> Tải PDF
-              </button>
+                Tải PDF
+              </Button>
             </div>
 
             {activeModal === 'orders' ? (

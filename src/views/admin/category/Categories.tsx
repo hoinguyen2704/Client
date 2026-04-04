@@ -5,7 +5,7 @@ import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import useAdminList from '@/hooks/useAdminList';
-import { PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components';
+import { Button, IconButton, PrimaryButton, TrashButton, AdminSearch, AdminPagination, ActionButtons, ConfirmDialog, StatusBadge, TableRowSkeleton } from '@/components';
 import { formatDate } from '@/utils/format';
 
 interface SpecTemplateRow {
@@ -125,9 +125,7 @@ export default function Categories() {
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold">{editId ? 'Sửa danh mục' : 'Thêm danh mục mới'}</h2>
-            <button onClick={resetForm} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-              <FiX className="text-lg" />
-            </button>
+            <IconButton onClick={resetForm} icon={<FiX />} variant="neutral" title="Đóng" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -155,19 +153,18 @@ export default function Categories() {
                   <span className="font-medium text-sm">Gợi ý thông số kỹ thuật</span>
                   <span className="text-xs text-slate-400">({specTemplates.length} thông số)</span>
                 </div>
-                <button type="button" onClick={addSpecRow}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
-                  <FiPlus className="text-xs" /> Thêm
-                </button>
+                <Button type="button" onClick={addSpecRow} variant="ghost" size="sm" icon={<FiPlus />}
+                  className="text-purple-600">
+                  Thêm
+                </Button>
               </div>
 
               {specTemplates.length === 0 ? (
                 <div className="p-6 text-center">
                   <p className="text-sm text-slate-400 mb-3">Chưa có thông số gợi ý nào</p>
-                  <button type="button" onClick={addSpecRow}
-                    className="text-sm font-medium text-purple-600 hover:text-purple-700 hover:underline">
+                  <Button type="button" onClick={addSpecRow} variant="ghost" size="sm" className="text-purple-600">
                     + Thêm thông số đầu tiên
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -204,15 +201,12 @@ export default function Categories() {
 
             {/* Actions */}
             <div className="flex items-center gap-3 justify-end">
-              <button type="button" onClick={resetForm}
-                className="h-11 px-6 rounded-xl bg-slate-200 dark:bg-slate-700 font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-sm">
+              <Button type="button" onClick={resetForm} variant="secondary" size="md">
                 Hủy
-              </button>
-              <button type="submit" disabled={saving}
-                className="h-11 px-6 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors text-sm flex items-center gap-2">
-                {saving && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+              </Button>
+              <Button type="submit" disabled={saving} loading={saving} size="md">
                 {editId ? 'Cập nhật' : 'Tạo danh mục'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

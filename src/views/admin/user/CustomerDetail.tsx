@@ -4,7 +4,7 @@ import { FiArrowLeft, FiMail, FiPhone, FiCalendar, FiShoppingBag, FiDollarSign, 
 import { formatPrice, formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { StatusBadge, UserAvatar, BackButton } from '@/components';
+import { Button, StatusBadge, UserAvatar, BackButton } from '@/components';
 
 import type { UserResponse } from '@/types';
 
@@ -81,14 +81,14 @@ export default function CustomerDetail() {
               <StatusBadge status={user.role === 'ADMIN' ? 'admin' : 'user'} />
             </div>
 
-            <button onClick={handleToggle}
-              className={`w-full py-2.5 rounded-xl font-medium transition-colors flex items-center justify-center gap-2 ${
-                user.status === 'ACTIVE'
-                  ? 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40'
-                  : 'bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40'
-              }`}>
-              {user.status === 'ACTIVE' ? <><FiLock /> Khóa tài khoản</> : <><FiUnlock /> Mở khóa</>}
-            </button>
+            <Button onClick={handleToggle}
+              variant={user.status === 'ACTIVE' ? 'danger' : 'success'}
+              size="md"
+              fullWidth
+              icon={user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />}
+            >
+              {user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
+            </Button>
 
             <div className="mt-6 space-y-3 text-left text-sm">
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">

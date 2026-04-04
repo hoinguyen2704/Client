@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi';
 import { motion } from 'motion/react';
-import { FormInput, FormTextarea } from '@/components';
+import { Button, FormInput, FormTextarea } from '@/components';
 import { toast } from 'sonner';
+import ticketService from '@/apis/services/ticketService';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -13,11 +14,20 @@ export default function Contact() {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    toast.success('Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!');
-    setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    try {
+      setLoading(true);
+      await ticketService.submitContact(formData);
+      toast.success('Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!');
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Gửi tin nhắn thất bại. Vui lòng thử lại.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -171,12 +181,15 @@ export default function Contact() {
                   placeholder="Nhập nội dung tin nhắn của bạn..."
                 />
 
-                <button 
+                <Button
                   type="submit"
-                  className="btn btn-primary btn-lg w-full md:w-auto gap-2"
+                  size="lg"
+                  icon={<FiSend />}
+                  className="w-full md:w-auto"
+                  disabled={loading}
                 >
-                  <FiSend /> Gửi tin nhắn
-                </button>
+                  {loading ? 'Đang gửi...' : 'Gửi tin nhắn'}
+                </Button>
               </form>
             </motion.div>
           </div>

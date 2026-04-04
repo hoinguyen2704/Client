@@ -1,6 +1,7 @@
 import { FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { Button } from '@/components';
 
 interface CheckoutResultProps {
   isSuccess: boolean;
@@ -24,9 +25,9 @@ export default function CheckoutResult({ isSuccess, onRetry }: CheckoutResultPro
             <p className="text-slate-500 dark:text-slate-400 mb-6">
               Cảm ơn bạn đã mua sắm tại Hozitech. Mã đơn hàng của bạn là <span className="font-bold text-slate-900 dark:text-white">#HZT-889922</span>.
             </p>
-            <Link to="/user/tracking" className="block btn btn-primary w-full py-4 mb-4">
+            <Button href="/user/tracking" fullWidth size="lg" className="mb-4">
               Theo dõi đơn hàng
-            </Link>
+            </Button>
             <Link to="/" className="block w-full py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
               Tiếp tục mua sắm
             </Link>

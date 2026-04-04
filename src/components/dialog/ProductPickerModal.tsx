@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiCheck, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import adminProductService from '@/apis/services/adminProductService';
 import type { ProductResponse, ProductVariantResponse } from '@/types';
-import { Modal, FormInput, PrimaryButton } from '..';
+import { Modal, FormInput, PrimaryButton, Button } from '..';
 import { formatPrice } from '@/utils/format';
 import { useDebounce } from '@/hooks/useDebounce';
 import type { SelectedVariant } from './SelectedVariant';
@@ -103,9 +103,9 @@ export default function ProductPickerModal({ open, onClose, onConfirm, initialSe
             Đã chọn: <strong className="text-primary-600">{selectedCount}</strong> phân loại
           </div>
           <div className="gap-2 flex">
-            <button onClick={onClose} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors">
+            <Button onClick={onClose} variant="secondary" size="md">
               Hủy
-            </button>
+            </Button>
             <PrimaryButton onClick={handleConfirm} disabled={selectedCount === 0} icon={<FiCheck />}>
               Xác nhận
             </PrimaryButton>

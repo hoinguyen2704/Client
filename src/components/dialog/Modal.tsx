@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import type { ModalProps, ModalCancelButtonProps, ModalSubmitButtonProps } from '../ui/types';
 import { MODAL_SIZE_MAP } from '../ui/constants';
 import Button from '../button/Button';
+import IconButton from '../button/IconButton';
 
 export default function Modal({
   open,
@@ -62,12 +63,12 @@ export default function Modal({
             {title && (
               <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
-                <button
+                <IconButton
                   onClick={onClose}
-                  className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <FiX className="text-xl" />
-                </button>
+                  variant="ghost"
+                  icon={<FiX className="text-xl" />}
+                  className="rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                />
               </div>
             )}
 

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
+import { FiTrash2, FiDownload } from 'react-icons/fi';
 import Modal from '../dialog/Modal';
+import Button from '../button/Button';
 import type { ConfirmDialogProps } from '../ui/types';
 import { CONFIRM_VARIANT_CONFIG } from '../ui/constants';
 
@@ -31,19 +33,26 @@ export default function ConfirmDialog({
       containerClassName="z-[9999]"
       footer={
         <div className="flex gap-3 w-full">
-          <button
+          <Button
             onClick={onCancel}
-            className="flex-1 h-11 rounded-xl font-medium text-sm border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            variant="secondary"
+            className="flex-1 h-11"
           >
             {cancelLabel}
-          </button>
-          <button
+          </Button>
+          <Button
             ref={confirmBtnRef}
             onClick={onConfirm}
-            className={`flex-1 h-11 rounded-xl font-medium text-sm text-white transition-colors focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${cfg.btnClass}`}
+            icon={
+              !cfg.icon ? null :
+              confirmLabel.toLowerCase().includes('xóa') ? <FiTrash2 /> :
+              confirmLabel.toLowerCase().includes('xuất') || confirmLabel.toLowerCase().includes('tải') ? <FiDownload /> :
+              null
+            }
+            className={`flex-1 h-11 focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${cfg.btnClass}`}
           >
             {confirmLabel}
-          </button>
+          </Button>
         </div>
       }
     >

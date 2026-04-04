@@ -174,6 +174,16 @@ export default function OrderTracking() {
               <div className="flex justify-between"><span className="text-slate-500">Phí ship</span><span>{formatPrice(order.shippingFee)}</span></div>
               {order.discountAmount > 0 && <div className="flex justify-between"><span className="text-slate-500">Giảm giá sản phẩm</span><span className="text-green-600">-{formatPrice(order.discountAmount)}</span></div>}
               {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between"><span className="text-slate-500">Giảm phí vận chuyển</span><span className="text-green-600">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
+              {(order.taxAmount || 0) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-slate-500">
+                    Thuế VAT ({order.taxPercent ?? 0}%{order.taxMode === 'INCLUDED' ? ', đã gồm' : ''})
+                  </span>
+                  <span className={order.taxMode === 'EXCLUDED' ? '' : 'text-slate-500'}>
+                    {order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}
+                  </span>
+                </div>
+              )}
               <hr className="border-slate-100 dark:border-slate-800" />
               <div className="flex justify-between text-lg"><span className="font-bold">Tổng cộng</span><span className="font-bold text-purple-600">{formatPrice(order.totalAmount)}</span></div>
             </div>

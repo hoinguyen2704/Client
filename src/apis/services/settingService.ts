@@ -1,6 +1,6 @@
 import axios from '../axios';
 import type { ApiResponse } from '@/types';
-import type { ShippingConfig, PaymentMethodConfig } from '@/types';
+import type { ShippingConfig, PaymentMethodConfig, TaxConfig } from '@/types';
 
 const URL = '/settings';
 
@@ -16,6 +16,10 @@ const settingService = {
   /** Cấu hình vận chuyển (public) */
   getShipping: (): Promise<ApiResponse<ShippingConfig>> =>
     axios.get(`${URL}/shipping`),
+
+  /** Cấu hình thuế (public) */
+  getTax: (): Promise<ApiResponse<TaxConfig>> =>
+    axios.get(`${URL}/tax`),
 };
 
 export default settingService;

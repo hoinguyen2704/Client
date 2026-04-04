@@ -35,6 +35,9 @@ const adminFlashSaleService = {
 
   delete: (id: string): Promise<ApiResponse<void>> =>
     adminAxios.delete(`${URL}/${id}`),
+
+  updateStatus: (id: string, status: string): Promise<ApiResponse<FlashSaleResponse>> =>
+    adminAxios.patch(`${URL}/${id}/status`, null, { params: { status } }),
 };
 
 export default adminFlashSaleService;

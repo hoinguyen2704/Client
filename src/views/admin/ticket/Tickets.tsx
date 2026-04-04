@@ -1,12 +1,22 @@
-import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiMessageCircle } from 'react-icons/fi';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminTicketService from '@/apis/services/adminTicketService';
-import { CustomSelect, AdminPagination } from '@/components';
+import { Button, CustomSelect, AdminPagination } from '@/components';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
 import type { TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDateShort as formatDate } from '@/utils/format';
+
+const TICKET_POLLING_MS = 15000;
+
+const statusBadgeClass: Record<string, string> = {
+  OPEN: 'bg-blue-100 text-blue-600',
+  IN_PROGRESS: 'bg-orange-100 text-orange-600',
+  ANSWERED: 'bg-violet-100 text-violet-600',
+  RESOLVED: 'bg-emerald-100 text-emerald-600',
+  CLOSED: 'bg-slate-100 text-slate-600',
+};
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
@@ -16,17 +26,33 @@ export default function Tickets() {
   const [pageData, setPageData] = useState<PageResponse<TicketResponse> | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse | null>(null);
   const [replyText, setReplyText] = useState('');
+  const newestTicketIdRef = useRef<string | null>(null);
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
     try {
       const res = await adminTicketService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
-      setPageData(res.data); setTickets(res.data.data || []);
+      const nextTickets = res.data.data || [];
+      const nextNewestTicketId = nextTickets[0]?.id ?? null;
+      if (opts?.silent && nextNewestTicketId && newestTicketIdRef.current && nextNewestTicketId !== newestTicketIdRef.current) {
+        toast.info('Có yêu cầu hỗ trợ mới từ người dùng');
+      }
+      newestTicketIdRef.current = nextNewestTicketId;
+      setPageData(res.data);
+      setTickets(nextTickets);
     } catch (err) { console.error('Failed to fetch tickets:', err); toast.error('Tải danh sách hỗ trợ thất bại!'); }
     finally { setLoading(false); }
   }, [statusFilter, page]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        fetchTickets({ silent: true });
+      }
+    }, TICKET_POLLING_MS);
+    return () => window.clearInterval(timer);
+  }, [fetchTickets]);
 
   const handleSelectTicket = async (ticket: TicketResponse) => {
     try {
@@ -75,10 +101,7 @@ export default function Tickets() {
                       <p className="font-bold text-sm truncate">{ticket.subject}</p>
                       <p className="text-xs text-slate-500 mt-1">{ticket.userName} • {formatDate(ticket.createdAt)}</p>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
-                      ticket.status === 'OPEN' ? 'bg-blue-100 text-blue-600' :
-                      ticket.status === 'IN_PROGRESS' ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-600'
-                    }`}>{ticket.status}</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${statusBadgeClass[ticket.status] || 'bg-slate-100 text-slate-600'}`}>{ticket.status}</span>
                   </div>
                 </button>
               ))
@@ -128,9 +151,9 @@ export default function Tickets() {
                 <input type="text" placeholder="Nhập câu trả lời..." value={replyText} onChange={(e) => setReplyText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleReply()}
                   className="flex-1 h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500" />
-                <button onClick={handleReply} className="h-12 px-6 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors flex items-center gap-2">
-                  <FiMessageCircle /> Gửi
-                </button>
+                <Button onClick={handleReply} size="md" icon={<FiMessageCircle />}>
+                Gửi
+                </Button>
               </div>
             </>
           ) : (

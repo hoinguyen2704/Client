@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiCheck, FiLoader } from 'react-icons/fi';
-import { CustomSelect, Modal, ModalCancelButton, FormInput } from '@/components';
+import { Button, CustomSelect, Modal, ModalCancelButton, FormInput, SwitchToggle } from '@/components';
 import { toast } from 'sonner';
 import adminSettingService from '@/apis/services/adminSettingService';
 import type { SettingResponse } from '@/types';
@@ -34,8 +34,15 @@ export default function Settings() {
             flat[s.settingKey] = s.settingValue;
           });
         }
-        setSettings(flat);
-        setOriginal(flat);
+        const withDefaults: Record<string, string> = {
+          ...flat,
+          DEFAULT_TAX_PERCENT: flat.DEFAULT_TAX_PERCENT ?? '10',
+          TAX_ENABLED: flat.TAX_ENABLED ?? 'true',
+          TAX_MODE: flat.TAX_MODE ?? 'INCLUDED',
+          TAX_APPLY_ON_SHIPPING: flat.TAX_APPLY_ON_SHIPPING ?? 'true',
+        };
+        setSettings(withDefaults);
+        setOriginal(withDefaults);
       } catch {
         toast.error('Không thể tải cấu hình hệ thống');
       } finally {
@@ -71,11 +78,12 @@ export default function Settings() {
 
   const hasChanges = Object.keys(settings).some(k => settings[k] !== original[k]);
 
-  const renderToggle = (settingKey: string, color = 'purple') => (
-    <label className="relative inline-flex items-center cursor-pointer">
-      <input type="checkbox" className="sr-only peer" checked={bool(settingKey)} onChange={(e) => set(settingKey, String(e.target.checked))} />
-      <div className={`w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-${color}-600`}></div>
-    </label>
+  const renderToggle = (settingKey: string, tone: 'primary' | 'success' | 'blue' | 'slate' = 'primary') => (
+    <SwitchToggle
+      checked={bool(settingKey)}
+      onChange={(checked) => set(settingKey, String(checked))}
+      tone={tone}
+    />
   );
 
   if (loading) {
@@ -90,14 +98,15 @@ export default function Settings() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Cài Đặt Hệ Thống & AI</h1>
-        <button
+        <Button
           onClick={handleSave}
           disabled={saving || !hasChanges}
-          className="px-6 py-2.5 bg-purple-600 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors flex items-center gap-2 w-fit disabled:opacity-50 disabled:cursor-not-allowed"
+          loading={saving}
+          icon={<FiSave />}
+          size="md"
         >
-          {saving ? <FiLoader className="animate-spin" /> : <FiSave />}
           {saving ? 'Đang lưu...' : 'Lưu cấu hình'}
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -127,6 +136,36 @@ export default function Settings() {
               </div>
               <FormInput label="Thuế mặc định (%)" type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
             </div>
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/40 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-sm">Bật áp dụng thuế</h3>
+                  <p className="text-xs text-slate-500 mt-1">Tính thuế ở bước checkout và lưu snapshot vào đơn hàng.</p>
+                </div>
+                {renderToggle('TAX_ENABLED', 'primary')}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Chế độ thuế</label>
+                  <CustomSelect
+                    value={val('TAX_MODE', 'INCLUDED')}
+                    onChange={(v) => set('TAX_MODE', v)}
+                    options={[
+                      { value: 'INCLUDED', label: 'Đã gồm trong giá' },
+                      { value: 'EXCLUDED', label: 'Cộng thêm vào tổng' }
+                    ]}
+                    className="w-full"
+                  />
+                </div>
+                <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold text-sm">Áp thuế lên phí ship</h4>
+                    <p className="text-xs text-slate-500 mt-1">Nếu tắt, chỉ tính thuế trên tiền hàng.</p>
+                  </div>
+                  {renderToggle('TAX_APPLY_ON_SHIPPING', 'primary')}
+                </div>
+              </div>
+            </div>
             <FormInput label="Email liên hệ" type="email" value={val('SHOP_EMAIL')} onChange={(e) => set('SHOP_EMAIL', e.target.value)} />
             <FormInput label="Email hỗ trợ" type="email" value={val('SUPPORT_EMAIL')} onChange={(e) => set('SUPPORT_EMAIL', e.target.value)} />
             <FormInput label="Hotline" type="text" value={val('HOTLINE')} onChange={(e) => set('HOTLINE', e.target.value)} />
@@ -143,12 +182,14 @@ export default function Settings() {
               </div>
               <h2 className="text-lg font-bold">AI Dashboard (ML Ops)</h2>
             </div>
-            <button
+            <Button
               onClick={() => setIsAiModalOpen(true)}
-              className="text-sm text-indigo-600 font-medium hover:underline"
+              variant="ghost"
+              size="sm"
+              className="text-indigo-600"
             >
               Cấu hình thuật toán
-            </button>
+            </Button>
           </div>
 
           <div className="space-y-4">
@@ -157,7 +198,7 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">Recommendation Engine</h3>
                 <p className="text-xs text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
               </div>
-              {renderToggle("RECOMMENDATION_ENABLED", "indigo")}
+              {renderToggle("RECOMMENDATION_ENABLED", "blue")}
             </div>
 
             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
@@ -165,7 +206,7 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">AI Content Generator</h3>
                 <p className="text-xs text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
               </div>
-              {renderToggle("AI_CONTENT_ENABLED", "indigo")}
+              {renderToggle("AI_CONTENT_ENABLED", "blue")}
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-2">
@@ -241,9 +282,9 @@ export default function Settings() {
         footer={
           <>
             <ModalCancelButton onClick={() => setIsAiModalOpen(false)} />
-            <button onClick={() => setIsAiModalOpen(false)} className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2">
-              <FiCheck /> Đóng
-            </button>
+            <Button onClick={() => setIsAiModalOpen(false)} icon={<FiCheck />} size="md">
+              Đóng
+            </Button>
           </>
         }
       >

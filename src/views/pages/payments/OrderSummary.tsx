@@ -1,5 +1,6 @@
 import { formatPrice } from '@/utils/format';
 import { FiChevronRight } from 'react-icons/fi';
+import { Button } from '@/components';
 
 interface CartItem {
   id: string;
@@ -56,12 +57,14 @@ export default function OrderSummary({ cartItems, currentStep, onBack, onNext }:
             Quay lại
           </button>
         )}
-        <button 
+        <Button
           onClick={onNext}
-          className="btn btn-primary flex-1 py-4 gap-2"
+          size="lg"
+          icon={<FiChevronRight />}
+          className="flex-1"
         >
-          {currentStep === 3 ? 'Đặt hàng ngay' : 'Tiếp tục'} <FiChevronRight />
-        </button>
+          {currentStep === 3 ? 'Đặt hàng ngay' : 'Tiếp tục'}
+        </Button>
       </div>
     </div>
   );

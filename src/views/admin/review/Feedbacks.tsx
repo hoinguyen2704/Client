@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiMessageCircle, FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
-import { CustomSelect, AdminPagination, StarRating, UserAvatar } from '@/components';
+import { Button, CustomSelect, AdminPagination, StarRating, UserAvatar } from '@/components';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
@@ -87,10 +87,11 @@ export default function Feedbacks() {
                     <CustomSelect value={review.status} onChange={(val) => handleStatusChange(review.id, val)}
                       options={FEEDBACK_STATUS_OPTIONS} className="w-32 z-10" />
                     {!review.adminReply && (
-                      <button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
-                        className="text-xs font-medium px-3 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 hover:bg-purple-100 transition-colors flex items-center gap-1">
-                        <FiMessageCircle /> Trả lời
-                      </button>
+                      <Button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
+                        variant="ghost" size="sm" icon={<FiMessageCircle />}
+                        className="text-purple-600">
+                        Trả lời
+                      </Button>
                     )}
                   </div>
 
@@ -99,8 +100,7 @@ export default function Feedbacks() {
                       <input type="text" placeholder="Nhập nội dung trả lời..." value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
                         className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm" />
-                      <button onClick={() => handleReply(review.id)}
-                        className="h-10 px-4 rounded-xl bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors">Gửi</button>
+                      <Button onClick={() => handleReply(review.id)} size="sm">Gửi</Button>
                     </div>
                   )}
                 </div>

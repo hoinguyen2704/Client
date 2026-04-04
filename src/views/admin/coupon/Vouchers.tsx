@@ -16,7 +16,7 @@ import adminCouponService from "@/apis/services/adminCouponService";
 import type { CouponResponse, CouponRequest } from "@/types";
 import { formatPrice, formatDate } from "@/utils/format";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
-import { PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton, Modal, FormInput } from "@/components";
+import { Button, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton, Modal, FormInput } from "@/components";
 import useAdminList from '@/hooks/useAdminList';
 
 
@@ -269,12 +269,13 @@ export default function AdminVouchers() {
         scrollable
         footer={
           <>
-            <button
+            <Button
               onClick={() => { setIsModalOpen(false); resetForm(); }}
-              className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 font-medium hover:bg-slate-200 transition-colors"
+              variant="secondary"
+              size="md"
             >
               Hủy
-            </button>
+            </Button>
             <PrimaryButton
               onClick={handleSubmit}
               icon={<FiCheck className="text-base" />}

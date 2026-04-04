@@ -10,6 +10,11 @@ export interface OrderResponse {
   shippingFee: number;
   discountAmount: number;
   shippingDiscountAmount?: number;
+  taxPercent?: number;
+  taxMode?: 'INCLUDED' | 'EXCLUDED';
+  taxableAmount?: number;
+  taxAmount?: number;
+  taxApplyOnShipping?: boolean;
   totalAmount: number;
   couponCode?: string;
   shippingCouponCode?: string;
@@ -365,9 +370,15 @@ export interface ShippingConfig {
   freeShippingThreshold: number;
 }
 
+export interface TaxConfig {
+  enabled: boolean;
+  taxPercent: number;
+  taxMode: 'INCLUDED' | 'EXCLUDED';
+  applyOnShipping: boolean;
+}
+
 export interface PaymentMethodConfig {
   id: string;
   label: string;
   enabled: boolean;
 }
-

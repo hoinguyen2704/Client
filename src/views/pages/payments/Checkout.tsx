@@ -10,7 +10,7 @@ import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import orderService from '@/apis/services/orderService';
 import settingService from '@/apis/services/settingService';
-import type { CartResponse, AddressResponse, AddressRequest, CouponResponse, PaymentMethodConfig, ShippingConfig } from '@/types';
+import type { CartResponse, AddressResponse, AddressRequest, CouponResponse, PaymentMethodConfig, ShippingConfig, TaxConfig } from '@/types';
 import useAuthStore from '@/stores/useAuthStore';
 
 export default function Checkout() {
@@ -37,6 +37,12 @@ export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodConfig[]>([]);
   const [shippingConfig, setShippingConfig] = useState<ShippingConfig>({ defaultShippingFee: 30000, freeShippingThreshold: 500000 });
+  const [taxConfig, setTaxConfig] = useState<TaxConfig>({
+    enabled: true,
+    taxPercent: 10,
+    taxMode: 'INCLUDED',
+    applyOnShipping: true,
+  });
   const [publicVouchers, setPublicVouchers] = useState<CouponResponse[]>([]);
   const [savedVouchers, setSavedVouchers] = useState<CouponResponse[]>([]);
   const [expandPublic, setExpandPublic] = useState(false);
@@ -134,6 +140,7 @@ export default function Checkout() {
       loadCouponData(),
       loadPublicVoucherData(),
       settingService.getShipping().then(res => { if (res.data) setShippingConfig(res.data); }).catch(() => {}),
+      settingService.getTax().then(res => { if (res.data) setTaxConfig(res.data); }).catch(() => {}),
       settingService.getPaymentMethods().then(res => {
         if (res.data) {
           setPaymentMethods(res.data.filter(pm => pm.enabled));
@@ -307,7 +314,19 @@ export default function Checkout() {
 
   const subtotal = cartItems.reduce((s, i) => s + i.subtotal, 0);
   const shippingFee = subtotal >= shippingConfig.freeShippingThreshold ? 0 : shippingConfig.defaultShippingFee;
-  const total = subtotal + shippingFee - productDiscount - shippingDiscount;
+  const roundMoney = (value: number) => Math.round(Math.max(0, value) * 100) / 100;
+  const productBase = roundMoney(subtotal - productDiscount);
+  const shippingBase = roundMoney(shippingFee - shippingDiscount);
+  const taxableAmount = roundMoney(taxConfig.applyOnShipping ? (productBase + shippingBase) : productBase);
+  const shouldApplyTax = taxConfig.enabled && taxConfig.taxPercent > 0;
+  const taxAmount = shouldApplyTax
+    ? (taxConfig.taxMode === 'EXCLUDED'
+      ? roundMoney(taxableAmount * taxConfig.taxPercent / 100)
+      : roundMoney(taxableAmount * taxConfig.taxPercent / (100 + taxConfig.taxPercent)))
+    : 0;
+  const total = taxConfig.taxMode === 'EXCLUDED' && shouldApplyTax
+    ? roundMoney(productBase + shippingBase + taxAmount)
+    : roundMoney(productBase + shippingBase);
   const isAppliedProductCouponSaved = !!validatedProductCoupon?.id && savedCouponIds.includes(validatedProductCoupon.id);
   const isAppliedShippingCouponSaved = !!validatedShippingCoupon?.id && savedCouponIds.includes(validatedShippingCoupon.id);
 
@@ -445,7 +464,13 @@ export default function Checkout() {
                           <span className="font-medium text-slate-600 dark:text-slate-400">{addr.phoneNumber}</span>
                           {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50 uppercase tracking-wide">Mặc định</span>}
                         </div>
-                        <button type="button" onClick={(e) => { e.preventDefault(); handleEditAddress(addr); }} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Sửa địa chỉ"><FiEdit2 /></button>
+                        <IconButton
+                          onClick={() => handleEditAddress(addr)}
+                          icon={<FiEdit2 />}
+                          title="Sửa địa chỉ"
+                          variant="ghost"
+                          className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                        />
                       </div>
                       <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
                     </div>
@@ -602,9 +627,25 @@ export default function Checkout() {
             <div className="flex justify-between"><span className="text-slate-500">Phí vận chuyển</span><span className="font-medium">{shippingFee === 0 ? <span className="text-emerald-500 font-bold tracking-wide uppercase text-xs">Miễn phí</span> : formatPrice(shippingFee)}</span></div>
             {productDiscount > 0 && <div className="flex justify-between"><span className="text-slate-500">Giảm giá sản phẩm</span><span className="text-emerald-500 font-bold tracking-wide uppercase text-xs">-{formatPrice(productDiscount)}</span></div>}
             {shippingDiscount > 0 && <div className="flex justify-between"><span className="text-slate-500">Giảm phí vận chuyển</span><span className="text-emerald-500 font-bold tracking-wide uppercase text-xs">-{formatPrice(shippingDiscount)}</span></div>}
+            {taxAmount > 0 && (
+              <div className="flex justify-between">
+                <span className="text-slate-500">
+                  Thuế VAT ({taxConfig.taxPercent}%{taxConfig.taxMode === 'INCLUDED' ? ', đã gồm' : ''})
+                </span>
+                <span className={`font-medium ${taxConfig.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
+                  {taxConfig.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(taxAmount)}
+                </span>
+              </div>
+            )}
             <hr className="border-slate-100 dark:border-slate-800" />
             <div className="flex justify-between text-xl items-end"><span className="font-bold">Tổng thanh toán</span><span className="font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 leading-none">{formatPrice(total)}</span></div>
-            <p className="text-right text-xs text-slate-400 mt-1">(Đã bao gồm VAT nếu có)</p>
+            <p className="text-right text-xs text-slate-400 mt-1">
+              {!taxConfig.enabled
+                ? '(Thuế hiện đang tắt theo cấu hình cửa hàng)'
+                : taxConfig.taxMode === 'INCLUDED'
+                  ? '(Thuế đã bao gồm trong tổng thanh toán)'
+                  : '(Thuế được cộng thêm theo cấu hình cửa hàng)'}
+            </p>
           </div>
           <Button
             onClick={handleSubmit}

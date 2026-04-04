@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
-import { ProductCard, CustomSelect } from '@/components';
+import { Button, ProductCard, CustomSelect } from '@/components';
 import { toast } from 'sonner';
 
 export default function Search() {
@@ -262,9 +262,9 @@ export default function Search() {
               <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
                 Vui lòng thử lại với các tiêu chí khác.
               </p>
-              <button onClick={clearFilters} className="btn btn-primary btn-md">
+              <Button onClick={clearFilters} size="md">
                 Xóa bộ lọc
-              </button>
+              </Button>
             </motion.div>
           )}
         </main>

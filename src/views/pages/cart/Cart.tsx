@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
-import { PrimaryButton } from '@/components';
+import { Button, IconButton, PrimaryButton } from '@/components';
 import type { CartResponse } from '@/types';
 
 export default function Cart() {
@@ -89,7 +89,7 @@ export default function Cart() {
                 <input type="checkbox" checked={items.every(i => i.selected)} onChange={toggleAll} className="w-4 h-4 rounded border-slate-300" />
                 <span className="font-medium text-sm">Chọn tất cả ({items.length})</span>
               </label>
-              <button onClick={handleClearCart} className="text-sm text-red-500 hover:underline">Xóa tất cả</button>
+              <Button onClick={handleClearCart} variant="ghost" size="sm" icon={<FiTrash2 />} className="text-red-500">Xóa tất cả</Button>
             </div>
 
             {items.map(item => (
@@ -117,7 +117,7 @@ export default function Cart() {
                   <span className="w-10 text-center font-bold">{item.quantity}</span>
                   <button onClick={() => handleUpdateQty(item.id, item.quantity + 1)} className="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800"><FiPlus /></button>
                 </div>
-                <button onClick={() => handleRemove(item.id)} className="p-2 text-slate-400 hover:text-red-500 shrink-0"><FiTrash2 /></button>
+                <IconButton onClick={() => handleRemove(item.id)} variant="ghost" icon={<FiTrash2 />} className="text-slate-400 hover:text-red-500 shrink-0" />
               </div>
             ))}
           </div>

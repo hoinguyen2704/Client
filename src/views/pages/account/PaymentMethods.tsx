@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle } from 'react-icons/fi';
-import { PrimaryButton, Modal } from '@/components';
+import { Button, PrimaryButton, Modal } from '@/components';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Note: No server endpoint for payment methods - state managed locally
@@ -124,7 +124,7 @@ export default function PaymentMethods() {
             <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500" />
             <span className="font-medium">Đặt làm thẻ mặc định</span>
           </label>
-          <button onClick={() => setIsModalOpen(false)} className="btn btn-primary w-full py-4 mt-6">Lưu thẻ</button>
+          <Button onClick={() => setIsModalOpen(false)} fullWidth size="lg" className="mt-6">Lưu thẻ</Button>
         </div>
       </Modal>
     </div>

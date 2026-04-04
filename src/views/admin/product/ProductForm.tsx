@@ -15,7 +15,7 @@ import type {
 } from '@/types';
 import { toast } from 'sonner';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { TrashButton, PrimaryButton, BackButton } from '@/components';
+import { Button, TrashButton, PrimaryButton, BackButton } from '@/components';
 
 interface VariantFormData {
   id?: string;
@@ -465,12 +465,13 @@ export default function ProductForm() {
           </h1>
         </div>
         <div className="flex gap-3">
-          <button
+          <Button
             onClick={() => navigate('/admin/products')}
-            className="px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            variant="outline"
+            size="md"
           >
             Hủy
-          </button>
+          </Button>
           <PrimaryButton
             onClick={handleSubmit}
             disabled={saving}

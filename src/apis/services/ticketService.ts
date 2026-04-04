@@ -15,6 +15,9 @@ const ticketService = {
 
   reply: (id: string, data: TicketMessageRequest): Promise<ApiResponse<TicketResponse>> =>
     axios.post(`${TICKET_URL}/${id}/reply`, data),
+
+  submitContact: (data: { name: string; email: string; phone: string; subject: string; message: string }): Promise<ApiResponse<TicketResponse>> =>
+    axios.post('/public/contact', data),
 };
 
 export default ticketService;

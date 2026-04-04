@@ -4,7 +4,7 @@ import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/uti
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import { ConfirmDialog, Modal, ModalCancelButton, PrimaryButton, StarRating } from '@/components';
+import { Button, ConfirmDialog, Modal, ModalCancelButton, PrimaryButton, StarRating } from '@/components';
 import { toast } from 'sonner';
 
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
@@ -168,7 +168,7 @@ export default function Orders() {
             <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-4xl"><FiPackage /></div>
             <h3 className="text-xl font-bold mb-2">Không tìm thấy đơn hàng</h3>
             <p className="text-slate-500 mb-6">Bạn chưa có đơn hàng nào trong trạng thái này.</p>
-            <Link to="/search" className="inline-block btn btn-primary btn-lg">Tiếp tục mua sắm</Link>
+            <Button href="/search" size="lg">Tiếp tục mua sắm</Button>
           </div>
         )}
 

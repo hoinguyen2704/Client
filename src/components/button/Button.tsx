@@ -1,3 +1,4 @@
+import React, { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FiLoader } from 'react-icons/fi';
 import { cn } from '@/utils/cn';
@@ -25,7 +26,7 @@ const SIZE_CLASS: Record<ButtonSize, string> = {
   lg: 'h-12 px-6 text-base',
 };
 
-export default function Button({
+export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(({
   children,
   icon,
   iconRight,
@@ -40,7 +41,7 @@ export default function Button({
   fullWidth = false,
   title,
   ariaLabel,
-}: ButtonProps) {
+}, ref) => {
   const classNames = cn(
     BASE_CLASS,
     VARIANT_CLASS[variant],
@@ -53,7 +54,7 @@ export default function Button({
 
   if (href && !loading && !disabled) {
     return (
-      <Link to={href} className={classNames} title={title} aria-label={ariaLabel} onClick={onClick}>
+      <Link to={href} className={classNames} title={title} aria-label={ariaLabel} onClick={onClick} ref={ref as React.ForwardedRef<HTMLAnchorElement>}>
         {leftIcon}
         {children}
         {iconRight}
@@ -70,10 +71,13 @@ export default function Button({
       title={title}
       aria-busy={loading || undefined}
       aria-label={ariaLabel}
+      ref={ref as React.ForwardedRef<HTMLButtonElement>}
     >
       {leftIcon}
       {children}
       {iconRight}
     </button>
   );
-}
+});
+
+export default Button;

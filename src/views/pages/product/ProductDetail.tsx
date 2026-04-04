@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { productService } from '@/apis';
 import flashSaleService from '@/apis/services/flashSaleService';
 import type { ProductResponse, FlashSaleResponse, ProductImageResponse } from '@/types';
-import { ProductCard } from '@/components';
+import { Button, ProductCard } from '@/components';
 import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';
@@ -15,13 +15,13 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const [product, setProduct] = useState<ProductResponse | null>(null);
   const [related, setRelated] = useState<ProductResponse[]>([]);
-  const [activeFlashSale, setActiveFlashSale] = useState<FlashSaleResponse | null>(null);
+  const [activeFlashSales, setActiveFlashSales] = useState<FlashSaleResponse[]>([]);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const flashItemsByVariantId = useMemo(
-    () => buildFlashSaleItemMap(activeFlashSale),
-    [activeFlashSale],
+    () => buildFlashSaleItemMap(activeFlashSales),
+    [activeFlashSales],
   );
 
   useEffect(() => {
@@ -31,12 +31,12 @@ export default function ProductDetail() {
       try {
         const [productRes, flashSaleRes] = await Promise.all([
           productService.getBySlug(slug),
-          flashSaleService.getActive().catch(() => null),
+          flashSaleService.getActiveList().catch(() => null),
         ]);
 
         const loadedProduct = productRes.data;
         setProduct(loadedProduct);
-        setActiveFlashSale(flashSaleRes?.data || null);
+        setActiveFlashSales(flashSaleRes?.data || []);
 
         // Fetch related products from same category
         if (loadedProduct?.category?.slug) {
@@ -46,7 +46,7 @@ export default function ProductDetail() {
       } catch (err) {
         console.error('Lỗi load sản phẩm:', err);
         toast.error('Không thể tải thông tin sản phẩm!');
-        setActiveFlashSale(null);
+        setActiveFlashSales([]);
       } finally {
         setLoading(false);
       }
@@ -85,7 +85,7 @@ export default function ProductDetail() {
     return (
       <div className="w-full px-4 md:px-8 lg:px-12 py-20 text-center">
         <h2 className="text-2xl font-bold mb-4">Không tìm thấy sản phẩm</h2>
-        <Link to="/products" className="btn btn-primary">Quay lại danh sách</Link>
+        <Button href="/products">Quay lại danh sách</Button>
       </div>
     );
   }

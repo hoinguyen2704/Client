@@ -1,3 +1,4 @@
+import React, { forwardRef } from 'react';
 import Button from './Button';
 import { cn } from '@/utils/cn';
 import type { IconButtonProps, IconButtonSize, IconButtonVariant } from '../ui/types';
@@ -15,7 +16,7 @@ const VARIANT_MAP: Record<IconButtonVariant, 'secondary' | 'primary' | 'danger' 
   ghost: 'ghost',
 };
 
-export default function IconButton({
+export const IconButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, IconButtonProps>(({
   icon,
   onClick,
   href,
@@ -26,7 +27,7 @@ export default function IconButton({
   variant = 'neutral',
   size = 'md',
   loading = false,
-}: IconButtonProps) {
+}, ref) => {
   return (
     <Button
       icon={icon}
@@ -40,6 +41,9 @@ export default function IconButton({
       size="sm"
       loading={loading}
       ariaLabel={ariaLabel || title}
+      ref={ref}
     />
   );
-}
+});
+
+export default IconButton;

@@ -3,7 +3,7 @@ import { FiSearch, FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
+import { Button, IconButton, CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';
@@ -63,9 +63,9 @@ export default function Customers() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý khách hàng</h1>
-        <button onClick={handleExport} className="px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center justify-center gap-2">
-          <FiDownload /> Xuất danh sách
-        </button>
+        <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+          Xuất danh sách
+        </Button>
       </div>
 
       {/* Filters & Search */}
@@ -132,11 +132,11 @@ export default function Customers() {
                         <Link to={`/admin/customers/${user.id}`} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Xem chi tiết">
                           <FiEye />
                         </Link>
-                        <button onClick={() => handleToggleStatus(user.id)}
-                          className={`p-2 rounded-lg transition-colors ${user.status === 'ACTIVE' ? 'text-red-600 bg-red-50 hover:bg-red-100' : 'text-green-600 bg-green-50 hover:bg-green-100'}`}
-                          title={user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}>
-                          {user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />}
-                        </button>
+                        <IconButton onClick={() => handleToggleStatus(user.id)}
+                          icon={user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />}
+                          variant={user.status === 'ACTIVE' ? 'danger' : 'primary'}
+                          title={user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
+                        />
                       </div>
                     </td>
                   </tr>

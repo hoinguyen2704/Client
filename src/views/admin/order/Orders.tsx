@@ -3,7 +3,7 @@ import { FiSearch, FiEye, FiDownload, FiPackage } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { formatPrice, formatDate } from '@/utils/format';
-import { StatusBadge, CustomSelect, AdminSearch, AdminPagination, ActionButtons } from '@/components';
+import { Button, StatusBadge, CustomSelect, AdminSearch, AdminPagination, ActionButtons } from '@/components';
 
 import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';
@@ -60,9 +60,9 @@ export default function AdminOrders() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
         <div className="flex gap-3 print:hidden">
-          <button onClick={handleExport} className="px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center justify-center gap-2">
-            <FiDownload /> Xuất Excel
-          </button>
+          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+            Xuất Excel
+          </Button>
         </div>
       </div>
 

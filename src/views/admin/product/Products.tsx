@@ -3,7 +3,7 @@ import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiInf
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
-import { CustomSelect, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge } from '@/components';
+import { Button, CustomSelect, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, Checkbox } from '@/components';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
@@ -138,7 +138,7 @@ export default function Products() {
         </div>
         <div className="flex items-center gap-3">
           {selectedItems.length > 0 && (
-            <button
+            <Button
               onClick={() => {
                 toast(`Xác nhận xóa ${selectedItems.length} sản phẩm?`, {
                   icon: <FiInfo className="text-red-500" />,
@@ -165,15 +165,16 @@ export default function Products() {
                   },
                 });
               }}
-              className="h-11 px-5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold text-sm flex items-center gap-2 transition-all shadow-lg shadow-red-500/25 hover:shadow-red-500/40 hover:-translate-y-0.5 active:translate-y-0"
+              variant="danger"
+              size="md"
+              icon={<FiTrash2 />}
             >
-              <FiTrash2 className="text-base" />
               Xóa ({selectedItems.length})
-            </button>
+            </Button>
           )}
-          <button onClick={handleExport} className="px-5 h-11 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center gap-2 text-sm">
-            <FiDownload className="text-base" /> Xuất Excel
-          </button>
+          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+            Xuất Excel
+          </Button>
           <PrimaryButton href="/admin/products/new" icon={<FiPlus className="text-base" />}>
             Thêm sản phẩm
           </PrimaryButton>
@@ -217,9 +218,9 @@ export default function Products() {
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
                 <th className="p-4 font-medium w-10">
-                  <input type="checkbox" className="rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+                  <Checkbox 
                     checked={selectedItems.length === products.length && products.length > 0}
-                    onChange={handleSelectAll}
+                    onCheckedChange={(checked) => handleSelectAll({ target: { checked } } as any)}
                   />
                 </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('name')}>
@@ -263,9 +264,9 @@ export default function Products() {
                   return (
                     <tr key={product.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                       <td className="p-4">
-                        <input type="checkbox" className="rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+                        <Checkbox 
                           checked={selectedItems.includes(product.id)}
-                          onChange={() => handleSelectItem(product.id)}
+                          onCheckedChange={() => handleSelectItem(product.id)}
                         />
                       </td>
                       <td className="p-4">

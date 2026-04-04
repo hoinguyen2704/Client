@@ -21,13 +21,31 @@ export const isFlashItemActive = (item?: FlashSaleItemResponse | null): item is 
 };
 
 export const buildFlashSaleItemMap = (
-  sale?: FlashSaleResponse | null,
+  saleOrSales?: FlashSaleResponse | FlashSaleResponse[] | null,
 ): Record<string, FlashSaleItemResponse> => {
-  const items = sale?.items || [];
-  return items.reduce<Record<string, FlashSaleItemResponse>>((acc, item) => {
-    if (!item?.variantId) return acc;
-    if (!isFlashItemActive(item)) return acc;
-    acc[item.variantId] = item;
+  const sales = Array.isArray(saleOrSales)
+    ? saleOrSales
+    : saleOrSales
+      ? [saleOrSales]
+      : [];
+
+  return sales.reduce<Record<string, FlashSaleItemResponse>>((acc, sale) => {
+    (sale?.items || []).forEach((item) => {
+      if (!item?.variantId) return;
+      if (!isFlashItemActive(item)) return;
+
+      const existing = acc[item.variantId];
+      if (!existing) {
+        acc[item.variantId] = item;
+        return;
+      }
+
+      const existingPrice = toNumber(existing.flashPrice, Number.MAX_SAFE_INTEGER);
+      const nextPrice = toNumber(item.flashPrice, Number.MAX_SAFE_INTEGER);
+      if (nextPrice < existingPrice) {
+        acc[item.variantId] = item;
+      }
+    });
     return acc;
   }, {});
 };

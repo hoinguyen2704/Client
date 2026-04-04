@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiCheck, FiLoader } from 'react-icons/fi';
 import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ProductCard, CustomSelect } from '@/components';
+import { Button, ProductCard, CustomSelect } from '@/components';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
 import { toast } from 'sonner';
@@ -390,12 +390,12 @@ export default function Products() {
               <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
                 Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn. Vui lòng thử lại với các tiêu chí khác.
               </p>
-              <button 
+              <Button
                 onClick={handleClearFilters}
-                className="btn btn-primary btn-md"
+                size="md"
               >
                 Xóa bộ lọc
-              </button>
+              </Button>
             </motion.div>
           )}
         </main>

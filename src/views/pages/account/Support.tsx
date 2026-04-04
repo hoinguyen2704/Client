@@ -3,12 +3,13 @@ import { FiMessageSquare, FiPlus, FiChevronRight, FiSend } from 'react-icons/fi'
 import ticketService from '@/apis/services/ticketService';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { TicketResponse } from '@/types';
-import { Modal, ModalCancelButton } from '@/components';
+import { Button, IconButton, Modal, ModalCancelButton } from '@/components';
 import { toast } from 'sonner';
 
 const statusMap: Record<string, { label: string; color: string }> = {
   OPEN: { label: 'Mở', color: 'bg-blue-100 text-blue-600' },
   IN_PROGRESS: { label: 'Đang xử lý', color: 'bg-yellow-100 text-yellow-600' },
+  ANSWERED: { label: 'Đã phản hồi', color: 'bg-violet-100 text-violet-600' },
   RESOLVED: { label: 'Đã giải quyết', color: 'bg-green-100 text-green-600' },
   CLOSED: { label: 'Đã đóng', color: 'bg-slate-100 text-slate-600' },
 };
@@ -57,7 +58,7 @@ export default function Support() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Hỗ trợ</h1>
-        <button onClick={() => setShowCreate(true)} className="btn btn-primary btn-md flex items-center gap-2"><FiPlus /> Tạo yêu cầu</button>
+        <Button onClick={() => setShowCreate(true)} size="md" icon={<FiPlus />}>Tạo yêu cầu</Button>
       </div>
 
       {loading ? (
@@ -96,7 +97,7 @@ export default function Support() {
         footer={
           <>
             <ModalCancelButton onClick={() => setShowCreate(false)} />
-            <button onClick={handleCreate} className="btn btn-primary btn-md">Gửi</button>
+            <Button onClick={handleCreate} size="md">Gửi</Button>
           </>
         }
       >
@@ -129,7 +130,7 @@ export default function Support() {
                 <div className="flex gap-2 pt-2">
                   <input className="flex-1 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" placeholder="Nhập phản hồi..."
                     value={replyText} onChange={(e) => setReplyText(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleReply()} />
-                  <button onClick={handleReply} className="btn btn-primary btn-md"><FiSend /></button>
+                  <IconButton onClick={handleReply} icon={<FiSend />} size="md" />
                 </div>
               )}
             </>

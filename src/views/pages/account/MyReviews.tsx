@@ -3,7 +3,7 @@ import { FiStar, FiEdit3, FiTrash2, FiMessageSquare, FiImage, FiX } from 'react-
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import feedbackService from '@/apis/services/feedbackService';
-import { EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components';
+import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components';
 
 // Note: No server endpoint for "my reviews" list yet - state managed locally
 export default function MyReviews() {
@@ -126,12 +126,13 @@ export default function MyReviews() {
                         <p className="text-sm text-slate-500">Đã nhận: {item.date}</p>
                       </div>
                     </Link>
-                    <button 
+                    <Button
                       onClick={() => openReviewModal(item)}
-                      className="w-full sm:w-auto btn btn-primary btn-md whitespace-nowrap"
+                      size="md"
+                      className="w-full sm:w-auto whitespace-nowrap"
                     >
                       Viết đánh giá
-                    </button>
+                    </Button>
                   </div>
                 ))
               ) : (
@@ -219,9 +220,9 @@ export default function MyReviews() {
                   title="Chưa có đánh giá nào"
                   description="Bạn chưa viết đánh giá nào cho các sản phẩm đã mua."
                   action={
-                    <button onClick={() => setActiveTab('to-review')} className="btn btn-md btn-primary">
+                    <Button onClick={() => setActiveTab('to-review')} size="md">
                       Đánh giá ngay
-                    </button>
+                    </Button>
                   }
                 />
               )}
@@ -238,7 +239,7 @@ export default function MyReviews() {
         footer={
           <>
             <ModalCancelButton onClick={closeReviewModal}>Trở lại</ModalCancelButton>
-            <button type="submit" form="review-form" className="btn btn-primary btn-md">Hoàn thành</button>
+            <Button type="submit" size="md">Hoàn thành</Button>
           </>
         }
       >

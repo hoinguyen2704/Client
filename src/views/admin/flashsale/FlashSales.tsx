@@ -5,7 +5,7 @@ import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse } from '@/types';
 import type { FlashSaleRequest, FlashSaleItemRequest } from '@/apis/services/adminFlashSaleService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination, ActionButtons, PrimaryButton, ConfirmDialog, StatusBadge, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea } from '@/components';
+import { AdminPagination, ActionButtons, PrimaryButton, TrashButton, ConfirmDialog, StatusBadge, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea, CustomSelect } from '@/components';
 import useAdminList from '@/hooks/useAdminList';
 import { ProductPickerModal } from '@/components';
 import type { SelectedVariant } from '@/components';
@@ -96,6 +96,17 @@ export default function FlashSales() {
       toast.error(err?.response?.data?.message || 'Xóa Flash Sale thất bại!');
     }
   };
+  const handleUpdateStatus = async (id: string, status: string) => {
+    try {
+      await adminFlashSaleService.updateStatus(id, status);
+      toast.success('Cập nhật trạng thái thành công!');
+      fetchSales({ silent: true });
+    } catch (err: any) {
+      console.error('Update status failed:', err);
+      toast.error(err?.response?.data?.message || 'Cập nhật trạng thái thất bại!');
+    }
+  };
+
   const handleAddVariants = (selectedVariants: SelectedVariant[]) => {
     const newItems = selectedVariants.map(v => ({
       variantId: v.variantId,
@@ -137,8 +148,8 @@ export default function FlashSales() {
         </PrimaryButton>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-visible">
+        <div className="min-w-full min-h-[300px]">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm bg-slate-50/50 dark:bg-slate-800/50">
@@ -165,7 +176,17 @@ export default function FlashSales() {
                   <td className="p-4 text-sm text-slate-500">{new Date(sale.endTime).toLocaleString('vi-VN')}</td>
                   <td className="p-4 text-sm font-medium">{sale.items?.length || 0} SP</td>
                   <td className="p-4">
-                    <StatusBadge status={sale.status} />
+                    <CustomSelect
+                      value={sale.status}
+                      options={[
+                        { label: 'Sắp diễn ra', value: 'SCHEDULED', colorClass: 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20 hover:bg-yellow-100' },
+                        { label: 'Đang diễn ra', value: 'ACTIVE', colorClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 hover:bg-emerald-100' },
+                        { label: 'Đã kết thúc', value: 'ENDED', colorClass: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-100' },
+                        { label: 'Đã hủy', value: 'CANCELLED', colorClass: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 hover:bg-rose-100' }
+                      ]}
+                      onChange={(val) => handleUpdateStatus(sale.id, val.toString())}
+                      className="w-36 text-sm"
+                    />
                   </td>
                   <td className="p-4">
                     <ActionButtons
@@ -300,13 +321,7 @@ export default function FlashSales() {
                           />
                         </td>
                         <td className="p-3 text-center">
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveItem(idx)}
-                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <FiTrash2 />
-                          </button>
+                          <TrashButton onClick={() => handleRemoveItem(idx)} />
                         </td>
                       </tr>
                     ))
