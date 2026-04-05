@@ -10,6 +10,7 @@ import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';
 import { buildFlashSaleItemMap, resolveVariantPricing } from '@/utils/pricing';
+import { addRecentlyViewed } from '@/utils/recentlyViewed';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -62,6 +63,17 @@ export default function ProductDetail() {
   useEffect(() => {
     setActiveImage(0);
   }, [selectedVariantIdx]);
+
+  useEffect(() => {
+    if (!product) return;
+    addRecentlyViewed({
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      image: product.mainImageUrl || product.images?.[0]?.imageUrl,
+      price: product.lowestPrice ?? product.originPrice,
+    });
+  }, [product]);
 
   if (loading) {
     return (

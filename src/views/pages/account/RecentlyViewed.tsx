@@ -3,31 +3,11 @@ import { FiClock, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { EmptyState } from '@/components';
-import { formatPrice } from '@/utils/format';
-
-// Recently viewed products stored in localStorage
-const STORAGE_KEY = 'recently_viewed';
-
-interface ViewedProduct {
-  id: string;
-  name: string;
-  slug: string;
-  image?: string;
-  price: number;
-  viewedAt: string;
-}
-
-function getRecentlyViewed(): ViewedProduct[] {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-  catch { return []; }
-}
-
-function clearRecentlyViewed() {
-  localStorage.removeItem(STORAGE_KEY);
-}
+import { formatDateShort as formatDate, formatPrice } from '@/utils/format';
+import { clearRecentlyViewed, getRecentlyViewed, type RecentlyViewedItem } from '@/utils/recentlyViewed';
 
 export default function RecentlyViewed() {
-  const [viewedProducts, setViewedProducts] = useState<ViewedProduct[]>([]);
+  const [viewedProducts, setViewedProducts] = useState<RecentlyViewedItem[]>([]);
 
   useEffect(() => { setViewedProducts(getRecentlyViewed()); }, []);
 
@@ -62,7 +42,7 @@ export default function RecentlyViewed() {
                       <div className="w-full h-full flex items-center justify-center text-slate-300"><FiClock className="text-4xl" /></div>
                     )}
                     <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-md text-white text-xs px-2 py-1 rounded-lg flex items-center gap-1">
-                      <FiClock /> {product.viewedAt}
+                      <FiClock /> {formatDate(product.viewedAt)}
                     </div>
                   </div>
                   <div className="p-4">

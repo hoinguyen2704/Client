@@ -1,111 +1,275 @@
-import { useState } from 'react';
-import { FiStar, FiEdit3, FiTrash2, FiMessageSquare, FiImage, FiX } from 'react-icons/fi';
+import { useCallback, useEffect, useState } from 'react';
+import { FiMessageSquare, FiStar, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
+import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
+import type { FeedbackResponse, OrderItemResponse, OrderResponse } from '@/types';
 import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components';
+import { formatDateShort as formatDate } from '@/utils/format';
+import { toast } from 'sonner';
 
-// Note: No server endpoint for "my reviews" list yet - state managed locally
+const SHIPPED_ORDER_STATUS = 'SHIPPED';
+const MAX_REVIEW_ATTEMPTS = 2;
+const FETCH_PAGE_SIZE = 50;
+const MAX_FETCH_PAGES = 10;
+
+type ReviewTab = 'to-review' | 'reviewed';
+
+interface ReviewableItem {
+  itemKey: string;
+  orderId: string;
+  orderNumber: string;
+  productId: string;
+  variantId: string;
+  productName: string;
+  variantName: string;
+  productImage?: string;
+  deliveredAt: string;
+  feedbacks: FeedbackResponse[];
+}
+
+interface ReviewedEntry {
+  key: string;
+  itemKey: string;
+  orderId: string;
+  orderNumber: string;
+  productId: string;
+  variantId: string;
+  productName: string;
+  variantName: string;
+  productImage?: string;
+  review: FeedbackResponse;
+  round: number;
+  totalRounds: number;
+}
+
+interface ReviewCandidate {
+  itemKey: string;
+  order: OrderResponse;
+  item: OrderItemResponse;
+}
+
+const toTimestamp = (value?: string) => {
+  if (!value) return 0;
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+};
+
+const buildItemKey = (orderId: string, productId: string, variantId: string) =>
+  `${orderId}:${productId}:${variantId}`;
+
+function toReviewableItem(candidate: ReviewCandidate, feedbacks: FeedbackResponse[]): ReviewableItem {
+  return {
+    itemKey: candidate.itemKey,
+    orderId: candidate.order.id,
+    orderNumber: candidate.order.orderNumber,
+    productId: candidate.item.productId as string,
+    variantId: candidate.item.variantId,
+    productName: candidate.item.productName,
+    variantName: candidate.item.variantName,
+    productImage: candidate.item.imageUrl,
+    deliveredAt: candidate.order.updatedAt || candidate.order.createdAt,
+    feedbacks,
+  };
+}
+
 export default function MyReviews() {
-  const [activeTab, setActiveTab] = useState<'to-review' | 'reviewed'>('to-review');
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [toReview, setToReview] = useState<any[]>([]);
-  
-  // Modal states
+  const [activeTab, setActiveTab] = useState<ReviewTab>('to-review');
+  const [loading, setLoading] = useState(true);
+  const [toReviewItems, setToReviewItems] = useState<ReviewableItem[]>([]);
+  const [reviewedEntries, setReviewedEntries] = useState<ReviewedEntry[]>([]);
+  const [itemFeedbackMap, setItemFeedbackMap] = useState<Record<string, FeedbackResponse[]>>({});
+
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  
-  // Form states
+  const [selectedItem, setSelectedItem] = useState<ReviewableItem | null>(null);
   const [rating, setRating] = useState(5);
   const [reviewContent, setReviewContent] = useState('');
 
-  const openReviewModal = (item: any, isEdit = false) => {
-    setSelectedItem({ ...item, isEdit });
-    if (isEdit) {
-      setRating(item.rating);
-      setReviewContent(item.content);
-    } else {
-      setRating(5);
-      setReviewContent('');
+  const [deleteTarget, setDeleteTarget] = useState<FeedbackResponse | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const loadReviewData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const shippedOrders: OrderResponse[] = [];
+      let currentPage = 1;
+      let lastPage = 1;
+
+      do {
+        const res = await orderService.getMyOrders({
+          status: SHIPPED_ORDER_STATUS,
+          page: currentPage,
+          size: FETCH_PAGE_SIZE,
+        });
+        const pageData = res.data;
+        shippedOrders.push(...(pageData?.data || []));
+        lastPage = Math.max(pageData?.lastPage || 1, 1);
+        currentPage += 1;
+      } while (currentPage <= lastPage && currentPage <= MAX_FETCH_PAGES);
+
+      const candidates: ReviewCandidate[] = shippedOrders.flatMap((order) =>
+        (order.items || [])
+          .filter((item) => Boolean(item.productId) && Boolean(item.variantId))
+          .map((item) => ({
+            order,
+            item,
+            itemKey: buildItemKey(order.id, item.productId as string, item.variantId),
+          })),
+      );
+
+      const candidateResults = await Promise.all(
+        candidates.map(async (candidate) => {
+          try {
+            const res = await feedbackService.getMyFeedback(
+              candidate.item.productId as string,
+              candidate.item.variantId,
+              candidate.order.id,
+            );
+            const feedbacks = [...(res.data || [])].sort((a, b) => toTimestamp(a.createdAt) - toTimestamp(b.createdAt));
+            return { candidate, feedbacks };
+          } catch {
+            return { candidate, feedbacks: [] as FeedbackResponse[] };
+          }
+        }),
+      );
+
+      const nextItemFeedbackMap: Record<string, FeedbackResponse[]> = {};
+      candidateResults.forEach(({ candidate, feedbacks }) => {
+        nextItemFeedbackMap[candidate.itemKey] = feedbacks;
+      });
+
+      const nextToReview = candidateResults
+        .filter(({ feedbacks }) => feedbacks.length < MAX_REVIEW_ATTEMPTS)
+        .map(({ candidate, feedbacks }) => toReviewableItem(candidate, feedbacks))
+        .sort((a, b) => toTimestamp(b.deliveredAt) - toTimestamp(a.deliveredAt));
+
+      const nextReviewed = candidateResults
+        .flatMap(({ candidate, feedbacks }) => {
+          if (feedbacks.length === 0) return [] as ReviewedEntry[];
+          return feedbacks.map((review, index) => ({
+            key: review.id,
+            itemKey: candidate.itemKey,
+            orderId: candidate.order.id,
+            orderNumber: candidate.order.orderNumber,
+            productId: candidate.item.productId as string,
+            variantId: candidate.item.variantId,
+            productName: candidate.item.productName,
+            variantName: candidate.item.variantName,
+            productImage: candidate.item.imageUrl,
+            review,
+            round: index + 1,
+            totalRounds: feedbacks.length,
+          }));
+        })
+        .sort((a, b) => toTimestamp(b.review.createdAt) - toTimestamp(a.review.createdAt));
+
+      setItemFeedbackMap(nextItemFeedbackMap);
+      setToReviewItems(nextToReview);
+      setReviewedEntries(nextReviewed);
+    } catch (error) {
+      console.error('Load my reviews failed', error);
+      toast.error('Không thể tải dữ liệu nhận xét');
+      setItemFeedbackMap({});
+      setToReviewItems([]);
+      setReviewedEntries([]);
+    } finally {
+      setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    loadReviewData();
+  }, [loadReviewData]);
+
+  const openReviewModal = (item: ReviewableItem) => {
+    setSelectedItem(item);
+    setRating(5);
+    setReviewContent('');
     setIsReviewModalOpen(true);
   };
 
   const closeReviewModal = () => {
     setIsReviewModalOpen(false);
-    setTimeout(() => setSelectedItem(null), 300);
-  };
-
-  const handleSubmitReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedItem.isEdit) {
-      setReviews(reviews.map(r => r.id === selectedItem.id ? { ...r, rating, content: reviewContent } : r));
-    } else {
-      // Move from to-review to reviewed
-      setToReview(toReview.filter(item => item.id !== selectedItem.id));
-      setReviews([{
-        id: Date.now(),
-        productId: selectedItem.productId,
-        productSlug: selectedItem.productSlug,
-        productName: selectedItem.productName,
-        productImage: selectedItem.productImage,
-        rating,
-        content: reviewContent,
-        date: new Date().toLocaleDateString('vi-VN'),
-        images: [],
-        reply: null
-      }, ...reviews]);
-      setActiveTab('reviewed');
-    }
-    closeReviewModal();
-  };
-
-  const confirmDelete = (item: any) => {
-    setSelectedItem(item);
-    setIsConfirmDeleteOpen(true);
-  };
-
-  const executeDelete = () => {
-    setReviews(reviews.filter(review => review.id !== selectedItem.id));
-    setIsConfirmDeleteOpen(false);
     setSelectedItem(null);
+    setRating(5);
+    setReviewContent('');
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedItem || !reviewContent.trim()) return;
+
+    if (selectedItem.feedbacks.length >= MAX_REVIEW_ATTEMPTS) {
+      toast.warning('Bạn đã đạt giới hạn đánh giá cho sản phẩm này');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await feedbackService.submit({
+        productId: selectedItem.productId,
+        variantId: selectedItem.variantId,
+        orderId: selectedItem.orderId,
+        rating,
+        content: reviewContent.trim(),
+      });
+      toast.success('Gửi đánh giá thành công');
+      closeReviewModal();
+      setActiveTab('reviewed');
+      await loadReviewData();
+    } catch (error: any) {
+      toast.error(error?.message || 'Gửi đánh giá thất bại');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const executeDeleteReview = async () => {
+    if (!deleteTarget) return;
+    try {
+      await feedbackService.delete(deleteTarget.id);
+      toast.success('Đã xóa nhận xét');
+      setDeleteTarget(null);
+      await loadReviewData();
+    } catch (error: any) {
+      toast.error(error?.message || 'Xóa nhận xét thất bại');
+    }
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Nhận xét của tôi</h1>
 
-      {/* Tabs */}
       <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-2 shadow-sm border border-slate-100 dark:border-slate-800 flex overflow-x-auto hide-scrollbar">
         <button
           onClick={() => setActiveTab('to-review')}
-          className={`flex-1 min-w-[150px] py-3 px-4 rounded-xl font-medium text-center transition-all flex items-center justify-center gap-2 ${
-            activeTab === 'to-review' 
-              ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md' 
+          className={`flex-1 min-w-[150px] py-3 px-4 rounded-xl font-medium text-center transition-all ${
+            activeTab === 'to-review'
+              ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md'
               : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
           }`}
         >
-          Cần đánh giá
-          {toReview.length > 0 && (
-            <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === 'to-review' ? 'bg-white text-purple-600' : 'bg-red-500 text-white'}`}>
-              {toReview.length}
-            </span>
-          )}
+          Cần đánh giá {toReviewItems.length > 0 ? `(${toReviewItems.length})` : ''}
         </button>
         <button
           onClick={() => setActiveTab('reviewed')}
-          className={`flex-1 min-w-[150px] py-3 px-4 rounded-xl font-medium text-center transition-all flex items-center justify-center gap-2 ${
-            activeTab === 'reviewed' 
-              ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md' 
+          className={`flex-1 min-w-[150px] py-3 px-4 rounded-xl font-medium text-center transition-all ${
+            activeTab === 'reviewed'
+              ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md'
               : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
           }`}
         >
-          Lịch sử đánh giá
+          Lịch sử đánh giá {reviewedEntries.length > 0 ? `(${reviewedEntries.length})` : ''}
         </button>
       </div>
 
-      <div className="space-y-6">
+      {loading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-28 bg-slate-200 dark:bg-slate-700 rounded-2xl animate-pulse" />
+          ))}
+        </div>
+      ) : (
         <AnimatePresence mode="wait">
           {activeTab === 'to-review' ? (
             <motion.div
@@ -115,23 +279,30 @@ export default function MyReviews() {
               exit={{ opacity: 0, x: 20 }}
               className="space-y-4"
             >
-              {toReview.length > 0 ? (
-                toReview.map(item => (
-                  <div key={item.id} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                    <Link to={`/product/${item.productSlug}`} className="flex items-center gap-4 flex-1 group">
-                      <img src={item.productImage} alt={item.productName} className="w-20 h-20 object-cover rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:scale-105 transition-transform" />
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-purple-600 transition-colors">{item.productName}</h3>
-                        <p className="text-sm text-slate-500 mt-1">Đơn hàng: {item.orderId}</p>
-                        <p className="text-sm text-slate-500">Đã nhận: {item.date}</p>
+              {toReviewItems.length > 0 ? (
+                toReviewItems.map((item) => (
+                  <div
+                    key={item.itemKey}
+                    className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between"
+                  >
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <img
+                        src={item.productImage || 'https://placehold.co/120x120/f1f5f9/94a3b8?text=No+Image'}
+                        alt={item.productName}
+                        className="w-20 h-20 object-cover rounded-xl bg-slate-100 dark:bg-slate-800"
+                      />
+                      <div className="min-w-0">
+                        <h3 className="font-bold line-clamp-2">{item.productName}</h3>
+                        <p className="text-sm text-slate-500 mt-1">Phân loại: {item.variantName || 'Mặc định'}</p>
+                        <p className="text-sm text-slate-500">Đơn hàng: {item.orderNumber}</p>
+                        <p className="text-sm text-slate-500">Ngày giao: {formatDate(item.deliveredAt)}</p>
+                        {item.feedbacks.length > 0 && (
+                          <p className="text-xs text-orange-600 mt-1">Đã đánh giá {item.feedbacks.length}/{MAX_REVIEW_ATTEMPTS} lần</p>
+                        )}
                       </div>
-                    </Link>
-                    <Button
-                      onClick={() => openReviewModal(item)}
-                      size="md"
-                      className="w-full sm:w-auto whitespace-nowrap"
-                    >
-                      Viết đánh giá
+                    </div>
+                    <Button onClick={() => openReviewModal(item)} size="md" className="w-full sm:w-auto whitespace-nowrap">
+                      {item.feedbacks.length > 0 ? 'Đánh giá bổ sung' : 'Viết đánh giá'}
                     </Button>
                   </div>
                 ))
@@ -151,69 +322,82 @@ export default function MyReviews() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="space-y-6"
+              className="space-y-4"
             >
-              {reviews.length > 0 ? (
-                reviews.map(review => (
-                  <motion.div 
-                    key={review.id}
-                    layout
-                    className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow"
-                  >
-                    {/* Product Info */}
-                    <Link to={`/product/${review.productSlug}`} className="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 -mx-2 rounded-xl transition-colors group">
-                      <img src={review.productImage} alt={review.productName} className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:scale-105 transition-transform" />
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-purple-600 transition-colors">{review.productName}</h3>
-                        <p className="text-sm text-slate-500 mt-1">Đã đánh giá: {review.date}</p>
-                      </div>
-                    </Link>
-
-                    {/* Review Content */}
-                    <div className="space-y-4">
-                      <StarRating value={review.rating} onChange={() => {}} readOnly size="sm" />
-
-                      <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                        {review.content}
-                      </p>
-
-                      {review.images.length > 0 && (
-                        <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
-                          {review.images.map((img, index) => (
-                            <img key={index} src={img} alt="Review" className="w-24 h-24 object-cover rounded-xl border border-slate-200 dark:border-slate-700 hover:scale-105 transition-transform cursor-pointer" />
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Seller Reply */}
-                      {review.reply && (
-                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mt-4 border border-slate-100 dark:border-slate-800 relative">
-                          <div className="absolute -top-3 left-6 w-6 h-6 bg-slate-50 dark:bg-slate-800/50 border-t border-l border-slate-100 dark:border-slate-800 rotate-45"></div>
-                          <div className="flex items-center gap-2 mb-2 text-purple-600 font-bold relative z-10">
-                            <FiMessageSquare /> Phản hồi từ Hozitech
+              {reviewedEntries.length > 0 ? (
+                reviewedEntries.map((entry) => {
+                  const canReviewMore = entry.round === entry.totalRounds && entry.totalRounds < MAX_REVIEW_ATTEMPTS;
+                  const feedbacks = itemFeedbackMap[entry.itemKey] || [];
+                  return (
+                    <div
+                      key={entry.key}
+                      className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-start gap-4">
+                        <img
+                          src={entry.productImage || 'https://placehold.co/120x120/f1f5f9/94a3b8?text=No+Image'}
+                          alt={entry.productName}
+                          className="w-16 h-16 rounded-xl object-cover bg-slate-100 dark:bg-slate-800"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <h3 className="font-bold line-clamp-1">{entry.productName}</h3>
+                            {entry.totalRounds > 1 && (
+                              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-600">
+                                Lần {entry.round}/{MAX_REVIEW_ATTEMPTS}
+                              </span>
+                            )}
                           </div>
-                          <p className="text-slate-600 dark:text-slate-400 text-sm relative z-10">{review.reply}</p>
+                          <p className="text-sm text-slate-500">Phân loại: {entry.variantName || 'Mặc định'}</p>
+                          <p className="text-sm text-slate-500">Đơn hàng: {entry.orderNumber}</p>
+                          <p className="text-sm text-slate-500">Ngày đánh giá: {formatDate(entry.review.createdAt)}</p>
                         </div>
-                      )}
-                    </div>
+                      </div>
 
-                    {/* Actions */}
-                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-                      <button 
-                        onClick={() => openReviewModal(review, true)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-medium text-sm"
-                      >
-                        <FiEdit3 /> Sửa
-                      </button>
-                      <button 
-                        onClick={() => confirmDelete(review)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm"
-                      >
-                        <FiTrash2 /> Xóa
-                      </button>
+                      <div className="mt-4 space-y-3">
+                        <StarRating value={entry.review.rating} onChange={() => {}} readOnly size="sm" />
+                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{entry.review.content}</p>
+
+                        {entry.review.adminReply && (
+                          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
+                            <div className="flex items-center gap-2 mb-1 text-purple-600 font-bold text-sm">
+                              <FiMessageSquare /> Phản hồi từ Hozitech
+                            </div>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">{entry.review.adminReply}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex flex-wrap justify-end gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                        {canReviewMore && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() =>
+                              openReviewModal({
+                                itemKey: entry.itemKey,
+                                orderId: entry.orderId,
+                                orderNumber: entry.orderNumber,
+                                productId: entry.productId,
+                                variantId: entry.variantId,
+                                productName: entry.productName,
+                                variantName: entry.variantName,
+                                productImage: entry.productImage,
+                                deliveredAt: entry.review.createdAt,
+                                feedbacks,
+                              })
+                            }
+                          >
+                            Đánh giá bổ sung
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="sm" className="text-red-600" onClick={() => setDeleteTarget(entry.review)}>
+                          <FiTrash2 /> Xóa
+                        </Button>
+                      </div>
                     </div>
-                  </motion.div>
-                ))
+                  );
+                })
               ) : (
                 <EmptyState
                   icon={<FiStar />}
@@ -229,28 +413,53 @@ export default function MyReviews() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      )}
 
       <Modal
         open={isReviewModalOpen && !!selectedItem}
         onClose={closeReviewModal}
-        title={selectedItem?.isEdit ? 'Sửa đánh giá' : 'Viết đánh giá'}
+        title={selectedItem?.feedbacks.length ? 'Đánh giá bổ sung' : 'Viết đánh giá'}
         scrollable
         footer={
           <>
             <ModalCancelButton onClick={closeReviewModal}>Trở lại</ModalCancelButton>
-            <Button type="submit" size="md">Hoàn thành</Button>
+            <Button type="submit" form="review-form" size="md" loading={submitting} disabled={!reviewContent.trim() || !selectedItem}>
+              Hoàn thành
+            </Button>
           </>
         }
       >
         {selectedItem && (
           <>
             <div className="flex items-center gap-4 mb-6">
-              <img src={selectedItem.productImage} alt={selectedItem.productName} className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800" />
-              <h4 className="font-bold text-slate-900 dark:text-white line-clamp-2">{selectedItem.productName}</h4>
+              <img
+                src={selectedItem.productImage || 'https://placehold.co/120x120/f1f5f9/94a3b8?text=No+Image'}
+                alt={selectedItem.productName}
+                className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800"
+              />
+              <div>
+                <h4 className="font-bold text-slate-900 dark:text-white line-clamp-2">{selectedItem.productName}</h4>
+                <p className="text-sm text-slate-500">Phân loại: {selectedItem.variantName || 'Mặc định'}</p>
+                <p className="text-sm text-slate-500">Đơn hàng: {selectedItem.orderNumber}</p>
+              </div>
             </div>
 
             <form id="review-form" onSubmit={handleSubmitReview} className="space-y-6">
+              {selectedItem.feedbacks.length > 0 && (
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Đánh giá trước đó</p>
+                  {selectedItem.feedbacks.map((fb, idx) => (
+                    <div key={fb.id} className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-sm font-semibold">Lần {idx + 1}</p>
+                        <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
+                      </div>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">{fb.content}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Chất lượng sản phẩm</label>
                 <StarRating value={rating} onChange={setRating} />
@@ -263,26 +472,8 @@ export default function MyReviews() {
                   value={reviewContent}
                   onChange={(e) => setReviewContent(e.target.value)}
                   placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé..."
-                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-none h-32"
-                ></textarea>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Thêm hình ảnh/video</label>
-                <div className="flex gap-4">
-                  <button type="button" className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-500 hover:text-purple-600 hover:border-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
-                    <FiImage className="text-xl mb-1" />
-                    <span className="text-xs font-medium">Thêm ảnh</span>
-                  </button>
-                  {selectedItem.images?.map((img: string, i: number) => (
-                    <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden group">
-                      <img src={img} alt="Review" className="w-full h-full object-cover" />
-                      <button type="button" className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <FiX className="text-xs" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none h-32"
+                />
               </div>
             </form>
           </>
@@ -290,13 +481,13 @@ export default function MyReviews() {
       </Modal>
 
       <ConfirmDialog
-        open={isConfirmDeleteOpen}
+        open={!!deleteTarget}
         title="Xóa đánh giá?"
         message="Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác."
         confirmLabel="Xóa ngay"
         variant="danger"
-        onConfirm={executeDelete}
-        onCancel={() => setIsConfirmDeleteOpen(false)}
+        onConfirm={executeDeleteReview}
+        onCancel={() => setDeleteTarget(null)}
       />
     </div>
   );

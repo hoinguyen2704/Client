@@ -32,6 +32,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
   iconRight,
   onClick,
   href,
+  form,
   className = '',
   type = 'button',
   disabled = false,
@@ -65,6 +66,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
   return (
     <button
       type={type}
+      form={form}
       onClick={onClick}
       disabled={disabled || loading}
       className={classNames}

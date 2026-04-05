@@ -160,6 +160,7 @@ export interface ButtonProps {
   iconRight?: ReactNode;
   onClick?: () => void;
   href?: string;
+  form?: string;
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo } from 'react-icons/fi';
+import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo, FiMessageSquare } from 'react-icons/fi';
 import notificationService from '@/apis/services/notificationService';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { NotificationResponse } from '@/types';
 
 const typeIcons: Record<string, React.ReactNode> = {
   ORDER: <FiShoppingBag className="text-blue-500" />,
+  SUPPORT: <FiMessageSquare className="text-amber-500" />,
+  TICKET: <FiMessageSquare className="text-amber-500" />,
   PROMOTION: <FiTag className="text-purple-500" />,
   SYSTEM: <FiInfo className="text-slate-500" />,
 };

@@ -8,7 +8,7 @@ import type { TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDateShort as formatDate } from '@/utils/format';
 
-const TICKET_POLLING_MS = 15000;
+const TICKET_POLLING_MS = 5000;
 
 const statusBadgeClass: Record<string, string> = {
   OPEN: 'bg-blue-100 text-blue-600',
@@ -16,6 +16,14 @@ const statusBadgeClass: Record<string, string> = {
   ANSWERED: 'bg-violet-100 text-violet-600',
   RESOLVED: 'bg-emerald-100 text-emerald-600',
   CLOSED: 'bg-slate-100 text-slate-600',
+};
+
+const getStatusLabel = (status: string) =>
+  TICKET_STATUS_OPTIONS.find(o => o.value === status)?.label || status;
+
+const getLastMessage = (ticket?: TicketResponse | null) => {
+  if (!ticket?.messages?.length) return null;
+  return ticket.messages[ticket.messages.length - 1];
 };
 
 export default function Tickets() {
@@ -27,6 +35,13 @@ export default function Tickets() {
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse | null>(null);
   const [replyText, setReplyText] = useState('');
   const newestTicketIdRef = useRef<string | null>(null);
+  const selectedLastMessageIdRef = useRef<string | null>(null);
+  const selectedStatusRef = useRef<string | null>(null);
+
+  const syncSelectedRefs = (ticket: TicketResponse | null) => {
+    selectedLastMessageIdRef.current = getLastMessage(ticket)?.id || null;
+    selectedStatusRef.current = ticket?.status || null;
+  };
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
@@ -44,21 +59,61 @@ export default function Tickets() {
     finally { setLoading(false); }
   }, [statusFilter, page]);
 
+  const fetchSelectedTicket = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!selectedTicket?.id) return;
+    try {
+      const res = await adminTicketService.getById(selectedTicket.id);
+      const nextTicket = res.data;
+      const previousMessageId = selectedLastMessageIdRef.current;
+      const nextLastMessage = getLastMessage(nextTicket);
+      const previousStatus = selectedStatusRef.current;
+
+      if (
+        opts?.silent &&
+        previousMessageId &&
+        nextLastMessage?.id &&
+        nextLastMessage.id !== previousMessageId &&
+        nextLastMessage.senderType === 'USER'
+      ) {
+        toast.info('Khách hàng vừa gửi phản hồi mới');
+      }
+      if (opts?.silent && previousStatus && previousStatus !== nextTicket.status) {
+        toast.info(`Ticket đã chuyển sang trạng thái ${getStatusLabel(nextTicket.status)}`);
+      }
+
+      setSelectedTicket(nextTicket);
+      syncSelectedRefs(nextTicket);
+    } catch {
+      if (!opts?.silent) toast.error('Không thể tải chi tiết ticket');
+    }
+  }, [selectedTicket?.id]);
+
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
+
+  useEffect(() => {
+    if (!selectedTicket?.id) return;
+    fetchSelectedTicket();
+  }, [selectedTicket?.id, fetchSelectedTicket]);
+
   useEffect(() => {
     const timer = window.setInterval(() => {
       if (document.visibilityState === 'visible') {
         fetchTickets({ silent: true });
+        fetchSelectedTicket({ silent: true });
       }
     }, TICKET_POLLING_MS);
     return () => window.clearInterval(timer);
-  }, [fetchTickets]);
+  }, [fetchTickets, fetchSelectedTicket]);
 
   const handleSelectTicket = async (ticket: TicketResponse) => {
     try {
       const res = await adminTicketService.getById(ticket.id);
       setSelectedTicket(res.data);
-    } catch { setSelectedTicket(ticket); }
+      syncSelectedRefs(res.data);
+    } catch {
+      setSelectedTicket(ticket);
+      syncSelectedRefs(ticket);
+    }
   };
 
   const handleReply = async () => {
@@ -66,13 +121,19 @@ export default function Tickets() {
     try {
       const res = await adminTicketService.reply(selectedTicket.id, { content: replyText });
       setSelectedTicket(res.data);
-      setReplyText(''); fetchTickets({ silent: true });
+      syncSelectedRefs(res.data);
+      setReplyText('');
+      await fetchTickets({ silent: true });
     } catch (err) { console.error('Reply failed:', err); toast.error('Gửi phản hồi thất bại!'); }
   };
 
   const handleStatusChange = async (id: string, status: string) => {
-    try { await adminTicketService.updateStatus(id, status); fetchTickets({ silent: true }); }
-    catch (err) { console.error('Status update failed:', err); toast.error('Cập nhật trạng thái thất bại!'); }
+    try {
+      const res = await adminTicketService.updateStatus(id, status);
+      setSelectedTicket(res.data);
+      syncSelectedRefs(res.data);
+      await fetchTickets({ silent: true });
+    } catch (err) { console.error('Status update failed:', err); toast.error('Cập nhật trạng thái thất bại!'); }
   };
   return (
     <div className="space-y-6">
@@ -101,7 +162,7 @@ export default function Tickets() {
                       <p className="font-bold text-sm truncate">{ticket.subject}</p>
                       <p className="text-xs text-slate-500 mt-1">{ticket.userName} • {formatDate(ticket.createdAt)}</p>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${statusBadgeClass[ticket.status] || 'bg-slate-100 text-slate-600'}`}>{ticket.status}</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${statusBadgeClass[ticket.status] || 'bg-slate-100 text-slate-600'}`}>{getStatusLabel(ticket.status)}</span>
                   </div>
                 </button>
               ))
