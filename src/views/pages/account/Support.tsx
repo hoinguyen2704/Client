@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { FiMessageSquare, FiPlus, FiChevronRight, FiSend } from 'react-icons/fi';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { FiMessageSquare, FiPlus, FiSend } from 'react-icons/fi';
 import ticketService from '@/apis/services/ticketService';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { SupportRealtimePayload, TicketResponse } from '@/types';
-import { Button, IconButton } from '@/components';
+import { Button, IconButton, FormInput, FormTextarea, StatusBadge } from '@/components';
+import TicketListItem from '@/components/ticket/TicketListItem';
 import { toast } from 'sonner';
-import { TICKET_STATUS_OPTIONS } from '@/constants/ticketConstants';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
@@ -27,27 +27,18 @@ export default function Support() {
   const [newContent, setNewContent] = useState('');
   const [replyText, setReplyText] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
-
-  const statusMap = useMemo(
-    () =>
-      TICKET_STATUS_OPTIONS.reduce((acc, item) => {
-        acc[item.value] = { label: item.label, colorClass: item.colorClass };
-        return acc;
-      }, {} as Record<string, { label: string; colorClass: string }>),
-    [],
-  );
+  const selectedTicketIdRef = useRef(selectedTicketId);
+  selectedTicketIdRef.current = selectedTicketId;
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
     try {
       const res = await ticketService.getMyTickets(1, 30);
       const nextTickets = res.data?.data || [];
-      const nextSelectedId =
-        selectedTicketId && nextTickets.some((ticket) => ticket.id === selectedTicketId)
-          ? selectedTicketId
-          : nextTickets[0]?.id || null;
-      if (nextSelectedId !== selectedTicketId) {
-        setSelectedTicketId(nextSelectedId);
+      const currentId = selectedTicketIdRef.current;
+      const stillExists = currentId && nextTickets.some((t) => t.id === currentId);
+      if (!stillExists) {
+        setSelectedTicketId(nextTickets[0]?.id || null);
       }
       setTickets(nextTickets);
     } catch {
@@ -55,7 +46,7 @@ export default function Support() {
     } finally {
       setLoading(false);
     }
-  }, [selectedTicketId]);
+  }, []);
 
   const fetchTicketDetail = useCallback(async (ticketId: string, opts?: { silent?: boolean }) => {
     try {
@@ -125,8 +116,10 @@ export default function Support() {
         setSelectedTicketId(created.id);
         setSelectedTicket(created);
       }
-    } catch {
-      toast.error('Gửi yêu cầu thất bại');
+    } catch (e: any) {
+      console.error(e);
+      const errMsg = e?.message || 'Có lỗi xảy ra kết nối';
+      toast.error(`Gửi yêu cầu thất bại: ${errMsg}`);
     } finally {
       setCreating(false);
     }
@@ -140,8 +133,10 @@ export default function Support() {
       setSelectedTicket(res.data);
       setReplyText('');
       await fetchTickets({ silent: true });
-    } catch {
-      toast.error('Gửi phản hồi thất bại');
+    } catch (e: any) {
+      console.error(e);
+      const errMsg = e?.message || 'Lỗi kết nối';
+      toast.error(`Gửi phản hồi thất bại: ${errMsg}`);
     } finally {
       setSendingReply(false);
     }
@@ -156,20 +151,19 @@ export default function Support() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[360px_minmax(0,1fr)] gap-6">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col min-h-[620px]">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[calc(100vh-420px)] min-h-[500px]">
           <div className="p-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
             <h2 className="font-bold text-slate-900 dark:text-white">Tạo yêu cầu mới</h2>
-            <input
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            <FormInput
               placeholder="Tiêu đề hỗ trợ"
               value={newSubject}
               onChange={(e) => setNewSubject(e.target.value)}
             />
-            <textarea
-              className="w-full h-24 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 resize-none"
+            <FormTextarea
               placeholder="Mô tả vấn đề của bạn..."
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
+              rows={4}
             />
             <Button
               onClick={handleCreate}
@@ -183,7 +177,7 @@ export default function Support() {
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="flex-1 overflow-y-auto p-2 space-y-1 min-h-0">
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="p-4 animate-pulse">
@@ -198,67 +192,38 @@ export default function Support() {
               </div>
             ) : (
               tickets.map((ticket) => (
-                <button
+                <TicketListItem
                   key={ticket.id}
-                  onClick={() => setSelectedTicketId(ticket.id)}
-                  className={`w-full p-4 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${
-                    selectedTicketId === ticket.id
-                      ? 'bg-purple-50 dark:bg-purple-900/10 border-l-4 border-purple-600'
-                      : ''
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="font-bold text-sm truncate">{ticket.subject}</p>
-                      <p className="text-xs text-slate-500 mt-1">
-                        {ticket.ticketNumber} • {formatDate(ticket.createdAt)}
-                      </p>
-                      <p className="text-xs text-slate-400 mt-1">{ticket.messages?.length || 0} tin nhắn</p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span
-                        className={`px-2 py-0.5 rounded border text-[10px] font-semibold ${
-                          statusMap[ticket.status]?.colorClass || 'bg-slate-50 text-slate-600 border-slate-200'
-                        }`}
-                      >
-                        {statusMap[ticket.status]?.label || ticket.status}
-                      </span>
-                      <FiChevronRight className="text-slate-400" />
-                    </div>
-                  </div>
-                </button>
+                  ticket={ticket}
+                  isSelected={selectedTicketId === ticket.id}
+                  onClick={(t) => setSelectedTicketId(t.id)}
+                />
               ))
             )}
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col min-h-[620px] overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-[calc(100vh-420px)] min-h-[500px] overflow-hidden">
           {selectedTicket ? (
             <>
               <div className="p-5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
                   <h2 className="text-lg font-bold">{selectedTicket.subject}</h2>
-                  <span
-                    className={`px-2 py-0.5 rounded border text-[10px] font-semibold ${
-                      statusMap[selectedTicket.status]?.colorClass || 'bg-slate-50 text-slate-600 border-slate-200'
-                    }`}
-                  >
-                    {statusMap[selectedTicket.status]?.label || selectedTicket.status}
-                  </span>
+                  <StatusBadge status={selectedTicket.status} />
                 </div>
-                <p className="text-sm text-slate-500">
+                <p className="text-lg text-slate-500">
                   {selectedTicket.ticketNumber} • {formatDate(selectedTicket.createdAt)}
                 </p>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/80 dark:bg-slate-900/50">
+              <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/80 dark:bg-slate-900/50 min-h-0">
                 {(selectedTicket.messages || []).map((msg) => (
                   <div
                     key={msg.id}
                     className={`flex ${msg.senderType === 'USER' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm ${
+                      className={`max-w-[82%] px-4 py-3 rounded-2xl text-lg ${
                         msg.senderType === 'USER'
                           ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
                           : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-bl-md'
@@ -280,17 +245,17 @@ export default function Support() {
 
               <div className="p-4 border-t border-slate-100 dark:border-slate-800">
                 {isChatClosed ? (
-                  <div className="h-11 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-slate-500 flex items-center">
+                  <div className="h-11 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-md text-slate-500 flex items-center">
                     Ticket đã đóng, bạn không thể gửi thêm phản hồi.
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <input
-                      className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                    <FormInput
                       placeholder="Nhập phản hồi..."
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleReply()}
+                      className="flex-1"
                     />
                     <IconButton
                       onClick={handleReply}

@@ -22,7 +22,7 @@ export default function RecentlyViewed() {
         <h1 className="text-2xl font-bold">Sản phẩm đã xem</h1>
         {viewedProducts.length > 0 && (
           <button onClick={clearHistory}
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm">
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-md">
             <FiTrash2 /> Xóa lịch sử
           </button>
         )}

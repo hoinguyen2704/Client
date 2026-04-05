@@ -7,7 +7,10 @@ import type { SupportRealtimePayload, TicketResponse } from '@/types';
 import { formatDateShort as formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import IconButton from '@/components/button/IconButton';
-import { TICKET_STATUS_OPTIONS } from '@/constants/ticketConstants';
+import CustomSelect from '@/components/input/CustomSelect';
+import { STATUS_CONFIG } from '@/components/ui/constants';
+import type { StatusType } from '@/components/ui/types';
+import StatusBadge from '@/components/ui/StatusBadge';
 import useAuthStore from '@/stores/useAuthStore';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { onRealtimeEvent } from '@/realtime/realtimeBus';
@@ -35,14 +38,7 @@ export default function SupportChatWidget() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const statusMap = useMemo(
-    () =>
-      TICKET_STATUS_OPTIONS.reduce((acc, item) => {
-        acc[item.value] = { label: item.label, colorClass: item.colorClass };
-        return acc;
-      }, {} as Record<string, { label: string; colorClass: string }>),
-    [],
-  );
+
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!canDirectSupport) {
@@ -214,17 +210,15 @@ export default function SupportChatWidget() {
               {loading && tickets.length === 0 ? (
                 <div className="h-9 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
               ) : tickets.length > 0 ? (
-                <select
+                <CustomSelect
                   value={selectedTicketId || ''}
-                  onChange={(e) => setSelectedTicketId(e.target.value || null)}
-                  className="w-full h-9 px-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                >
-                  {tickets.map((ticket) => (
-                    <option key={ticket.id} value={ticket.id}>
-                      {ticket.subject} - {statusMap[ticket.status]?.label || ticket.status}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setSelectedTicketId(val || null)}
+                  options={tickets.map((ticket) => ({
+                    value: ticket.id,
+                    label: `${ticket.subject} – ${STATUS_CONFIG[ticket.status as StatusType]?.label || ticket.status}`,
+                  }))}
+                  className="w-full"
+                />
               ) : (
                 <p className="text-xs text-slate-500">
                   {canDirectSupport
@@ -238,13 +232,7 @@ export default function SupportChatWidget() {
               {selectedTicket ? (
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-xs text-slate-500 truncate">{selectedTicket.ticketNumber}</p>
-                  <span
-                    className={`px-2 py-0.5 rounded border text-[10px] font-semibold ${
-                      statusMap[selectedTicket.status]?.colorClass || 'bg-slate-50 text-slate-600 border-slate-200'
-                    }`}
-                  >
-                    {statusMap[selectedTicket.status]?.label || selectedTicket.status}
-                  </span>
+                  <StatusBadge status={selectedTicket.status} className="text-[10px]" />
                 </div>
               ) : (
                 <p className="text-xs text-slate-400">Phiên chat mới</p>

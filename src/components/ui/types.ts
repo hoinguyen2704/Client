@@ -24,7 +24,8 @@ export type StatusType =
   | 'admin' | 'user'
   | 'ACTIVE' | 'INACTIVE' | 'UPCOMING' | 'ENDED' | 'EXPIRED'
   | 'PENDING' | 'CONFIRMED' | 'PROCESSING' | 'SHIPPING' | 'SHIPPED' | 'CANCELLED' | 'RETURNED'
-  | 'COMPLETED' | 'FAILED' | 'REFUNDED' | 'low_stock' | 'out_of_stock';
+  | 'COMPLETED' | 'FAILED' | 'REFUNDED' | 'low_stock' | 'out_of_stock'
+  | 'OPEN' | 'IN_PROGRESS' | 'ANSWERED' | 'RESOLVED' | 'CLOSED';
 
 export interface StatusBadgeProps {
   status: string;

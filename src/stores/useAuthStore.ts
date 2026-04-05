@@ -11,11 +11,13 @@ interface User {
 
 interface AuthState {
   token: string | null;
+  refreshToken: string | null;
   user: User | null;
   isAuthenticated: boolean;
 
-  login: (token: string, user: User, rememberMe?: boolean) => void;
+  login: (token: string, refreshToken: string, user: User, rememberMe?: boolean) => void;
   logout: () => void;
+  setTokens: (token: string, refreshToken: string) => void;
   updateUser: (data: Partial<User>) => void;
 }
 
@@ -46,17 +48,18 @@ const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       token: null,
+      refreshToken: null,
       user: null,
       isAuthenticated: false,
 
-      login: (token, user, rememberMe = true) => {
+      login: (token, refreshToken, user, rememberMe = true) => {
         // Set storage mode BEFORE setting state
         if (rememberMe) {
           sessionStorage.removeItem('auth-session-only');
         } else {
           sessionStorage.setItem('auth-session-only', 'true');
         }
-        set({ token, user, isAuthenticated: true });
+        set({ token, refreshToken, user, isAuthenticated: true });
         
         // Sync cart and wishlist from server after successful login
         import('./useCartStore').then(m => m.default.getState().syncFromServer());
@@ -67,9 +70,11 @@ const useAuthStore = create<AuthState>()(
         sessionStorage.removeItem('auth-session-only');
         import('./useCartStore').then(m => m.default.getState().clearCart());
         import('./useWishlistStore').then(m => m.default.getState().clearWishlist());
-        set({ token: null, user: null, isAuthenticated: false });
+        set({ token: null, refreshToken: null, user: null, isAuthenticated: false });
         window.location.href = '/login';
       },
+      
+      setTokens: (token, refreshToken) => set({ token, refreshToken }),
 
       updateUser: (data) =>
         set((state) => ({

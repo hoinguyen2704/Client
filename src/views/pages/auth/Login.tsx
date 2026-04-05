@@ -35,9 +35,9 @@ export default function Login() {
 
     try {
       const res = await authService.login({ email, password });
-      const { accessToken, user } = res.data;
+      const { accessToken, refreshToken, user } = res.data;
 
-      login(accessToken, {
+      login(accessToken, refreshToken, {
         id: user.id,
         name: user.fullName,
         email: user.email,
