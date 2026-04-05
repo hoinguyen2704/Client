@@ -7,6 +7,7 @@ import type { SettingResponse } from '@/types';
 import type { SettingUpdateRequest } from '@/apis/services/adminSettingService';
 
 export default function Settings() {
+  const AI_FEATURES_UNDER_DEVELOPMENT = true;
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [original, setOriginal] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -78,10 +79,15 @@ export default function Settings() {
 
   const hasChanges = Object.keys(settings).some(k => settings[k] !== original[k]);
 
-  const renderToggle = (settingKey: string, tone: 'primary' | 'success' | 'blue' | 'slate' = 'primary') => (
+  const renderToggle = (
+    settingKey: string,
+    tone: 'primary' | 'success' | 'blue' | 'slate' = 'primary',
+    disabled = false,
+  ) => (
     <SwitchToggle
       checked={bool(settingKey)}
       onChange={(checked) => set(settingKey, String(checked))}
+      disabled={disabled}
       tone={tone}
     />
   );
@@ -183,12 +189,15 @@ export default function Settings() {
               <h2 className="text-lg font-bold">AI Dashboard (ML Ops)</h2>
             </div>
             <Button
-              onClick={() => setIsAiModalOpen(true)}
+              onClick={() => {
+                if (!AI_FEATURES_UNDER_DEVELOPMENT) setIsAiModalOpen(true);
+              }}
               variant="ghost"
               size="sm"
               className="text-indigo-600"
+              disabled={AI_FEATURES_UNDER_DEVELOPMENT}
             >
-              Cấu hình thuật toán
+              {AI_FEATURES_UNDER_DEVELOPMENT ? 'Đang phát triển' : 'Cấu hình thuật toán'}
             </Button>
           </div>
 
@@ -198,7 +207,7 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">Recommendation Engine</h3>
                 <p className="text-xs text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
               </div>
-              {renderToggle("RECOMMENDATION_ENABLED", "blue")}
+              {renderToggle('RECOMMENDATION_ENABLED', 'blue', AI_FEATURES_UNDER_DEVELOPMENT)}
             </div>
 
             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
@@ -206,8 +215,14 @@ export default function Settings() {
                 <h3 className="font-bold text-sm">AI Content Generator</h3>
                 <p className="text-xs text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
               </div>
-              {renderToggle("AI_CONTENT_ENABLED", "blue")}
+              {renderToggle('AI_CONTENT_ENABLED', 'blue', AI_FEATURES_UNDER_DEVELOPMENT)}
             </div>
+
+            {AI_FEATURES_UNDER_DEVELOPMENT && (
+              <div className="px-4 py-3 rounded-xl border border-amber-200 bg-amber-50 text-amber-700 text-sm">
+                Tính năng AI Dashboard đang phát triển, tạm thời bị khóa cấu hình.
+              </div>
+            )}
 
             <div className="grid grid-cols-3 gap-4 pt-2">
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
