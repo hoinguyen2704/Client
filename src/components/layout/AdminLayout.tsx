@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
+import RealtimeBridge from '../realtime/RealtimeBridge';
 import useAuthStore from '@/stores/useAuthStore';
 import useUIStore from '@/stores/useUIStore';
 
@@ -13,6 +14,7 @@ export default function AdminLayout() {
       <AdminSidebar />
 
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'}`}>
+        <RealtimeBridge />
         <AdminHeader onLogout={logout} />
 
         <main className="flex-1 p-4 md:p-8 overflow-x-hidden">

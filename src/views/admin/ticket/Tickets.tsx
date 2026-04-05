@@ -1,14 +1,14 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminTicketService from '@/apis/services/adminTicketService';
 import { Button, CustomSelect, AdminPagination } from '@/components';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
-import type { TicketResponse, PageResponse } from '@/types';
+import type { SupportRealtimePayload, TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDateShort as formatDate } from '@/utils/format';
-
-const TICKET_POLLING_MS = 5000;
+import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
+import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
 const statusBadgeClass: Record<string, string> = {
   OPEN: 'bg-blue-100 text-blue-600',
@@ -17,14 +17,14 @@ const statusBadgeClass: Record<string, string> = {
   RESOLVED: 'bg-emerald-100 text-emerald-600',
   CLOSED: 'bg-slate-100 text-slate-600',
 };
+const SUPPORT_REALTIME_EVENTS = new Set<string>([
+  REALTIME_EVENT_TYPES.SUPPORT_TICKET_CREATED,
+  REALTIME_EVENT_TYPES.SUPPORT_MESSAGE_CREATED,
+  REALTIME_EVENT_TYPES.SUPPORT_STATUS_UPDATED,
+]);
 
 const getStatusLabel = (status: string) =>
   TICKET_STATUS_OPTIONS.find(o => o.value === status)?.label || status;
-
-const getLastMessage = (ticket?: TicketResponse | null) => {
-  if (!ticket?.messages?.length) return null;
-  return ticket.messages[ticket.messages.length - 1];
-};
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
@@ -34,25 +34,12 @@ export default function Tickets() {
   const [pageData, setPageData] = useState<PageResponse<TicketResponse> | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse | null>(null);
   const [replyText, setReplyText] = useState('');
-  const newestTicketIdRef = useRef<string | null>(null);
-  const selectedLastMessageIdRef = useRef<string | null>(null);
-  const selectedStatusRef = useRef<string | null>(null);
-
-  const syncSelectedRefs = (ticket: TicketResponse | null) => {
-    selectedLastMessageIdRef.current = getLastMessage(ticket)?.id || null;
-    selectedStatusRef.current = ticket?.status || null;
-  };
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
     try {
       const res = await adminTicketService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       const nextTickets = res.data.data || [];
-      const nextNewestTicketId = nextTickets[0]?.id ?? null;
-      if (opts?.silent && nextNewestTicketId && newestTicketIdRef.current && nextNewestTicketId !== newestTicketIdRef.current) {
-        toast.info('Có yêu cầu hỗ trợ mới từ người dùng');
-      }
-      newestTicketIdRef.current = nextNewestTicketId;
       setPageData(res.data);
       setTickets(nextTickets);
     } catch (err) { console.error('Failed to fetch tickets:', err); toast.error('Tải danh sách hỗ trợ thất bại!'); }
@@ -63,26 +50,7 @@ export default function Tickets() {
     if (!selectedTicket?.id) return;
     try {
       const res = await adminTicketService.getById(selectedTicket.id);
-      const nextTicket = res.data;
-      const previousMessageId = selectedLastMessageIdRef.current;
-      const nextLastMessage = getLastMessage(nextTicket);
-      const previousStatus = selectedStatusRef.current;
-
-      if (
-        opts?.silent &&
-        previousMessageId &&
-        nextLastMessage?.id &&
-        nextLastMessage.id !== previousMessageId &&
-        nextLastMessage.senderType === 'USER'
-      ) {
-        toast.info('Khách hàng vừa gửi phản hồi mới');
-      }
-      if (opts?.silent && previousStatus && previousStatus !== nextTicket.status) {
-        toast.info(`Ticket đã chuyển sang trạng thái ${getStatusLabel(nextTicket.status)}`);
-      }
-
-      setSelectedTicket(nextTicket);
-      syncSelectedRefs(nextTicket);
+      setSelectedTicket(res.data);
     } catch {
       if (!opts?.silent) toast.error('Không thể tải chi tiết ticket');
     }
@@ -96,23 +64,29 @@ export default function Tickets() {
   }, [selectedTicket?.id, fetchSelectedTicket]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        fetchTickets({ silent: true });
+    const unsubscribe = onRealtimeEvent((event) => {
+      if (!SUPPORT_REALTIME_EVENTS.has(event.type)) {
+        return;
+      }
+
+      const payload = (event.data || {}) as SupportRealtimePayload;
+      const eventTicketId = payload.ticketId || null;
+
+      fetchTickets({ silent: true });
+      if (selectedTicket?.id && eventTicketId && selectedTicket.id === eventTicketId) {
         fetchSelectedTicket({ silent: true });
       }
-    }, TICKET_POLLING_MS);
-    return () => window.clearInterval(timer);
-  }, [fetchTickets, fetchSelectedTicket]);
+    });
+
+    return unsubscribe;
+  }, [fetchTickets, fetchSelectedTicket, selectedTicket?.id]);
 
   const handleSelectTicket = async (ticket: TicketResponse) => {
     try {
       const res = await adminTicketService.getById(ticket.id);
       setSelectedTicket(res.data);
-      syncSelectedRefs(res.data);
     } catch {
       setSelectedTicket(ticket);
-      syncSelectedRefs(ticket);
     }
   };
 
@@ -121,7 +95,6 @@ export default function Tickets() {
     try {
       const res = await adminTicketService.reply(selectedTicket.id, { content: replyText });
       setSelectedTicket(res.data);
-      syncSelectedRefs(res.data);
       setReplyText('');
       await fetchTickets({ silent: true });
     } catch (err) { console.error('Reply failed:', err); toast.error('Gửi phản hồi thất bại!'); }
@@ -131,7 +104,6 @@ export default function Tickets() {
     try {
       const res = await adminTicketService.updateStatus(id, status);
       setSelectedTicket(res.data);
-      syncSelectedRefs(res.data);
       await fetchTickets({ silent: true });
     } catch (err) { console.error('Status update failed:', err); toast.error('Cập nhật trạng thái thất bại!'); }
   };

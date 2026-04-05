@@ -4,6 +4,8 @@ import Header from './Header';
 import MobileMenu from './MobileMenu';
 import Footer from './Footer';
 import Chatbot from '../chat/Chatbot';
+import SupportChatWidget from '../chat/SupportChatWidget';
+import RealtimeBridge from '../realtime/RealtimeBridge';
 import useAuthStore from '@/stores/useAuthStore';
 import useUIStore from '@/stores/useUIStore';
 import { useScrollToTop } from '@/hooks';
@@ -45,6 +47,8 @@ export default function MainLayout() {
       </main>
 
       <Footer />
+      <RealtimeBridge />
+      {user?.role !== 'ADMIN' && <SupportChatWidget />}
       <Chatbot />
     </div>
   );

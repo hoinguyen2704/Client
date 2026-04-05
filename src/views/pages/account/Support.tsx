@@ -2,18 +2,19 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { FiMessageSquare, FiPlus, FiChevronRight, FiSend } from 'react-icons/fi';
 import ticketService from '@/apis/services/ticketService';
 import { formatDateShort as formatDate } from '@/utils/format';
-import type { TicketResponse } from '@/types';
+import type { SupportRealtimePayload, TicketResponse } from '@/types';
 import { Button, IconButton } from '@/components';
 import { toast } from 'sonner';
 import { TICKET_STATUS_OPTIONS } from '@/constants/ticketConstants';
+import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
+import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
-const TICKET_POLLING_MS = 5000;
 const CLOSED_STATUSES = new Set(['CLOSED', 'RESOLVED']);
-
-const getLastMessage = (ticket?: TicketResponse | null) => {
-  if (!ticket?.messages?.length) return null;
-  return ticket.messages[ticket.messages.length - 1];
-};
+const SUPPORT_REALTIME_EVENTS = new Set<string>([
+  REALTIME_EVENT_TYPES.SUPPORT_TICKET_CREATED,
+  REALTIME_EVENT_TYPES.SUPPORT_MESSAGE_CREATED,
+  REALTIME_EVENT_TYPES.SUPPORT_STATUS_UPDATED,
+]);
 
 export default function Support() {
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
@@ -26,9 +27,6 @@ export default function Support() {
   const [newContent, setNewContent] = useState('');
   const [replyText, setReplyText] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const lastMessageByTicketRef = useRef<Record<string, string | null>>({});
-  const selectedMessageRef = useRef<string | null>(null);
-  const selectedStatusRef = useRef<string | null>(null);
 
   const statusMap = useMemo(
     () =>
@@ -38,11 +36,6 @@ export default function Support() {
       }, {} as Record<string, { label: string; colorClass: string }>),
     [],
   );
-
-  const syncSelectedRefs = (ticket: TicketResponse | null) => {
-    selectedMessageRef.current = getLastMessage(ticket)?.id || null;
-    selectedStatusRef.current = ticket?.status || null;
-  };
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
@@ -56,28 +49,6 @@ export default function Support() {
       if (nextSelectedId !== selectedTicketId) {
         setSelectedTicketId(nextSelectedId);
       }
-
-      if (opts?.silent) {
-        nextTickets.forEach((ticket) => {
-          const prevLastId = lastMessageByTicketRef.current[ticket.id];
-          const lastMessage = getLastMessage(ticket);
-          if (
-            prevLastId &&
-            lastMessage?.id &&
-            lastMessage.id !== prevLastId &&
-            lastMessage.senderType === 'ADMIN' &&
-            ticket.id !== selectedTicketId
-          ) {
-            toast.info(`Admin vừa phản hồi ticket ${ticket.ticketNumber}`);
-          }
-        });
-      }
-
-      const nextLastMessageMap: Record<string, string | null> = {};
-      nextTickets.forEach((ticket) => {
-        nextLastMessageMap[ticket.id] = getLastMessage(ticket)?.id || null;
-      });
-      lastMessageByTicketRef.current = nextLastMessageMap;
       setTickets(nextTickets);
     } catch {
       setTickets([]);
@@ -89,55 +60,48 @@ export default function Support() {
   const fetchTicketDetail = useCallback(async (ticketId: string, opts?: { silent?: boolean }) => {
     try {
       const res = await ticketService.getDetail(ticketId);
-      const detail = res.data;
-      const previousLastMessageId = selectedMessageRef.current;
-      const previousStatus = selectedStatusRef.current;
-      const nextLastMessage = getLastMessage(detail);
-
-      if (
-        opts?.silent &&
-        previousLastMessageId &&
-        nextLastMessage?.id &&
-        nextLastMessage.id !== previousLastMessageId &&
-        nextLastMessage.senderType === 'ADMIN'
-      ) {
-        toast.info('Admin vừa gửi phản hồi mới');
-      }
-
-      if (opts?.silent && previousStatus && previousStatus !== detail.status) {
-        const nextStatusLabel = statusMap[detail.status]?.label || detail.status;
-        toast.info(`Trạng thái hỗ trợ đã chuyển sang: ${nextStatusLabel}`);
-      }
-
-      setSelectedTicket(detail);
-      syncSelectedRefs(detail);
+      setSelectedTicket(res.data);
     } catch {
       if (!opts?.silent) toast.error('Không tải được chi tiết yêu cầu');
       setSelectedTicket(null);
-      syncSelectedRefs(null);
     }
-  }, [statusMap]);
+  }, []);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
 
   useEffect(() => {
     if (!selectedTicketId) {
       setSelectedTicket(null);
-      syncSelectedRefs(null);
       return;
     }
     fetchTicketDetail(selectedTicketId);
   }, [selectedTicketId, fetchTicketDetail]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      if (document.visibilityState !== 'visible') return;
-      fetchTickets({ silent: true });
-      if (selectedTicketId) {
-        fetchTicketDetail(selectedTicketId, { silent: true });
+    const unsubscribe = onRealtimeEvent((event) => {
+      if (!SUPPORT_REALTIME_EVENTS.has(event.type)) {
+        return;
       }
-    }, TICKET_POLLING_MS);
-    return () => window.clearInterval(timer);
+
+      const payload = (event.data || {}) as SupportRealtimePayload;
+      const eventTicketId = payload.ticketId || null;
+
+      fetchTickets({ silent: true });
+
+      if (!selectedTicketId && eventTicketId) {
+        setSelectedTicketId(eventTicketId);
+        return;
+      }
+
+      const ticketToRefresh = eventTicketId && eventTicketId === selectedTicketId
+        ? eventTicketId
+        : selectedTicketId;
+      if (ticketToRefresh) {
+        fetchTicketDetail(ticketToRefresh, { silent: true });
+      }
+    });
+
+    return unsubscribe;
   }, [fetchTickets, fetchTicketDetail, selectedTicketId]);
 
   useEffect(() => {
@@ -160,7 +124,6 @@ export default function Support() {
       if (created?.id) {
         setSelectedTicketId(created.id);
         setSelectedTicket(created);
-        syncSelectedRefs(created);
       }
     } catch {
       toast.error('Gửi yêu cầu thất bại');
@@ -174,9 +137,7 @@ export default function Support() {
     setSendingReply(true);
     try {
       const res = await ticketService.reply(selectedTicketId, { content: replyText.trim() });
-      const updatedTicket = res.data;
-      setSelectedTicket(updatedTicket);
-      syncSelectedRefs(updatedTicket);
+      setSelectedTicket(res.data);
       setReplyText('');
       await fetchTickets({ silent: true });
     } catch {

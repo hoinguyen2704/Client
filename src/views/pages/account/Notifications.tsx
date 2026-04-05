@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo, FiMessageSquare } from 'react-icons/fi';
 import notificationService from '@/apis/services/notificationService';
 import { formatDateShort as formatDate } from '@/utils/format';
-import type { NotificationResponse } from '@/types';
+import type { NotificationResponse, UserNotificationRealtimePayload } from '@/types';
+import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
+import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
 const typeIcons: Record<string, React.ReactNode> = {
   ORDER: <FiShoppingBag className="text-blue-500" />,
@@ -17,6 +19,16 @@ export default function Notifications() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { fetchNotifications(); }, []);
+
+  useEffect(() => {
+    const unsubscribe = onRealtimeEvent((event) => {
+      if (event.type !== REALTIME_EVENT_TYPES.USER_NOTIFICATION_CREATED) return;
+      const payload = event.data as UserNotificationRealtimePayload | undefined;
+      if (!payload?.id) return;
+      setNotifications((prev) => (prev.some((n) => n.id === payload.id) ? prev : [payload, ...prev]));
+    });
+    return unsubscribe;
+  }, []);
 
   const fetchNotifications = async () => {
     setLoading(true);

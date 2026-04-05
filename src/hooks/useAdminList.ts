@@ -1,29 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { PageResponse, ApiResponse, PaginationParams } from '@/types';
 
-/**
- * Generic hook for admin list pages with search + pagination + filters.
- *
- * Usage:
- * ```tsx
- * const { items, loading, pageData, searchQuery, setSearchQuery, page, setPage, refetch } =
- *   useAdminList(adminCategoryService.getAll, { size: PAGE_SIZE.LARGE });
- *
- * // With reactive filters:
- * const { items, ... } = useAdminList(adminTicketService.getAll, {
- *   size: PAGE_SIZE.LARGE,
- *   extraParams: { status: statusFilter },
- * });
- * ```
- */
-
 interface UseAdminListOptions {
-  /** Items per page (default: 10) */
   size?: number;
-  /**
-   * Extra params merged into every request.
-   * Changes to these values will trigger a re-fetch and reset page to 1.
-   */
   extraParams?: Record<string, any>;
   /** Whether to fetch on mount (default: true) */
   fetchOnMount?: boolean;
