@@ -87,24 +87,24 @@ export default function ProductCard({ product }: { product: any }) {
   return (
     <motion.div 
       whileHover={{ y: -4 }}
-      className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-2 sm:p-3 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 border border-slate-100 dark:border-slate-800 transition-all group relative flex flex-col h-full"
+      className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-3xl p-1.5 sm:p-3 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 border border-slate-100 dark:border-slate-800 transition-all group relative flex flex-col h-full"
     >
       {/* Badges */}
-      <div className="absolute top-3 sm:top-5 left-3 sm:left-5 z-10 flex flex-col gap-1.5 sm:gap-2">
+      <div className="absolute top-2 sm:top-5 left-2 sm:left-5 z-10 flex flex-col gap-1 sm:gap-2">
         {isNew && (
-          <span className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-[9px] sm:text-[10px] font-black px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider">
+          <span className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-[8px] sm:text-[10px] font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider">
             MỚI
           </span>
         )}
         {discount > 0 && (
-          <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-[9px] sm:text-[10px] font-black px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider">
+          <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-[8px] sm:text-[10px] font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider">
             GIẢM {discount}%
           </span>
         )}
       </div>
 
       {/* Image Container */}
-      <Link to={`/product/${slug}`} className="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-3 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-3 sm:p-4 cursor-pointer">
+      <Link to={`/product/${slug}`} className="relative aspect-square rounded-lg sm:rounded-2xl overflow-hidden mb-1.5 sm:mb-3 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 sm:p-4 cursor-pointer">
         <img 
           src={image} 
           alt={name} 
@@ -114,7 +114,7 @@ export default function ProductCard({ product }: { product: any }) {
         />
         {!canAddToCart && (
           <div className="absolute inset-0 bg-white/20 dark:bg-slate-900/20 backdrop-blur-[1px] flex items-center justify-center">
-            <span className="bg-slate-900/80 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-bold uppercase tracking-widest text-[10px] sm:text-sm shadow-xl backdrop-blur-md">
+            <span className="bg-slate-900/80 text-white px-2.5 sm:px-4 py-1 sm:py-2 rounded-lg sm:rounded-xl font-bold uppercase tracking-widest text-[9px] sm:text-sm shadow-xl backdrop-blur-md">
               {statusText}
             </span>
           </div>
@@ -122,30 +122,30 @@ export default function ProductCard({ product }: { product: any }) {
       </Link>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 px-0.5 sm:px-1 pb-0.5 sm:pb-1">
+      <div className="flex flex-col flex-1 px-0 pb-0">
         
         {/* Label bao quanh Tên */}
-        <Link to={`/product/${slug}`} title={name} className="block w-full bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-800 transition-colors mb-2 sm:mb-3 mt-0.5 sm:mt-1">
-          <h3 className="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug">
+        <Link to={`/product/${slug}`} title={name} className="block w-full bg-transparent sm:bg-slate-50 sm:dark:bg-slate-800/50 hover:bg-transparent sm:hover:bg-slate-100 sm:dark:hover:bg-slate-800 p-0 sm:p-3 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-100 sm:dark:border-slate-800 transition-colors mb-1.5 sm:mb-3 mt-0">
+          <h3 className="font-bold text-[12px] sm:text-sm text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug">
             {name}
           </h3>
           
           {rating > 0 && (
-            <div className="flex items-center gap-1 mt-1.5 sm:mt-2">
+            <div className="flex items-center gap-1 mt-1 sm:mt-2">
               <FiStar className="text-yellow-500 fill-yellow-500 text-[10px] sm:text-xs" />
               <span className="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300">{rating.toFixed(1)}</span>
               {reviews > 0 && <span className="text-[9px] sm:text-[10px] font-medium text-slate-400">({reviews})</span>}
             </div>
           )}
           {totalSold > 0 && (
-            <span className={`text-[9px] sm:text-[10px] font-medium text-slate-400 ${rating > 0 ? 'ml-0.5' : 'mt-1.5 sm:mt-2 block'}`}>
+            <span className={`text-[9px] sm:text-[10px] font-medium text-slate-400 ${rating > 0 ? 'ml-0.5' : 'mt-1 sm:mt-2 block'}`}>
               {rating > 0 && '· '}Đã bán {totalSold > 999 ? `${(totalSold / 1000).toFixed(1)}k` : totalSold}
             </span>
           )}
         </Link>
         
         {/* Price & Status — same row */}
-        <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-purple-100 dark:border-purple-800/30 mb-2 sm:mb-4 mt-auto">
+        <div className="bg-slate-50 dark:bg-slate-800/40 sm:bg-gradient-to-br sm:from-purple-50 sm:to-blue-50 sm:dark:from-purple-900/20 sm:dark:to-blue-900/20 p-2 sm:p-3 rounded-lg sm:rounded-2xl border border-slate-100 sm:border-purple-100 dark:border-slate-700 sm:dark:border-purple-800/30 mb-1.5 sm:mb-4 mt-auto">
           {originPrice > 0 ? (
             <>
               {/* Giá gốc */}
@@ -162,7 +162,7 @@ export default function ProductCard({ product }: { product: any }) {
               </div>
               {/* Giá bán + trạng thái */}
               <div className="flex items-center justify-between gap-1.5">
-                <span className="text-xs sm:text-base font-black text-slate-800 dark:text-white leading-none">
+                <span className="text-[14px] sm:text-base font-black text-slate-800 dark:text-white leading-none">
                   {formatPrice(salePrice)}
                 </span>
                 <span className={`text-[8px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg border shrink-0 whitespace-nowrap ${statusBg} ${statusTextColor}`}>
@@ -172,7 +172,7 @@ export default function ProductCard({ product }: { product: any }) {
             </>
           ) : (
             <div className="flex items-center justify-between gap-1.5">
-              <span className="text-xs sm:text-base font-black text-slate-800 dark:text-white leading-none">
+              <span className="text-[14px] sm:text-base font-black text-slate-800 dark:text-white leading-none">
                 {formatPrice(salePrice)}
               </span>
               <span className={`text-[8px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg border shrink-0 whitespace-nowrap ${statusBg} ${statusTextColor}`}>
@@ -183,7 +183,7 @@ export default function ProductCard({ product }: { product: any }) {
         </div>
 
         {isFlashSale && (
-          <div className="mb-2 sm:mb-4 bg-red-50 dark:bg-red-900/20 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-red-100 dark:border-red-800/30">
+          <div className="mb-1.5 sm:mb-4 bg-red-50 dark:bg-red-900/20 px-2 sm:px-3 py-1.5 sm:py-2.5 rounded-lg sm:rounded-2xl border border-red-100 dark:border-red-800/30">
             <div className="flex items-center justify-between text-[10px] sm:text-xs font-semibold mb-1 sm:mb-1.5 text-red-600 dark:text-red-400">
               <span className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-slate-900 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg shadow-sm">
                 <FiClock className="animate-pulse" /> {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
@@ -200,7 +200,7 @@ export default function ProductCard({ product }: { product: any }) {
         )}
 
         {/* Nút hành động nổi bật ở đáy */}
-        <div className="flex items-center gap-1.5 sm:gap-2 mt-1 sm:mt-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 mt-1">
            <button 
              onClick={async (e) => {
                e.preventDefault();
@@ -212,14 +212,14 @@ export default function ProductCard({ product }: { product: any }) {
                if (!productId) return;
                await toggleWishlist(productId);
              }}
-             className={`w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-xl sm:rounded-2xl flex justify-center items-center transition-all shadow-sm group/heart ${
+             className={`w-9 h-9 sm:w-12 sm:h-12 shrink-0 border rounded-lg sm:rounded-2xl flex justify-center items-center transition-all shadow-sm group/heart ${
                liked
                  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
                  : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
              }`}
              title="Yêu thích"
            >
-             <FiHeart className={`text-lg sm:text-xl group-hover/heart:scale-110 transition-transform ${liked ? 'fill-red-500 text-red-500' : ''}`} />
+             <FiHeart className={`text-base sm:text-xl group-hover/heart:scale-110 transition-transform ${liked ? 'fill-red-500 text-red-500' : ''}`} />
            </button>
            
            <button 
@@ -245,9 +245,9 @@ export default function ProductCard({ product }: { product: any }) {
                   toast.error('Thêm giỏ hàng thất bại! Vui lòng đăng nhập.');
                } finally { setAddingToCart(false); }
              }}
-             className="flex-1 h-10 sm:h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm flex justify-center items-center gap-1.5 sm:gap-2 transition-all shadow-lg shadow-purple-500/25 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed group/cart"
+             className="flex-1 h-9 sm:h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg sm:rounded-2xl font-bold text-[11px] sm:text-sm flex justify-center items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-purple-500/25 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed group/cart"
            >
-             <FiShoppingCart className="text-base sm:text-lg group-hover/cart:-rotate-12 transition-transform" />
+             <FiShoppingCart className="text-sm sm:text-lg group-hover/cart:-rotate-12 transition-transform" />
              <span className="truncate">
                {addingToCart ? 'Đang thêm...' : (canAddToCart ? 'Thêm Giỏ Hàng' : statusText)}
              </span>

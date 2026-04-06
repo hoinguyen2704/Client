@@ -105,9 +105,9 @@ export default function Search() {
   };
 
   return (
-    <div className="w-full px-4 md:px-8 lg:px-12 py-8">
+    <div className="w-full px-3 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-sm text-slate-500 mb-8">
+      <nav className="flex text-xs sm:text-sm text-slate-500 mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
           <li><Link to="/" className="hover:text-purple-600">Trang chủ</Link></li>
           <li><span className="mx-2">/</span></li>
@@ -115,20 +115,20 @@ export default function Search() {
         </ol>
       </nav>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-5 sm:gap-8">
         {/* Mobile Filter Toggle */}
         <button 
-          className="lg:hidden flex items-center justify-center gap-2 w-full py-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 font-medium"
+          className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-sm font-semibold"
           onClick={() => setIsFilterOpen(true)}
         >
           <FiFilter /> Lọc sản phẩm
         </button>
 
         {/* Sidebar Filters */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="h-full overflow-y-auto p-6 lg:p-0 custom-scrollbar">
+        <aside className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-0 custom-scrollbar">
             <div className="flex items-center justify-between mb-6 lg:hidden">
-              <h2 className="text-xl font-bold">Bộ lọc</h2>
+              <h2 className="text-lg font-bold">Bộ lọc</h2>
               <button onClick={() => setIsFilterOpen(false)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full">
                 <FiX />
               </button>
@@ -177,25 +177,25 @@ export default function Search() {
 
         {/* Overlay for mobile filter */}
         {isFilterOpen && (
-          <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsFilterOpen(false)} />
+          <div className="fixed inset-0 bg-black/50 z-[70] lg:hidden" onClick={() => setIsFilterOpen(false)} />
         )}
 
         {/* Main Content */}
         <main className="flex-1 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <h1 className="text-2xl font-bold">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
+            <h1 className="text-xl sm:text-2xl font-bold">
               {query ? `Kết quả cho "${query}"` : 'Tất cả sản phẩm'} 
-              <span className="text-slate-500 text-lg font-normal"> ({totalElements})</span>
+              <span className="text-slate-500 text-sm sm:text-lg font-normal"> ({totalElements})</span>
             </h1>
             
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-500">Sắp xếp:</span>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="text-xs sm:text-sm text-slate-500">Sắp xếp:</span>
               <div>
                 <CustomSelect 
                   value={sortBy === 'price' ? (sortDir === 'asc' ? 'price-asc' : 'price-desc') : 'newest'}
                   onChange={(v) => handleSortChange(v)}
                   dropdownAlign="right"
-                  className="w-48 h-10"
+                  className="w-40 sm:w-48 h-9 sm:h-10"
                   options={[
                     { value: 'newest', label: 'Mới nhất' },
                     { value: 'price-asc', label: 'Giá tăng dần' },
@@ -207,7 +207,7 @@ export default function Search() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="animate-pulse bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
                   <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl mb-4" />
@@ -218,7 +218,7 @@ export default function Search() {
             </div>
           ) : products.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
                 {products.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -226,23 +226,23 @@ export default function Search() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center mt-12">
+                <div className="flex justify-center mt-8 sm:mt-12">
                   <div className="flex items-center gap-2">
                     <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}
-                      className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
                       <FiChevronLeft />
                     </button>
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       const pageNum = page <= 3 ? i + 1 : Math.min(page - 2 + i, totalPages);
                       return (
                         <button key={pageNum} onClick={() => setPage(pageNum)}
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${page === pageNum ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
+                          className={`w-9 h-9 sm:w-10 sm:h-10 text-sm rounded-xl flex items-center justify-center font-bold ${page === pageNum ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
                           {pageNum}
                         </button>
                       );
                     })}
                     <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages}
-                      className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
                       <FiChevronRight />
                     </button>
                   </div>
@@ -253,13 +253,13 @@ export default function Search() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center py-20 text-center"
+              className="flex flex-col items-center justify-center py-14 sm:py-20 text-center"
             >
-              <div className="w-40 h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
-                <FiSearch className="text-6xl text-slate-300 dark:text-slate-600" />
+              <div className="w-28 h-28 sm:w-40 sm:h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Không tìm thấy sản phẩm nào</h2>
-              <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2">Không tìm thấy sản phẩm nào</h2>
+              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
                 Vui lòng thử lại với các tiêu chí khác.
               </p>
               <Button onClick={clearFilters} size="md">

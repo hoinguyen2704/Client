@@ -1,20 +1,20 @@
-import axios from 'axios';
-import useAuthStore from '@/stores/useAuthStore';
+import axios from "axios";
+import useAuthStore from "@/stores/useAuthStore";
 
 const CHATBOT_BASE = import.meta.env.VITE_CHATBOT_URL; // http://localhost:6969/api/v1/chatbot
 
-/* ─── Axios cho chat (public) ─── */
+/*  Axios cho chat (public)  */
 const chatbotAxios = axios.create({
   baseURL: CHATBOT_BASE,
   timeout: 70000,
-  headers: { 'Content-Type': 'application/json' },
+  headers: { "Content-Type": "application/json" },
 });
 
-/* ─── Axios cho admin config (direct tới chatbot server) ─── */
+/*  Axios cho admin config (direct tới chatbot server)  */
 const adminAxios = axios.create({
   baseURL: `${CHATBOT_BASE}/admin`,
   timeout: 15000,
-  headers: { 'Content-Type': 'application/json' },
+  headers: { "Content-Type": "application/json" },
 });
 
 adminAxios.interceptors.request.use((config) => {
@@ -25,18 +25,18 @@ adminAxios.interceptors.request.use((config) => {
   return config;
 });
 
-// ─── Types ───
+//  Types
 
 /** Role phải là 'bot' (không phải 'assistant') để chatbot server map đúng sang OpenAI */
 export interface ChatbotMessage {
-  role: 'user' | 'bot';
+  role: "user" | "bot";
   content: string;
 }
 
 /** Response thực tế từ chatbot server */
 export interface ChatbotResponse {
   answer: string;
-  mode: 'db' | 'non_db' | 'recommend';
+  mode: "db" | "non_db" | "recommend";
   data?: unknown;
   plan?: unknown;
   sql?: string;
@@ -92,36 +92,41 @@ export interface WidgetConfig {
   isEnabled: boolean;
 }
 
-// ─── Service ───
+//  Service
 
 const chatbotService = {
   /** Gửi tin nhắn chat (public) */
-  sendMessage: (message: string, history: ChatbotMessage[] = []): Promise<ChatbotResponse> =>
-    chatbotAxios.post('', { prompt: message, history }).then((r) => r.data),
+  sendMessage: (
+    message: string,
+    history: ChatbotMessage[] = [],
+  ): Promise<ChatbotResponse> =>
+    chatbotAxios.post("", { prompt: message, history }).then((r) => r.data),
 
-  // ─── Admin APIs ───
+  //  Admin APIs
 
   /** Lấy toàn bộ config (admin) */
   getConfig: (): Promise<ChatbotConfig> =>
-    adminAxios.get('/config').then((r) => r.data),
+    adminAxios.get("/config").then((r) => r.data),
 
   /** Cập nhật config (partial update) */
-  updateConfig: (partial: Partial<ChatbotConfig>): Promise<{ message: string; config: ChatbotConfig }> =>
-    adminAxios.put('/config', partial).then((r) => r.data),
+  updateConfig: (
+    partial: Partial<ChatbotConfig>,
+  ): Promise<{ message: string; config: ChatbotConfig }> =>
+    adminAxios.put("/config", partial).then((r) => r.data),
 
   /** Reset config về mặc định  */
   resetConfig: (): Promise<{ message: string; config: ChatbotConfig }> =>
-    adminAxios.post('/config/reset').then((r) => r.data),
+    adminAxios.post("/config/reset").then((r) => r.data),
 
   /** Lấy giá trị mặc định */
   getDefaults: (): Promise<ChatbotConfig> =>
-    adminAxios.get('/config/defaults').then((r) => r.data),
+    adminAxios.get("/config/defaults").then((r) => r.data),
 
-  // ─── Widget API (public, no auth) ───
+  //  Widget API (public, no auth)
 
   /** Lấy config cho widget (public — không cần admin key) */
   getWidgetConfig: (): Promise<WidgetConfig> =>
-    chatbotAxios.get('/admin/widget-config').then((r) => r.data),
+    chatbotAxios.get("/admin/widget-config").then((r) => r.data),
 };
 
 export default chatbotService;

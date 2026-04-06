@@ -88,14 +88,14 @@ export default function Orders() {
     }
   };
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
+    <div className="space-y-4 sm:space-y-6">
+      <h1 className="text-xl sm:text-2xl font-bold">Quản lý đơn hàng</h1>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3 sm:space-y-4">
         <div className="flex overflow-x-auto pb-2 hide-scrollbar border-b border-slate-100 dark:border-slate-800">
           {CLIENT_ORDER_TABS.map(tab => (
             <button key={tab.id} onClick={() => { setActiveTab(tab.id); setPage(1); }}
-              className={`px-6 py-3 font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>
+              className={`px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>
               {tab.label}
             </button>
           ))}
@@ -108,38 +108,38 @@ export default function Orders() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 animate-pulse">
+            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 animate-pulse">
               <div className="h-5 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-4" />
               <div className="h-20 bg-slate-200 dark:bg-slate-700 rounded" />
             </div>
           ))
         ) : orders.length > 0 ? (
           orders.map(order => (
-            <div key={order.id} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+            <div key={order.id} className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800 mb-3 sm:mb-4">
                 <div>
-                  <span className="font-bold text-lg mr-4">{order.orderNumber}</span>
-                   <div className="text-slate-500 text-sm mt-1">Ngày đặt: {formatDate(order.createdAt)}</div>
-                  <div className="text-slate-500 text-sm mt-1">Cập nhật: {formatDateTime(order.updatedAt || order.createdAt)}</div>
+                  <span className="font-bold text-base sm:text-lg mr-4">{order.orderNumber}</span>
+                   <div className="text-slate-500 text-xs sm:text-sm mt-1">Ngày đặt: {formatDate(order.createdAt)}</div>
+                  <div className="text-slate-500 text-xs sm:text-sm mt-1">Cập nhật: {formatDateTime(order.updatedAt || order.createdAt)}</div>
                 </div>
                 <div>{getClientStatusBadge(order.orderStatus)}</div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {order.items.map(item => (
-                  <div key={item.id} className="flex items-center gap-4 p-2 -mx-2 rounded-xl">
-                    <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400"><FiPackage className="text-2xl" /></div>
-                    <div className="flex-1">
-                      <h3 className="font-bold line-clamp-1">{item.productName}</h3>
-                      <p className="text-sm text-slate-500 mt-1">Phân loại: {item.variantName} | Số lượng: x{item.quantity}</p>
+                  <div key={item.id} className="flex items-start gap-3 sm:gap-4 p-1.5 sm:p-2 -mx-1.5 sm:-mx-2 rounded-xl">
+                    <div className="w-14 h-14 sm:w-20 sm:h-20 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400"><FiPackage className="text-xl sm:text-2xl" /></div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-sm sm:text-base line-clamp-1">{item.productName}</h3>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-1">Phân loại: {item.variantName} | Số lượng: x{item.quantity}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="font-bold text-purple-600">{formatPrice(item.unitPrice)}</div>
+                    <div className="flex flex-col items-end gap-1.5 sm:gap-2 shrink-0">
+                      <div className="font-bold text-sm sm:text-base text-purple-600">{formatPrice(item.unitPrice)}</div>
                       {order.orderStatus === 'SHIPPED' && (
-                        <button onClick={() => handleOpenReview(order, item)} className="px-3 py-1 text-sm rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                        <button onClick={() => handleOpenReview(order, item)} className="px-2.5 sm:px-3 py-1 text-xs sm:text-sm rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
                           Đánh giá
                         </button>
                       )}
@@ -148,15 +148,15 @@ export default function Orders() {
                 ))}
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 mt-4 border-t border-slate-100 dark:border-slate-800">
-                <div className="text-slate-500">
-                  Tổng tiền: <span className="text-xl font-bold text-purple-600 ml-2">{formatPrice(order.totalAmount)}</span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="text-slate-500 text-sm sm:text-base">
+                  Tổng tiền: <span className="text-lg sm:text-xl font-bold text-purple-600 ml-2">{formatPrice(order.totalAmount)}</span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
                   {order.orderStatus === 'PENDING' && (
-                    <button onClick={() => setCancelTarget(order.id)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Hủy đơn</button>
+                    <button onClick={() => setCancelTarget(order.id)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full sm:w-auto">Hủy đơn</button>
                   )}
-                  <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center gap-2">
+                  <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
                     Xem chi tiết <FiChevronRight />
                   </Link>
                 </div>
@@ -164,19 +164,19 @@ export default function Orders() {
             </div>
           ))
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
-            <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-4xl"><FiPackage /></div>
-            <h3 className="text-xl font-bold mb-2">Không tìm thấy đơn hàng</h3>
-            <p className="text-slate-500 mb-6">Bạn chưa có đơn hàng nào trong trạng thái này.</p>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-100 dark:border-slate-800">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl sm:text-4xl"><FiPackage /></div>
+            <h3 className="text-lg sm:text-xl font-bold mb-2">Không tìm thấy đơn hàng</h3>
+            <p className="text-sm sm:text-base text-slate-500 mb-6">Bạn chưa có đơn hàng nào trong trạng thái này.</p>
             <Button href="/search" size="lg">Tiếp tục mua sắm</Button>
           </div>
         )}
 
         {totalPages > 1 && (
-          <div className="flex justify-center gap-2 pt-4">
+          <div className="flex justify-center gap-1.5 sm:gap-2 pt-3 sm:pt-4">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
               <button key={p} onClick={() => setPage(p)}
-                className={`w-10 h-10 rounded-xl text-sm font-medium transition-colors ${p === page ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200'}`}>
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-sm font-medium transition-colors ${p === page ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200'}`}>
                 {p}
               </button>
             ))}

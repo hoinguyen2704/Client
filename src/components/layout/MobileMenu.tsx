@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiSearch, FiUser, FiSettings, FiBox, FiLogOut } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
@@ -6,6 +7,16 @@ import type { MobileMenuProps } from './types';
 
 export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMenuProps) {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen]);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -22,13 +33,25 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 overflow-hidden"
-        >
-          <div className="px-4 py-4 space-y-4">
+        <>
+          <motion.button
+            type="button"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            aria-label="Đóng menu"
+            className="md:hidden fixed inset-x-0 top-20 bottom-0 z-[70] bg-slate-900/35 backdrop-blur-[1px]"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.18 }}
+            className="md:hidden fixed inset-x-0 top-20 bottom-0 z-[80] bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 overflow-y-auto overscroll-contain"
+          >
+            <div className="px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-4">
             {/* Mobile Search */}
             <div className="relative">
               <input
@@ -103,7 +126,8 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
               )}
             </nav>
           </div>
-        </motion.div>
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

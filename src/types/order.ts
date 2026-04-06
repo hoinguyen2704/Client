@@ -1,4 +1,4 @@
-// ─── Order ───────────────────────────────────────────────────────
+//  Order
 export interface OrderResponse {
   id: string;
   orderNumber: string;
@@ -11,7 +11,7 @@ export interface OrderResponse {
   discountAmount: number;
   shippingDiscountAmount?: number;
   taxPercent?: number;
-  taxMode?: 'INCLUDED' | 'EXCLUDED';
+  taxMode?: "INCLUDED" | "EXCLUDED";
   taxableAmount?: number;
   taxAmount?: number;
   taxApplyOnShipping?: boolean;
@@ -62,9 +62,10 @@ export interface CheckoutRequest {
 export interface CheckoutItem {
   variantId: string;
   quantity: number;
+  expectedUnitPrice?: number;
 }
 
-// ─── Feedback ────────────────────────────────────────────────────
+//  Feedback
 export interface FeedbackResponse {
   id: string;
   rating: number;
@@ -94,7 +95,7 @@ export interface FeedbackRequest {
   imagesJson?: string;
 }
 
-// ─── Coupon ──────────────────────────────────────────────────────
+//  Coupon
 export interface ApplicableProductInfo {
   id: string;
   name: string;
@@ -136,7 +137,7 @@ export interface CouponRequest {
   applicableProductIds?: string[];
 }
 
-// ─── FlashSale ───────────────────────────────────────────────────
+//  FlashSale
 export interface FlashSaleResponse {
   id: string;
   name: string;
@@ -163,7 +164,7 @@ export interface FlashSaleItemResponse {
   remainingStock: number;
 }
 
-// ─── Ticket ─────────────────────────────────────────────────────
+//  Ticket
 export interface TicketRequest {
   subject: string;
   content: string;
@@ -195,7 +196,7 @@ export interface TicketMessageResponse {
   createdAt: string;
 }
 
-// ─── Notification ───────────────────────────────────────────────
+//  Notification
 export interface NotificationResponse {
   id: string;
   title: string;
@@ -206,7 +207,7 @@ export interface NotificationResponse {
   createdAt: string;
 }
 
-// ─── Wishlist ───────────────────────────────────────────────────
+//  Wishlist
 export interface WishlistResponse {
   id: string;
   productId: string;
@@ -218,7 +219,7 @@ export interface WishlistResponse {
   addedAt: string;
 }
 
-// ─── Address ────────────────────────────────────────────────────
+//  Address
 export interface AddressResponse {
   id: string;
   fullName: string;
@@ -251,9 +252,12 @@ export interface CartResponse {
   quantity: number;
   subtotal: number;
   stockQuantity: number;
+  available?: boolean;
+  issueCode?: string;
+  issueMessage?: string;
 }
 
-// ─── Banner / Article (CMS) ─────────────────────────────────────
+//  Banner / Article (CMS)
 export interface BannerResponse {
   id: string;
   title: string;
@@ -276,7 +280,7 @@ export interface ArticleResponse {
   updatedAt?: string;
 }
 
-// ─── Dashboard ──────────────────────────────────────────────────
+//  Dashboard
 export interface DashboardStatsResponse {
   totalRevenue: number;
   totalOrders: number;
@@ -333,7 +337,7 @@ export interface RecentOrderItem {
   createdAt: string;
 }
 
-// ─── User (admin view) ─────────────────────────────────────────
+//  User (admin view)
 export interface UserResponse {
   id: string;
   userName?: string;
@@ -354,7 +358,7 @@ export interface UpdateUserRequest {
   gender?: string;
 }
 
-// ─── Setting ────────────────────────────────────────────────────
+//  Setting
 export interface SettingResponse {
   id: string;
   groupName: string;
@@ -373,7 +377,7 @@ export interface ShippingConfig {
 export interface TaxConfig {
   enabled: boolean;
   taxPercent: number;
-  taxMode: 'INCLUDED' | 'EXCLUDED';
+  taxMode: "INCLUDED" | "EXCLUDED";
   applyOnShipping: boolean;
 }
 

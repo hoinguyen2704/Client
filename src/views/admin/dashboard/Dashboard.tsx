@@ -30,6 +30,11 @@ export default function Dashboard() {
         const padded: RevenueChartItem[] = [];
         const map = new Map(chartData?.map(item => [item.label, item]) || []);
         const today = new Date();
+        const todayDate = today.getDate();
+        const todayMonth = today.getMonth();
+        const todayYear = today.getFullYear();
+
+        const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
         const formatYMD = (date: Date) => {
           const yyyy = date.getFullYear();
@@ -38,9 +43,11 @@ export default function Dashboard() {
           return `${yyyy}-${mm}-${dd}`;
         };
 
+        const isToday = (d: Date) =>
+          d.getDate() === todayDate && d.getMonth() === todayMonth && d.getFullYear() === todayYear;
+
         if (selectedPeriod === 'WEEK') {
-          // Tính ngày Thứ 2 đầu tuần (getDay(): 0=CN, 1=T2, ..., 6=T7)
-          const dayOfWeek = today.getDay(); // 0=CN, 1=T2...
+          const dayOfWeek = today.getDay();
           const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
           const monday = new Date(today);
           monday.setDate(today.getDate() - diffToMonday);
@@ -50,21 +57,27 @@ export default function Dashboard() {
             d.setDate(monday.getDate() + i);
             const labelKey = formatYMD(d);
             const item = map.get(labelKey) || { label: labelKey, revenue: 0, orders: 0 };
-            padded.push({ ...item, label: `${d.getDate()}/${d.getMonth() + 1}` });
+            const dayName = dayNames[d.getDay()];
+            const dateStr = `${d.getDate()}/${d.getMonth() + 1}`;
+            const label = isToday(d) ? `${dayName}|${dateStr}|_TODAY` : `${dayName}|${dateStr}`;
+            padded.push({ ...item, label });
           }
         } else if (selectedPeriod === 'MONTH') {
-          const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+          const daysInMonth = new Date(todayYear, todayMonth + 1, 0).getDate();
           for (let i = 1; i <= daysInMonth; i++) {
-            const d = new Date(today.getFullYear(), today.getMonth(), i);
+            const d = new Date(todayYear, todayMonth, i);
             const labelKey = formatYMD(d);
             const item = map.get(labelKey) || { label: labelKey, revenue: 0, orders: 0 };
-            padded.push({ ...item, label: `${i}/${today.getMonth() + 1}` });
+            const dateStr = `${i}/${todayMonth + 1}`;
+            const label = isToday(d) ? `${dateStr}|_TODAY` : dateStr;
+            padded.push({ ...item, label });
           }
         } else if (selectedPeriod === 'YEAR') {
           for (let i = 1; i <= 12; i++) {
             const labelKey = `Tháng ${i}`;
             const item = map.get(labelKey) || { label: labelKey, revenue: 0, orders: 0 };
-            padded.push(item);
+            const label = i === todayMonth + 1 ? `Tháng ${i}|_TODAY` : `Tháng ${i}`;
+            padded.push({ ...item, label });
           }
         }
         return padded;
@@ -214,13 +227,20 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {stats.revenueChart?.map((item: RevenueChartItem, index: number) => (
-                      <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="py-4 font-medium">{item.label}</td>
-                        <td className="py-4 text-center">{item.orders}</td>
-                        <td className="py-4 text-right font-bold text-green-600">{formatPrice(item.revenue)}</td>
-                      </tr>
-                    ))}
+                    {stats.revenueChart?.map((item: RevenueChartItem, index: number) => {
+                      const isToday = item.label.includes('_TODAY');
+                      const displayLabel = item.label.replace('|_TODAY', '').split('|').join(' – ');
+                      return (
+                        <tr key={index} className={`border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isToday ? 'bg-purple-50 dark:bg-purple-900/10' : ''}`}>
+                          <td className="py-4 font-medium">
+                            {displayLabel}
+                            {isToday && <span className="ml-2 text-xs font-bold text-purple-600 bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded-full">Hôm nay</span>}
+                          </td>
+                          <td className="py-4 text-center">{item.orders}</td>
+                          <td className="py-4 text-right font-bold text-green-600">{formatPrice(item.revenue)}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                   <tfoot>
                     <tr className="border-t-2 border-slate-200 dark:border-slate-800">

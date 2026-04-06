@@ -1,10 +1,10 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Card } from '@/components';
 import { FiShoppingBag, FiCheckCircle, FiXCircle, FiTrendingUp } from 'react-icons/fi';
 import type { DashboardChildProps } from './types';
+import ChartXAxisTick from './ChartXAxisTick';
 
 export default function OrderChart({ stats }: DashboardChildProps) {
-  // Use revenue chart data to show order counts per period
   const chartData = (stats.revenueChart || []).map((item) => ({
     name: item.label,
     orders: item.orders,
@@ -12,6 +12,9 @@ export default function OrderChart({ stats }: DashboardChildProps) {
 
   const totalOrders = chartData.reduce((s, d) => s + d.orders, 0);
   const maxItem = chartData.reduce((m, d) => d.orders > m.orders ? d : m, { name: '-', orders: 0 });
+
+  // Find today's label for reference line
+  const todayEntry = chartData.find((d) => d.name.includes('_TODAY'));
 
   return (
     <Card>
@@ -48,7 +51,7 @@ export default function OrderChart({ stats }: DashboardChildProps) {
             <FiTrendingUp className="text-amber-500 text-xs" />
             <p className="text-xs text-slate-500 dark:text-slate-400">Cao nhất</p>
           </div>
-          <p className="text-lg font-bold text-amber-700 dark:text-amber-400">{maxItem.orders} <span className="text-xs font-normal text-slate-400">({maxItem.name})</span></p>
+          <p className="text-lg font-bold text-amber-700 dark:text-amber-400">{maxItem.orders} <span className="text-xs font-normal text-slate-400">({maxItem.name.split('|')[0]})</span></p>
         </div>
       </div>
 
@@ -57,16 +60,41 @@ export default function OrderChart({ stats }: DashboardChildProps) {
       ) : (
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 24 }}>
               <defs>
                 <linearGradient id="colorOrdersAPI" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.25}/><stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="name"
+                stroke="#475569"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                interval={0}
+                tick={<ChartXAxisTick />}
+                height={48}
+              />
               <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number) => [value.toLocaleString(), 'Đơn hàng']} />
+              <Tooltip
+                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                formatter={(value: number) => [value.toLocaleString(), 'Đơn hàng']}
+                labelFormatter={(label: string) => {
+                  const parts = label.replace('|_TODAY', '').split('|');
+                  return parts.length > 1 ? `${parts[0]} - ${parts[1]}` : parts[0];
+                }}
+              />
+              {todayEntry && (
+                <ReferenceLine
+                  x={todayEntry.name}
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
+                  strokeOpacity={0.5}
+                />
+              )}
               <Area type="monotone" dataKey="orders" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorOrdersAPI)" dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
             </AreaChart>
           </ResponsiveContainer>

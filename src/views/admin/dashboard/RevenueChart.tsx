@@ -1,6 +1,7 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Card } from '@/components';
 import type { DashboardChildProps } from './types';
+import ChartXAxisTick from './ChartXAxisTick';
 
 export default function RevenueChart({ stats }: DashboardChildProps) {
   const chartData = (stats.revenueChart || []).map((item) => ({
@@ -12,6 +13,9 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
   const total = chartData.reduce((s, d) => s + d.revenue, 0);
   const avg = chartData.length > 0 ? total / chartData.length : 0;
   const maxItem = chartData.reduce((m, d) => d.revenue > m.revenue ? d : m, { name: '-', revenue: 0 });
+
+  // Find today's label for reference line
+  const todayEntry = chartData.find((d) => d.name.includes('_TODAY'));
 
   return (
     <Card>
@@ -27,7 +31,7 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
           <p className="text-lg font-bold text-blue-700 dark:text-blue-400">{avg >= 1e6 ? `${(avg / 1e6).toFixed(0)}M` : avg.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-4">
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Cao nhất ({maxItem.name})</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Cao nhất ({maxItem.name.split('|')[0]})</p>
           <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{maxItem.revenue >= 1e6 ? `${(maxItem.revenue / 1e6).toFixed(0)}M` : maxItem.revenue.toLocaleString()}</p>
         </div>
       </div>
@@ -37,12 +41,37 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
       ) : (
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 24 }}>
               <defs><linearGradient id="colorRevAPI" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25}/><stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/></linearGradient></defs>
-              <XAxis dataKey="name" stroke="#475569" fontSize={13} fontWeight={600} tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="name"
+                stroke="#475569"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                interval={0}
+                tick={<ChartXAxisTick />}
+                height={48}
+              />
               <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v >= 1e6 ? `${v/1e6}M` : v}`} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number) => [`${value.toLocaleString()}đ`, 'Doanh thu']} />
+              <Tooltip
+                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                formatter={(value: number) => [`${value.toLocaleString()}đ`, 'Doanh thu']}
+                labelFormatter={(label: string) => {
+                  const parts = label.replace('|_TODAY', '').split('|');
+                  return parts.length > 1 ? `${parts[0]} - ${parts[1]}` : parts[0];
+                }}
+              />
+              {todayEntry && (
+                <ReferenceLine
+                  x={todayEntry.name}
+                  stroke="#8b5cf6"
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
+                  strokeOpacity={0.5}
+                />
+              )}
               <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevAPI)" dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
             </AreaChart>
           </ResponsiveContainer>

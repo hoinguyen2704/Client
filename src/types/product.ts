@@ -1,4 +1,4 @@
-// ─── Product ────────────────────────────────────────────────────
+//  Product
 export interface ProductResponse {
   id: string;
   name: string;
@@ -99,7 +99,7 @@ export interface CategoryRequest {
   specTemplates?: { specKey: string; hint?: string; sortOrder?: number }[];
 }
 
-// ─── Brand ──────────────────────────────────────────────────────
+//  Brand
 export interface BrandResponse {
   id: string;
   name: string;

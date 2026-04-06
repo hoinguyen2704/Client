@@ -171,12 +171,12 @@ export default function SupportChatWidget() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-24 right-6 w-14 h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-[55] bg-gradient-to-r from-purple-600 to-blue-600 ${
+        className={`fixed bottom-20 right-4 sm:bottom-24 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-[55] bg-gradient-to-r from-purple-600 to-blue-600 ${
           isOpen ? 'hidden' : ''
         }`}
         aria-label="Mở hỗ trợ trực tiếp"
       >
-        <FiMessageSquare className="text-2xl" />
+        <FiMessageSquare className="text-xl sm:text-2xl" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -191,9 +191,9 @@ export default function SupportChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
             transition={{ duration: 0.16 }}
-            className="fixed bottom-24 right-6 w-[360px] max-w-[92vw] h-[520px] max-h-[88vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden z-[55]"
+            className="fixed bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden z-[55] left-2.5 right-2.5 bottom-16 top-14 sm:left-auto sm:right-6 sm:bottom-24 sm:top-auto sm:w-[360px] sm:h-[520px] sm:max-w-[92vw] sm:max-h-[88vh]"
           >
-            <div className="h-14 px-4 flex items-center justify-between text-white bg-gradient-to-r from-purple-600 to-blue-600">
+            <div className="h-14 px-3 sm:px-4 flex items-center justify-between text-white bg-gradient-to-r from-purple-600 to-blue-600">
               <div>
                 <h3 className="font-bold text-sm">Hỗ trợ trực tiếp</h3>
                 <p className="text-[11px] text-white/80">Realtime với admin</p>
@@ -206,7 +206,7 @@ export default function SupportChatWidget() {
               </button>
             </div>
 
-            <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+            <div className="px-2.5 sm:px-3 py-2 border-b border-slate-100 dark:border-slate-800">
               {loading && tickets.length === 0 ? (
                 <div className="h-9 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
               ) : tickets.length > 0 ? (
@@ -228,7 +228,7 @@ export default function SupportChatWidget() {
               )}
             </div>
 
-            <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 min-h-11">
+            <div className="px-2.5 sm:px-3 py-2 border-b border-slate-100 dark:border-slate-800 min-h-10 sm:min-h-11">
               {selectedTicket ? (
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-xs text-slate-500 truncate">{selectedTicket.ticketNumber}</p>
@@ -239,7 +239,7 @@ export default function SupportChatWidget() {
               )}
             </div>
 
-            <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-slate-50 dark:bg-slate-900/50">
+            <div className="flex-1 overflow-y-auto p-2.5 sm:p-3 space-y-2.5 sm:space-y-3 bg-slate-50 dark:bg-slate-900/50">
               {selectedTicket?.messages?.length ? (
                 selectedTicket.messages.map((msg) => (
                   <div
@@ -247,7 +247,7 @@ export default function SupportChatWidget() {
                     className={`flex ${msg.senderType === 'USER' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm ${
+                      className={`max-w-[92%] sm:max-w-[85%] px-3 py-2 rounded-2xl text-sm ${
                         msg.senderType === 'USER'
                           ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
                           : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-bl-md'
@@ -272,7 +272,7 @@ export default function SupportChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="p-2.5 sm:p-3 border-t border-slate-100 dark:border-slate-800">
               {!canDirectSupport ? (
                 <button
                   onClick={() => navigate('/login')}
@@ -287,7 +287,7 @@ export default function SupportChatWidget() {
               ) : (
                 <div className="flex items-center gap-2">
                   <input
-                    className="flex-1 h-10 px-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                    className="flex-1 h-9 sm:h-10 px-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                     placeholder="Nhập tin nhắn..."
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}

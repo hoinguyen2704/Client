@@ -1,33 +1,52 @@
-import { useState, useEffect, useCallback } from 'react';
-import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiCheck, FiLoader } from 'react-icons/fi';
-import { AnimatePresence, motion } from 'motion/react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Button, ProductCard, CustomSelect } from '@/components';
-import { productService, categoryService, brandService } from '@/apis';
-import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
-import { toast } from 'sonner';
+import { useState, useEffect, useCallback } from "react";
+import {
+  FiFilter,
+  FiChevronDown,
+  FiX,
+  FiChevronLeft,
+  FiChevronRight,
+  FiSearch,
+  FiCheck,
+  FiLoader,
+} from "react-icons/fi";
+import { AnimatePresence, motion } from "motion/react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Button, ProductCard, CustomSelect } from "@/components";
+import { productService, categoryService, brandService } from "@/apis";
+import type {
+  ProductResponse,
+  CategoryResponse,
+  BrandResponse,
+  PageResponse,
+} from "@/types";
+import { toast } from "sonner";
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // ─── Filter state (synced with URL query params) ──────────────
+  //  Filter state (synced with URL query params)
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
-  const [selectedCategorySlug, setSelectedCategorySlug] = useState(searchParams.get('categorySlug') || '');
-  const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || '');
-  const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'popular');
-  const [sortDir, setSortDir] = useState(searchParams.get('sortDir') || 'DESC');
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+  const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
+  const [selectedCategorySlug, setSelectedCategorySlug] = useState(
+    searchParams.get("categorySlug") || "",
+  );
+  const [selectedBrand, setSelectedBrand] = useState(
+    searchParams.get("brand") || "",
+  );
+  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "popular");
+  const [sortDir, setSortDir] = useState(searchParams.get("sortDir") || "DESC");
+  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
-  // ─── Data state ───────────────────────────────────────────────
+  //  Data state
   const [products, setProducts] = useState<ProductResponse[]>([]);
-  const [pageInfo, setPageInfo] = useState<PageResponse<ProductResponse> | null>(null);
+  const [pageInfo, setPageInfo] =
+    useState<PageResponse<ProductResponse> | null>(null);
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [brands, setBrands] = useState<BrandResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFiltersLoaded, setIsFiltersLoaded] = useState(false);
 
-  // ─── Fetch categories & brands (once) ─────────────────────────
+  //  Fetch categories & brands (once)
   useEffect(() => {
     const loadFilters = async () => {
       try {
@@ -47,9 +66,10 @@ export default function Products() {
         setCategories(flatCats);
 
         if (brandRes?.data?.data) setBrands(brandRes.data.data);
-        else if (Array.isArray(brandRes?.data)) setBrands(brandRes.data as unknown as BrandResponse[]);
+        else if (Array.isArray(brandRes?.data))
+          setBrands(brandRes.data as unknown as BrandResponse[]);
       } catch (err) {
-        console.error('[Products] Failed to load filters:', err);
+        console.error("[Products] Failed to load filters:", err);
       } finally {
         setIsFiltersLoaded(true);
       }
@@ -57,7 +77,7 @@ export default function Products() {
     loadFilters();
   }, []);
 
-  // ─── Fetch products ───────────────────────────────────────────
+  //  Fetch products
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -76,8 +96,8 @@ export default function Products() {
         setProducts(res.data.data || []);
       }
     } catch (err) {
-      console.error('[Products] Failed to fetch products:', err);
-      toast.error('Tải sản phẩm thất bại!');
+      console.error("[Products] Failed to fetch products:", err);
+      toast.error("Tải sản phẩm thất bại!");
       setProducts([]);
     } finally {
       setIsLoading(false);
@@ -88,36 +108,44 @@ export default function Products() {
     fetchProducts();
   }, [fetchProducts]);
 
-  // ─── Sync filters → URL ───────────────────────────────────────
+  //  Sync filters → URL
   useEffect(() => {
     const params: Record<string, string> = {};
     if (keyword) params.keyword = keyword;
     if (selectedCategorySlug) params.categorySlug = selectedCategorySlug;
     if (selectedBrand) params.brand = selectedBrand;
-    if (sortBy !== 'popular') params.sortBy = sortBy;
-    if (sortDir !== 'DESC') params.sortDir = sortDir;
+    if (sortBy !== "popular") params.sortBy = sortBy;
+    if (sortDir !== "DESC") params.sortDir = sortDir;
     if (page > 1) params.page = String(page);
     setSearchParams(params, { replace: true });
-  }, [keyword, selectedCategorySlug, selectedBrand, sortBy, sortDir, page, setSearchParams]);
+  }, [
+    keyword,
+    selectedCategorySlug,
+    selectedBrand,
+    sortBy,
+    sortDir,
+    page,
+    setSearchParams,
+  ]);
 
-  // ─── Handlers ─────────────────────────────────────────────────
+  //  Handlers
   const handleCategoryChange = (slug: string) => {
-    setSelectedCategorySlug(slug === selectedCategorySlug ? '' : slug);
+    setSelectedCategorySlug(slug === selectedCategorySlug ? "" : slug);
     setPage(1);
   };
 
   const handleBrandChange = (brandSlug: string) => {
-    setSelectedBrand(brandSlug === selectedBrand ? '' : brandSlug);
+    setSelectedBrand(brandSlug === selectedBrand ? "" : brandSlug);
     setPage(1);
   };
 
   const handleSortChange = (value: string) => {
     const map: Record<string, { sortBy: string; sortDir: string }> = {
-      popular: { sortBy: 'popular', sortDir: 'DESC' },
-      newest: { sortBy: 'createdAt', sortDir: 'DESC' },
-      'price-asc': { sortBy: 'originPrice', sortDir: 'ASC' },
-      'price-desc': { sortBy: 'originPrice', sortDir: 'DESC' },
-      'best-rated': { sortBy: 'averageRating', sortDir: 'DESC' },
+      popular: { sortBy: "popular", sortDir: "DESC" },
+      newest: { sortBy: "createdAt", sortDir: "DESC" },
+      "price-asc": { sortBy: "originPrice", sortDir: "ASC" },
+      "price-desc": { sortBy: "originPrice", sortDir: "DESC" },
+      "best-rated": { sortBy: "averageRating", sortDir: "DESC" },
     };
     const s = map[value] || map.popular;
     setSortBy(s.sortBy);
@@ -126,51 +154,66 @@ export default function Products() {
   };
 
   const currentSortValue = () => {
-    if (sortBy === 'originPrice' && sortDir === 'ASC') return 'price-asc';
-    if (sortBy === 'originPrice' && sortDir === 'DESC') return 'price-desc';
-    if (sortBy === 'averageRating') return 'best-rated';
-    if (sortBy === 'createdAt') return 'newest';
-    return 'popular';
+    if (sortBy === "originPrice" && sortDir === "ASC") return "price-asc";
+    if (sortBy === "originPrice" && sortDir === "DESC") return "price-desc";
+    if (sortBy === "averageRating") return "best-rated";
+    if (sortBy === "createdAt") return "newest";
+    return "popular";
   };
 
   const handleClearFilters = () => {
-    setKeyword('');
-    setSelectedCategorySlug('');
-    setSelectedBrand('');
-    setSortBy('popular');
-    setSortDir('DESC');
+    setKeyword("");
+    setSelectedCategorySlug("");
+    setSelectedBrand("");
+    setSortBy("popular");
+    setSortDir("DESC");
     setPage(1);
   };
 
   const totalPages = pageInfo?.lastPage || 1;
 
-  // ─── Render ───────────────────────────────────────────────────
+  //  Render
   return (
-    <div className="w-full px-4 md:px-8 lg:px-12 py-8">
+    <div className="w-full px-3 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-sm text-slate-500 mb-8">
+      <nav className="flex text-xs sm:text-sm text-slate-500 mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
-          <li><Link to="/" className="hover:text-purple-600">Trang chủ</Link></li>
-          <li><span className="mx-2">/</span></li>
-          <li><span className="text-slate-900 dark:text-slate-100 font-medium">Tất cả sản phẩm</span></li>
+          <li>
+            <Link to="/" className="hover:text-purple-600">
+              Trang chủ
+            </Link>
+          </li>
+          <li>
+            <span className="mx-2">/</span>
+          </li>
+          <li>
+            <span className="text-slate-900 dark:text-slate-100 font-medium">
+              Tất cả sản phẩm
+            </span>
+          </li>
         </ol>
       </nav>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-5 sm:gap-8">
         {/* Mobile Filter Toggle */}
-        <button 
-          className="lg:hidden flex items-center justify-center gap-2 w-full py-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 font-medium"
+        <button
+          className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-sm font-semibold"
           onClick={() => setIsFilterOpen(true)}
         >
           <FiFilter /> Lọc sản phẩm
         </button>
 
         {/* ═══ Sidebar Filters ═══ */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="h-full overflow-y-auto p-6 lg:p-0 custom-scrollbar">
+        <aside
+          className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}
+        >
+          <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-0 custom-scrollbar">
             <div className="flex items-center justify-between mb-6 lg:hidden">
-              <h2 className="text-xl font-bold">Bộ lọc</h2>
-              <button onClick={() => setIsFilterOpen(false)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full">
+              <h2 className="text-lg font-bold">Bộ lọc</h2>
+              <button
+                onClick={() => setIsFilterOpen(false)}
+                className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full"
+              >
                 <FiX />
               </button>
             </div>
@@ -184,7 +227,10 @@ export default function Products() {
                   <input
                     type="text"
                     value={keyword}
-                    onChange={(e) => { setKeyword(e.target.value); setPage(1); }}
+                    onChange={(e) => {
+                      setKeyword(e.target.value);
+                      setPage(1);
+                    }}
                     placeholder="Tên sản phẩm..."
                     className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-sm focus:ring-2 focus:ring-purple-500"
                   />
@@ -196,11 +242,14 @@ export default function Products() {
                 <h3 className="font-bold mb-4 text-lg">Danh mục sản phẩm</h3>
                 <div className="space-y-2">
                   <button
-                    onClick={() => { setSelectedCategorySlug(''); setPage(1); }}
+                    onClick={() => {
+                      setSelectedCategorySlug("");
+                      setPage(1);
+                    }}
                     className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                       !selectedCategorySlug
-                        ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                     }`}
                   >
                     Tất cả danh mục
@@ -211,8 +260,8 @@ export default function Products() {
                       onClick={() => handleCategoryChange(cat.slug)}
                       className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                         selectedCategorySlug === cat.slug
-                          ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                          ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                       }`}
                     >
                       {cat.name}
@@ -235,8 +284,8 @@ export default function Products() {
                         className="flex items-center gap-3 cursor-pointer group"
                       >
                         <div className="relative flex items-center justify-center">
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             checked={selectedBrand === brand.slug}
                             onChange={() => handleBrandChange(brand.slug)}
                             className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
@@ -246,7 +295,9 @@ export default function Products() {
                         <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                           {brand.name}
                           {brand.productCount > 0 && (
-                            <span className="text-xs text-slate-400 ml-1">({brand.productCount})</span>
+                            <span className="text-xs text-slate-400 ml-1">
+                              ({brand.productCount})
+                            </span>
                           )}
                         </span>
                       </motion.label>
@@ -270,36 +321,36 @@ export default function Products() {
 
         {/* Overlay for mobile filter */}
         {isFilterOpen && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          <div
+            className="fixed inset-0 bg-black/50 z-[70] lg:hidden"
             onClick={() => setIsFilterOpen(false)}
           />
         )}
 
         {/* ═══ Main Content ═══ */}
         <main className="flex-1 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <h1 className="text-2xl font-bold">
-              Tất cả sản phẩm{' '}
-              <span className="text-slate-500 text-lg font-normal">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
+            <h1 className="text-xl sm:text-2xl font-bold">
+              Tất cả sản phẩm{" "}
+              <span className="text-slate-500 text-sm sm:text-lg font-normal">
                 ({pageInfo?.total || 0})
               </span>
             </h1>
-            
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-500">Sắp xếp theo:</span>
+
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="text-xs sm:text-sm text-slate-500">Sắp xếp theo:</span>
               <div>
-                <CustomSelect 
+                <CustomSelect
                   value={currentSortValue()}
                   onChange={(v) => handleSortChange(v)}
                   dropdownAlign="right"
-                  className="w-56 h-10"
+                  className="w-44 sm:w-56 h-9 sm:h-10"
                   options={[
-                    { value: 'popular', label: 'Phổ biến / Bán chạy' },
-                    { value: 'newest', label: 'Mới nhất' },
-                    { value: 'best-rated', label: 'Đánh giá cao' },
-                    { value: 'price-asc', label: 'Giá tăng dần' },
-                    { value: 'price-desc', label: 'Giá giảm dần' }
+                    { value: "popular", label: "Phổ biến / Bán chạy" },
+                    { value: "newest", label: "Mới nhất" },
+                    { value: "best-rated", label: "Đánh giá cao" },
+                    { value: "price-asc", label: "Giá tăng dần" },
+                    { value: "price-desc", label: "Giá giảm dần" },
                   ]}
                 />
               </div>
@@ -308,9 +359,12 @@ export default function Products() {
 
           {/* Loading */}
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-pulse">
+                <div
+                  key={i}
+                  className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-pulse"
+                >
                   <div className="aspect-square bg-slate-200 dark:bg-slate-800" />
                   <div className="p-4 space-y-3">
                     <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
@@ -322,7 +376,7 @@ export default function Products() {
             </div>
           ) : products.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -330,12 +384,12 @@ export default function Products() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center mt-12">
+                <div className="flex justify-center mt-8 sm:mt-12">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setPage(Math.max(1, page - 1))}
                       disabled={page <= 1}
-                      className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
                     >
                       <FiChevronLeft />
                     </button>
@@ -355,10 +409,10 @@ export default function Products() {
                         <button
                           key={pageNum}
                           onClick={() => setPage(pageNum)}
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-colors ${
+                          className={`w-9 h-9 sm:w-10 sm:h-10 text-sm rounded-xl flex items-center justify-center font-bold transition-colors ${
                             pageNum === page
-                              ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20'
-                              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                              ? "bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20"
+                              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
                           }`}
                         >
                           {pageNum}
@@ -369,7 +423,7 @@ export default function Products() {
                     <button
                       onClick={() => setPage(Math.min(totalPages, page + 1))}
                       disabled={page >= totalPages}
-                      className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
                     >
                       <FiChevronRight />
                     </button>
@@ -378,22 +432,22 @@ export default function Products() {
               )}
             </>
           ) : (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center py-20 text-center"
+              className="flex flex-col items-center justify-center py-14 sm:py-20 text-center"
             >
-              <div className="w-40 h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
-                <FiSearch className="text-6xl text-slate-300 dark:text-slate-600" />
+              <div className="w-28 h-28 sm:w-40 sm:h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Không tìm thấy sản phẩm nào</h2>
-              <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
-                Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn. Vui lòng thử lại với các tiêu chí khác.
+              <h2 className="text-xl sm:text-2xl font-bold mb-2">
+                Không tìm thấy sản phẩm nào
+              </h2>
+              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
+                Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với bộ
+                lọc của bạn. Vui lòng thử lại với các tiêu chí khác.
               </p>
-              <Button
-                onClick={handleClearFilters}
-                size="md"
-              >
+              <Button onClick={handleClearFilters} size="md">
                 Xóa bộ lọc
               </Button>
             </motion.div>

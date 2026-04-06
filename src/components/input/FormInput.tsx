@@ -1,22 +1,29 @@
-import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react';
+import {
+  forwardRef,
+  type InputHTMLAttributes,
+  type TextareaHTMLAttributes,
+} from "react";
 
 // Base class shared between input and textarea
 const BASE_CLASS =
-  'w-full rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none transition-all disabled:opacity-50';
+  "w-full rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none transition-all disabled:opacity-50";
 
 const INPUT_CLASS = `${BASE_CLASS} h-10 px-4`;
 const TEXTAREA_CLASS = `${BASE_CLASS} p-4 resize-none`;
 
-// ─── FormInput ───────────────────────────────────────────────────
+//  FormInput
 
-interface FormInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+interface FormInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "size"
+> {
   label?: string;
   /** Append extra Tailwind classes (e.g. "uppercase font-mono") */
   inputClassName?: string;
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
-  ({ label, inputClassName = '', className = '', ...rest }, ref) => (
+  ({ label, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -31,9 +38,9 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     </div>
   ),
 );
-FormInput.displayName = 'FormInput';
+FormInput.displayName = "FormInput";
 
-// ─── FormTextarea ────────────────────────────────────────────────
+//  FormTextarea
 
 interface FormTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -41,7 +48,7 @@ interface FormTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> 
 }
 
 export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
-  ({ label, inputClassName = '', className = '', ...rest }, ref) => (
+  ({ label, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -56,23 +63,26 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
     </div>
   ),
 );
-FormTextarea.displayName = 'FormTextarea';
+FormTextarea.displayName = "FormTextarea";
 
-// ─── FormSelect ──────────────────────────────────────────────────
+//  FormSelect
 
 interface FormSelectOption {
   value: string;
   label: string;
 }
 
-interface FormSelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
+interface FormSelectProps extends Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  "size"
+> {
   label?: string;
   options: FormSelectOption[];
   inputClassName?: string;
 }
 
 export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
-  ({ label, options, inputClassName = '', className = '', ...rest }, ref) => (
+  ({ label, options, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -84,11 +94,13 @@ export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
         className={`${INPUT_CLASS} ${inputClassName}`}
         {...rest}
       >
-        {options.map(opt => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
         ))}
       </select>
     </div>
   ),
 );
-FormSelect.displayName = 'FormSelect';
+FormSelect.displayName = "FormSelect";

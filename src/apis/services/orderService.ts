@@ -1,18 +1,25 @@
-import axios from '../axios';
-import { adminAxios } from '../axios';
+import axios from "../axios";
+import { adminAxios } from "../axios";
 import type {
   ApiResponse,
   PageResponse,
   OrderResponse,
   CheckoutRequest,
-} from '@/types';
+} from "@/types";
 
-const ORDER_URL = '/orders';
+const ORDER_URL = "/orders";
 
 const orderService = {
-  // ─── User endpoints (api/v1/orders) ─────────────────────────────
-  checkout: (data: CheckoutRequest): Promise<ApiResponse<OrderResponse>> =>
-    axios.post(`${ORDER_URL}/checkout`, data),
+  //  User endpoints (api/v1/orders)
+  checkout: (
+    data: CheckoutRequest,
+    idempotencyKey?: string,
+  ): Promise<ApiResponse<OrderResponse>> =>
+    axios.post(`${ORDER_URL}/checkout`, data, {
+      headers: idempotencyKey
+        ? { "Idempotency-Key": idempotencyKey }
+        : undefined,
+    }),
 
   getByNumber: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
     axios.get(`${ORDER_URL}/${orderNumber}`),
@@ -27,8 +34,11 @@ const orderService = {
   cancel: (orderId: string): Promise<ApiResponse<OrderResponse>> =>
     axios.patch(`${ORDER_URL}/${orderId}/cancel`),
 
-  // ─── Admin endpoints (admin/api/v1/orders) ──────────────────────
-  updateStatus: (orderId: string, status: string): Promise<ApiResponse<OrderResponse>> =>
+  //  Admin endpoints (admin/api/v1/orders)
+  updateStatus: (
+    orderId: string,
+    status: string,
+  ): Promise<ApiResponse<OrderResponse>> =>
     adminAxios.patch(`${ORDER_URL}/${orderId}/status`, { status }),
 };
 

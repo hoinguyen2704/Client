@@ -23,10 +23,10 @@ export default function OrderSummary({ cartItems, currentStep, onBack, onNext }:
   const total = subtotal + shipping;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 sticky top-28">
-      <h2 className="text-xl font-bold mb-6">Tóm tắt đơn hàng</h2>
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-4 sm:p-6 sticky top-24 sm:top-28">
+      <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Tóm tắt đơn hàng</h2>
       
-      <div className="space-y-4 mb-6 text-slate-600 dark:text-slate-400">
+      <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6 text-sm sm:text-base text-slate-600 dark:text-slate-400">
         <div className="flex justify-between">
           <span>Tạm tính ({cartItems.length} sản phẩm)</span>
           <span className="font-medium text-slate-900 dark:text-slate-100">{formatPrice(subtotal)}</span>
@@ -37,22 +37,22 @@ export default function OrderSummary({ cartItems, currentStep, onBack, onNext }:
         </div>
       </div>
 
-      <div className="pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
+      <div className="pt-4 border-t border-slate-200 dark:border-slate-800 mb-6 sm:mb-8">
         <div className="flex justify-between items-end">
-          <span className="font-bold text-lg">Tổng thanh toán</span>
+          <span className="font-bold text-base sm:text-lg">Tổng thanh toán</span>
           <div className="text-right">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
+            <span className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
               {formatPrice(total)}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         {currentStep > 1 && (
           <button 
             onClick={onBack}
-            className="w-1/3 py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+            className="w-full sm:w-1/3 py-3.5 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
           >
             Quay lại
           </button>

@@ -1,10 +1,14 @@
-import { useEffect, type ReactNode } from 'react';
-import { FiX } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
-import type { ModalProps, ModalCancelButtonProps, ModalSubmitButtonProps } from '../ui/types';
-import { MODAL_SIZE_MAP } from '../ui/constants';
-import Button from '../button/Button';
-import IconButton from '../button/IconButton';
+import { useEffect, type ReactNode } from "react";
+import { FiX } from "react-icons/fi";
+import { motion, AnimatePresence } from "motion/react";
+import type {
+  ModalProps,
+  ModalCancelButtonProps,
+  ModalSubmitButtonProps,
+} from "../ui/types";
+import { MODAL_SIZE_MAP } from "../ui/constants";
+import Button from "../button/Button";
+import IconButton from "../button/IconButton";
 
 export default function Modal({
   open,
@@ -12,35 +16,39 @@ export default function Modal({
   title,
   children,
   footer,
-  size = 'md',
+  size = "md",
   scrollable = false,
-  className = '',
-  containerClassName = '',
+  className = "",
+  containerClassName = "",
 }: ModalProps) {
   // Close on Escape
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
   }, [open, onClose]);
 
   // Lock body scroll when open
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   return (
     <AnimatePresence>
       {open && (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${containerClassName}`}>
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${containerClassName}`}
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -56,13 +64,15 @@ export default function Modal({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            transition={{ type: "spring", damping: 25, stiffness: 350 }}
             className={`relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full ${MODAL_SIZE_MAP[size]} border border-slate-200 dark:border-slate-800 overflow-hidden ${className}`}
           >
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {title}
+                </h3>
                 <IconButton
                   onClick={onClose}
                   variant="ghost"
@@ -73,7 +83,9 @@ export default function Modal({
             )}
 
             {/* Body */}
-            <div className={`p-6 ${scrollable ? 'overflow-y-auto max-h-[70vh]' : ''}`}>
+            <div
+              className={`p-6 ${scrollable ? "overflow-y-auto max-h-[70vh]" : ""}`}
+            >
               {children}
             </div>
 
@@ -90,9 +102,12 @@ export default function Modal({
   );
 }
 
-/* ─── Pre-styled footer buttons ─────────────────────────── */
+/*  Pre-styled footer buttons  */
 
-export function ModalCancelButton({ onClick, children = 'Hủy' }: ModalCancelButtonProps) {
+export function ModalCancelButton({
+  onClick,
+  children = "Hủy",
+}: ModalCancelButtonProps) {
   return (
     <Button
       onClick={onClick}
@@ -107,14 +122,14 @@ export function ModalCancelButton({ onClick, children = 'Hủy' }: ModalCancelBu
 export function ModalSubmitButton({
   onClick,
   icon,
-  children = 'Lưu',
-  variant = 'primary',
+  children = "Lưu",
+  variant = "primary",
 }: ModalSubmitButtonProps) {
   return (
     <Button
       onClick={onClick}
       icon={icon}
-      variant={variant === 'danger' ? 'danger' : 'primary'}
+      variant={variant === "danger" ? "danger" : "primary"}
       className="h-10 px-6 font-medium"
     >
       {children}

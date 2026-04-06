@@ -1,4 +1,4 @@
-// ─── Auth Request DTOs ──────────────────────────────────────────
+//  Auth Request DTOs
 export interface LoginRequest {
   email: string;
   password: string;
@@ -28,11 +28,11 @@ export interface ResetPasswordRequest {
 }
 
 export interface SocialLoginRequest {
-  provider: 'GOOGLE' | 'FACEBOOK';
+  provider: "GOOGLE" | "FACEBOOK";
   token: string;
 }
 
-// ─── Auth Response ──────────────────────────────────────────────
+//  Auth Response
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
@@ -44,5 +44,5 @@ export interface UserSummary {
   fullName: string;
   email: string;
   avatarUrl?: string;
-  role: 'ADMIN' | 'USER';
+  role: "ADMIN" | "USER";
 }

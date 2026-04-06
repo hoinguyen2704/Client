@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { LogoIcon } from '@/components';
-import { motion } from 'motion/react';
-import { SHOP } from '@/constants/shopConstants';
-import type { IconType } from 'react-icons';
+import { Link } from "react-router-dom";
+import { LogoIcon } from "@/components";
+import { motion } from "motion/react";
+import { SHOP } from "@/constants/shopConstants";
+import type { IconType } from "react-icons";
 
 interface FeatureItem {
   icon: IconType;
@@ -31,29 +31,37 @@ interface AuthLayoutProps {
 export default function AuthLayout({
   children,
   heroGradient,
-  accentBlobClass = 'bg-blue-400/10',
+  accentBlobClass = "bg-blue-400/10",
   heroTitle,
   heroSubtitle,
   features,
   mobileLogoGradient,
-  mobileLogoShadow = 'shadow-purple-500/30',
+  mobileLogoShadow = "shadow-purple-500/30",
 }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-3 sm:p-4">
       <div className="w-full max-w-[1400px] lg:grid lg:grid-cols-2 lg:gap-4">
-        {/* ── Left Hero Panel ── */}
+        {/*  Left Hero Panel  */}
         <div
           className={`hidden lg:block relative bg-gradient-to-br ${heroGradient} text-white rounded-[3rem] overflow-hidden shadow-2xl`}
         >
           <div className="absolute top-[-20%] left-[-10%] w-[40rem] h-[40rem] bg-white/5 rounded-full blur-3xl" />
-          <div className={`absolute bottom-[-20%] right-[-10%] w-[40rem] h-[40rem] ${accentBlobClass} rounded-full blur-3xl`} />
+          <div
+            className={`absolute bottom-[-20%] right-[-10%] w-[40rem] h-[40rem] ${accentBlobClass} rounded-full blur-3xl`}
+          />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-purple-400/10 rounded-full blur-3xl" />
 
           <div className="relative z-10 h-full flex flex-col justify-center p-16 xl:p-20">
             {/* Logo */}
             <div className="mb-8">
-              <Link to="/" className="inline-flex items-center gap-4 hover:scale-105 transition-transform">
-                <LogoIcon size="md" containerClassName="bg-white/20 backdrop-blur-sm shadow-none" />
+              <Link
+                to="/"
+                className="inline-flex items-center gap-4 hover:scale-105 transition-transform"
+              >
+                <LogoIcon
+                  size="md"
+                  containerClassName="bg-white/20 backdrop-blur-sm shadow-none"
+                />
                 <span className="text-3xl font-bold">{SHOP.name}</span>
               </Link>
             </div>
@@ -100,18 +108,24 @@ export default function AuthLayout({
           </div>
         </div>
 
-        {/* ── Right Form Panel ── */}
+        {/*  Right Form Panel  */}
         <div className="flex items-center justify-center lg:items-stretch">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="w-full max-w-[680px] bg-white dark:bg-slate-800 p-10 sm:p-16 lg:p-16 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700/50 flex flex-col justify-center gap-10 h-full"
+            className="w-full max-w-[680px] bg-white dark:bg-slate-800 p-6 sm:p-10 lg:p-16 rounded-[1.75rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700/50 flex flex-col justify-center gap-6 sm:gap-10 h-full"
           >
             {/* Mobile Logo */}
             <div className="text-center lg:hidden mb-6">
-              <Link to="/" className="inline-flex items-center gap-3 justify-center hover:scale-105 transition-transform">
-                <LogoIcon size="lg" containerClassName={`bg-gradient-to-br ${mobileLogoGradient} ${mobileLogoShadow}`} />
+              <Link
+                to="/"
+                className="inline-flex items-center gap-3 justify-center hover:scale-105 transition-transform"
+              >
+                <LogoIcon
+                  size="lg"
+                  containerClassName={`bg-gradient-to-br ${mobileLogoGradient} ${mobileLogoShadow}`}
+                />
               </Link>
             </div>
 

@@ -1,13 +1,13 @@
-import type { InputHTMLAttributes, ReactNode } from 'react';
+import type { InputHTMLAttributes, ReactNode } from "react";
 
-// ─── Card ────────────────────────────────────────────────────────
+//  Card
 export interface CardProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
 }
 
-// ─── EmptyState ──────────────────────────────────────────────────
+//  EmptyState
 export interface EmptyStateProps {
   icon?: ReactNode;
   title: string;
@@ -15,17 +15,55 @@ export interface EmptyStateProps {
   action?: ReactNode;
 }
 
-// ─── StatusBadge ─────────────────────────────────────────────────
+//  StatusBadge
 export type StatusType =
-  | 'completed' | 'delivered' | 'processing' | 'shipping' | 'cancelled' | 'pending' | 'verified'
-  | 'active' | 'inactive' | 'expired' | 'open' | 'in_progress' | 'replied' | 'closed'
-  | 'vip' | 'banned'
-  | 'published' | 'draft' | 'hidden' | 'upcoming' | 'ended' | 'approved' | 'spam'
-  | 'admin' | 'user'
-  | 'ACTIVE' | 'INACTIVE' | 'UPCOMING' | 'ENDED' | 'EXPIRED'
-  | 'PENDING' | 'CONFIRMED' | 'PROCESSING' | 'SHIPPING' | 'SHIPPED' | 'CANCELLED' | 'RETURNED'
-  | 'COMPLETED' | 'FAILED' | 'REFUNDED' | 'low_stock' | 'out_of_stock'
-  | 'OPEN' | 'IN_PROGRESS' | 'ANSWERED' | 'RESOLVED' | 'CLOSED';
+  | "completed"
+  | "delivered"
+  | "processing"
+  | "shipping"
+  | "cancelled"
+  | "pending"
+  | "verified"
+  | "active"
+  | "inactive"
+  | "expired"
+  | "open"
+  | "in_progress"
+  | "replied"
+  | "closed"
+  | "vip"
+  | "banned"
+  | "published"
+  | "draft"
+  | "hidden"
+  | "upcoming"
+  | "ended"
+  | "approved"
+  | "spam"
+  | "admin"
+  | "user"
+  | "ACTIVE"
+  | "INACTIVE"
+  | "UPCOMING"
+  | "ENDED"
+  | "EXPIRED"
+  | "PENDING"
+  | "CONFIRMED"
+  | "PROCESSING"
+  | "SHIPPING"
+  | "SHIPPED"
+  | "CANCELLED"
+  | "RETURNED"
+  | "COMPLETED"
+  | "FAILED"
+  | "REFUNDED"
+  | "low_stock"
+  | "out_of_stock"
+  | "OPEN"
+  | "IN_PROGRESS"
+  | "ANSWERED"
+  | "RESOLVED"
+  | "CLOSED";
 
 export interface StatusBadgeProps {
   status: string;
@@ -33,8 +71,8 @@ export interface StatusBadgeProps {
   className?: string;
 }
 
-// ─── ConfirmDialog ───────────────────────────────────────────────
-export type ConfirmVariant = 'danger' | 'warning' | 'info';
+//  ConfirmDialog
+export type ConfirmVariant = "danger" | "warning" | "info";
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -47,8 +85,16 @@ export interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
-// ─── Modal ───────────────────────────────────────────────────────
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+//  Modal
+export type ModalSize =
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "2xl"
+  | "3xl"
+  | "4xl"
+  | "5xl";
 
 export interface ModalProps {
   open: boolean;
@@ -77,11 +123,11 @@ export interface ModalSubmitButtonProps {
   onClick: () => void;
   icon?: ReactNode;
   children?: ReactNode;
-  variant?: 'primary' | 'danger';
+  variant?: "primary" | "danger";
 }
 
-// ─── StarRating ──────────────────────────────────────────────────
-export type StarSize = 'sm' | 'md' | 'lg';
+//  StarRating
+export type StarSize = "sm" | "md" | "lg";
 
 export interface StarRatingProps {
   /** Current rating value (1-5) */
@@ -98,7 +144,7 @@ export interface StarRatingProps {
   readOnly?: boolean;
 }
 
-// ─── AdminPagination ─────────────────────────────────────────────
+//  AdminPagination
 export interface AdminPaginationProps {
   currentPage: number;
   totalPages: number;
@@ -108,7 +154,7 @@ export interface AdminPaginationProps {
   onPageChange: (page: number) => void;
 }
 
-// ─── AdminSearch ─────────────────────────────────────────────────
+//  AdminSearch
 export interface AdminSearchProps {
   placeholder?: string;
   value: string;
@@ -117,8 +163,8 @@ export interface AdminSearchProps {
   filters?: ReactNode;
 }
 
-// ─── ActionButtons ───────────────────────────────────────────────
-export type ActionType = 'edit' | 'delete' | 'view' | 'more';
+//  ActionButtons
+export type ActionType = "edit" | "delete" | "view" | "more";
 
 export interface ActionConfig {
   type: ActionType;
@@ -138,22 +184,28 @@ export interface ActionButtonsProps {
   actions: ActionConfig[];
 }
 
-// ─── PrimaryButton ───────────────────────────────────────────────
+//  PrimaryButton
 export interface PrimaryButtonProps {
   children: ReactNode;
   icon?: ReactNode;
   onClick?: () => void;
   href?: string;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
-  variant?: 'primary' | 'outline';
+  variant?: "primary" | "outline";
   isLoading?: boolean;
 }
 
-// ─── Button ───────────────────────────────────────────────────────
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline' | 'success';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+//  Button
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "ghost"
+  | "outline"
+  | "success";
+export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps {
   children?: ReactNode;
@@ -163,7 +215,7 @@ export interface ButtonProps {
   href?: string;
   form?: string;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -173,9 +225,9 @@ export interface ButtonProps {
   ariaLabel?: string;
 }
 
-// ─── IconButton ───────────────────────────────────────────────────
-export type IconButtonVariant = 'neutral' | 'primary' | 'danger' | 'ghost';
-export type IconButtonSize = 'sm' | 'md' | 'lg';
+//  IconButton
+export type IconButtonVariant = "neutral" | "primary" | "danger" | "ghost";
+export type IconButtonSize = "sm" | "md" | "lg";
 
 export interface IconButtonProps {
   icon: ReactNode;
@@ -190,8 +242,8 @@ export interface IconButtonProps {
   loading?: boolean;
 }
 
-// ─── SwitchToggle ────────────────────────────────────────────────
-export type SwitchTone = 'primary' | 'success' | 'blue' | 'slate';
+//  SwitchToggle
+export type SwitchTone = "primary" | "success" | "blue" | "slate";
 
 export interface SwitchToggleProps {
   checked: boolean;
@@ -199,21 +251,27 @@ export interface SwitchToggleProps {
   disabled?: boolean;
   tone?: SwitchTone;
   className?: string;
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
   ariaLabel?: string;
 }
 
-// ─── Checkbox ────────────────────────────────────────────────────
-export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+//  Checkbox
+export interface CheckboxProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
   onCheckedChange?: (checked: boolean) => void;
 }
 
-// ─── Radio ───────────────────────────────────────────────────────
-export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+//  Radio
+export interface RadioProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
   onCheckedChange?: (checked: boolean) => void;
 }
 
-// ─── BackButton ──────────────────────────────────────────────────
+//  BackButton
 export interface BackButtonProps {
   /** Navigation target path */
   to: string;
@@ -222,14 +280,14 @@ export interface BackButtonProps {
   className?: string;
 }
 
-// ─── ProductCard ─────────────────────────────────────────────────
+//  ProductCard
 export interface ProductCardProps {
   product: any;
 }
 
-// ─── Chatbot ─────────────────────────────────────────────────────
+//  Chatbot
 export interface Message {
   id: string;
-  role: 'user' | 'model';
+  role: "user" | "model";
   text: string;
 }

@@ -145,14 +145,14 @@ export default function Support() {
   const isChatClosed = Boolean(selectedTicket && CLOSED_STATUSES.has(selectedTicket.status));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Hỗ trợ</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Hỗ trợ</h1>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[360px_minmax(0,1fr)] gap-6">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[calc(100vh-420px)] min-h-[500px]">
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)] gap-4 sm:gap-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[46dvh] min-h-[300px] sm:min-h-[340px] lg:h-[calc(100dvh-420px)] lg:min-h-[500px]">
+          <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-slate-800 space-y-2.5 sm:space-y-3">
             <h2 className="font-bold text-slate-900 dark:text-white">Tạo yêu cầu mới</h2>
             <FormInput
               placeholder="Tiêu đề hỗ trợ"
@@ -177,7 +177,7 @@ export default function Support() {
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-2 space-y-1 min-h-0">
+          <div className="flex-1 overflow-y-auto p-1.5 sm:p-2 space-y-1 min-h-0">
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="p-4 animate-pulse">
@@ -203,27 +203,27 @@ export default function Support() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-[calc(100vh-420px)] min-h-[500px] overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-[52dvh] min-h-[320px] sm:min-h-[360px] lg:h-[calc(100dvh-420px)] lg:min-h-[500px] overflow-hidden">
           {selectedTicket ? (
             <>
-              <div className="p-5 border-b border-slate-100 dark:border-slate-800">
+              <div className="p-3 sm:p-5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h2 className="text-lg font-bold">{selectedTicket.subject}</h2>
+                  <h2 className="text-base sm:text-lg font-bold">{selectedTicket.subject}</h2>
                   <StatusBadge status={selectedTicket.status} />
                 </div>
-                <p className="text-lg text-slate-500">
+                <p className="text-sm sm:text-base text-slate-500">
                   {selectedTicket.ticketNumber} • {formatDate(selectedTicket.createdAt)}
                 </p>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/80 dark:bg-slate-900/50 min-h-0">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3 sm:space-y-4 bg-slate-50/80 dark:bg-slate-900/50 min-h-0">
                 {(selectedTicket.messages || []).map((msg) => (
                   <div
                     key={msg.id}
                     className={`flex ${msg.senderType === 'USER' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[82%] px-4 py-3 rounded-2xl text-lg ${
+                      className={`max-w-[92%] sm:max-w-[82%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-sm sm:text-base ${
                         msg.senderType === 'USER'
                           ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
                           : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-bl-md'
@@ -243,9 +243,9 @@ export default function Support() {
                 <div ref={chatEndRef} />
               </div>
 
-              <div className="p-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800">
                 {isChatClosed ? (
-                  <div className="h-11 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-md text-slate-500 flex items-center">
+                  <div className="h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm sm:text-md text-slate-500 flex items-center">
                     Ticket đã đóng, bạn không thể gửi thêm phản hồi.
                   </div>
                 ) : (

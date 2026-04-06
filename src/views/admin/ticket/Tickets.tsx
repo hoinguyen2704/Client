@@ -106,16 +106,16 @@ export default function Tickets() {
     } catch (err) { console.error('Status update failed:', err); toast.error('Cập nhật trạng thái thất bại!'); }
   };
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Quản lý yêu cầu hỗ trợ</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý yêu cầu hỗ trợ</h1>
         <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
           options={TICKET_FILTER_OPTIONS} className="w-full sm:w-48 z-20" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Ticket List */}
-        <div className="lg:col-span-1 bg-white dark:bg-slate-900 rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 flex flex-col h-[calc(100vh-420px)] min-h-[500px] overflow-hidden">
+        <div className="lg:col-span-1 bg-white dark:bg-slate-900 rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 flex flex-col h-[46dvh] min-h-[300px] sm:min-h-[340px] lg:h-[calc(100dvh-420px)] lg:min-h-[500px] overflow-hidden">
           <div className="divide-y divide-slate-100 dark:divide-slate-800 flex-1 overflow-y-auto min-h-0">
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
@@ -150,23 +150,23 @@ export default function Tickets() {
         </div>
 
         {/* Ticket Detail */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-[calc(100vh-420px)] min-h-[500px]">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-[52dvh] min-h-[320px] sm:min-h-[360px] lg:h-[calc(100dvh-420px)] lg:min-h-[500px]">
           {selectedTicket ? (
             <>
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <div className="flex justify-between items-start">
+              <div className="p-3 sm:p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div className="flex flex-wrap justify-between items-start gap-3">
                   <div>
-                    <h2 className="text-lg font-bold">{selectedTicket.subject}</h2>
+                    <h2 className="text-base sm:text-lg font-bold">{selectedTicket.subject}</h2>
                     <p className="text-sm text-slate-500 mt-1">{selectedTicket.userName} ({selectedTicket.userEmail})</p>
                   </div>
                   <CustomSelect value={selectedTicket.status} onChange={(val) => handleStatusChange(selectedTicket.id, val)}
-                    options={TICKET_STATUS_OPTIONS} className="w-36 z-10" />
+                    options={TICKET_STATUS_OPTIONS} className="w-full sm:w-36 z-10" />
                 </div>
               </div>
-              <div className="flex-1 p-6 overflow-y-auto space-y-4 min-h-0">
+              <div className="flex-1 p-3 sm:p-6 overflow-y-auto space-y-3 sm:space-y-4 min-h-0">
                 {selectedTicket.messages?.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.senderType === 'ADMIN' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-lg ${
+                    <div className={`max-w-[92%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-sm sm:text-base ${
                       msg.senderType === 'ADMIN' ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                     }`}>
                       <p>{msg.content}</p>
@@ -176,11 +176,11 @@ export default function Tickets() {
                 ))}
                 <div ref={messagesEndRef} />
               </div>
-              <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex gap-2">
+              <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-2">
                 <input type="text" placeholder="Nhập câu trả lời..." value={replyText} onChange={(e) => setReplyText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleReply()}
-                  className="flex-1 h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500" />
-                <Button onClick={handleReply} size="md" icon={<FiMessageCircle />}>
+                  className="flex-1 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base" />
+                <Button onClick={handleReply} size="md" icon={<FiMessageCircle />} className="w-full sm:w-auto">
                 Gửi
                 </Button>
               </div>

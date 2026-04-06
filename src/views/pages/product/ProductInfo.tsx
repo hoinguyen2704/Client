@@ -59,6 +59,8 @@ export default function ProductInfo({
   const { toggleItem: toggleWishlist, items: wishlistItems } = useWishlistStore();
   const { isAuthenticated } = useAuthStore();
   const liked = wishlistItems.some(item => item.productId === product.id);
+  const getErrorMessage = (err: any, fallback: string) =>
+    err?.message || err?.error || err?.data?.message || fallback;
 
   // Parse specs JSON để hiện highlight
   let specs: Record<string, string> = {};
@@ -92,7 +94,7 @@ export default function ProductInfo({
       });
     } catch (error) {
       console.error('Lỗi thêm giỏ hàng API, có thể do chưa đăng nhập:', error);
-      toast.error('Thêm giỏ hàng thất bại!');
+      toast.error(getErrorMessage(error, 'Thêm giỏ hàng thất bại!'));
     }
   };
 

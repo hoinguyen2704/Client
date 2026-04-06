@@ -1,12 +1,13 @@
-// ─── Generic API wrapper ────────────────────────────────────────
+//  Generic API wrapper
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
   timestamp: string;
+  errorCode?: string;
 }
 
-// ─── Paginated response (matches server PageResponse<T>) ────────
+//  Paginated response (matches server PageResponse<T>)
 export interface PageResponse<T> {
   data: T[];
   page: number;
@@ -15,11 +16,11 @@ export interface PageResponse<T> {
   lastPage: number;
 }
 
-// ─── Pagination request params ──────────────────────────────────
+//  Pagination request params
 export interface PaginationParams {
   page?: number;
   size?: number;
   sortBy?: string;
-  sortDir?: 'ASC' | 'DESC';
+  sortDir?: "ASC" | "DESC";
   keyword?: string;
 }
