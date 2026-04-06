@@ -6,6 +6,16 @@ let isLoggingOut = false;
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
+const AUTH_ENDPOINT_BYPASS = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/refresh-token",
+  "/auth/forgot-password",
+  "/auth/verify-otp",
+  "/auth/reset-password",
+  "/auth/social-login",
+];
+
 const onRefreshed = (accessToken: string) => {
   refreshSubscribers.forEach((callback) => callback(accessToken));
   refreshSubscribers = [];
@@ -13,6 +23,13 @@ const onRefreshed = (accessToken: string) => {
 
 const addRefreshSubscriber = (callback: (token: string) => void) => {
   refreshSubscribers.push(callback);
+};
+
+const shouldBypassAuthFlow = (
+  request?: import("axios").InternalAxiosRequestConfig,
+) => {
+  const url = request?.url || "";
+  return AUTH_ENDPOINT_BYPASS.some((path) => url.includes(path));
 };
 
 //  Shared interceptor setup
@@ -40,8 +57,15 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
         (error.response?.status === 401 || error.response?.status === 403) &&
         originalRequest
       ) {
+        // Do not apply refresh/logout flow for auth endpoints (login/register/etc.)
+        if (shouldBypassAuthFlow(originalRequest)) {
+          return Promise.reject(error.response?.data || error);
+        }
+
         if (originalRequest._retry) {
-          if (!isLoggingOut) {
+          const state = useAuthStore.getState();
+          const shouldForceLogout = Boolean(state.token || state.isAuthenticated);
+          if (shouldForceLogout && !isLoggingOut) {
             isLoggingOut = true;
             toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
             useAuthStore.getState().logout();
@@ -56,7 +80,9 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
         const refreshToken = useAuthStore.getState().refreshToken;
 
         if (!refreshToken) {
-          if (!isLoggingOut) {
+          const state = useAuthStore.getState();
+          const shouldForceLogout = Boolean(state.token || state.isAuthenticated);
+          if (shouldForceLogout && !isLoggingOut) {
             isLoggingOut = true;
             useAuthStore.getState().logout();
             setTimeout(() => {

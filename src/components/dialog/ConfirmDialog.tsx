@@ -32,7 +32,7 @@ export default function ConfirmDialog({
       size="sm"
       containerClassName="z-[9999]"
       footer={
-        <div className="flex gap-3 w-full">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
           <Button
             onClick={onCancel}
             variant="secondary"

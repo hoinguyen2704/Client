@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
+import { FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
@@ -60,16 +60,16 @@ export default function Customers() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Quản lý khách hàng</h1>
-        <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý khách hàng</h1>
+        <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />} className="w-full sm:w-auto">
           Xuất danh sách
         </Button>
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
         <div className="flex-1">
           <AdminSearch
             placeholder="Tìm kiếm theo tên, email, SĐT..."
@@ -85,23 +85,23 @@ export default function Customers() {
             { value: 'USER', label: 'Khách hàng' },
             { value: 'ADMIN', label: 'Admin' }
           ]}
-          className="w-full md:w-48"
+          className="w-full md:w-48 shrink-0"
         />
       </div>
 
       {/* Users Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[940px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                <th className="p-4 font-medium">Người dùng</th>
-                <th className="p-4 font-medium">Email</th>
-                <th className="p-4 font-medium">SĐT</th>
-                <th className="p-4 font-medium">Vai trò</th>
-                <th className="p-4 font-medium">Ngày tạo</th>
-                <th className="p-4 font-medium">Trạng thái</th>
-                <th className="p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium">Người dùng</th>
+                <th className="p-3 sm:p-4 font-medium">Email</th>
+                <th className="p-3 sm:p-4 font-medium">SĐT</th>
+                <th className="p-3 sm:p-4 font-medium">Vai trò</th>
+                <th className="p-3 sm:p-4 font-medium">Ngày tạo</th>
+                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
+                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -112,22 +112,22 @@ export default function Customers() {
               ) : (
                 users.map((user) => (
                   <tr key={user.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-3">
                         <UserAvatar name={user.fullName} src={user.avatarUrl} />
                         <span className="font-bold">{user.fullName}</span>
                       </div>
                     </td>
-                    <td className="p-4 text-slate-500">{user.email}</td>
-                    <td className="p-4 text-slate-500">{user.phoneNumber || '—'}</td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4 text-slate-500">{user.email}</td>
+                    <td className="p-3 sm:p-4 text-slate-500">{user.phoneNumber || '—'}</td>
+                    <td className="p-3 sm:p-4">
                       <StatusBadge status={user.role === 'ADMIN' ? 'admin' : 'user'} />
                     </td>
-                    <td className="p-4 text-slate-500">{formatDate(user.createdAt)}</td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4 text-slate-500">{formatDate(user.createdAt)}</td>
+                    <td className="p-3 sm:p-4">
                       <StatusBadge status={user.status === 'ACTIVE' ? 'active' : 'banned'} label={user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'} />
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-3 sm:p-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link to={`/admin/customers/${user.id}`} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Xem chi tiết">
                           <FiEye />

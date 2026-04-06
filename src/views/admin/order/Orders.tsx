@@ -56,9 +56,9 @@ export default function AdminOrders() {
     } catch (err) { console.error('Export failed:', err); }
   };
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý đơn hàng</h1>
         <div className="flex gap-3 print:hidden">
           <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
             Xuất Excel
@@ -67,7 +67,7 @@ export default function AdminOrders() {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 print:hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4 print:hidden">
         <div className="flex-1">
           <AdminSearch
             placeholder="Tìm kiếm theo mã đơn, tên khách hàng..."
@@ -88,7 +88,7 @@ export default function AdminOrders() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         
         {/* Desktop Header */}
-        <div className="hidden lg:grid grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm font-semibold rounded-t-2xl">
+        <div className="hidden lg:grid grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-4 xl:p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm font-semibold rounded-t-2xl">
           <div>Mã đơn hàng</div>
           <div>Ngày đặt</div>
           <div>SP</div>
@@ -101,7 +101,7 @@ export default function AdminOrders() {
         <div className="flex flex-col">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-5 border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
+              <div key={i} className="flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-3 sm:gap-4 p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
                 <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
                 <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
                 <div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
@@ -112,13 +112,13 @@ export default function AdminOrders() {
               </div>
             ))
           ) : orders.length === 0 ? (
-            <div className="p-16 flex flex-col items-center justify-center text-slate-400">
+            <div className="p-10 sm:p-16 flex flex-col items-center justify-center text-slate-400">
               <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4"><FiPackage className="text-2xl" /></div>
               <span>Không có đơn hàng nào</span>
             </div>
           ) : (
             orders.map((order) => (
-              <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 items-center p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
+              <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-3 sm:gap-4 items-center p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
                 {/* Mobile: Order Header */}
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
                   <div className="font-bold text-purple-600 flex items-center gap-2">
@@ -149,13 +149,13 @@ export default function AdminOrders() {
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto mt-2 lg:mt-0 flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between items-center lg:block">
                   <span className="lg:hidden text-slate-500 text-sm">Trạng thái:</span>
                   <CustomSelect 
                     value={order.orderStatus} 
                     onChange={(val) => handleStatusChange(order.id, val)}
                     options={ORDER_STATUS_OPTIONS}
-                    className="w-48 lg:w-40"
+                    className="w-[170px] sm:w-48 lg:w-40"
                   />
                 </div>
 

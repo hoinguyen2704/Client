@@ -13,26 +13,26 @@ export default function CategoryChart({ stats }: DashboardChildProps) {
 
   return (
     <Card>
-      <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
+      <h2 className="text-base sm:text-lg font-bold flex items-center gap-2 mb-5 sm:mb-6">
         <span className="text-xl">📦</span> Thống kê số lượng hàng hóa bán theo danh mục
       </h2>
 
       {chartData.length === 0 ? (
-        <div className="h-96 flex items-center justify-center text-slate-400">Chưa có dữ liệu danh mục</div>
+        <div className="h-72 sm:h-96 flex items-center justify-center text-slate-400">Chưa có dữ liệu danh mục</div>
       ) : (
         <>
           <div className="flex items-center gap-2 mb-4">
             <div className="w-4 h-3 bg-blue-500 rounded-sm" />
             <span className="text-sm text-slate-500">Số lượng bán</span>
           </div>
-          <div className="h-96">
+          <div className="h-72 sm:h-96">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 30, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={13} tickLine={false} axisLine={false} dy={8} />
+                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} dy={8} />
                 <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(value: number) => [`${value} sản phẩm`, 'Số lượng bán']} />
-                <Bar dataKey="sold" radius={[6, 6, 0, 0]} barSize={50} label={{ position: 'top', fontSize: 13, fontWeight: 600, fill: '#334155' }}>
+                <Bar dataKey="sold" radius={[6, 6, 0, 0]} barSize={36} label={{ position: 'top', fontSize: 11, fontWeight: 600, fill: '#334155' }}>
                   {chartData.map((_entry, index) => (
                     <Cell key={`cat-cell-${index}`} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
                   ))}

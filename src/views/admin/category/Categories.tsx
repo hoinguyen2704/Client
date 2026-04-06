@@ -1,9 +1,6 @@
 import { useState } from "react";
 import {
   FiPlus,
-  FiSearch,
-  FiEdit2,
-  FiTrash2,
   FiToggleLeft,
   FiToggleRight,
   FiX,
@@ -26,7 +23,6 @@ import {
   StatusBadge,
   TableRowSkeleton,
 } from "@/components";
-import { formatDate } from "@/utils/format";
 
 interface SpecTemplateRow {
   specKey: string;
@@ -161,15 +157,16 @@ export default function Categories() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Quản lý danh mục</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý danh mục</h1>
         <PrimaryButton
           onClick={() => {
             resetForm();
             setShowForm(true);
           }}
           icon={<FiPlus className="text-base" />}
+          className="w-full sm:w-auto"
         >
           Thêm danh mục
         </PrimaryButton>
@@ -177,8 +174,8 @@ export default function Categories() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5">
-          <div className="flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4 sm:space-y-5">
+          <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold">
               {editId ? "Sửa danh mục" : "Thêm danh mục mới"}
             </h2>
@@ -190,7 +187,7 @@ export default function Categories() {
             />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* Basic info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -226,8 +223,8 @@ export default function Categories() {
 
             {/* Spec Templates Section */}
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
-              <div className="bg-slate-50 dark:bg-slate-800/50 px-4 py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-700">
-                <div className="flex items-center gap-2">
+              <div className="bg-slate-50 dark:bg-slate-800/50 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-2 min-w-0">
                   <FiList className="text-purple-500" />
                   <span className="font-medium text-sm">
                     Gợi ý thông số kỹ thuật
@@ -242,7 +239,7 @@ export default function Categories() {
                   variant="ghost"
                   size="sm"
                   icon={<FiPlus />}
-                  className="text-purple-600"
+                  className="text-purple-600 w-full sm:w-auto"
                 >
                   Thêm
                 </Button>
@@ -266,7 +263,7 @@ export default function Categories() {
               ) : (
                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {/* Header */}
-                  <div className="grid grid-cols-[1fr_1.5fr_40px] gap-3 px-4 py-2 bg-slate-50/50 dark:bg-slate-800/30">
+                  <div className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-slate-50/50 dark:bg-slate-800/30">
                     <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
                       Tên thông số
                     </span>
@@ -278,7 +275,7 @@ export default function Categories() {
                   {specTemplates.map((row, index) => (
                     <div
                       key={index}
-                      className="grid grid-cols-[1fr_1.5fr_40px] gap-3 px-4 py-2.5 items-center group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                      className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 items-center group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
                     >
                       <input
                         type="text"
@@ -308,12 +305,13 @@ export default function Categories() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3 justify-end">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 justify-end">
               <Button
                 type="button"
                 onClick={resetForm}
                 variant="secondary"
                 size="md"
+                className="w-full sm:w-auto"
               >
                 Hủy
               </Button>
@@ -322,6 +320,7 @@ export default function Categories() {
                 disabled={saving}
                 loading={saving}
                 size="md"
+                className="w-full sm:w-auto"
               >
                 {editId ? "Cập nhật" : "Tạo danh mục"}
               </Button>
@@ -340,14 +339,14 @@ export default function Categories() {
       {/* Categories Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[860px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                <th className="p-4 font-medium">Danh mục</th>
-                <th className="p-4 font-medium">Slug</th>
-                <th className="p-4 font-medium text-center">Thông số</th>
-                <th className="p-4 font-medium">Trạng thái</th>
-                <th className="p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium">Danh mục</th>
+                <th className="p-3 sm:p-4 font-medium">Slug</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Thông số</th>
+                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
+                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -365,7 +364,7 @@ export default function Categories() {
                     key={cat.id}
                     className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-3">
                         {cat.imageUrl && (
                           <img
@@ -384,10 +383,10 @@ export default function Categories() {
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 text-slate-500 font-mono text-sm">
+                    <td className="p-3 sm:p-4 text-slate-500 font-mono text-sm">
                       {cat.slug}
                     </td>
-                    <td className="p-4 text-center">
+                    <td className="p-3 sm:p-4 text-center">
                       {(cat.specTemplates?.length || 0) > 0 ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
                           <FiList className="text-[9px]" />{" "}
@@ -397,10 +396,10 @@ export default function Categories() {
                         <span className="text-xs text-slate-300">—</span>
                       )}
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <StatusBadge status={cat.active ? "active" : "hidden"} />
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-3 sm:p-4 text-right">
                       <ActionButtons
                         actions={[
                           {

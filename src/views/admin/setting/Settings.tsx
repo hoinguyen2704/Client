@@ -101,24 +101,25 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Cài Đặt Hệ Thống & AI</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Cài Đặt Hệ Thống & AI</h1>
         <Button
           onClick={handleSave}
           disabled={saving || !hasChanges}
           loading={saving}
           icon={<FiSave />}
           size="md"
+          className="w-full sm:w-auto"
         >
           {saving ? 'Đang lưu...' : 'Lưu cấu hình'}
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* General Config */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
             <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
               <FiSettings />
             </div>
@@ -127,7 +128,7 @@ export default function Settings() {
 
           <div className="space-y-4">
             <FormInput label="Tên cửa hàng" type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Đơn vị tiền tệ</label>
                 <CustomSelect
@@ -143,7 +144,7 @@ export default function Settings() {
               <FormInput label="Thuế mặc định (%)" type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
             </div>
             <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/40 space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-start sm:items-center justify-between gap-3">
                 <div>
                   <h3 className="font-bold text-sm">Bật áp dụng thuế</h3>
                   <p className="text-xs text-slate-500 mt-1">Tính thuế ở bước checkout và lưu snapshot vào đơn hàng.</p>
@@ -163,7 +164,7 @@ export default function Settings() {
                     className="w-full"
                   />
                 </div>
-                <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900 flex items-center justify-between">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900 flex items-start sm:items-center justify-between gap-3">
                   <div>
                     <h4 className="font-semibold text-sm">Áp thuế lên phí ship</h4>
                     <p className="text-xs text-slate-500 mt-1">Nếu tắt, chỉ tính thuế trên tiền hàng.</p>
@@ -180,8 +181,8 @@ export default function Settings() {
         </div>
 
         {/* AI Dashboard */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
                 <FiCpu />
@@ -202,7 +203,7 @@ export default function Settings() {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+            <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
               <div>
                 <h3 className="font-bold text-sm">Recommendation Engine</h3>
                 <p className="text-xs text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
@@ -210,7 +211,7 @@ export default function Settings() {
               {renderToggle('RECOMMENDATION_ENABLED', 'blue', AI_FEATURES_UNDER_DEVELOPMENT)}
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+            <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
               <div>
                 <h3 className="font-bold text-sm">AI Content Generator</h3>
                 <p className="text-xs text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
@@ -224,7 +225,7 @@ export default function Settings() {
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-4 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                 <div className="text-indigo-500 mb-1 flex justify-center"><FiTrendingUp /></div>
                 <div className="text-xl font-bold">—</div>
@@ -245,8 +246,8 @@ export default function Settings() {
         </div>
 
         {/* Payment Config */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
             <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
               <FiCreditCard />
             </div>
@@ -260,7 +261,7 @@ export default function Settings() {
               { key: 'MOMO_ENABLED', title: 'Thanh toán qua MoMo', desc: 'Ví điện tử phổ biến tại Việt Nam' },
               { key: 'BANK_TRANSFER_ENABLED', title: 'Chuyển khoản ngân hàng', desc: 'Chuyển khoản trực tiếp qua ngân hàng' },
             ].map(pm => (
-              <div key={pm.key} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+              <div key={pm.key} className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
                 <div>
                   <h3 className="font-bold text-sm">{pm.title}</h3>
                   <p className="text-xs text-slate-500 mt-1">{pm.desc}</p>
@@ -272,8 +273,8 @@ export default function Settings() {
         </div>
 
         {/* Shipping Config */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
             <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
               <FiTruck />
             </div>

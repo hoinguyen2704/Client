@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
 import { SHOP } from '@/constants/shopConstants';
+import { getApiErrorMessage } from '@/utils/error';
 import AuthLayout from './AuthLayout';
 
 const features = [
@@ -83,12 +84,9 @@ export default function Register() {
       setSuccess(true);
       setTimeout(() => navigate('/'), 1500);
     } catch (err: any) {
-      if (err?.errors && typeof err.errors === 'object') {
-        const msgs = Object.entries(err.errors).map(([, msg]) => `${msg}`).join('. ');
-        setError(msgs);
-      } else {
-        setError(err?.message || 'Đăng ký thất bại. Email có thể đã được sử dụng.');
-      }
+      setError(
+        getApiErrorMessage(err, 'Đăng ký thất bại. Email có thể đã được sử dụng.'),
+      );
     } finally {
       setLoading(false);
     }

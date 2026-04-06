@@ -156,22 +156,22 @@ export default function Chatbot() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <FiCpu className="text-purple-600" /> Quản lý AI Chatbot
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Powered by Gemini AI — Model: {config.ai?.model}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <button
             onClick={() => setShowResetConfirm(true)}
             disabled={saving}
-            className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
+            className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
             <FiRefreshCw className={saving ? "animate-spin" : ""} /> Khôi phục
             mặc định
@@ -179,7 +179,7 @@ export default function Chatbot() {
           <button
             onClick={handleSave}
             disabled={saving || !dirty}
-            className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
+            className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
             <FiSave /> {saving ? "Đang lưu..." : "Lưu cấu hình"}
           </button>
@@ -194,17 +194,17 @@ export default function Chatbot() {
       )}
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800">
+      <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
         <button
           onClick={() => setActiveTab("settings")}
-          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === "settings" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiSettings className="inline mr-1.5 -mt-0.5" />
           Cấu hình
         </button>
         <button
           onClick={() => setActiveTab("overview")}
-          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === "overview" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiActivity className="inline mr-1.5 -mt-0.5" />
           Tổng quan
@@ -213,11 +213,11 @@ export default function Chatbot() {
 
       {/* ═══════════ TAB: CẤU HÌNH ═══════════ */}
       {activeTab === "settings" && (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           {/*  Cột trái: 2/3  */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             {/* Card: Thông tin cửa hàng */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-1">🏪 Thông tin cửa hàng</h2>
               <p className="text-xs text-slate-500 mb-5">
                 Thông tin này được nhúng vào System Prompt để bot giới thiệu cho
@@ -307,7 +307,7 @@ export default function Chatbot() {
             </div>
 
             {/* Card: Cấu hình AI */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-1">🧠 Cấu hình AI</h2>
               <p className="text-xs text-slate-500 mb-5">
                 Điều chỉnh model, nhiệt độ sáng tạo, và quy tắc hành vi bot.
@@ -488,9 +488,9 @@ export default function Chatbot() {
           </div>
 
           {/*  Cột phải: 1/3  */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Card: Bật/Tắt chatbot */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold">Trạng thái Chatbot</h2>
@@ -511,7 +511,7 @@ export default function Chatbot() {
             </div>
 
             {/* Card: Giao diện Widget */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
               <h2 className="text-lg font-bold">🎨 Giao diện Widget</h2>
 
               <div>
@@ -594,7 +594,7 @@ export default function Chatbot() {
             </div>
 
             {/* Card: Tin nhắn chào mừng */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
               <h2 className="text-lg font-bold">💬 Tin nhắn chào mừng</h2>
               <textarea
                 value={config.bot?.welcomeMessage || ""}
@@ -611,7 +611,7 @@ export default function Chatbot() {
             </div>
 
             {/* Card: Gợi ý nhanh */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
               <h2 className="text-lg font-bold">
                 ⚡ Gợi ý nhanh (Quick Suggestions)
               </h2>
@@ -642,7 +642,7 @@ export default function Chatbot() {
                 ))}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
                   value={newSuggestion}
@@ -654,7 +654,7 @@ export default function Chatbot() {
                 <button
                   onClick={addSuggestion}
                   disabled={!newSuggestion.trim()}
-                  className="h-10 px-3 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 text-sm font-medium flex items-center gap-1"
+                  className="h-10 px-3 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 text-sm font-medium flex items-center justify-center gap-1 w-full sm:w-auto"
                 >
                   <FiPlus /> Thêm
                 </button>
@@ -666,10 +666,10 @@ export default function Chatbot() {
 
       {/* ═══════════ TAB: TỔNG QUAN ═══════════ */}
       {activeTab === "overview" && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Stats Cards - placeholder */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <p className="text-slate-500 text-sm font-medium mb-1">
@@ -691,7 +691,7 @@ export default function Chatbot() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <p className="text-slate-500 text-sm font-medium mb-1">
@@ -710,7 +710,7 @@ export default function Chatbot() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <p className="text-slate-500 text-sm font-medium mb-1">
@@ -729,7 +729,7 @@ export default function Chatbot() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <p className="text-slate-500 text-sm font-medium mb-1">
@@ -750,7 +750,7 @@ export default function Chatbot() {
           </div>
 
           {/* Current config summary */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4">
               📋 Cấu hình hiện tại (JSON)
             </h2>

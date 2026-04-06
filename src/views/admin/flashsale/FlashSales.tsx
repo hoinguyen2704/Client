@@ -5,12 +5,11 @@ import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse } from '@/types';
 import type { FlashSaleRequest, FlashSaleItemRequest } from '@/apis/services/adminFlashSaleService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination, ActionButtons, PrimaryButton, TrashButton, ConfirmDialog, StatusBadge, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea, CustomSelect } from '@/components';
+import { AdminPagination, ActionButtons, PrimaryButton, TrashButton, ConfirmDialog, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea, CustomSelect } from '@/components';
 import useAdminList from '@/hooks/useAdminList';
 import { ProductPickerModal } from '@/components';
 import type { SelectedVariant } from '@/components';
 import { formatPrice } from '@/utils/format';
-import { FiTrash2 } from 'react-icons/fi';
 
 export interface FlashSaleItemForm extends FlashSaleItemRequest {
   id?: string;
@@ -138,27 +137,27 @@ export default function FlashSales() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
+        <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
           <FiZap className="text-yellow-500" /> Quản lý Flash Sale
         </h1>
-        <PrimaryButton onClick={openCreate} icon={<FiPlus className="text-base" />}>
+        <PrimaryButton onClick={openCreate} icon={<FiPlus className="text-base" />} className="w-full sm:w-auto">
           Tạo Flash Sale
         </PrimaryButton>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-visible">
-        <div className="min-w-full min-h-[300px]">
-          <table className="w-full text-left border-collapse">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+        <div className="overflow-x-auto min-h-[300px]">
+          <table className="w-full min-w-[900px] text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm bg-slate-50/50 dark:bg-slate-800/50">
-                <th className="p-4 font-medium">Tên sự kiện</th>
-                <th className="p-4 font-medium">Bắt đầu</th>
-                <th className="p-4 font-medium">Kết thúc</th>
-                <th className="p-4 font-medium">Sản phẩm</th>
-                <th className="p-4 font-medium">Trạng thái</th>
-                <th className="p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium">Tên sự kiện</th>
+                <th className="p-3 sm:p-4 font-medium">Bắt đầu</th>
+                <th className="p-3 sm:p-4 font-medium">Kết thúc</th>
+                <th className="p-3 sm:p-4 font-medium">Sản phẩm</th>
+                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
+                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -168,14 +167,14 @@ export default function FlashSales() {
                 <tr><td colSpan={6} className="p-8 text-center text-slate-400">Chưa có Flash Sale nào</td></tr>
               ) : sales.map((sale) => (
                 <tr key={sale.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="p-4">
+                  <td className="p-3 sm:p-4">
                     <div className="font-medium text-sm">{sale.name}</div>
                     {sale.description && <div className="text-xs text-slate-400 mt-1">{sale.description}</div>}
                   </td>
-                  <td className="p-4 text-sm text-slate-500">{new Date(sale.startTime).toLocaleString('vi-VN')}</td>
-                  <td className="p-4 text-sm text-slate-500">{new Date(sale.endTime).toLocaleString('vi-VN')}</td>
-                  <td className="p-4 text-sm font-medium">{sale.items?.length || 0} SP</td>
-                  <td className="p-4">
+                  <td className="p-3 sm:p-4 text-sm text-slate-500">{new Date(sale.startTime).toLocaleString('vi-VN')}</td>
+                  <td className="p-3 sm:p-4 text-sm text-slate-500">{new Date(sale.endTime).toLocaleString('vi-VN')}</td>
+                  <td className="p-3 sm:p-4 text-sm font-medium">{sale.items?.length || 0} SP</td>
+                  <td className="p-3 sm:p-4">
                     <CustomSelect
                       value={sale.status}
                       options={[
@@ -188,7 +187,7 @@ export default function FlashSales() {
                       className="w-36 text-sm"
                     />
                   </td>
-                  <td className="p-4">
+                  <td className="p-3 sm:p-4">
                     <ActionButtons
                       actions={[
                         {
@@ -248,7 +247,7 @@ export default function FlashSales() {
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             inputClassName="h-24"
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInput
               label="Bắt đầu *"
               type="datetime-local"
@@ -264,15 +263,15 @@ export default function FlashSales() {
           </div>
 
           <div className="pt-4 border-t border-slate-100">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <h3 className="font-semibold text-slate-800">Sản phẩm tham gia ({form.items.length})</h3>
-              <PrimaryButton type="button" onClick={() => setIsPickerOpen(true)} icon={<FiPlus />}>
+              <PrimaryButton type="button" onClick={() => setIsPickerOpen(true)} icon={<FiPlus />} className="w-full sm:w-auto">
                 Thêm sản phẩm
               </PrimaryButton>
             </div>
 
-            <div className="border border-slate-200 rounded-xl overflow-hidden max-h-[300px] overflow-y-auto">
-              <table className="w-full text-left bg-white text-sm">
+            <div className="border border-slate-200 rounded-xl overflow-auto max-h-[300px]">
+              <table className="w-full min-w-[760px] text-left bg-white text-sm">
                 <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
                   <tr>
                     <th className="p-3 font-medium text-slate-600">Sản phẩm</th>

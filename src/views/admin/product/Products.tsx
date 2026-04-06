@@ -126,17 +126,17 @@ export default function Products() {
     p.variants?.length ? Math.min(...p.variants.map(v => v.price)) : p.originPrice;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Quản lý sản phẩm</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">Quản lý sản phẩm</h1>
           {selectedItems.length > 0 && (
             <p className="text-sm text-slate-500 mt-1">
               Đã chọn <span className="font-bold text-purple-600">{selectedItems.length}</span> sản phẩm
             </p>
           )}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {selectedItems.length > 0 && (
             <Button
               onClick={() => {
@@ -182,7 +182,7 @@ export default function Products() {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
         <div className="flex-1">
           <AdminSearch
             placeholder="Tìm kiếm theo tên sản phẩm, mã SKU..."
@@ -214,7 +214,7 @@ export default function Products() {
       {/* Products Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[920px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
                 <th className="p-4 font-medium w-10">
@@ -257,7 +257,7 @@ export default function Products() {
                   </tr>
                 ))
               ) : products.length === 0 ? (
-                <tr><td colSpan={8} className="p-12 text-center text-slate-400">Không có sản phẩm nào</td></tr>
+                <tr><td colSpan={8} className="p-10 sm:p-12 text-center text-slate-400">Không có sản phẩm nào</td></tr>
               ) : (
                 products.map((product) => {
                   const stock = totalStock(product);

@@ -14,15 +14,15 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
   useClickOutside(menuRef, useCallback(() => setIsMenuOpen(false), []));
 
   return (
-    <header className="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10">
-      <div className="flex items-center gap-4 flex-1">
+    <header className="h-16 sm:h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-3 sm:px-4 md:px-8 sticky top-0 z-10">
+      <div className="flex items-center gap-2 sm:gap-4 flex-1">
         <button
           onClick={toggleSidebar}
           className="lg:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
         >
-          <FiMenu className="text-xl" />
+          <FiMenu className="text-lg sm:text-xl" />
         </button>
-        <div className="relative w-96 hidden md:block group">
+        <div className="relative w-80 lg:w-96 hidden md:block group">
           <input
             type="text"
             placeholder="Tìm kiếm trong admin..."
@@ -32,25 +32,25 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1.5 sm:gap-4">
         {/* Notification Bell */}
-        <button className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative">
-          <FiBell className="text-xl" />
+        <button className="p-2 sm:p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative">
+          <FiBell className="text-lg sm:text-xl" />
           <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
-        <div className="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+        <div className="h-7 sm:h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1 sm:mx-2"></div>
 
         {/* User Menu */}
         <div className="relative" ref={menuRef}>
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-xl transition-colors"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 sm:p-2 rounded-xl transition-colors"
           >
             {user?.avatar ? (
-              <img src={user.avatar} alt="Admin" className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/20" />
+              <img src={user.avatar} alt="Admin" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-purple-500/20" />
             ) : (
-              <div className="w-10 h-10 rounded-full ring-2 ring-purple-500/20 bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full ring-2 ring-purple-500/20 bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
                 <FiUser className="text-lg text-purple-500 dark:text-purple-400" />
               </div>
             )}
@@ -58,12 +58,12 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
               <p className="font-bold">{user?.name || 'Admin'}</p>
               <p className="text-slate-500 dark:text-slate-400 text-xs">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</p>
             </div>
-            <FiChevronDown className={`text-slate-400 ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
+            <FiChevronDown className={`text-slate-400 ml-0.5 sm:ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {/* Dropdown Menu */}
           {isMenuOpen && (
-            <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute right-0 top-full mt-2 w-[280px] max-w-[80vw] sm:w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               {/* User Info */}
               <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3">

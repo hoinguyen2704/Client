@@ -191,7 +191,7 @@ export default function SupportChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
             transition={{ duration: 0.16 }}
-            className="fixed bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden z-[55] left-2.5 right-2.5 bottom-16 top-14 sm:left-auto sm:right-6 sm:bottom-24 sm:top-auto sm:w-[360px] sm:h-[520px] sm:max-w-[92vw] sm:max-h-[88vh]"
+            className="fixed bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden z-[55] right-3 bottom-16 w-[280px] max-w-[82vw] h-[min(70dvh,600px)] sm:right-6 sm:bottom-24 sm:w-[360px] sm:h-[520px] sm:max-w-[92vw] sm:max-h-[88vh]"
           >
             <div className="h-14 px-3 sm:px-4 flex items-center justify-between text-white bg-gradient-to-r from-purple-600 to-blue-600">
               <div>

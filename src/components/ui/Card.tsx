@@ -6,7 +6,7 @@ export default function Card({ children, className, onClick }: CardProps) {
     <div
       onClick={onClick}
       className={cn(
-        'bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800',
+        'bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800',
         onClick && 'cursor-pointer',
         className
       )}

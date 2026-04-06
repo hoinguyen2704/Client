@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
 import { SHOP } from '@/constants/shopConstants';
+import { getApiErrorMessage } from '@/utils/error';
 import AuthLayout from './AuthLayout';
 
 const features = [
@@ -66,7 +67,7 @@ function LoginForm() {
         navigate(from, { replace: true });
       }
     } catch (err: any) {
-      setError(err?.message || 'Email hoặc mật khẩu không đúng');
+      setError(getApiErrorMessage(err, 'Email hoặc mật khẩu không đúng'));
     } finally {
       setLoading(false);
     }

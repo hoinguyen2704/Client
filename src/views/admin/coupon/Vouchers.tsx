@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
   FiPlus,
-  FiSearch,
-  FiEdit2,
   FiTag,
   FiToggleLeft,
   FiToggleRight,
@@ -100,15 +98,16 @@ export default function AdminVouchers() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Quản lý Voucher</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý Voucher</h1>
         <PrimaryButton
           onClick={() => {
             resetForm();
             setIsModalOpen(true);
           }}
           icon={<FiPlus className="text-base" />}
+          className="w-full sm:w-auto"
         >
           Tạo Voucher mới
         </PrimaryButton>
@@ -125,17 +124,17 @@ export default function AdminVouchers() {
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[1020px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                <th className="p-4 font-medium">Mã Voucher</th>
-                <th className="p-4 font-medium">Loại / Giá trị</th>
-                <th className="p-4 font-medium text-center">Đã dùng</th>
-                <th className="p-4 font-medium">Thời gian</th>
-                <th className="p-4 font-medium text-center">Hiển thị</th>
-                <th className="p-4 font-medium text-center">Phạm vi</th>
-                <th className="p-4 font-medium">Trạng thái</th>
-                <th className="p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium">Mã Voucher</th>
+                <th className="p-3 sm:p-4 font-medium">Loại / Giá trị</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Đã dùng</th>
+                <th className="p-3 sm:p-4 font-medium">Thời gian</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Hiển thị</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Phạm vi</th>
+                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
+                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -153,7 +152,7 @@ export default function AdminVouchers() {
                     key={v.id}
                     className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600">
                           <FiTag />
@@ -163,7 +162,7 @@ export default function AdminVouchers() {
                         </span>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div className="font-bold text-purple-600">
                         {v.discountType === "PERCENTAGE"
                           ? `${v.discountValue}%`
@@ -179,7 +178,7 @@ export default function AdminVouchers() {
                         </span>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div className="flex flex-col items-center">
                         <span className="font-bold">
                           {v.usedCount}/{v.usageLimit || "∞"}
@@ -196,13 +195,13 @@ export default function AdminVouchers() {
                         )}
                       </div>
                     </td>
-                    <td className="p-4 text-sm text-slate-500">
+                    <td className="p-3 sm:p-4 text-sm text-slate-500">
                       <div>
                         Từ: {v.startDate ? formatDate(v.startDate) : "—"}
                       </div>
                       <div>Đến: {v.endDate ? formatDate(v.endDate) : "—"}</div>
                     </td>
-                    <td className="p-4 text-center">
+                    <td className="p-3 sm:p-4 text-center">
                       {v.isPublic ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                           <FiGlobe className="text-[10px]" /> Công khai
@@ -213,7 +212,7 @@ export default function AdminVouchers() {
                         </span>
                       )}
                     </td>
-                    <td className="p-4 text-center">
+                    <td className="p-3 sm:p-4 text-center">
                       {v.applyType === "SPECIFIC_PRODUCTS" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                           <FiPackage className="text-[10px]" />{" "}
@@ -223,10 +222,10 @@ export default function AdminVouchers() {
                         <span className="text-xs text-slate-400">Tất cả</span>
                       )}
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <StatusBadge status={v.status === "ACTIVE" ? 'active' : 'inactive'} label={v.status === "ACTIVE" ? "Đang hoạt động" : "Tạm dừng"} />
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-3 sm:p-4 text-right">
                         <ActionButtons
                           actions={[
                             {
@@ -285,7 +284,7 @@ export default function AdminVouchers() {
           </>
         }
       >
-              <div className="space-y-5">
+              <div className="space-y-4 sm:space-y-5">
                 {/* Code */}
                 <FormInput
                   label="Mã Voucher"
@@ -301,7 +300,7 @@ export default function AdminVouchers() {
                 {/* Discount Type */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Loại Giảm Giá</label>
-                  <div className="flex gap-4">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="radio"
@@ -332,7 +331,7 @@ export default function AdminVouchers() {
                 {/* Coupon Category */}
                 <div className="space-y-3">
                   <label className="text-sm font-medium">Nhóm Voucher</label>
-                  <div className="flex gap-6">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
                      <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="radio"
@@ -361,7 +360,7 @@ export default function AdminVouchers() {
                 </div>
 
                 {/* Value + Min */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormInput
                     label={form.couponCategory === "SHIPPING" && form.discountType !== "PERCENTAGE" ? "Hỗ trợ phí ship tối đa" : "Giá trị giảm"}
                     type="number"
@@ -383,7 +382,7 @@ export default function AdminVouchers() {
                 </div>
 
                 {/* Limit + Max */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormInput
                     label="Giới hạn sử dụng"
                     type="number"
@@ -408,7 +407,7 @@ export default function AdminVouchers() {
                 </div>
 
                 {/* Dates */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormInput
                     label="Thời gian bắt đầu"
                     type="datetime-local"
@@ -429,7 +428,7 @@ export default function AdminVouchers() {
 
                 {/* Visibility */}
                 <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-100 dark:border-blue-900/50 space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-start sm:items-center justify-between gap-3">
                     <div>
                       <div className="text-sm font-bold flex items-center gap-2">
                         {form.isPublic ? (
@@ -461,7 +460,7 @@ export default function AdminVouchers() {
                 {/* Apply Type */}
                 <div className="space-y-3">
                   <label className="text-sm font-medium">Phạm vi áp dụng</label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={() =>

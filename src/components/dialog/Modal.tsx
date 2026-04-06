@@ -47,7 +47,7 @@ export default function Modal({
     <AnimatePresence>
       {open && (
         <div
-          className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${containerClassName}`}
+          className={`fixed inset-0 z-50 flex items-start justify-center px-3 sm:px-4 pt-10 sm:pt-10 pb-3 sm:pb-4 ${containerClassName}`}
         >
           {/* Backdrop */}
           <motion.div
@@ -65,18 +65,18 @@ export default function Modal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className={`relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full ${MODAL_SIZE_MAP[size]} border border-slate-200 dark:border-slate-800 overflow-hidden ${className}`}
+            className={`relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full ${MODAL_SIZE_MAP[size]} max-h-[calc(100dvh-4.5rem)] sm:max-h-[calc(100dvh-6rem)] border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col ${className}`}
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
                   {title}
                 </h3>
                 <IconButton
                   onClick={onClose}
                   variant="ghost"
-                  icon={<FiX className="text-xl" />}
+                  icon={<FiX className="text-lg sm:text-xl" />}
                   className="rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 />
               </div>
@@ -84,14 +84,14 @@ export default function Modal({
 
             {/* Body */}
             <div
-              className={`p-6 ${scrollable ? "overflow-y-auto max-h-[70vh]" : ""}`}
+              className={`p-4 sm:p-6 ${scrollable ? "flex-1 min-h-0 overflow-y-auto" : ""}`}
             >
               {children}
             </div>
 
             {/* Footer */}
             {footer && (
-              <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+              <div className="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-800 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3">
                 {footer}
               </div>
             )}
@@ -112,7 +112,7 @@ export function ModalCancelButton({
     <Button
       onClick={onClick}
       variant="secondary"
-      className="h-10 px-6 font-medium"
+      className="h-10 px-6 font-medium w-full sm:w-auto"
     >
       {children}
     </Button>
@@ -130,7 +130,7 @@ export function ModalSubmitButton({
       onClick={onClick}
       icon={icon}
       variant={variant === "danger" ? "danger" : "primary"}
-      className="h-10 px-6 font-medium"
+      className="h-10 px-6 font-medium w-full sm:w-auto"
     >
       {children}
     </Button>

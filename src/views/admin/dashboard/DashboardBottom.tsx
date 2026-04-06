@@ -17,11 +17,11 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
     : '0.0';
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
       {/* Recent Orders */}
       <Card className="lg:col-span-2 overflow-hidden">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold">Đơn hàng gần đây</h2>
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-lg font-bold">Đơn hàng gần đây</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[600px]">
@@ -55,10 +55,10 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
 
       {/* Review Stats */}
       <Card>
-        <h2 className="text-lg font-bold mb-6">Thống kê đánh giá</h2>
-        <div className="flex items-center gap-6 mb-8">
+        <h2 className="text-base sm:text-lg font-bold mb-4 sm:mb-6">Thống kê đánh giá</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="text-center">
-            <div className="text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-1">{avgRating}</div>
+            <div className="text-4xl sm:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-1">{avgRating}</div>
             <div className="flex justify-center text-yellow-400 text-sm mb-1">
               {Array.from({ length: 5 }).map((_, i) => <FiStar key={i} className="fill-current" />)}
             </div>

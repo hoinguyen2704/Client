@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiMessageCircle, FiDownload } from 'react-icons/fi';
+import { FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
 import { Button, CustomSelect, AdminPagination, StarRating, UserAvatar } from '@/components';
@@ -43,17 +43,17 @@ export default function Feedbacks() {
     } catch (err) { console.error('Reply failed:', err); toast.error('Phản hồi đánh giá thất bại!'); }
   };
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Quản lý đánh giá</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý đánh giá</h1>
         <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
-          options={FEEDBACK_FILTER_OPTIONS} className="w-full sm:w-48 z-20" />
+          options={FEEDBACK_FILTER_OPTIONS} className="w-full sm:w-48 z-20 shrink-0" />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 animate-pulse">
+            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 animate-pulse">
               <div className="flex gap-4"><div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-full" /><div className="flex-1 space-y-2"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /><div className="h-4 w-full bg-slate-200 dark:bg-slate-700 rounded" /></div></div>
             </div>
           ))
@@ -61,11 +61,11 @@ export default function Feedbacks() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">Không có đánh giá nào</div>
         ) : (
           reviews.map((review) => (
-            <div key={review.id} className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="flex items-start gap-4">
+            <div key={review.id} className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <div className="flex items-start gap-3 sm:gap-4">
                 <UserAvatar name={review.userName} src={review.userAvatar} className="shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
                     <div>
                       <span className="font-bold">{review.userName}</span>
                       <span className="text-slate-400 text-sm ml-2">{formatDate(review.createdAt)}</span>
@@ -85,7 +85,7 @@ export default function Feedbacks() {
 
                   <div className="mt-3 flex items-center gap-2 flex-wrap">
                     <CustomSelect value={review.status} onChange={(val) => handleStatusChange(review.id, val)}
-                      options={FEEDBACK_STATUS_OPTIONS} className="w-32 z-10" />
+                      options={FEEDBACK_STATUS_OPTIONS} className="w-full sm:w-36 z-10" />
                     {!review.adminReply && (
                       <Button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
                         variant="ghost" size="sm" icon={<FiMessageCircle />}
@@ -96,11 +96,11 @@ export default function Feedbacks() {
                   </div>
 
                   {replyId === review.id && (
-                    <div className="mt-3 flex gap-2">
+                    <div className="mt-3 flex flex-col sm:flex-row gap-2">
                       <input type="text" placeholder="Nhập nội dung trả lời..." value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
                         className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm" />
-                      <Button onClick={() => handleReply(review.id)} size="sm">Gửi</Button>
+                      <Button onClick={() => handleReply(review.id)} size="sm" className="w-full sm:w-auto">Gửi</Button>
                     </div>
                   )}
                 </div>

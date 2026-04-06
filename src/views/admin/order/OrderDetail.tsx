@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage } from 'react-icons/fi';
+import { useParams } from 'react-router-dom';
+import { FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage } from 'react-icons/fi';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
 import { Button, StatusBadge, CustomSelect, BackButton } from '@/components';
 import { toast } from 'sonner';
@@ -79,12 +79,12 @@ export default function OrderDetail() {
 
   return (
     <>
-    <div className="space-y-6 print:hidden">
+    <div className="space-y-4 sm:space-y-6 print:hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <BackButton to="/admin/orders" />
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold flex flex-wrap items-center gap-2 sm:gap-3">
               Đơn hàng {order.orderNumber}
               <StatusBadge status={order.orderStatus} />
             </h1>
@@ -102,19 +102,19 @@ export default function OrderDetail() {
               disabled={isUpdatingStatus}
             />
           </div>
-          <Button onClick={handleExportInvoice} variant="success" size="md" icon={<FiDownload />}>
+          <Button onClick={handleExportInvoice} variant="success" size="md" icon={<FiDownload />} className="w-full sm:w-auto">
             Tải hóa đơn PDF
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Items */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold flex items-center gap-2 mb-6"><FiPackage className="text-purple-600" /> Sản phẩm ({order.items?.length || 0})</h2>
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-4 sm:mb-6"><FiPackage className="text-purple-600" /> Sản phẩm ({order.items?.length || 0})</h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full min-w-[620px] text-left border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
                     <th className="pb-3 font-medium">Sản phẩm</th>
@@ -141,14 +141,14 @@ export default function OrderDetail() {
           </div>
 
           {/* Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-4">Ghi chú</h2>
               <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-sm border border-yellow-100 dark:border-yellow-900/50">
                 {order.note || 'Không có ghi chú.'}
               </div>
             </div>
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-4">Tổng thanh toán</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-slate-500"><span>Tạm tính</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
@@ -172,25 +172,25 @@ export default function OrderDetail() {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Customer Info */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-purple-600" /> Khách hàng</h2>
             <div className="space-y-3 text-sm">
               {order.customerName && (
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between gap-3">
                   <span className="text-slate-500">Họ tên:</span>
                   <span className="font-medium">{order.customerName}</span>
                 </div>
               )}
               {order.customerEmail && (
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between gap-3">
                   <span className="text-slate-500">Email:</span>
                   <span className="font-medium text-purple-600">{order.customerEmail}</span>
                 </div>
               )}
               {order.customerPhone && (
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between gap-3">
                   <span className="text-slate-500">SĐT:</span>
                   <span className="font-medium">{order.customerPhone}</span>
                 </div>
@@ -199,25 +199,25 @@ export default function OrderDetail() {
           </div>
 
           {/* Shipping */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> Giao hàng</h2>
             <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{order.shippingAddress}</p>
           </div>
 
           {/* Payment */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><FiCreditCard className="text-green-600" /> Thanh toán</h2>
             <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between gap-3">
                 <span className="text-slate-500">Phương thức:</span>
                 <span className="font-medium">{order.paymentMethod}</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between gap-3">
                 <span className="text-slate-500">Trạng thái:</span>
                 <StatusBadge status={order.paymentStatus} />
               </div>
               {order.couponCode && (
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between gap-3">
                   <span className="text-slate-500">Mã giảm giá:</span>
                   <span className="font-mono font-bold text-purple-600">{order.couponCode}</span>
                 </div>

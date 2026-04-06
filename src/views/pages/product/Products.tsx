@@ -117,7 +117,12 @@ export default function Products() {
     if (sortBy !== "popular") params.sortBy = sortBy;
     if (sortDir !== "DESC") params.sortDir = sortDir;
     if (page > 1) params.page = String(page);
-    setSearchParams(params, { replace: true });
+
+    const next = new URLSearchParams(params).toString();
+    const current = searchParams.toString();
+    if (next !== current) {
+      setSearchParams(params, { replace: true });
+    }
   }, [
     keyword,
     selectedCategorySlug,
@@ -125,6 +130,7 @@ export default function Products() {
     sortBy,
     sortDir,
     page,
+    searchParams,
     setSearchParams,
   ]);
 

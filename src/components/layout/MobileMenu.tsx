@@ -41,7 +41,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
             exit={{ opacity: 0 }}
             onClick={onClose}
             aria-label="Đóng menu"
-            className="md:hidden fixed inset-x-0 top-20 bottom-0 z-[70] bg-slate-900/35 backdrop-blur-[1px]"
+            className="md:hidden fixed inset-0 z-[70] bg-transparent"
           />
 
           <motion.div
@@ -49,7 +49,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.18 }}
-            className="md:hidden fixed inset-x-0 top-20 bottom-0 z-[80] bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 overflow-y-auto overscroll-contain"
+            className="md:hidden fixed top-20 right-3 w-[280px] max-w-[82vw] z-[80] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-y-auto overscroll-contain max-h-[calc(100dvh-6rem)]"
           >
             <div className="px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-4">
             {/* Mobile Search */}

@@ -28,7 +28,7 @@ export default function AdminSidebar() {
       {/* Mobile overlay */}
       {!sidebarCollapsed && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          className="lg:hidden fixed inset-0 bg-black/45 z-30"
           onClick={toggleSidebar}
         />
       )}
@@ -36,17 +36,17 @@ export default function AdminSidebar() {
       <aside
         className={cn(
           'bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col fixed inset-y-0 z-40 transition-all duration-300',
-          sidebarCollapsed ? 'w-20' : 'w-72',
+          sidebarCollapsed ? 'w-20' : 'w-72 max-lg:w-[280px] max-lg:max-w-[82vw]',
           // Mobile: hidden when collapsed
           sidebarCollapsed ? 'max-lg:-translate-x-full' : 'max-lg:translate-x-0',
         )}
       >
         {/* Logo */}
-        <div className="h-20 flex items-center px-6 border-b border-slate-200 dark:border-slate-800 justify-between">
+        <div className="h-16 sm:h-20 flex items-center px-4 sm:px-6 border-b border-slate-200 dark:border-slate-800 justify-between">
           <Link to="/admin" className="flex items-center gap-3 overflow-hidden">
-              <LogoIcon />
+            <LogoIcon />
             {!sidebarCollapsed && (
-              <span className="text-xl font-bold text-[#2539e6] whitespace-nowrap">{SHOP.name} Admin</span>
+              <span className="text-base sm:text-xl font-bold text-[#2539e6] whitespace-nowrap">{SHOP.name} Admin</span>
             )}
           </Link>
           <button
@@ -59,12 +59,12 @@ export default function AdminSidebar() {
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto py-6 px-3">
+        <div className="flex-1 overflow-y-auto py-4 sm:py-6 px-2.5 sm:px-3">
           <nav className="space-y-1">
             {menuItems.map((item) => (
               <NavLink key={item.path} to={item.path}
                 className={({ isActive }) => cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium',
+                  'flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all font-medium text-sm sm:text-base',
                   sidebarCollapsed && 'justify-center px-3',
                   isActive
                     ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20'
@@ -72,7 +72,7 @@ export default function AdminSidebar() {
                 )}
                 title={sidebarCollapsed ? item.label : undefined}
               >
-                <item.icon className="text-lg shrink-0" />
+                <item.icon className="text-base sm:text-lg shrink-0" />
                 {!sidebarCollapsed && item.label}
               </NavLink>
             ))}

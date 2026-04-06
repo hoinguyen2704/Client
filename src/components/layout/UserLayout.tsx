@@ -1,7 +1,9 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiTruck, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings } from 'react-icons/fi';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings, FiChevronDown } from 'react-icons/fi';
 import { cn } from '../../utils/cn';
 import useAuthStore from '@/stores/useAuthStore';
+import { useClickOutside } from '@/hooks';
 
 const menuItems = [
   { path: '/user/profile', icon: FiUser, label: 'Hồ sơ cá nhân' },
@@ -17,8 +19,22 @@ const menuItems = [
 ];
 
 export default function UserLayout() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthStore();
+  useClickOutside(mobileMenuRef, useCallback(() => setIsMobileMenuOpen(false), []));
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const activeMenuItem = useMemo(
+    () => menuItems.find((item) => location.pathname.startsWith(item.path)) || menuItems[0],
+    [location.pathname],
+  );
+  const ActiveMenuIcon = activeMenuItem.icon;
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -50,20 +66,69 @@ export default function UserLayout() {
               </div>
             </div>
 
-            <nav className="space-y-0 lg:space-y-1">
-              <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 hide-scrollbar">
+            <div className="lg:hidden relative" ref={mobileMenuRef}>
+              <button
+                onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+                className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-between text-sm font-semibold"
+              >
+                <span className="flex items-center gap-2 min-w-0">
+                  <ActiveMenuIcon className="text-base shrink-0" />
+                  <span className="truncate">{activeMenuItem.label}</span>
+                </span>
+                <FiChevronDown className={cn('text-base text-slate-400 transition-transform', isMobileMenuOpen && 'rotate-180')} />
+              </button>
+
+              {isMobileMenuOpen && (
+                <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xl z-40 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                  <nav className="p-2 space-y-1 max-h-[52dvh] overflow-y-auto">
+                    {menuItems.map((item) => (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={({ isActive }) => cn(
+                          "flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-sm",
+                          isActive
+                            ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
+                        )}
+                      >
+                        <item.icon className="text-base" />
+                        {item.label}
+                      </NavLink>
+                    ))}
+
+                    <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        <FiLogOut className="text-base" />
+                        Đăng xuất
+                      </button>
+                    </div>
+                  </nav>
+                </div>
+              )}
+            </div>
+
+            <nav className="hidden lg:block space-y-1">
+              <div className="flex flex-col gap-2">
                 {menuItems.map((item) => (
                   <NavLink
                     key={item.path}
                     to={item.path}
                     className={({ isActive }) => cn(
-                      "flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-sm shrink-0 min-w-max lg:min-w-0 lg:px-4 lg:py-3 lg:text-base",
+                      "flex items-center gap-2.5 px-4 py-3 rounded-xl transition-all font-medium text-base min-w-0",
                       isActive
                         ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
                         : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
                     )}
                   >
-                    <item.icon className="text-base lg:text-lg" />
+                    <item.icon className="text-lg" />
                     {item.label}
                   </NavLink>
                 ))}
@@ -71,9 +136,9 @@ export default function UserLayout() {
               <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center lg:justify-start gap-2.5 px-3 lg:px-4 py-2.5 lg:py-3 rounded-xl transition-all font-medium text-sm lg:text-base text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  className="w-full flex items-center justify-start gap-2.5 px-4 py-3 rounded-xl transition-all font-medium text-base text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
-                  <FiLogOut className="text-base lg:text-lg" />
+                  <FiLogOut className="text-lg" />
                   Đăng xuất
                 </button>
               </div>

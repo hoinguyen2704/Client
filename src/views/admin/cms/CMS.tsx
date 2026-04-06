@@ -297,26 +297,26 @@ export default function CMS() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Quản lý nội dung</h1>
-        <PrimaryButton onClick={openCreateModal} icon={<FiPlus className="text-base" />}>
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý nội dung</h1>
+        <PrimaryButton onClick={openCreateModal} icon={<FiPlus className="text-base" />} className="w-full sm:w-auto">
           {tab === 'banners' ? 'Thêm banner' : 'Thêm bài viết'}
         </PrimaryButton>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2">
-        <button onClick={() => setTab('banners')} className={`px-6 py-3 rounded-xl font-medium transition-colors ${tab === 'banners' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        <button onClick={() => setTab('banners')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'banners' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
           Banners
         </button>
-        <button onClick={() => setTab('articles')} className={`px-6 py-3 rounded-xl font-medium transition-colors ${tab === 'articles' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
+        <button onClick={() => setTab('articles')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'articles' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
           Bài viết
         </button>
       </div>
 
       {tab === 'banners' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {loading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 animate-pulse">
@@ -325,7 +325,7 @@ export default function CMS() {
               </div>
             ))
           ) : banners.length === 0 ? (
-            <div className="col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">Chưa có banner nào</div>
+            <div className="sm:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">Chưa có banner nào</div>
           ) : (
             banners.map((banner) => (
               <div key={banner.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 group">
@@ -336,7 +336,7 @@ export default function CMS() {
                     <button onClick={() => setDeleteTarget({ type: 'banner', id: banner.id })} className="p-2 bg-white rounded-lg shadow-lg text-red-600"><FiTrash2 /></button>
                   </div>
                 </div>
-                <div className="p-4 flex justify-between items-center">
+                <div className="p-3 sm:p-4 flex justify-between items-center gap-2">
                   <span className="font-bold text-sm">{banner.title}</span>
                   <StatusBadge status={banner.isActive ? 'active' : 'hidden'} />
                 </div>
@@ -347,14 +347,14 @@ export default function CMS() {
       ) : (
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full min-w-[860px] text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
-                  <th className="p-4 font-medium">Tiêu đề</th>
-                  <th className="p-4 font-medium">Tác giả</th>
-                  <th className="p-4 font-medium">Ngày tạo</th>
-                  <th className="p-4 font-medium">Trạng thái</th>
-                  <th className="p-4 font-medium text-right">Thao tác</th>
+                  <th className="p-3 sm:p-4 font-medium">Tiêu đề</th>
+                  <th className="p-3 sm:p-4 font-medium">Tác giả</th>
+                  <th className="p-3 sm:p-4 font-medium">Ngày tạo</th>
+                  <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
+                  <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -365,18 +365,18 @@ export default function CMS() {
                 ) : (
                   articles.map((a) => (
                     <tr key={a.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <td className="p-4">
+                      <td className="p-3 sm:p-4">
                         <div className="flex items-center gap-3">
                           {a.thumbnailUrl && <img src={a.thumbnailUrl} className="w-10 h-10 rounded-lg object-cover" />}
                           <span className="font-bold line-clamp-1">{a.title}</span>
                         </div>
                       </td>
-                      <td className="p-4 text-slate-500">{a.authorName || '—'}</td>
-                      <td className="p-4 text-slate-500">{formatDate(a.createdAt)}</td>
-                      <td className="p-4">
+                      <td className="p-3 sm:p-4 text-slate-500">{a.authorName || '—'}</td>
+                      <td className="p-3 sm:p-4 text-slate-500">{formatDate(a.createdAt)}</td>
+                      <td className="p-3 sm:p-4">
                         <StatusBadge status={a.isPublished ? 'published' : 'draft'} />
                       </td>
-                      <td className="p-4 text-right">
+                      <td className="p-3 sm:p-4 text-right">
                         <ActionButtons
                           actions={[
                             {
