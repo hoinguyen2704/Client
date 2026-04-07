@@ -4,7 +4,12 @@ import useAuthStore from "@/stores/useAuthStore";
 
 let isLoggingOut = false;
 let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
+type RefreshSubscriber = {
+  onSuccess: (token: string) => void;
+  onError: (error: unknown) => void;
+};
+
+let refreshSubscribers: RefreshSubscriber[] = [];
 
 const AUTH_ENDPOINT_BYPASS = [
   "/auth/login",
@@ -17,12 +22,20 @@ const AUTH_ENDPOINT_BYPASS = [
 ];
 
 const onRefreshed = (accessToken: string) => {
-  refreshSubscribers.forEach((callback) => callback(accessToken));
+  refreshSubscribers.forEach((subscriber) => subscriber.onSuccess(accessToken));
   refreshSubscribers = [];
 };
 
-const addRefreshSubscriber = (callback: (token: string) => void) => {
-  refreshSubscribers.push(callback);
+const onRefreshFailed = (error: unknown) => {
+  refreshSubscribers.forEach((subscriber) => subscriber.onError(error));
+  refreshSubscribers = [];
+};
+
+const addRefreshSubscriber = (
+  onSuccess: (token: string) => void,
+  onError: (error: unknown) => void,
+) => {
+  refreshSubscribers.push({ onSuccess, onError });
 };
 
 const shouldBypassAuthFlow = (
@@ -115,7 +128,7 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
             return instance(originalRequest);
           } catch (refreshErr) {
             isRefreshing = false;
-            refreshSubscribers = [];
+            onRefreshFailed(refreshErr);
             if (!isLoggingOut) {
               isLoggingOut = true;
               toast.error(
@@ -131,11 +144,16 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
         }
 
         // Đang refresh thì cho vào danh sách chờ
-        return new Promise((resolve) => {
-          addRefreshSubscriber((newToken: string) => {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            resolve(instance(originalRequest));
-          });
+        return new Promise((resolve, reject) => {
+          addRefreshSubscriber(
+            (newToken: string) => {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              resolve(instance(originalRequest));
+            },
+            (refreshError: unknown) => {
+              reject(refreshError);
+            },
+          );
         });
       }
 
