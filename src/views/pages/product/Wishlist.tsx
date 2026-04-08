@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import {
   FiHeart,
   FiTrash2,
@@ -8,22 +8,22 @@ import {
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { formatPrice } from "@/utils/format";
-import { toast } from "sonner";
-import wishlistService from "@/apis/services/wishlistService";
-import type { WishlistResponse } from "@/types";
 import { motion, AnimatePresence } from "motion/react";
 import useWishlistStore from "@/stores/useWishlistStore";
 
 export default function Wishlist() {
-  const { items, loading, syncFromServer, toggleItem } = useWishlistStore();
+  const items = useWishlistStore((s) => s.items);
+  const loading = useWishlistStore((s) => s.loading);
+  const syncFromServer = useWishlistStore((s) => s.syncFromServer);
+  const toggleItem = useWishlistStore((s) => s.toggleItem);
 
   useEffect(() => {
     // If the items are empty and not loading, give it a sync attempt just in case
     // Header hasn't finished its global sync yet.
-    if (items.length === 0) {
+    if (items.length === 0 && !loading) {
       syncFromServer();
     }
-  }, []);
+  }, [items.length, loading, syncFromServer]);
 
   const handleRemove = async (productId: string) => {
     await toggleItem(productId);

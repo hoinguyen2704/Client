@@ -23,7 +23,6 @@ const getTimeLeft = (endTime: string, nowMs: number): TimeLeft => {
 export default function FlashSale() {
   const [sales, setSales] = useState<FlashSaleResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [nowMs, setNowMs] = useState(Date.now());
 
   useEffect(() => {
     flashSaleService
@@ -32,12 +31,6 @@ export default function FlashSale() {
       .catch(() => setSales([]))
       .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    if (sales.length === 0) return;
-    const interval = setInterval(() => setNowMs(Date.now()), 1000);
-    return () => clearInterval(interval);
-  }, [sales.length]);
 
   if (loading) {
     return (
@@ -60,8 +53,6 @@ export default function FlashSale() {
   return (
     <div className="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8 space-y-5 sm:space-y-8">
       {sales.map((sale) => {
-        const timeLeft = getTimeLeft(sale.endTime, nowMs);
-
         return (
           <section
             key={sale.id}
@@ -81,18 +72,7 @@ export default function FlashSale() {
                     <FiClock className="text-base sm:text-xl" />
                     <span className="text-xs sm:text-sm">Kết thúc sau:</span>
                   </div>
-                  <div className="flex gap-1">
-                    {[
-                      { val: timeLeft.hours, label: 'giờ' },
-                      { val: timeLeft.minutes, label: 'phút' },
-                      { val: timeLeft.seconds, label: 'giây' },
-                    ].map((t, i) => (
-                      <div key={i} className="bg-white/20 backdrop-blur rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[44px] sm:min-w-[56px]">
-                        <div className="text-lg sm:text-2xl font-black leading-none">{String(t.val).padStart(2, '0')}</div>
-                        <div className="text-[10px] sm:text-xs text-white/70">{t.label}</div>
-                      </div>
-                    ))}
-                  </div>
+                  <SaleCountdown endTime={sale.endTime} />
                 </div>
               </div>
             </div>
@@ -156,6 +136,32 @@ export default function FlashSale() {
           </section>
         );
       })}
+    </div>
+  );
+}
+
+function SaleCountdown({ endTime }: { endTime: string }) {
+  const [nowMs, setNowMs] = useState(() => Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const timeLeft = getTimeLeft(endTime, nowMs);
+
+  return (
+    <div className="flex gap-1">
+      {[
+        { val: timeLeft.hours, label: 'giờ' },
+        { val: timeLeft.minutes, label: 'phút' },
+        { val: timeLeft.seconds, label: 'giây' },
+      ].map((t, i) => (
+        <div key={i} className="bg-white/20 backdrop-blur rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[44px] sm:min-w-[56px]">
+          <div className="text-lg sm:text-2xl font-black leading-none">{String(t.val).padStart(2, '0')}</div>
+          <div className="text-[10px] sm:text-xs text-white/70">{t.label}</div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -6,6 +6,8 @@ const AdminLayout = lazy(() => import('@/components/layout/AdminLayout'));
 const Dashboard = lazy(() => import('@/views/admin/dashboard/Dashboard'));
 const AdminOrders = lazy(() => import('@/views/admin/order/Orders'));
 const OrderDetail = lazy(() => import('@/views/admin/order/OrderDetail'));
+const AdminReturns = lazy(() => import('@/views/admin/return/Returns'));
+const AdminReturnDetail = lazy(() => import('@/views/admin/return/ReturnDetail'));
 const Products = lazy(() => import('@/views/admin/product/Products'));
 const ProductForm = lazy(() => import('@/views/admin/product/ProductForm'));
 const Categories = lazy(() => import('@/views/admin/category/Categories'));
@@ -25,6 +27,8 @@ export const adminRoutes = (
     <Route path="dashboard" element={<Dashboard />} />
     <Route path="orders" element={<AdminOrders />} />
     <Route path="orders/:id" element={<OrderDetail />} />
+    <Route path="returns" element={<AdminReturns />} />
+    <Route path="returns/:id" element={<AdminReturnDetail />} />
     <Route path="products" element={<Products />} />
     <Route path="products/new" element={<ProductForm />} />
     <Route path="products/:id" element={<ProductForm />} />

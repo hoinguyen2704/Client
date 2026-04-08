@@ -23,7 +23,7 @@ const createCheckoutIdempotencyKey = () => {
 export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const buyNowItem = location.state?.buyNowItem;
   const selectedCartItems = location.state?.selectedCartItems;
   

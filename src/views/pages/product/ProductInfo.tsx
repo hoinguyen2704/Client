@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus, FiZap } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -55,17 +55,22 @@ export default function ProductInfo({
   }, [product.id, selectedVariantIdxProp]);
 
   const syncFromServer = useCartStore((state) => state.syncFromServer);
-
-  const { toggleItem: toggleWishlist, items: wishlistItems } = useWishlistStore();
-  const { isAuthenticated } = useAuthStore();
-  const liked = wishlistItems.some(item => item.productId === product.id);
+  const toggleWishlist = useWishlistStore((s) => s.toggleItem);
+  const liked = useWishlistStore(
+    useCallback((s) => s.items.some((item) => item.productId === product.id), [product.id]),
+  );
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const getErrorMessage = (err: any, fallback: string) =>
     err?.message || err?.error || err?.data?.message || fallback;
 
-  // Parse specs JSON để hiện highlight
-  let specs: Record<string, string> = {};
-  try { specs = product.specsJson ? JSON.parse(product.specsJson) : {}; } catch { /* ignore */ }
-  const highlightSpecs = Object.entries(specs).slice(0, 4);
+  const highlightSpecs = useMemo(() => {
+    try {
+      const specs = product.specsJson ? JSON.parse(product.specsJson) as Record<string, string> : {};
+      return Object.entries(specs).slice(0, 4);
+    } catch {
+      return [];
+    }
+  }, [product.specsJson]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {

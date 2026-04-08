@@ -76,8 +76,14 @@ export default function Search() {
     if (sortBy !== 'createdAt') params.sortBy = sortBy;
     if (sortDir !== 'desc') params.sortDir = sortDir;
     if (page > 1) params.page = String(page);
-    setSearchParams(params, { replace: true });
-  }, [query, selectedCategory, selectedBrand, sortBy, sortDir, page]);
+    const next = new URLSearchParams(params).toString();
+    const current = window.location.search.startsWith('?')
+      ? window.location.search.slice(1)
+      : window.location.search;
+    if (next !== current) {
+      setSearchParams(params, { replace: true });
+    }
+  }, [query, selectedCategory, selectedBrand, sortBy, sortDir, page, setSearchParams]);
 
   const handleSortChange = (value: string) => {
     if (value === 'price-asc') { setSortBy('price'); setSortDir('asc'); }

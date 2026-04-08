@@ -6,7 +6,8 @@ import useAuthStore from '@/stores/useAuthStore';
  */
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const { isAuthenticated, token } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const token = useAuthStore((s) => s.token);
 
   if (!isAuthenticated || !token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -19,7 +20,9 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
  * Yêu cầu quyền ADMIN — redirect /403 nếu không phải admin.
  */
 export function RequireAdmin({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, token, user } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const token = useAuthStore((s) => s.token);
+  const user = useAuthStore((s) => s.user);
 
   if (!isAuthenticated || !token) {
     return <Navigate to="/login" replace />;

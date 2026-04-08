@@ -22,8 +22,10 @@ export { navItems };
 
 export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogout }: HeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { totalItems, syncFromServer } = useCartStore();
-  const { totalItems: wishlistCount, syncFromServer: syncWishlist } = useWishlistStore();
+  const totalItems = useCartStore((s) => s.totalItems);
+  const syncFromServer = useCartStore((s) => s.syncFromServer);
+  const wishlistCount = useWishlistStore((s) => s.totalItems);
+  const syncWishlist = useWishlistStore((s) => s.syncFromServer);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   useClickOutside(menuRef, useCallback(() => setIsUserMenuOpen(false), []));
@@ -32,7 +34,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
   useEffect(() => { 
     syncFromServer(); 
     syncWishlist();
-  }, []);
+  }, [syncFromServer, syncWishlist]);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -98,7 +100,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             {user ? (
               <div ref={menuRef} className="relative hidden sm:block">
                 <button 
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  onClick={() => setIsUserMenuOpen((prev) => !prev)}
                   className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors flex items-center gap-2"
                 >
                   <FiUser className="text-xl" />

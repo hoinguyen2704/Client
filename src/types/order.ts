@@ -65,6 +65,82 @@ export interface CheckoutItem {
   expectedUnitPrice?: number;
 }
 
+// Return / Refund
+export interface ReturnRequestResponse {
+  id: string;
+  returnNumber: string;
+  orderId: string;
+  orderNumber: string;
+  userId: string;
+  userName?: string;
+  userEmail?: string;
+  status: string;
+  refundStatus: string;
+  reason: string;
+  evidenceNote?: string;
+  adminNote?: string;
+  requestedAmount: number;
+  approvedAmount?: number;
+  refundAmount?: number;
+  createdAt: string;
+  updatedAt?: string;
+  resolvedAt?: string;
+  items: ReturnItemData[];
+  refunds: RefundTransactionData[];
+}
+
+export interface ReturnItemData {
+  id: string;
+  orderItemId: string;
+  productName: string;
+  variantName?: string;
+  unitPrice: number;
+  requestedQuantity: number;
+  approvedQuantity?: number;
+  lineAmount: number;
+}
+
+export interface RefundTransactionData {
+  id: string;
+  idempotencyKey: string;
+  provider: string;
+  transactionId?: string;
+  status: string;
+  amount: number;
+  currency: string;
+  failureReason?: string;
+  createdAt: string;
+}
+
+export interface CreateReturnRequestPayload {
+  orderId: string;
+  reason: string;
+  evidenceNote?: string;
+  items: Array<{
+    orderItemId: string;
+    quantity: number;
+  }>;
+}
+
+export interface ReviewReturnRequestPayload {
+  approved: boolean;
+  approvedAmount?: number;
+  note?: string;
+}
+
+export interface UpdateReturnStatusRequestPayload {
+  status: string;
+  note?: string;
+}
+
+export interface ProcessRefundRequestPayload {
+  amount?: number;
+  provider?: string;
+  transactionId?: string;
+  currency?: string;
+  rawPayload?: string;
+}
+
 //  Feedback
 export interface FeedbackResponse {
   id: string;

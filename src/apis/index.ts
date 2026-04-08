@@ -4,6 +4,7 @@ export { default as productService } from "./services/productService";
 export { default as categoryService } from "./services/categoryService";
 export { default as brandService } from "./services/brandService";
 export { default as orderService } from "./services/orderService";
+export { default as returnService } from "./services/returnService";
 export { default as cartService } from "./services/cartService";
 export { default as couponService } from "./services/couponService";
 export { default as feedbackService } from "./services/feedbackService";

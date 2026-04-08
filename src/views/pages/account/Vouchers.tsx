@@ -11,7 +11,7 @@ import { Card, EmptyState, PrimaryButton, TrashButton } from '@/components';
 import type { CouponResponse } from '@/types';
 
 export default function Vouchers() {
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const [publicVouchers, setPublicVouchers] = useState<CouponResponse[]>([]);
   const [savedVouchers, setSavedVouchers] = useState<CouponResponse[]>([]);
   const [couponCode, setCouponCode] = useState('');

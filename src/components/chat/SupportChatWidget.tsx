@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FiMessageSquare, FiSend, FiX } from 'react-icons/fi';
 import { AnimatePresence, motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +24,8 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
 
 export default function SupportChatWidget() {
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
   const canDirectSupport = isAuthenticated && user?.role === 'USER';
 
   const [isOpen, setIsOpen] = useState(false);
@@ -37,8 +38,8 @@ export default function SupportChatWidget() {
   const [draft, setDraft] = useState('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-
+  const selectedTicketIdRef = useRef<string | null>(null);
+  const isOpenRef = useRef(false);
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!canDirectSupport) {
@@ -52,30 +53,31 @@ export default function SupportChatWidget() {
       const res = await ticketService.getMyTickets(1, 30);
       const nextTickets = res.data?.data || [];
 
-      const nextTicketId =
-        selectedTicketId && nextTickets.some((ticket) => ticket.id === selectedTicketId)
-          ? selectedTicketId
-          : (nextTickets.find((ticket) => !CLOSED_STATUSES.has(ticket.status))?.id || nextTickets[0]?.id || null);
-      if (nextTicketId !== selectedTicketId) {
-        setSelectedTicketId(nextTicketId);
-      }
+      setSelectedTicketId((prevTicketId) =>
+        prevTicketId && nextTickets.some((ticket) => ticket.id === prevTicketId)
+          ? prevTicketId
+          : (nextTickets.find((ticket) => !CLOSED_STATUSES.has(ticket.status))?.id || nextTickets[0]?.id || null),
+      );
       setTickets(nextTickets);
     } catch {
       if (!opts?.silent) setTickets([]);
     } finally {
-      setLoading(false);
-    }
-  }, [selectedTicketId, isOpen, canDirectSupport]);
-
-  const fetchSelectedTicket = useCallback(async (ticketId: string, opts?: { silent?: boolean }) => {
-    if (!canDirectSupport) return;
-    try {
-      const res = await ticketService.getDetail(ticketId);
-      setSelectedTicket(res.data);
-    } catch {
-      if (!opts?.silent) setSelectedTicket(null);
+      if (!opts?.silent) setLoading(false);
     }
   }, [canDirectSupport]);
+
+  const fetchSelectedTicket = useCallback(
+    async (ticketId: string, opts?: { silent?: boolean }) => {
+      if (!canDirectSupport) return;
+      try {
+        const res = await ticketService.getDetail(ticketId);
+        setSelectedTicket(res.data);
+      } catch {
+        if (!opts?.silent) setSelectedTicket(null);
+      }
+    },
+    [canDirectSupport],
+  );
 
   useEffect(() => {
     fetchTickets();
@@ -90,6 +92,14 @@ export default function SupportChatWidget() {
   }, [selectedTicketId, fetchSelectedTicket]);
 
   useEffect(() => {
+    selectedTicketIdRef.current = selectedTicketId;
+  }, [selectedTicketId]);
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  useEffect(() => {
     const unsubscribe = onRealtimeEvent((event) => {
       if (!canDirectSupport) return;
       if (!SUPPORT_REALTIME_EVENTS.has(event.type)) {
@@ -98,31 +108,32 @@ export default function SupportChatWidget() {
 
       const payload = (event.data || {}) as SupportRealtimePayload;
       const eventTicketId = payload.ticketId || null;
+      const currentSelectedTicketId = selectedTicketIdRef.current;
 
       if (
         event.type === REALTIME_EVENT_TYPES.SUPPORT_MESSAGE_CREATED
         && payload.senderType === 'ADMIN'
-        && !isOpen
+        && !isOpenRef.current
         && eventTicketId
-        && eventTicketId !== selectedTicketId
+        && eventTicketId !== currentSelectedTicketId
       ) {
         setUnreadCount((prev) => prev + 1);
       }
 
       fetchTickets({ silent: true });
 
-      if (!selectedTicketId && eventTicketId) {
+      if (!currentSelectedTicketId && eventTicketId) {
         setSelectedTicketId(eventTicketId);
         return;
       }
 
-      if (selectedTicketId && eventTicketId && selectedTicketId === eventTicketId) {
-        fetchSelectedTicket(selectedTicketId, { silent: true });
+      if (currentSelectedTicketId && eventTicketId && currentSelectedTicketId === eventTicketId) {
+        fetchSelectedTicket(currentSelectedTicketId, { silent: true });
       }
     });
 
     return unsubscribe;
-  }, [canDirectSupport, fetchSelectedTicket, fetchTickets, isOpen, selectedTicketId]);
+  }, [canDirectSupport, fetchSelectedTicket, fetchTickets]);
 
   useEffect(() => {
     if (isOpen) setUnreadCount(0);

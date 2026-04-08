@@ -1,26 +1,67 @@
-import { useState, useEffect } from 'react';
+import { memo, useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiHeart, FiStar, FiClock } from 'react-icons/fi';
 import { formatPrice } from '@/utils/format';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import cartService from '@/apis/services/cartService';
-import wishlistService from '@/apis/services/wishlistService';
 import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 
-export default function ProductCard({ product }: { product: any }) {
-  const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 45, seconds: 12 });
-  const [addingToCart, setAddingToCart] = useState(false);
-  const syncFromServer = useCartStore((s) => s.syncFromServer);
-  const { toggleItem: toggleWishlist, items: wishlistItems } = useWishlistStore();
-  const { isAuthenticated } = useAuthStore();
+interface TimeLeft {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
 
+const INITIAL_FLASH_TIME: TimeLeft = { hours: 2, minutes: 45, seconds: 12 };
+
+function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(INITIAL_FLASH_TIME);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        return prev;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="mb-1.5 sm:mb-4 bg-red-50 dark:bg-red-900/20 px-2 sm:px-3 py-1.5 sm:py-2.5 rounded-lg sm:rounded-2xl border border-red-100 dark:border-red-800/30">
+      <div className="flex items-center justify-between text-[10px] sm:text-xs font-semibold mb-1 sm:mb-1.5 text-red-600 dark:text-red-400">
+        <span className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-slate-900 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg shadow-sm">
+          <FiClock className="animate-pulse" /> {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
+        </span>
+        <span>Đã bán {totalSold}%</span>
+      </div>
+      <div className="w-full bg-white dark:bg-slate-900 rounded-full h-1.5 sm:h-2 overflow-hidden shadow-inner">
+        <div
+          className="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full"
+          style={{ width: `${totalSold}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+}
+
+function ProductCardComponent({ product }: { product: any }) {
+  const navigate = useNavigate();
+  const [addingToCart, setAddingToCart] = useState(false);
   const productId: string = product.id || '';
+  const syncFromServer = useCartStore((s) => s.syncFromServer);
+  const toggleWishlist = useWishlistStore((s) => s.toggleItem);
+  const liked = useWishlistStore(
+    useCallback((s) => s.items.some((item) => item.productId === productId), [productId]),
+  );
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const firstVariantId: string = product.variants?.[0]?.id || '';
-  const liked = wishlistItems.some(item => item.productId === productId);
   const name: string = product.name || '';
   const slug: string = product.slug || '';
   const image: string = product.mainImageUrl || product.image || '';
@@ -40,19 +81,6 @@ export default function ProductCard({ product }: { product: any }) {
   const isNew: boolean = product.isNew ?? (product.createdAt ? (Date.now() - new Date(product.createdAt).getTime()) < 30 * 86400000 : false);
   const isFlashSale: boolean = product.isFlashSale || false;
   const totalSold: number = product.totalSold || product.sold || 0;
-
-  useEffect(() => {
-    if (!isFlashSale) return;
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        return prev;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isFlashSale]);
 
   // --- Tính trạng thái kho hàng ---
   const isOutOfStock = product.outOfStock === true || product.status === 'OUT_OF_STOCK';
@@ -182,22 +210,7 @@ export default function ProductCard({ product }: { product: any }) {
           )}
         </div>
 
-        {isFlashSale && (
-          <div className="mb-1.5 sm:mb-4 bg-red-50 dark:bg-red-900/20 px-2 sm:px-3 py-1.5 sm:py-2.5 rounded-lg sm:rounded-2xl border border-red-100 dark:border-red-800/30">
-            <div className="flex items-center justify-between text-[10px] sm:text-xs font-semibold mb-1 sm:mb-1.5 text-red-600 dark:text-red-400">
-              <span className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-slate-900 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg shadow-sm">
-                <FiClock className="animate-pulse" /> {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
-              </span>
-              <span>Đã bán {totalSold}%</span>
-            </div>
-            <div className="w-full bg-white dark:bg-slate-900 rounded-full h-1.5 sm:h-2 overflow-hidden shadow-inner">
-              <div 
-                className="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full"
-                style={{ width: `${totalSold}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
+        {isFlashSale && <FlashSaleCountdown totalSold={totalSold} />}
 
         {/* Nút hành động nổi bật ở đáy */}
         <div className="flex items-center gap-1.5 sm:gap-2 mt-1">
@@ -257,3 +270,5 @@ export default function ProductCard({ product }: { product: any }) {
     </motion.div>
   );
 }
+
+export default memo(ProductCardComponent);

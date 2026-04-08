@@ -7,6 +7,7 @@ const Profile = lazy(() => import('@/views/pages/account/Profile'));
 const AddressBook = lazy(() => import('@/views/pages/account/AddressBook'));
 const PaymentMethods = lazy(() => import('@/views/pages/account/PaymentMethods'));
 const Orders = lazy(() => import('@/views/pages/account/Orders'));
+const MyReturns = lazy(() => import('@/views/pages/account/MyReturns'));
 const OrderTracking = lazy(() => import('@/views/pages/account/OrderTracking'));
 const Vouchers = lazy(() => import('@/views/pages/account/Vouchers'));
 const MyReviews = lazy(() => import('@/views/pages/account/MyReviews'));
@@ -22,6 +23,7 @@ export const userRoutes = (
     <Route path="address" element={<AddressBook />} />
     <Route path="payment" element={<PaymentMethods />} />
     <Route path="orders" element={<Orders />} />
+    <Route path="returns" element={<MyReturns />} />
     <Route path="orders/:id" element={<OrderTracking />} />
     <Route path="tracking" element={<OrderTracking />} />
     <Route path="vouchers" element={<Vouchers />} />

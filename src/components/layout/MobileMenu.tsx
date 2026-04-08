@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { FiSearch, FiUser, FiSettings, FiBox, FiLogOut } from 'react-icons/fi';
+import { FiSearch, FiUser, FiSettings, FiBox, FiRotateCcw, FiLogOut } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { navItems } from './Header';
 import type { MobileMenuProps } from './types';
@@ -102,6 +102,9 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                       </Link>
                       <Link to="/user/orders" onClick={onClose} className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
                         <FiBox className="text-lg" /> Đơn mua
+                      </Link>
+                      <Link to="/user/returns" onClick={onClose} className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                        <FiRotateCcw className="text-lg" /> Trả hàng / Hoàn tiền
                       </Link>
                     </>
                   )}

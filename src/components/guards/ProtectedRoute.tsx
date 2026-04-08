@@ -12,7 +12,8 @@ interface ProtectedRouteProps {
  * - Sai role → redirect /403
  */
 export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
-  const { isAuthenticated, user } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
   const location = useLocation();
 
   if (!isAuthenticated) {

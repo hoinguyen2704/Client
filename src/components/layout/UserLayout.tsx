@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings, FiChevronDown } from 'react-icons/fi';
+import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiRotateCcw, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings, FiChevronDown } from 'react-icons/fi';
 import { cn } from '../../utils/cn';
 import useAuthStore from '@/stores/useAuthStore';
 import { useClickOutside } from '@/hooks';
@@ -10,6 +10,7 @@ const menuItems = [
   { path: '/user/address', icon: FiMapPin, label: 'Sổ địa chỉ' },
   { path: '/user/payment', icon: FiCreditCard, label: 'Thanh toán' },
   { path: '/user/orders', icon: FiShoppingBag, label: 'Đơn hàng' },
+  { path: '/user/returns', icon: FiRotateCcw, label: 'Trả hàng / Hoàn tiền' },
   { path: '/user/vouchers', icon: FiTag, label: 'Kho Voucher' },
   { path: '/user/reviews', icon: FiStar, label: 'Nhận xét của tôi' },
   { path: '/user/recently-viewed', icon: FiClock, label: 'Đã xem gần đây' },
@@ -23,7 +24,7 @@ export default function UserLayout() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   useClickOutside(mobileMenuRef, useCallback(() => setIsMobileMenuOpen(false), []));
 
   useEffect(() => {

@@ -27,7 +27,8 @@ export default function Profile() {
 
   // Preferences
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
-  const { darkMode: isDarkMode, toggleDarkMode } = useUIStore();
+  const isDarkMode = useUIStore((s) => s.darkMode);
+  const toggleDarkMode = useUIStore((s) => s.toggleDarkMode);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   const avatarInputRef = useRef<HTMLInputElement>(null);

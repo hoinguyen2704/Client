@@ -63,7 +63,9 @@ function handleAdminToast(event: RealtimeEventEnvelope) {
 }
 
 export default function RealtimeBridge() {
-  const { token, isAuthenticated, user } = useAuthStore();
+  const token = useAuthStore((s) => s.token);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
   const socketRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<number | null>(null);
   const reconnectAttemptsRef = useRef(0);
