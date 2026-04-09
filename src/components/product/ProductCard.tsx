@@ -8,7 +8,7 @@ import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
-import type { TimeLeft } from '@/types';
+import type { TimeLeft, ProductResponse } from '@/types';
 
 
 
@@ -48,7 +48,7 @@ function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
   );
 }
 
-function ProductCardComponent({ product }: { product: any }) {
+function ProductCardComponent({ product }: { product: ProductResponse }) {
   const navigate = useNavigate();
   const [addingToCart, setAddingToCart] = useState(false);
   const productId: string = product.id || '';
@@ -63,7 +63,7 @@ function ProductCardComponent({ product }: { product: any }) {
   const slug: string = product.slug || '';
   const image: string = product.mainImageUrl || product.image || '';
   const lowestVariantPrice = product.variants?.length
-    ? Math.min(...product.variants.map((v: any) => v.price))
+    ? Math.min(...product.variants.map((v) => v.price))
     : null;
   const salePrice: number = product.lowestPrice || lowestVariantPrice || product.price || product.originPrice || 0;
   const originPrice: number = product.originPrice || product.compareAtPrice || product.oldPrice || 0;
@@ -84,7 +84,7 @@ function ProductCardComponent({ product }: { product: any }) {
   const isInactive = product.status === 'INACTIVE';
   const isComingSoon = product.status === 'COMING_SOON';
   
-  const stock: number = isOutOfStock ? 0 : (product.stockQuantity ?? (product.variants?.reduce((acc: number, v: any) => acc + (v.stockQuantity || 0), 0)) ?? 10);
+  const stock: number = isOutOfStock ? 0 : (product.stockQuantity ?? (product.variants?.reduce((acc: number, v) => acc + (v.stockQuantity || 0), 0)) ?? 10);
 
   let statusText = 'CÒN HÀNG';
   let statusBg = 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30';

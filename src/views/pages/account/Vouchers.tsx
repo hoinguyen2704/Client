@@ -68,7 +68,7 @@ export default function Vouchers() {
       });
       fetchSavedVouchers();
       toast.success('Đã lưu voucher vào ví!');
-    } catch (err: any) { toast.error(getErrorMessage(err, 'Lưu voucher thất bại')); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err, 'Lưu voucher thất bại')); }
     finally { setSavingId(null); }
   };
 
@@ -81,7 +81,7 @@ export default function Vouchers() {
       setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: false } : prev);
       setSavedVouchers(prev => prev.filter(v => v.id !== couponId));
       toast.success('Đã xóa voucher khỏi ví');
-    } catch (err: any) { toast.error(getErrorMessage(err, 'Thao tác thất bại')); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err, 'Thao tác thất bại')); }
     finally { setSavingId(null); }
   };
 
@@ -98,7 +98,7 @@ export default function Vouchers() {
       const coupon = res.data;
       const isSaved = !!coupon?.id && savedVouchers.some(v => v.id === coupon.id);
       setSearchResult(coupon ? { ...coupon, saved: isSaved } : null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(getErrorMessage(err, 'Mã không tồn tại hoặc đã bị khóa'));
     }
   };

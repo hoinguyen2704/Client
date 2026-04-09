@@ -15,6 +15,7 @@ import {
   FiAlertTriangle,
 } from "react-icons/fi";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/utils/error";
 import chatbotService from "@/apis/services/chatbotService";
 import type { ChatbotConfig } from "@/apis/services/chatbotService";
 
@@ -46,8 +47,8 @@ export default function Chatbot() {
       const data = await chatbotService.getConfig();
       setConfig(data);
       setDirty(false);
-    } catch (err: any) {
-      toast.error("Không thể tải cấu hình chatbot: " + (err?.message || ""));
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Không thể tải cấu hình chatbot"));
     } finally {
       setLoading(false);
     }
@@ -87,10 +88,10 @@ export default function Chatbot() {
       setConfig(result.config);
       setDirty(false);
       toast.success(result.message || "Cập nhật cấu hình thành công!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(
         "Lỗi lưu cấu hình: " +
-          (err?.response?.data?.error || err?.message || ""),
+          getApiErrorMessage(err, "Lưu cấu hình thất bại"),
       );
     } finally {
       setSaving(false);
@@ -106,8 +107,8 @@ export default function Chatbot() {
       setConfig(result.config);
       setDirty(false);
       toast.success(result.message || "Đã khôi phục mặc định!");
-    } catch (err: any) {
-      toast.error("Lỗi khôi phục: " + (err?.message || ""));
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Lỗi khôi phục"));
     } finally {
       setSaving(false);
     }

@@ -1,11 +1,12 @@
 import { ProductCard } from '@/components';
 import { Link } from 'react-router-dom';
+import type { ProductResponse } from '@/types';
 
 interface ProductSectionProps {
   icon: React.ReactNode;
   title: string;
   subtitle?: React.ReactNode;
-  products: any[];
+  products: ProductResponse[];
   seeAllLink?: string;
   layout?: 'grid' | 'scroll';
   bgClassName?: string;

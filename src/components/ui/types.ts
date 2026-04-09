@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
+import type { ProductResponse } from '@/types/product';
 
 //  Card
 export interface CardProps {
@@ -282,7 +283,7 @@ export interface BackButtonProps {
 
 //  ProductCard
 export interface ProductCardProps {
-  product: any;
+  product: ProductResponse;
 }
 
 //  Chatbot

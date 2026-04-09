@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo, FiChevronUp, FiChevronDown, FiDownload } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { FiPlus, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo, FiChevronUp, FiChevronDown, FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/utils/error';
 import { formatPrice } from '@/utils/format';
 import { Button, CustomSelect, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, Checkbox } from '@/components';
 import adminProductService from '@/apis/services/adminProductService';
@@ -90,8 +90,8 @@ export default function Products() {
         p.id === id ? { ...p, status: p.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' } : p
       ));
       toast.success('Đã cập nhật trạng thái sản phẩm!');
-    } catch (err: any) {
-      toast.error(`Cập nhật trạng thái thất bại! ${err?.message || err?.error || ''}`);
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Cập nhật trạng thái thất bại!'));
       console.error('Toggle status failed:', err);
     }
   };

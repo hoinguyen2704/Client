@@ -66,7 +66,7 @@ function LoginForm() {
       } else {
         navigate(from, { replace: true });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(getApiErrorMessage(err, 'Email hoặc mật khẩu không đúng'));
     } finally {
       setLoading(false);

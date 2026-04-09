@@ -7,6 +7,7 @@ import {
   FiList,
 } from "react-icons/fi";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/utils/error";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import type { CategoryResponse, SpecTemplateRow } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
@@ -81,8 +82,8 @@ export default function Categories() {
       }
       resetForm();
       fetchCategories({ silent: true });
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Lưu danh mục thất bại!");
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Lưu danh mục thất bại!"));
       console.error("Save failed:", err);
     } finally {
       setSaving(false);

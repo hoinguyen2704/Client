@@ -83,7 +83,7 @@ export default function Register() {
 
       setSuccess(true);
       setTimeout(() => navigate('/'), 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(
         getApiErrorMessage(err, 'Đăng ký thất bại. Email có thể đã được sử dụng.'),
       );

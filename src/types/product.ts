@@ -20,6 +20,18 @@ export interface ProductResponse {
   images?: ProductImageResponse[];
   variants: ProductVariantResponse[];
   createdAt: string;
+  // Optional fields used by ProductCard for varied API shapes (flash sale, search, etc.)
+  image?: string;
+  price?: number;
+  compareAtPrice?: number;
+  oldPrice?: number;
+  discount?: number;
+  rating?: number;
+  reviews?: number;
+  isNew?: boolean;
+  isFlashSale?: boolean;
+  sold?: number;
+  stockQuantity?: number;
 }
 
 export interface ProductVariantResponse {

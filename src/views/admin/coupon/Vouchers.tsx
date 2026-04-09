@@ -10,6 +10,7 @@ import {
   FiPackage,
 } from "react-icons/fi";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/utils/error";
 import adminCouponService from "@/apis/services/adminCouponService";
 import type { CouponResponse, CouponRequest } from "@/types";
 import { formatPrice, formatDate } from "@/utils/format";
@@ -89,9 +90,9 @@ export default function AdminVouchers() {
       setIsModalOpen(false);
       resetForm();
       fetchVouchers({ silent: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.response?.data?.message || "Thao tác voucher thất bại!");
+      toast.error(getApiErrorMessage(err, "Thao tác voucher thất bại!"));
     }
   };
 

@@ -219,7 +219,7 @@ export default function Checkout() {
 
       toast.success('Áp dụng mã giảm giá thành công!');
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(getErrorMessage(err, 'Mã giảm giá không hợp lệ!'));
       return false;
     }
@@ -248,7 +248,7 @@ export default function Checkout() {
       setPublicVouchers(prev => prev.map(v => v.id === voucher.id ? { ...v, saved: true } : v));
       setSavedVouchers(prev => prev.some(v => v.id === voucher.id) ? prev : [{ ...voucher, saved: true }, ...prev]);
       toast.success('Đã lưu voucher vào ví');
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(getErrorMessage(err, 'Không thể lưu voucher'));
     } finally {
       setSavingVoucherId(null);
@@ -273,7 +273,7 @@ export default function Checkout() {
         setValidatedShippingCoupon(prev => prev ? { ...prev, saved: false } : prev);
       }
       toast.success('Đã bỏ lưu voucher');
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(getErrorMessage(err, 'Không thể bỏ lưu voucher'));
     } finally {
       setSavingVoucherId(null);
@@ -327,7 +327,7 @@ export default function Checkout() {
         toast.success('Đặt hàng thành công!');
         navigate(`/user/orders/${res.data?.orderNumber}`); 
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       const errorCode = getErrorCode(err);
       toast.error(getErrorMessage(err, 'Đặt hàng thất bại!'));
       if ([

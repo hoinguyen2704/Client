@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FiZap, FiPlus, FiCheck } from 'react-icons/fi';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/utils/error';
 import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse, FlashSaleRequest, FlashSaleItemRequest, FlashSaleItemForm } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
@@ -71,9 +72,9 @@ export default function FlashSales() {
       }
       setIsModalOpen(false);
       fetchSales({ silent: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.response?.data?.message || 'Lưu Flash Sale thất bại!');
+      toast.error(getApiErrorMessage(err, 'Lưu Flash Sale thất bại!'));
     }
   };
 
@@ -83,9 +84,9 @@ export default function FlashSales() {
       await adminFlashSaleService.delete(id);
       toast.success('Xóa Flash Sale thành công!');
       fetchSales({ silent: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.response?.data?.message || 'Xóa Flash Sale thất bại!');
+      toast.error(getApiErrorMessage(err, 'Xóa Flash Sale thất bại!'));
     }
   };
   const handleUpdateStatus = async (id: string, status: string) => {
@@ -93,9 +94,9 @@ export default function FlashSales() {
       await adminFlashSaleService.updateStatus(id, status);
       toast.success('Cập nhật trạng thái thành công!');
       fetchSales({ silent: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Update status failed:', err);
-      toast.error(err?.response?.data?.message || 'Cập nhật trạng thái thất bại!');
+      toast.error(getApiErrorMessage(err, 'Cập nhật trạng thái thất bại!'));
     }
   };
 

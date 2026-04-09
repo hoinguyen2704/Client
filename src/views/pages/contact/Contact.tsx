@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Button, FormInput, FormTextarea } from '@/components';
 import { toast } from 'sonner';
 import ticketService from '@/apis/services/ticketService';
+import { getApiErrorMessage } from '@/utils/error';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -23,8 +24,8 @@ export default function Contact() {
       await ticketService.submitContact(formData);
       toast.success('Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Gửi tin nhắn thất bại. Vui lòng thử lại.');
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Gửi tin nhắn thất bại. Vui lòng thử lại.'));
     } finally {
       setLoading(false);
     }

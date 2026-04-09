@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FiCamera, FiLock, FiShield, FiMoon, FiSun, FiGlobe, FiBell, FiLoader, FiSave, FiUser } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/utils/error';
 import userService from '@/apis/services/userService';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
@@ -67,8 +68,8 @@ export default function Profile() {
       });
       setUser(res.data);
       toast.success('Cập nhật hồ sơ thành công!');
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'Cập nhật hồ sơ thất bại.');
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Cập nhật hồ sơ thất bại.'));
     } finally {
       setSaving(false);
     }
@@ -94,8 +95,8 @@ export default function Profile() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu hiện tại.');
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu hiện tại.'));
     } finally {
       setSavingPassword(false);
     }
