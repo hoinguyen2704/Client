@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiUploadCloud, FiLoader } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminCmsService from '@/apis/services/adminCmsService';
-import type { BannerResponse, ArticleResponse, PageResponse } from '@/types';
+import type { BannerResponse, ArticleResponse, PageResponse, BannerForm, ArticleForm } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import {
   PrimaryButton,
@@ -20,20 +20,7 @@ import {
 } from '@/components';
 import { formatDate } from '@/utils/format';
 
-type BannerForm = {
-  title: string;
-  imageUrl: string;
-  targetUrl: string;
-  sortOrder: string;
-  isActive: boolean;
-};
 
-type ArticleForm = {
-  title: string;
-  content: string;
-  thumbnailUrl: string;
-  isPublished: boolean;
-};
 
 const EMPTY_BANNER_FORM: BannerForm = {
   title: '',

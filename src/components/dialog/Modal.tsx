@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "motion/react";
 import type {
@@ -21,15 +21,19 @@ export default function Modal({
   className = "",
   containerClassName = "",
 }: ModalProps) {
+  // Stable ref for onClose — avoids re-attaching listener when parent re-renders
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   // Close on Escape
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") onCloseRef.current();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [open, onClose]);
+  }, [open]);
 
   // Lock body scroll when open
   useEffect(() => {

@@ -1,5 +1,5 @@
 import type { RealtimeEventType } from '@/constants/realtimeConstants';
-import type { NotificationResponse } from './order';
+import type { NotificationResponse } from './notification';
 
 export interface SupportRealtimePayload {
   ticketId?: string;

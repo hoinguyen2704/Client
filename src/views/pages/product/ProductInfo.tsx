@@ -35,11 +35,23 @@ export default function ProductInfo({
   const variants = product.variants || [];
   const activeVariant = variants[selectedVariantIdx] || null;
   const activeFlashItem = activeVariant ? flashItemsByVariantId[activeVariant.id] : undefined;
-  const pricing = resolveVariantPricing({
-    product,
-    variant: activeVariant,
-    flashItem: activeFlashItem,
-  });
+
+  // Memoize ALL variant pricing at once — avoids N+1 calls per render
+  const variantPricingMap = useMemo(() => {
+    const map: Record<string, ReturnType<typeof resolveVariantPricing>> = {};
+    variants.forEach(v => {
+      map[v.id] = resolveVariantPricing({
+        product,
+        variant: v,
+        flashItem: flashItemsByVariantId[v.id],
+      });
+    });
+    return map;
+  }, [product, variants, flashItemsByVariantId]);
+
+  const pricing = activeVariant
+    ? variantPricingMap[activeVariant.id]
+    : resolveVariantPricing({ product });
 
   const price = pricing.salePrice;
   const comparePrice = pricing.originPrice;
@@ -195,12 +207,7 @@ export default function ProductInfo({
             <h3 className="font-bold mb-3">Phiên bản</h3>
             <div className="flex flex-wrap gap-3">
               {variants.map((v, idx) => {
-                const variantFlashItem = flashItemsByVariantId[v.id];
-                const variantPricing = resolveVariantPricing({
-                  product,
-                  variant: v,
-                  flashItem: variantFlashItem,
-                });
+                const variantPricing = variantPricingMap[v.id];
                 return (
                   <button key={v.id} onClick={() => setSelectedVariantIdx(idx)}
                     className={`px-6 py-2.5 rounded-xl border-2 font-medium transition-all ${selectedVariantIdx === idx ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'}`}>

@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { FiZap, FiTrendingUp, FiStar, FiCpu } from 'react-icons/fi';
 import { productService, cmsService } from '@/apis';
-import type { ProductResponse, BannerResponse } from '@/types';
+import type { ProductResponse, BannerResponse, HomeData } from '@/types';
 import HeroBanner from './HeroBanner';
 import ProductSection from './ProductSection';
 import { SHOP } from '@/constants/shopConstants';
 
+
+
+const INITIAL_DATA: HomeData = { banners: [], featured: [], newArrivals: [], bestSellers: [] };
+
 export default function Home() {
-  const [banners, setBanners] = useState<BannerResponse[]>([]);
-  const [featured, setFeatured] = useState<ProductResponse[]>([]);
-  const [newArrivals, setNewArrivals] = useState<ProductResponse[]>([]);
-  const [bestSellers, setBestSellers] = useState<ProductResponse[]>([]);
+  const [data, setData] = useState<HomeData>(INITIAL_DATA);
   const [loading, setLoading] = useState(true);
+
+  const { banners, featured, newArrivals, bestSellers } = data;
 
   useEffect(() => {
     const loadData = async () => {
@@ -23,13 +26,13 @@ export default function Home() {
           productService.search({ sortBy: 'createdAt', sortDir: 'desc', size: 8 }),
         ]);
 
-        if (bannersRes.status === 'fulfilled') setBanners(bannersRes.value.data || []);
-        if (featuredRes.status === 'fulfilled') setFeatured(featuredRes.value.data || []);
-        if (newRes.status === 'fulfilled') setNewArrivals(newRes.value.data || []);
-        if (bestRes.status === 'fulfilled') {
-          const page = bestRes.value.data;
-          setBestSellers(page?.data || []);
-        }
+        // Single setState — guaranteed 1 re-render
+        setData({
+          banners: bannersRes.status === 'fulfilled' ? bannersRes.value.data || [] : [],
+          featured: featuredRes.status === 'fulfilled' ? featuredRes.value.data || [] : [],
+          newArrivals: newRes.status === 'fulfilled' ? newRes.value.data || [] : [],
+          bestSellers: bestRes.status === 'fulfilled' ? bestRes.value.data?.data || [] : [],
+        });
       } catch (err) {
         console.error('Lỗi load trang chủ:', err);
       } finally {

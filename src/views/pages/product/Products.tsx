@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   FiFilter,
   FiChevronDown,
@@ -77,12 +78,15 @@ export default function Products() {
     loadFilters();
   }, []);
 
+  // Debounce keyword để tránh fetch mỗi keystroke
+  const debouncedKeyword = useDebounce(keyword, 400);
+
   //  Fetch products
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await productService.search({
-        keyword: keyword || undefined,
+        keyword: debouncedKeyword || undefined,
         categorySlug: selectedCategorySlug || undefined,
         brand: selectedBrand || undefined,
         page,
@@ -102,35 +106,30 @@ export default function Products() {
     } finally {
       setIsLoading(false);
     }
-  }, [keyword, selectedCategorySlug, selectedBrand, page, sortBy, sortDir]);
+  }, [debouncedKeyword, selectedCategorySlug, selectedBrand, page, sortBy, sortDir]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  //  Sync filters → URL
+  //  Sync filters → URL (one-direction: state → URL, no searchParams in deps)
   useEffect(() => {
     const params: Record<string, string> = {};
-    if (keyword) params.keyword = keyword;
+    if (debouncedKeyword) params.keyword = debouncedKeyword;
     if (selectedCategorySlug) params.categorySlug = selectedCategorySlug;
     if (selectedBrand) params.brand = selectedBrand;
     if (sortBy !== "popular") params.sortBy = sortBy;
     if (sortDir !== "DESC") params.sortDir = sortDir;
     if (page > 1) params.page = String(page);
 
-    const next = new URLSearchParams(params).toString();
-    const current = searchParams.toString();
-    if (next !== current) {
-      setSearchParams(params, { replace: true });
-    }
+    setSearchParams(params, { replace: true });
   }, [
-    keyword,
+    debouncedKeyword,
     selectedCategorySlug,
     selectedBrand,
     sortBy,
     sortDir,
     page,
-    searchParams,
     setSearchParams,
   ]);
 

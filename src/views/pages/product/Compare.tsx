@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   FiPlus,
   FiX,
@@ -16,20 +16,9 @@ import { motion } from "motion/react";
 import productService from "@/apis/services/productService";
 import { toast } from "sonner";
 import { Modal } from "@/components";
+import type { CompareProduct } from "@/types";
 
-interface CompareProduct {
-  id: string;
-  name: string;
-  slug: string;
-  image?: string;
-  price: number;
-  brand?: string;
-  rating?: number;
-  specs?: Record<string, string>;
-  categoryId?: string;
-  categoryName?: string;
-  categorySlug?: string;
-}
+
 
 export default function Compare() {
   const [compareItems, setCompareItems] = useState<CompareProduct[]>([]);
@@ -56,7 +45,7 @@ export default function Compare() {
     setSearchQuery("");
   };
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = useCallback(async (query: string) => {
     setSearching(true);
     try {
       const params: any = { keyword: query.trim(), page: 1, size: 12 };
@@ -94,13 +83,13 @@ export default function Compare() {
     } finally {
       setSearching(false);
     }
-  };
+  }, [lockedCategoryId, compareItems]);
 
   useEffect(() => {
     if (!isModalOpen) return;
     const timer = setTimeout(() => handleSearch(searchQuery), 300);
     return () => clearTimeout(timer);
-  }, [searchQuery, isModalOpen]);
+  }, [searchQuery, isModalOpen, handleSearch]);
 
   const isBest = (key: string, value: any) => {
     if (compareItems.length < 2) return false;
@@ -111,11 +100,14 @@ export default function Compare() {
     return false;
   };
 
-  // Collect all spec keys
-  const allSpecKeys = new Set<string>();
-  compareItems.forEach((item) => {
-    if (item.specs) Object.keys(item.specs).forEach((k) => allSpecKeys.add(k));
-  });
+  // Memoize allSpecKeys — avoid Set creation + iteration on every render
+  const allSpecKeys = useMemo(() => {
+    const keys = new Set<string>();
+    compareItems.forEach((item) => {
+      if (item.specs) Object.keys(item.specs).forEach((k) => keys.add(k));
+    });
+    return keys;
+  }, [compareItems]);
 
   const colCount = compareItems.length + (compareItems.length < 4 ? 1 : 0); // +1 for add button col
 

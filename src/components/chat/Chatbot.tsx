@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   FiMessageSquare,
   FiX,
@@ -82,37 +82,36 @@ export default function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
-  /*  Config values  */
-  const botName = widgetConfig.bot?.name || DEFAULT_CONFIG.bot.name;
-  const botSubtitle = widgetConfig.bot?.subtitle || DEFAULT_CONFIG.bot.subtitle;
-  const themeColor =
-    widgetConfig.bot?.themeColor || DEFAULT_CONFIG.bot.themeColor;
+  // Memoize config values — avoid re-computation on every render
+  const botName = useMemo(() => widgetConfig.bot?.name || DEFAULT_CONFIG.bot.name, [widgetConfig.bot?.name]);
+  const botSubtitle = useMemo(() => widgetConfig.bot?.subtitle || DEFAULT_CONFIG.bot.subtitle, [widgetConfig.bot?.subtitle]);
+  const themeColor = useMemo(() => widgetConfig.bot?.themeColor || DEFAULT_CONFIG.bot.themeColor, [widgetConfig.bot?.themeColor]);
   const avatarUrl = widgetConfig.bot?.avatarUrl || "";
-  const suggestions = widgetConfig.suggestions?.length
-    ? widgetConfig.suggestions
-    : DEFAULT_CONFIG.suggestions;
+  const suggestions = useMemo(
+    () => widgetConfig.suggestions?.length ? widgetConfig.suggestions : DEFAULT_CONFIG.suggestions,
+    [widgetConfig.suggestions],
+  );
 
   /**
    * Chuyển đổi messages nội bộ (role: 'user'|'model') → ChatbotMessage (role: 'user'|'bot')
    * Chatbot server expect role = 'bot' cho assistant messages.
    */
-  const buildHistory = (): ChatbotMessage[] => {
+  const buildHistory = useCallback((): ChatbotMessage[] => {
     return messages
       .filter((m) => m.id !== "welcome")
       .map((m) => ({
         role: m.role === "user" ? ("user" as const) : ("bot" as const),
         content: m.text,
       }));
-  };
+  }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const sendMessage = useCallback(async (text: string) => {
+    if (!text.trim() || isLoading) return;
 
-    const userText = input.trim();
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      text: userText,
+      text: text.trim(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -122,7 +121,7 @@ export default function Chatbot() {
     try {
       const history = buildHistory();
       const response: ChatbotResponse = await chatbotService.sendMessage(
-        userText,
+        text.trim(),
         history,
       );
 
@@ -147,7 +146,9 @@ export default function Chatbot() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoading, buildHistory]);
+
+  const handleSend = () => sendMessage(input);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -166,17 +167,10 @@ export default function Chatbot() {
     ]);
   };
 
-  const handleSuggestion = (text: string) => {
-    setInput(text);
-    setTimeout(() => {
-      const fakeEvent = {
-        key: "Enter",
-        shiftKey: false,
-        preventDefault: () => {},
-      };
-      handleKeyDown(fakeEvent as React.KeyboardEvent);
-    }, 100);
-  };
+  // Fix: call sendMessage directly instead of faking keyboard events
+  const handleSuggestion = useCallback((text: string) => {
+    sendMessage(text);
+  }, [sendMessage]);
 
   const showSuggestions = messages.length <= 1 && !isLoading;
 

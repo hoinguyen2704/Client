@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { FiZap, FiPlus, FiCheck } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { adminFlashSaleService } from '@/apis';
-import type { FlashSaleResponse } from '@/types';
-import type { FlashSaleRequest, FlashSaleItemRequest } from '@/apis/services/adminFlashSaleService';
+import type { FlashSaleResponse, FlashSaleRequest, FlashSaleItemRequest, FlashSaleItemForm } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { AdminPagination, ActionButtons, PrimaryButton, TrashButton, ConfirmDialog, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea, CustomSelect } from '@/components';
 import useAdminList from '@/hooks/useAdminList';
@@ -11,13 +10,7 @@ import { ProductPickerModal } from '@/components';
 import type { SelectedVariant } from '@/components';
 import { formatPrice } from '@/utils/format';
 
-export interface FlashSaleItemForm extends FlashSaleItemRequest {
-  id?: string;
-  productName: string;
-  variantName: string;
-  originalPrice: number;
-  imageUrl: string;
-}
+
 
 export default function FlashSales() {
   const { items: sales, loading, pageData, page, setPage, refetch: fetchSales } =

@@ -29,31 +29,17 @@ import type {
   ProductRequest,
   ProductResponse,
   ProductVariantRequest,
-  ProductImageResponse,
   CategoryResponse,
   BrandResponse,
   SpecTemplateResponse,
+  VariantFormData,
+  SpecRow,
 } from "@/types";
 import { toast } from "sonner";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import { Button, TrashButton, PrimaryButton, BackButton } from "@/components";
 
-interface VariantFormData {
-  id?: string;
-  sku: string;
-  variantName: string;
-  price: number | "";
-  compareAtPrice: number | "";
-  stock: number | "";
-  active: boolean;
-  images: ProductImageResponse[];
-  pendingFiles: File[];
-}
 
-interface SpecRow {
-  key: string;
-  value: string;
-}
 
 // Spec templates are now loaded from API (category.specTemplates)
 

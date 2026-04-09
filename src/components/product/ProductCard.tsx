@@ -8,12 +8,9 @@ import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
+import type { TimeLeft } from '@/types';
 
-interface TimeLeft {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
+
 
 const INITIAL_FLASH_TIME: TimeLeft = { hours: 2, minutes: 45, seconds: 12 };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { FiStar, FiUser, FiMessageSquare } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import type { ProductResponse, FeedbackResponse } from '@/types';
@@ -35,12 +35,15 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
       .finally(() => setLoadingFeedbacks(false));
   }, [activeTab, feedbackPage, product.id]);
 
-  // Tính phân bố sao từ feedbacks thực tế
-  const getStarPercent = (star: number) => {
-    if (feedbacks.length === 0) return 0;
-    const count = feedbacks.filter(f => f.rating === star).length;
-    return Math.round((count / feedbacks.length) * 100);
-  };
+  // Memoize phân bố sao — tránh 5x O(n) filter mỗi render
+  const starDistribution = useMemo(() => {
+    const dist: Record<number, number> = {};
+    for (let s = 1; s <= 5; s++) {
+      const count = feedbacks.filter(f => f.rating === s).length;
+      dist[s] = feedbacks.length > 0 ? Math.round((count / feedbacks.length) * 100) : 0;
+    }
+    return dist;
+  }, [feedbacks]);
 
   const formatDate = (dateStr: string) => {
     try {
@@ -48,10 +51,10 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
     } catch { return dateStr; }
   };
 
-  const groupedFeedbacks = (() => {
+  // Memoize grouping + sorting — O(n log n), chỉ chạy khi feedbacks thay đổi
+  const groupedFeedbacks = useMemo(() => {
     const groups: Record<string, FeedbackResponse[]> = {};
     feedbacks.forEach(fb => {
-      // Group by user, order, and variant exactly
       const key = (fb.userId && fb.orderId) ? `${fb.userId}-${fb.orderId}-${fb.variantId || 'null'}` : fb.id;
       if (!groups[key]) groups[key] = [];
       groups[key].push(fb);
@@ -59,7 +62,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
     return Object.values(groups).map((group: FeedbackResponse[]) => 
       group.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     );
-  })();
+  }, [feedbacks]);
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-8 sm:mb-12 overflow-hidden">
@@ -125,9 +128,9 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                     <div key={star} className="flex items-center gap-2 md:gap-4">
                       <div className="flex items-center gap-1 w-9 md:w-12 text-xs sm:text-sm font-medium">{star} <FiStar className="text-yellow-400 fill-current" /></div>
                       <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 rounded-full transition-all" style={{ width: `${getStarPercent(star)}%` }}></div>
+                        <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 rounded-full transition-all" style={{ width: `${starDistribution[star]}%` }}></div>
                       </div>
-                      <span className="text-xs text-slate-400 w-8 text-right">{getStarPercent(star)}%</span>
+                      <span className="text-xs text-slate-400 w-8 text-right">{starDistribution[star]}%</span>
                     </div>
                   ))}
                 </div>

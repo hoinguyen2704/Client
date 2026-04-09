@@ -3,13 +3,9 @@ import { FiZap, FiClock } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/utils/format';
 import flashSaleService from '@/apis/services/flashSaleService';
-import type { FlashSaleResponse } from '@/types';
+import type { FlashSaleResponse, TimeLeft } from '@/types';
 
-interface TimeLeft {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
+
 
 const getTimeLeft = (endTime: string, nowMs: number): TimeLeft => {
   const diff = Math.max(0, new Date(endTime).getTime() - nowMs);

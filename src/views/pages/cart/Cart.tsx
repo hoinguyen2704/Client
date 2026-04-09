@@ -26,7 +26,7 @@ export default function Cart() {
       })));
     }
     catch { setItems([]); }
-    finally { setLoading(false); syncFromServer(); }
+    finally { setLoading(false); }
   };
 
   const handleUpdateQty = async (itemId: string, qty: number) => {

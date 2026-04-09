@@ -8,7 +8,7 @@ import {
 } from "react-icons/fi";
 import { toast } from "sonner";
 import adminCategoryService from "@/apis/services/adminCategoryService";
-import type { CategoryResponse } from "@/types";
+import type { CategoryResponse, SpecTemplateRow } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import useAdminList from "@/hooks/useAdminList";
 import {
@@ -24,11 +24,7 @@ import {
   TableRowSkeleton,
 } from "@/components";
 
-interface SpecTemplateRow {
-  specKey: string;
-  hint: string;
-  sortOrder: number;
-}
+
 
 export default function Categories() {
   const {

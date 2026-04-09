@@ -1,21 +1,7 @@
 import { adminAxios } from '../axios';
-import type { ApiResponse, PageResponse, FlashSaleResponse } from '@/types';
+import type { ApiResponse, PageResponse, FlashSaleResponse, FlashSaleRequest } from '@/types';
 
 const URL = '/flash-sales';
-
-export interface FlashSaleRequest {
-  name: string;
-  description?: string;
-  startTime: string;
-  endTime: string;
-  items?: FlashSaleItemRequest[];
-}
-
-export interface FlashSaleItemRequest {
-  variantId: string;
-  flashPrice: number;
-  flashStock: number;
-}
 
 const adminFlashSaleService = {
   getAll: (params?: {

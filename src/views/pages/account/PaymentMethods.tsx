@@ -2,16 +2,9 @@ import { useState } from 'react';
 import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle } from 'react-icons/fi';
 import { Button, PrimaryButton, Modal } from '@/components';
 import { motion, AnimatePresence } from 'motion/react';
+import type { PaymentMethod } from '@/types';
 
-// Note: No server endpoint for payment methods - state managed locally
-interface PaymentMethod {
-  id: number;
-  type: string;
-  last4: string;
-  name: string;
-  expiry: string;
-  isDefault: boolean;
-}
+
 
 export default function PaymentMethods() {
   const [methods, setMethods] = useState<PaymentMethod[]>([]);

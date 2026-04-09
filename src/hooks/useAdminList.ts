@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { PageResponse, ApiResponse, PaginationParams } from '@/types';
 
 interface UseAdminListOptions {
@@ -34,9 +34,11 @@ export default function useAdminList<T>(
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<T> | null>(null);
 
-  // Serialize extraParams for stable dependency tracking
-  const extraParamsKey = JSON.stringify(extraParams ?? {});
+  // Stable serialization key — only recompute when extraParams reference changes
+  const extraParamsKey = useMemo(() => JSON.stringify(extraParams ?? {}), [extraParams]);
   const prevExtraParamsKey = useRef(extraParamsKey);
+  const extraParamsRef = useRef(extraParams);
+  extraParamsRef.current = extraParams;
 
   // Reset page to 1 when extraParams change
   useEffect(() => {
@@ -51,12 +53,11 @@ export default function useAdminList<T>(
       setLoading(true);
     }
     try {
-      const parsedExtra = JSON.parse(extraParamsKey);
       const res = await fetchFn({
         keyword: searchQuery || undefined,
         page,
         size,
-        ...parsedExtra,
+        ...(extraParamsRef.current ?? {}),
       });
       setPageData(res.data);
       setItems(res.data?.data || []);

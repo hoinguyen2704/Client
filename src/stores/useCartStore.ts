@@ -25,8 +25,11 @@ const useCartStore = create<CartState>()(
 
       syncFromServer: async () => {
         try {
-          const authStore = (await import('@/stores/useAuthStore')).default;
-          if (!authStore.getState().token) {
+          // Check auth token directly from persisted storage
+          // — avoids circular import: useCartStore ↔ useAuthStore
+          const raw = localStorage.getItem('auth');
+          const token = raw ? JSON.parse(raw)?.state?.token : null;
+          if (!token) {
             set({ totalItems: 0 }); // reset if guest
             return;
           }

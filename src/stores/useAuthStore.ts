@@ -62,14 +62,24 @@ const useAuthStore = create<AuthState>()(
         set({ token, refreshToken, user, isAuthenticated: true });
         
         // Sync cart and wishlist from server after successful login
-        import('./useCartStore').then(m => m.default.getState().syncFromServer());
-        import('./useWishlistStore').then(m => m.default.getState().syncFromServer());
+        // Use lazy require-style to avoid circular import at module level
+        Promise.resolve().then(async () => {
+          const { default: useCartStore } = await import('./useCartStore');
+          const { default: useWishlistStore } = await import('./useWishlistStore');
+          useCartStore.getState().syncFromServer();
+          useWishlistStore.getState().syncFromServer();
+        });
       },
 
       logout: () => {
         sessionStorage.removeItem('auth-session-only');
-        import('./useCartStore').then(m => m.default.getState().clearCart());
-        import('./useWishlistStore').then(m => m.default.getState().clearWishlist());
+        // Clear cart and wishlist stores
+        Promise.resolve().then(async () => {
+          const { default: useCartStore } = await import('./useCartStore');
+          const { default: useWishlistStore } = await import('./useWishlistStore');
+          useCartStore.getState().clearCart();
+          useWishlistStore.getState().clearWishlist();
+        });
         set({ token: null, refreshToken: null, user: null, isAuthenticated: false });
         window.location.href = '/login';
       },

@@ -1,14 +1,9 @@
 import { formatPrice } from '@/utils/format';
 import { FiChevronRight } from 'react-icons/fi';
 import { Button } from '@/components';
+import type { CartItem } from '@/types';
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+
 
 interface OrderSummaryProps {
   cartItems: CartItem[];

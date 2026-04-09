@@ -12,6 +12,23 @@ import ProductTabs from './ProductTabs';
 import { buildFlashSaleItemMap, resolveVariantPricing } from '@/utils/pricing';
 import { addRecentlyViewed } from '@/utils/recentlyViewed';
 
+// Pure helpers — defined outside component to avoid recreation
+const sortImages = (images: ProductImageResponse[]) =>
+  [...images].sort((a, b) => {
+    const aPrimary = Boolean(a.isPrimary);
+    const bPrimary = Boolean(b.isPrimary);
+    if (aPrimary !== bPrimary) return aPrimary ? -1 : 1;
+    const aOrder = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    const bOrder = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    if (aOrder !== bOrder) return aOrder - bOrder;
+    return a.id.localeCompare(b.id);
+  });
+
+const toImageUrls = (images: ProductImageResponse[]): string[] =>
+  images
+    .map((img) => img.imageUrl)
+    .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
+
 export default function ProductDetail() {
   const { slug } = useParams();
   const [product, setProduct] = useState<ProductResponse | null>(null);
@@ -103,26 +120,14 @@ export default function ProductDetail() {
   }
 
   const activeVariant = product.variants?.[selectedVariantIdx] || null;
-  const sortImages = (images: ProductImageResponse[]) =>
-    [...images].sort((a, b) => {
-      const aPrimary = Boolean(a.isPrimary);
-      const bPrimary = Boolean(b.isPrimary);
-      if (aPrimary !== bPrimary) return aPrimary ? -1 : 1;
-      const aOrder = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
-      const bOrder = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
-      if (aOrder !== bOrder) return aOrder - bOrder;
-      return a.id.localeCompare(b.id);
-    });
 
-  const toImageUrls = (images: ProductImageResponse[]): string[] =>
-    images
-      .map((img) => img.imageUrl)
-      .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
-
-  const productImages = toImageUrls(sortImages(product.images || []));
-  const variantImages = activeVariant?.images ? toImageUrls(sortImages(activeVariant.images)) : [];
-  const galleryImages = variantImages.length > 0 ? variantImages : productImages;
-  const finalGalleryImages = galleryImages.length > 0 ? galleryImages : ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
+  // Memoize gallery images — avoid sort + filter on every render
+  const finalGalleryImages = useMemo(() => {
+    const productImgs = toImageUrls(sortImages(product.images || []));
+    const variantImgs = activeVariant?.images ? toImageUrls(sortImages(activeVariant.images)) : [];
+    const gallery = variantImgs.length > 0 ? variantImgs : productImgs;
+    return gallery.length > 0 ? gallery : ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
+  }, [product.images, activeVariant?.images]);
 
   const activeFlashItem = activeVariant ? flashItemsByVariantId[activeVariant.id] : undefined;
   const { discount } = resolveVariantPricing({

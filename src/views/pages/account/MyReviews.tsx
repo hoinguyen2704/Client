@@ -3,7 +3,7 @@ import { FiMessageSquare, FiStar, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import type { FeedbackResponse, OrderItemResponse, OrderResponse } from '@/types';
+import type { FeedbackResponse, OrderItemResponse, OrderResponse, ReviewTab, ReviewableItem, ReviewedEntry, ReviewCandidate } from '@/types';
 import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components';
 import { formatDateShort as formatDate } from '@/utils/format';
 import { toast } from 'sonner';
@@ -13,41 +13,7 @@ const MAX_REVIEW_ATTEMPTS = 2;
 const FETCH_PAGE_SIZE = 50;
 const MAX_FETCH_PAGES = 10;
 
-type ReviewTab = 'to-review' | 'reviewed';
 
-interface ReviewableItem {
-  itemKey: string;
-  orderId: string;
-  orderNumber: string;
-  productId: string;
-  variantId: string;
-  productName: string;
-  variantName: string;
-  productImage?: string;
-  deliveredAt: string;
-  feedbacks: FeedbackResponse[];
-}
-
-interface ReviewedEntry {
-  key: string;
-  itemKey: string;
-  orderId: string;
-  orderNumber: string;
-  productId: string;
-  variantId: string;
-  productName: string;
-  variantName: string;
-  productImage?: string;
-  review: FeedbackResponse;
-  round: number;
-  totalRounds: number;
-}
-
-interface ReviewCandidate {
-  itemKey: string;
-  order: OrderResponse;
-  item: OrderItemResponse;
-}
 
 const toTimestamp = (value?: string) => {
   if (!value) return 0;
