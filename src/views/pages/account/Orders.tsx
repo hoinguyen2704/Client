@@ -6,9 +6,9 @@ import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
 import { Button, ConfirmDialog, Modal, ModalCancelButton, PrimaryButton, StarRating } from '@/components';
 import { toast } from 'sonner';
-
+import { getApiErrorMessage } from '@/utils/error';
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
-import type { OrderResponse } from '@/types';
+import type { OrderResponse, OrderItemResponse, FeedbackResponse } from '@/types';
 
 export default function Orders() {
   const [activeTab, setActiveTab] = useState('all');
@@ -23,7 +23,7 @@ export default function Orders() {
   const [selectedItem, setSelectedItem] = useState<{ productId: string, variantId: string, productName: string, variantName: string } | null>(null);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
-  const [oldFeedbacks, setOldFeedbacks] = useState<any[]>([]);
+  const [oldFeedbacks, setOldFeedbacks] = useState<FeedbackResponse[]>([]);
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function Orders() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const params: Record<string, any> = { page, size: 10 };
+      const params: Record<string, string | number> = { page, size: 10 };
       if (activeTab !== 'all') params.status = activeTab;
       if (searchQuery) params.keyword = searchQuery;
       const res = await orderService.getMyOrders(params);
@@ -59,7 +59,7 @@ export default function Orders() {
     } catch { toast.error('Hủy đơn hàng thất bại!'); }
   };
 
-  const handleOpenReview = async (order: OrderResponse, item: any) => {
+  const handleOpenReview = async (order: OrderResponse, item: OrderItemResponse) => {
     setSelectedOrder(order);
     setSelectedItem({ productId: item.productId, variantId: item.variantId, productName: item.productName, variantName: item.variantName });
     setRating(5);
@@ -83,8 +83,8 @@ export default function Orders() {
       await feedbackService.submit({ productId: selectedItem.productId, variantId: selectedItem.variantId, orderId: selectedOrder.id, rating, content: reviewText });
       toast.success('Cảm ơn bạn đã đánh giá sản phẩm!');
       setReviewModalOpen(false);
-    } catch (e: any) { 
-      toast.error(e.response?.data?.message || 'Gửi đánh giá thất bại!'); 
+    } catch (e: unknown) { 
+      toast.error(getApiErrorMessage(e, 'Gửi đánh giá thất bại!')); 
     }
   };
   return (

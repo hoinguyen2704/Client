@@ -111,8 +111,8 @@ export default function Products() {
     }
   };
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedItems(e.target.checked ? products.map(p => p.id) : []);
+  const handleSelectAll = (checked: boolean) => {
+    setSelectedItems(checked ? products.map(p => p.id) : []);
   };
 
   const handleSelectItem = (id: string) => {
@@ -220,7 +220,7 @@ export default function Products() {
                 <th className="p-4 font-medium w-10">
                   <Checkbox 
                     checked={selectedItems.length === products.length && products.length > 0}
-                    onCheckedChange={(checked) => handleSelectAll({ target: { checked } } as any)}
+                    onCheckedChange={(checked) => handleSelectAll(!!checked)}
                   />
                 </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('name')}>

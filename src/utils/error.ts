@@ -58,3 +58,13 @@ export function getApiErrorMessage(error: unknown, fallback = 'Đã có lỗi x�
 
   return fallback;
 }
+
+export function getApiErrorCode(error: unknown): string | undefined {
+  const raw = error as Record<string, unknown>;
+  const payload = (raw?.response as Record<string, unknown>)?.data ?? raw;
+  if (payload && typeof payload === 'object') {
+    const code = (payload as Record<string, unknown>).errorCode;
+    if (typeof code === 'string') return code;
+  }
+  return undefined;
+}

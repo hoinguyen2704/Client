@@ -23,7 +23,8 @@ export default function Feedbacks() {
       const res = await adminFeedbackService.getAll({ status: statusFilter || undefined, page, size: PAGE_SIZE.LARGE });
       setPageData(res.data);
       setReviews(res.data.data || []);
-    } catch (err) { console.error('Failed to fetch feedbacks:', err); toast.error('Tải danh sách đánh giá thất bại!'); }
+    } catch (err) { console.error('Failed to fetch feedbacks:', err); 
+      toast.error('Tải danh sách đánh giá thất bại!'); }
     finally { setLoading(false); }
   }, [statusFilter, page]);
 
@@ -31,7 +32,8 @@ export default function Feedbacks() {
 
   const handleStatusChange = async (id: string, status: string) => {
     try { await adminFeedbackService.updateStatus(id, status); fetchReviews({ silent: true }); }
-    catch (err) { console.error('Update failed:', err); toast.error('Cập nhật trạng thái đánh giá thất bại!'); }
+    catch (err) { console.error('Update failed:', err); 
+      toast.error('Cập nhật trạng thái đánh giá thất bại!'); }
   };
 
   const handleReply = async (id: string) => {
@@ -40,7 +42,8 @@ export default function Feedbacks() {
       await adminFeedbackService.reply(id, replyText);
       setReplyId(null); setReplyText('');
       fetchReviews({ silent: true });
-    } catch (err) { console.error('Reply failed:', err); toast.error('Phản hồi đánh giá thất bại!'); }
+    } catch (err) { console.error('Reply failed:', err);
+       toast.error('Phản hồi đánh giá thất bại!'); }
   };
   return (
     <div className="space-y-4 sm:space-y-6">

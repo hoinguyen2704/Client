@@ -9,7 +9,7 @@ interface WishlistStore {
   loading: boolean;
   totalItems: number;
   syncFromServer: () => Promise<void>;
-  toggleItem: (productId: string, productData?: any) => Promise<boolean>;
+  toggleItem: (productId: string) => Promise<boolean>;
   clearWishlist: () => void;
 }
 

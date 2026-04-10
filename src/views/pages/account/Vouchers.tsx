@@ -7,6 +7,7 @@ import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import useAuthStore from '@/stores/useAuthStore';
 import { Card, EmptyState, PrimaryButton, TrashButton } from '@/components';
+import { getApiErrorMessage } from '@/utils/error';
 
 import type { CouponResponse } from '@/types';
 
@@ -22,8 +23,7 @@ export default function Vouchers() {
   const [expandSaved, setExpandSaved] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
 
-  const getErrorMessage = (err: any, fallback: string) =>
-    err?.message || err?.error || err?.data?.message || fallback;
+
 
   // Fetch public vouchers (no auth needed)
   const fetchPublicVouchers = useCallback(async () => {
@@ -68,7 +68,7 @@ export default function Vouchers() {
       });
       fetchSavedVouchers();
       toast.success('Đã lưu voucher vào ví!');
-    } catch (err: unknown) { toast.error(getErrorMessage(err, 'Lưu voucher thất bại')); }
+    } catch (err: unknown) { toast.error(getApiErrorMessage(err, 'Lưu voucher thất bại')); }
     finally { setSavingId(null); }
   };
 
@@ -81,7 +81,7 @@ export default function Vouchers() {
       setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: false } : prev);
       setSavedVouchers(prev => prev.filter(v => v.id !== couponId));
       toast.success('Đã xóa voucher khỏi ví');
-    } catch (err: unknown) { toast.error(getErrorMessage(err, 'Thao tác thất bại')); }
+    } catch (err: unknown) { toast.error(getApiErrorMessage(err, 'Thao tác thất bại')); }
     finally { setSavingId(null); }
   };
 
@@ -99,7 +99,7 @@ export default function Vouchers() {
       const isSaved = !!coupon?.id && savedVouchers.some(v => v.id === coupon.id);
       setSearchResult(coupon ? { ...coupon, saved: isSaved } : null);
     } catch (err: unknown) {
-      setError(getErrorMessage(err, 'Mã không tồn tại hoặc đã bị khóa'));
+      setError(getApiErrorMessage(err, 'Mã không tồn tại hoặc đã bị khóa'));
     }
   };
   const daysLeft = (endDate: string): number => {

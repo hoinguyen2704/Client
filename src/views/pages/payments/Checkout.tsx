@@ -12,6 +12,7 @@ import orderService from '@/apis/services/orderService';
 import settingService from '@/apis/services/settingService';
 import type { CartResponse, AddressResponse, AddressRequest, CouponResponse, PaymentMethodConfig, ShippingConfig, TaxConfig } from '@/types';
 import useAuthStore from '@/stores/useAuthStore';
+import { getApiErrorMessage, getApiErrorCode } from '@/utils/error';
 
 const createCheckoutIdempotencyKey = () => {
   if (typeof window !== 'undefined' && window.crypto && 'randomUUID' in window.crypto) {
@@ -159,10 +160,7 @@ export default function Checkout() {
     ]).finally(() => setLoading(false));
   }, [user]);
 
-  const getErrorMessage = (err: any, fallback: string) =>
-    err?.message || err?.error || err?.data?.message || fallback;
-  const getErrorCode = (err: any) =>
-    err?.errorCode || err?.data?.errorCode;
+
 
   const getVoucherType = (voucher: CouponResponse): 'FREESHIP' | 'PRODUCT' => {
     return voucher.couponCategory === 'SHIPPING' ? 'FREESHIP' : 'PRODUCT';
@@ -220,7 +218,7 @@ export default function Checkout() {
       toast.success('Áp dụng mã giảm giá thành công!');
       return true;
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Mã giảm giá không hợp lệ!'));
+      toast.error(getApiErrorMessage(err, 'Mã giảm giá không hợp lệ!'));
       return false;
     }
   };
@@ -249,7 +247,7 @@ export default function Checkout() {
       setSavedVouchers(prev => prev.some(v => v.id === voucher.id) ? prev : [{ ...voucher, saved: true }, ...prev]);
       toast.success('Đã lưu voucher vào ví');
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Không thể lưu voucher'));
+      toast.error(getApiErrorMessage(err, 'Không thể lưu voucher'));
     } finally {
       setSavingVoucherId(null);
     }
@@ -274,7 +272,7 @@ export default function Checkout() {
       }
       toast.success('Đã bỏ lưu voucher');
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Không thể bỏ lưu voucher'));
+      toast.error(getApiErrorMessage(err, 'Không thể bỏ lưu voucher'));
     } finally {
       setSavingVoucherId(null);
     }
@@ -328,8 +326,8 @@ export default function Checkout() {
         navigate(`/user/orders/${res.data?.orderNumber}`); 
       }
     } catch (err: unknown) {
-      const errorCode = getErrorCode(err);
-      toast.error(getErrorMessage(err, 'Đặt hàng thất bại!'));
+      const errorCode = getApiErrorCode(err);
+      toast.error(getApiErrorMessage(err, 'Đặt hàng thất bại!'));
       if ([
         'PRICE_CHANGED',
         'INSUFFICIENT_STOCK',

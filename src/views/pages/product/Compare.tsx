@@ -48,13 +48,13 @@ export default function Compare() {
   const handleSearch = useCallback(async (query: string) => {
     setSearching(true);
     try {
-      const params: any = { keyword: query.trim(), page: 1, size: 12 };
+      const params: Record<string, string | number> = { keyword: query.trim(), page: 1, size: 12 };
       if (lockedCategoryId && compareItems[0]?.categorySlug) {
         params.categorySlug = compareItems[0].categorySlug;
       }
       const res = await productService.search(params);
       setSearchResults(
-        (res.data?.data || []).map((p: any) => ({
+        (res.data?.data || []).map((p) => ({
           id: p.id,
           name: p.name,
           slug: p.slug,
@@ -91,7 +91,7 @@ export default function Compare() {
     return () => clearTimeout(timer);
   }, [searchQuery, isModalOpen, handleSearch]);
 
-  const isBest = (key: string, value: any) => {
+  const isBest = (key: string, value: number) => {
     if (compareItems.length < 2) return false;
     if (key === "price")
       return value === Math.min(...compareItems.map((i) => i.price));

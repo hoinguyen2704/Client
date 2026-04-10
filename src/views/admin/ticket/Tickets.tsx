@@ -40,7 +40,8 @@ export default function Tickets() {
       const nextTickets = res.data.data || [];
       setPageData(res.data);
       setTickets(nextTickets);
-    } catch (err) { console.error('Failed to fetch tickets:', err); toast.error('Tải danh sách hỗ trợ thất bại!'); }
+    } catch (err) { console.error('Failed to fetch tickets:', err); 
+      toast.error('Tải danh sách hỗ trợ thất bại!'); }
     finally { setLoading(false); }
   }, [statusFilter, page]);
 
@@ -95,7 +96,8 @@ export default function Tickets() {
       setSelectedTicket(res.data);
       setReplyText('');
       await fetchTickets({ silent: true });
-    } catch (err) { console.error('Reply failed:', err); toast.error('Gửi phản hồi thất bại!'); }
+    } catch (err) { console.error('Reply failed:', err); 
+      toast.error('Gửi phản hồi thất bại!'); }
   };
 
   const handleStatusChange = async (id: string, status: string) => {
@@ -103,7 +105,8 @@ export default function Tickets() {
       const res = await adminTicketService.updateStatus(id, status);
       setSelectedTicket(res.data);
       await fetchTickets({ silent: true });
-    } catch (err) { console.error('Status update failed:', err); toast.error('Cập nhật trạng thái thất bại!'); }
+    } catch (err) { console.error('Status update failed:', err); 
+      toast.error('Cập nhật trạng thái thất bại!'); }
   };
   return (
     <div className="space-y-4 sm:space-y-6">

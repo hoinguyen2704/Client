@@ -11,6 +11,7 @@ import useAuthStore from '@/stores/useAuthStore';
 import { cartService } from '@/apis';
 import { PrimaryButton } from '@/components';
 import { resolveVariantPricing } from '@/utils/pricing';
+import { getApiErrorMessage } from '@/utils/error';
 
 interface ProductInfoProps {
   product: ProductResponse;
@@ -72,8 +73,6 @@ export default function ProductInfo({
     useCallback((s) => s.items.some((item) => item.productId === product.id), [product.id]),
   );
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const getErrorMessage = (err: any, fallback: string) =>
-    err?.message || err?.error || err?.data?.message || fallback;
 
   const highlightSpecs = useMemo(() => {
     try {
@@ -111,7 +110,7 @@ export default function ProductInfo({
       });
     } catch (error) {
       console.error('Lỗi thêm giỏ hàng API, có thể do chưa đăng nhập:', error);
-      toast.error(getErrorMessage(error, 'Thêm giỏ hàng thất bại!'));
+      toast.error(getApiErrorMessage(error, 'Thêm giỏ hàng thất bại!'));
     }
   };
 

@@ -6,6 +6,7 @@ import type { SupportRealtimePayload, TicketResponse } from '@/types';
 import { Button, IconButton, FormInput, FormTextarea, StatusBadge } from '@/components';
 import TicketListItem from '@/components/ticket/TicketListItem';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/utils/error';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
@@ -116,10 +117,8 @@ export default function Support() {
         setSelectedTicketId(created.id);
         setSelectedTicket(created);
       }
-    } catch (e: any) {
-      console.error(e);
-      const errMsg = e?.message || 'Có lỗi xảy ra kết nối';
-      toast.error(`Gửi yêu cầu thất bại: ${errMsg}`);
+    } catch (e: unknown) {
+      toast.error(getApiErrorMessage(e, 'Gửi yêu cầu thất bại'));
     } finally {
       setCreating(false);
     }
@@ -133,10 +132,8 @@ export default function Support() {
       setSelectedTicket(res.data);
       setReplyText('');
       await fetchTickets({ silent: true });
-    } catch (e: any) {
-      console.error(e);
-      const errMsg = e?.message || 'Lỗi kết nối';
-      toast.error(`Gửi phản hồi thất bại: ${errMsg}`);
+    } catch (e: unknown) {
+      toast.error(getApiErrorMessage(e, 'Gửi phản hồi thất bại'));
     } finally {
       setSendingReply(false);
     }

@@ -84,7 +84,7 @@ export default function Categories() {
       fetchCategories({ silent: true });
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, "Lưu danh mục thất bại!"));
-      console.error("Save failed:", err);
+      console.error("Lưu danh mục thất bại:", err);
     } finally {
       setSaving(false);
     }

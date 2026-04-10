@@ -7,6 +7,7 @@ import type { FeedbackResponse, OrderItemResponse, OrderResponse, ReviewTab, Rev
 import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components';
 import { formatDateShort as formatDate } from '@/utils/format';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/utils/error';
 
 const SHIPPED_ORDER_STATUS = 'SHIPPED';
 const MAX_REVIEW_ATTEMPTS = 2;
@@ -183,8 +184,8 @@ export default function MyReviews() {
       closeReviewModal();
       setActiveTab('reviewed');
       await loadReviewData();
-    } catch (error: any) {
-      toast.error(error?.message || 'Gửi đánh giá thất bại');
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, 'Gửi đánh giá thất bại'));
     } finally {
       setSubmitting(false);
     }
@@ -197,8 +198,8 @@ export default function MyReviews() {
       toast.success('Đã xóa nhận xét');
       setDeleteTarget(null);
       await loadReviewData();
-    } catch (error: any) {
-      toast.error(error?.message || 'Xóa nhận xét thất bại');
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, 'Xóa nhận xét thất bại'));
     }
   };
 
