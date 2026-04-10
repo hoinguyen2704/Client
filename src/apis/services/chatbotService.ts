@@ -3,11 +3,19 @@ import useAuthStore from "@/stores/useAuthStore";
 
 const CHATBOT_BASE = import.meta.env.VITE_CHATBOT_URL; // http://localhost:6969/api/v1/chatbot
 
-/*  Axios cho chat (public)  */
+/*  Axios cho chat (public — nhưng gửi token nếu có để cá nhân hóa gợi ý)  */
 const chatbotAxios = axios.create({
   baseURL: CHATBOT_BASE,
   timeout: 70000,
   headers: { "Content-Type": "application/json" },
+});
+
+chatbotAxios.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 /*  Axios cho admin config (direct tới chatbot server)  */

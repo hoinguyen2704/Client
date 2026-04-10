@@ -10,8 +10,9 @@ import {
 } from "react-icons/fi";
 import { TrashButton } from "@/components";
 import type { BasicInfoSectionProps as Props } from "./types";
+import { memo } from "react";
 
-export default function BasicInfoSection(props: Props) {
+export default memo(function BasicInfoSection(props: Props) {
   const {
     name, setName,
     description, setDescription,
@@ -53,7 +54,7 @@ export default function BasicInfoSection(props: Props) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Nhập tên sản phẩm..."
-            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
 
@@ -68,7 +69,7 @@ export default function BasicInfoSection(props: Props) {
                   setShowCategoryDropdown(!showCategoryDropdown);
                   setCategorySearch("");
                 }}
-                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 <span
                   className={
@@ -96,7 +97,7 @@ export default function BasicInfoSection(props: Props) {
                         value={categorySearch}
                         onChange={(e) => setCategorySearch(e.target.value)}
                         placeholder="Tìm danh mục..."
-                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-sm focus:ring-1 focus:ring-purple-500"
+                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                         autoFocus
                       />
                     </div>
@@ -172,7 +173,7 @@ export default function BasicInfoSection(props: Props) {
                               setIsCreatingCategory(false);
                           }}
                           placeholder="Tên danh mục mới..."
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500"
+                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           autoFocus
                         />
                         <button
@@ -224,7 +225,7 @@ export default function BasicInfoSection(props: Props) {
                   setShowBrandDropdown(!showBrandDropdown);
                   setBrandSearch("");
                 }}
-                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 <span
                   className={
@@ -252,7 +253,7 @@ export default function BasicInfoSection(props: Props) {
                         value={brandSearch}
                         onChange={(e) => setBrandSearch(e.target.value)}
                         placeholder="Tìm thương hiệu..."
-                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-sm focus:ring-1 focus:ring-purple-500"
+                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                         autoFocus
                       />
                     </div>
@@ -326,7 +327,7 @@ export default function BasicInfoSection(props: Props) {
                               setIsCreatingBrand(false);
                           }}
                           placeholder="Tên thương hiệu mới..."
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500"
+                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           autoFocus
                         />
                         <button
@@ -374,7 +375,7 @@ export default function BasicInfoSection(props: Props) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Nhập mô tả chi tiết sản phẩm..."
-            className="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 resize-y outline-none"
+            className="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 resize-y outline-none"
           />
         </div>
       </div>
@@ -471,7 +472,7 @@ export default function BasicInfoSection(props: Props) {
                         <input
                           type="text"
                           placeholder="Thêm thông số gợi ý..."
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs focus:ring-1 focus:ring-purple-500"
+                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -547,7 +548,7 @@ export default function BasicInfoSection(props: Props) {
                   setSpecs(newSpecs);
                 }}
                 placeholder="Tên thông số (VD: Màn hình)"
-                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm"
+                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
               />
               <input
                 type="text"
@@ -558,7 +559,7 @@ export default function BasicInfoSection(props: Props) {
                   setSpecs(newSpecs);
                 }}
                 placeholder={getHintForSpec(spec.key)}
-                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm"
+                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
               />
               <TrashButton
                 onClick={() => {
@@ -587,4 +588,4 @@ export default function BasicInfoSection(props: Props) {
       </div>
     </div>
   );
-}
+});

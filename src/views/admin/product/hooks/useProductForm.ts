@@ -286,15 +286,15 @@ export default function useProductForm() {
   }, [isEditMode, fetchProduct]);
 
   // ── Variant helpers ──
-  const addVariant = () => {
-    setVariants([...variants, { ...emptyVariant }]);
-  };
+  const addVariant = useCallback(() => {
+    setVariants((prev) => [...prev, { ...emptyVariant }]);
+  }, []);
 
-  const removeVariant = (index: number) => {
-    setVariants(variants.filter((_, i) => i !== index));
-  };
+  const removeVariant = useCallback((index: number) => {
+    setVariants((prev) => prev.filter((_, i) => i !== index));
+  }, []);
 
-  const updateVariant = (
+  const updateVariant = useCallback((
     index: number,
     field: keyof VariantFormData,
     value: string | boolean,
@@ -302,25 +302,18 @@ export default function useProductForm() {
     setVariants((prev) =>
       prev.map((v, i) => {
         if (i !== index) return v;
-        if (
-          field === "price" ||
-          field === "stock" ||
-          field === "compareAtPrice"
-        ) {
-          return { ...v, [field]: value === "" ? "" : Number(value) };
-        }
         if (field === "active") {
           return { ...v, [field]: value as boolean };
         }
         return { ...v, [field]: value };
       }),
     );
-  };
+  }, []);
 
-  const getVariantUiKey = (variant: VariantFormData, index: number): string =>
-    variant.id || `variant-${index}-${variant.sku || "new"}`;
+  const getVariantUiKey = useCallback((variant: VariantFormData, index: number): string =>
+    variant.id || `variant-${index}-${variant.sku || "new"}`, []);
 
-  const handleVariantFilesSelected = async (index: number, files: File[]) => {
+  const handleVariantFilesSelected = useCallback(async (index: number, files: File[]) => {
     if (files.length === 0) return;
     const currentVariant = variants[index];
     if (!currentVariant) return;
@@ -363,9 +356,9 @@ export default function useProductForm() {
         i === index ? { ...v, pendingFiles: [...v.pendingFiles, ...files] } : v,
       ),
     );
-  };
+  }, [variants, isEditMode, id, getVariantUiKey]);
 
-  const removeVariantPendingFile = (
+  const removeVariantPendingFile = useCallback((
     variantIndex: number,
     fileIndex: number,
   ) => {
@@ -378,9 +371,9 @@ export default function useProductForm() {
         };
       }),
     );
-  };
+  }, []);
 
-  const deleteVariantImage = async (variantIndex: number, imageId: string) => {
+  const deleteVariantImage = useCallback(async (variantIndex: number, imageId: string) => {
     const currentVariant = variants[variantIndex];
     if (!currentVariant) return;
 
@@ -412,7 +405,7 @@ export default function useProductForm() {
     } catch {
       toast.error("Xóa ảnh phân loại thất bại.");
     }
-  };
+  }, [variants, id]);
 
   const uploadPendingVariantImages = async (
     productId: string,

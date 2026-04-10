@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
@@ -15,7 +15,7 @@ export default function Feedbacks() {
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<FeedbackResponse> | null>(null);
   const [replyId, setReplyId] = useState<string | null>(null);
-  const [replyText, setReplyText] = useState('');
+  const replyRef = useRef<HTMLInputElement>(null);
 
   const fetchReviews = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
@@ -37,10 +37,11 @@ export default function Feedbacks() {
   };
 
   const handleReply = async (id: string) => {
-    if (!replyText.trim()) return;
+    const text = replyRef.current?.value?.trim();
+    if (!text) return;
     try {
-      await adminFeedbackService.reply(id, replyText);
-      setReplyId(null); setReplyText('');
+      await adminFeedbackService.reply(id, text);
+      setReplyId(null);
       fetchReviews({ silent: true });
     } catch (err) { console.error('Reply failed:', err);
        toast.error('Phản hồi đánh giá thất bại!'); }
@@ -100,9 +101,12 @@ export default function Feedbacks() {
 
                   {replyId === review.id && (
                     <div className="mt-3 flex flex-col sm:flex-row gap-2">
-                      <input type="text" placeholder="Nhập nội dung trả lời..." value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                      <input type="text" placeholder="Nhập nội dung trả lời..."
+                        ref={replyRef}
+                        defaultValue=""
+                        autoFocus
+                        onKeyDown={(e) => { if (e.key === 'Enter') handleReply(review.id); }}
+                        className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 outline-none text-sm" />
                       <Button onClick={() => handleReply(review.id)} size="sm" className="w-full sm:w-auto">Gửi</Button>
                     </div>
                   )}

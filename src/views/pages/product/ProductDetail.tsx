@@ -92,6 +92,17 @@ export default function ProductDetail() {
     });
   }, [product]);
 
+  const activeVariant = product?.variants?.[selectedVariantIdx] || null;
+
+  // Memoize gallery images — avoid sort + filter on every render
+  const finalGalleryImages = useMemo(() => {
+    if (!product) return ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
+    const productImgs = toImageUrls(sortImages(product.images || []));
+    const variantImgs = activeVariant?.images ? toImageUrls(sortImages(activeVariant.images)) : [];
+    const gallery = variantImgs.length > 0 ? variantImgs : productImgs;
+    return gallery.length > 0 ? gallery : ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
+  }, [product, activeVariant?.images]);
+
   if (loading) {
     return (
       <div className="w-full px-4 md:px-8 lg:px-12 py-8">
@@ -118,16 +129,6 @@ export default function ProductDetail() {
       </div>
     );
   }
-
-  const activeVariant = product.variants?.[selectedVariantIdx] || null;
-
-  // Memoize gallery images — avoid sort + filter on every render
-  const finalGalleryImages = useMemo(() => {
-    const productImgs = toImageUrls(sortImages(product.images || []));
-    const variantImgs = activeVariant?.images ? toImageUrls(sortImages(activeVariant.images)) : [];
-    const gallery = variantImgs.length > 0 ? variantImgs : productImgs;
-    return gallery.length > 0 ? gallery : ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
-  }, [product.images, activeVariant?.images]);
 
   const activeFlashItem = activeVariant ? flashItemsByVariantId[activeVariant.id] : undefined;
   const { discount } = resolveVariantPricing({

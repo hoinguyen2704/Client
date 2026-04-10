@@ -289,12 +289,12 @@ export default function ProductInfo({
         <PrimaryButton 
           variant="outline"
           onClick={handleAddToCart} 
-          disabled={stock === 0}
+          disabled={stock === 0 || price <= 0}
           icon={<FiShoppingCart className="text-xl" />}
           className="flex-1 !h-14 !rounded-2xl !text-lg !font-bold">
           Thêm vào giỏ
         </PrimaryButton>
-        <PrimaryButton onClick={handleBuyNow} disabled={stock === 0}
+        <PrimaryButton onClick={handleBuyNow} disabled={stock === 0 || price <= 0}
           icon={<FiZap className="text-xl" />}
           className="flex-1 !h-14 !rounded-2xl !text-lg">
           Mua ngay

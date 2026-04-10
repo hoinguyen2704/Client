@@ -9,7 +9,9 @@ import {
 import { TrashButton } from "@/components";
 import type { VariantSectionProps as Props } from "./types";
 
-export default function VariantSection(props: Props) {
+import { memo } from "react";
+
+export default memo(function VariantSection(props: Props) {
   const {
     variants,
     uploadingVariantKeys,
@@ -87,7 +89,7 @@ export default function VariantSection(props: Props) {
                         updateVariant(index, "sku", e.target.value)
                       }
                       placeholder="VD: SP-001-BK"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
                     />
                   </div>
                   <div>
@@ -105,7 +107,7 @@ export default function VariantSection(props: Props) {
                         )
                       }
                       placeholder="VD: Đen - 256GB"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
                     />
                   </div>
                   <div>
@@ -119,7 +121,7 @@ export default function VariantSection(props: Props) {
                         updateVariant(index, "price", e.target.value)
                       }
                       placeholder="0"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
                     />
                   </div>
                   <div>
@@ -137,7 +139,7 @@ export default function VariantSection(props: Props) {
                         )
                       }
                       placeholder="Giá trước giảm"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
                     />
                   </div>
                 </div>
@@ -153,7 +155,7 @@ export default function VariantSection(props: Props) {
                         updateVariant(index, "stock", e.target.value)
                       }
                       placeholder="0"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
                     />
                   </div>
                   <div className="flex items-end">
@@ -303,4 +305,4 @@ export default function VariantSection(props: Props) {
       </div>
     </div>
   );
-}
+});

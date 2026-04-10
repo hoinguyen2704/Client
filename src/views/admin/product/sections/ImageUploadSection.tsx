@@ -1,8 +1,9 @@
 import type { ChangeEvent, DragEvent } from "react";
 import { FiTrash2, FiUploadCloud, FiLoader } from "react-icons/fi";
 import type { ImageUploadSectionProps as Props } from "./types";
+import { memo } from "react";
 
-export default function ImageUploadSection(props: Props) {
+export default memo(function ImageUploadSection(props: Props) {
   const {
     existingImages,
     pendingFiles,
@@ -151,4 +152,4 @@ export default function ImageUploadSection(props: Props) {
       )}
     </div>
   );
-}
+});

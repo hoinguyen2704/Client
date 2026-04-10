@@ -1,7 +1,8 @@
 import { FiChevronDown, FiCheck, FiStar } from "react-icons/fi";
 import type { StatusPricingSectionProps as Props } from "./types";
+import { memo } from "react";
 
-export default function StatusPricingSection(props: Props) {
+export default memo(function StatusPricingSection(props: Props) {
   const {
     status, setStatus,
     originPrice, setOriginPrice,
@@ -155,4 +156,4 @@ export default function StatusPricingSection(props: Props) {
       </div>
     </div>
   );
-}
+});

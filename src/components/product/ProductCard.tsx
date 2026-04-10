@@ -61,7 +61,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   const firstVariantId: string = product.variants?.[0]?.id || '';
   const name: string = product.name || '';
   const slug: string = product.slug || '';
-  const image: string = product.mainImageUrl || product.image || '';
+  const image: string = product.mainImageUrl || product.image || 'https://placehold.co/400x400/f1f5f9/94a3b8?text=No+Image';
   const lowestVariantPrice = product.variants?.length
     ? Math.min(...product.variants.map((v) => v.price))
     : null;
@@ -89,7 +89,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   let statusText = 'CÒN HÀNG';
   let statusBg = 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30';
   let statusTextColor = 'text-emerald-600 dark:text-emerald-400';
-  let canAddToCart = stock > 0;
+  let canAddToCart = stock > 0 && salePrice > 0;
 
   if (isInactive) {
     statusText = 'NGỪNG BÁN';
@@ -100,6 +100,11 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
     statusText = 'SẮP VỀ';
     statusBg = 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30';
     statusTextColor = 'text-blue-600 dark:text-blue-400';
+    canAddToCart = false;
+  } else if (salePrice <= 0) {
+    statusText = 'LIÊN HỆ';
+    statusBg = 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-800/30';
+    statusTextColor = 'text-orange-600 dark:text-orange-400';
     canAddToCart = false;
   } else if (isOutOfStock || stock <= 0) {
     statusText = 'HẾT HÀNG';
