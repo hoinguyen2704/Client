@@ -94,6 +94,7 @@ export interface ReturnItemData {
   orderItemId: string;
   productName: string;
   variantName?: string;
+  imageUrl?: string;
   unitPrice: number;
   requestedQuantity: number;
   approvedQuantity?: number;

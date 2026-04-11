@@ -223,7 +223,7 @@ export function buildReturnTimelineSteps(
 export function ReturnStatusBadge({ status }: { status: string }) {
   const meta = getReturnStatusMeta(status);
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${meta.className}`}>
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-md font-bold ${meta.className}`}>
       {meta.label}
     </span>
   );
@@ -232,7 +232,7 @@ export function ReturnStatusBadge({ status }: { status: string }) {
 export function RefundStatusBadge({ status }: { status: string }) {
   const meta = getRefundStatusMeta(status);
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${meta.className}`}>
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-md font-semibold ${meta.className}`}>
       {meta.label}
     </span>
   );

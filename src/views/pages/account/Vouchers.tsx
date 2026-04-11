@@ -116,7 +116,7 @@ export default function Vouchers() {
   };
 
   const getVisibleVouchers = (items: CouponResponse[], expanded: boolean) => (
-    expanded ? items : items.slice(0, 1)
+    expanded ? items : items.slice(0, 2)
   );
 
   const VoucherCard = ({ v, showSaveBtn = false }: { v: CouponResponse; showSaveBtn?: boolean }) => (
@@ -233,7 +233,7 @@ export default function Vouchers() {
             <input type="text" placeholder="Nhập mã giảm giá..." value={couponCode}
               onChange={(e) => setCouponCode(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 uppercase font-mono text-lg" />
-            <PrimaryButton onClick={handleSearch} icon={<FiTag />} className="h-12 px-8">
+            <PrimaryButton onClick={handleSearch} icon={<FiTag />} className="h-12 px-8 text-lg">
               Kiểm tra
             </PrimaryButton>
           </div>
@@ -262,7 +262,7 @@ export default function Vouchers() {
               {publicVouchers.length}
             </span>
           </div>
-          {publicVouchers.length > 1 && (
+          {publicVouchers.length > 2 && (
             <PrimaryButton
               onClick={() => setExpandPublic(prev => !prev)}
               variant="outline"
@@ -303,7 +303,7 @@ export default function Vouchers() {
               {savedVouchers.length}
             </span>
           </div>
-          {savedVouchers.length > 1 && user && (
+          {savedVouchers.length > 2 && user && (
             <PrimaryButton
               onClick={() => setExpandSaved(prev => !prev)}
               variant="outline"

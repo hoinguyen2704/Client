@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "motion/react";
 import type {
@@ -47,19 +48,27 @@ export default function Modal({
     };
   }, [open]);
 
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div
-          className={`fixed inset-0 z-50 flex items-start justify-center px-3 sm:px-4 pt-10 sm:pt-10 pb-3 sm:pb-4 ${containerClassName}`}
+          className={`fixed inset-0 z-[999] flex items-start justify-center px-3 sm:px-4 pt-10 sm:pt-10 pb-3 sm:pb-4 ${containerClassName}`}
         >
-          {/* Backdrop */}
+          {/* Backdrop (Removed backdrop-blur-sm for extreme performance boost) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 dark:bg-slate-900/80"
             onClick={onClose}
           />
 
@@ -102,7 +111,8 @@ export default function Modal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

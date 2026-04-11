@@ -8,7 +8,7 @@ import {
   FiXCircle,
 } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { Button, ConfirmDialog, Pagination } from '@/components';
+import { Button, ConfirmDialog, Pagination, SlidingTabs } from '@/components';
 import { formatDateFull as formatDateTime, formatPrice } from '@/utils/format';
 import { getApiErrorMessage } from '@/utils/error';
 import returnService from '@/apis/services/returnService';
@@ -78,20 +78,12 @@ export default function MyReturns() {
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3 sm:space-y-4">
-        <div className="flex overflow-x-auto pb-2 hide-scrollbar border-b border-slate-100 dark:border-slate-800">
-          {USER_RETURN_TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => { setActiveTab(tab.id); setPage(1); }}
-              className={`px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <SlidingTabs
+          tabs={USER_RETURN_TABS}
+          activeTab={activeTab}
+          onChange={(id) => { setActiveTab(id); setPage(1); }}
+          variant="underline"
+        />
 
         <div className="relative">
           <input

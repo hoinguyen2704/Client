@@ -48,7 +48,7 @@ export default function UserLayout() {
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
         {/* Sidebar */}
         <aside className="w-full lg:w-72 shrink-0">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 lg:sticky lg:top-24">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 lg:sticky lg:top-[8.5rem] lg:max-h-[calc(100dvh-9.5rem)] lg:overflow-y-auto custom-scrollbar">
             <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-8">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 p-0.5 shrink-0 flex items-center justify-center">
                 {user?.avatar ? (

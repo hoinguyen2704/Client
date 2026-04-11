@@ -343,23 +343,30 @@ export default function OrderTracking() {
           )}
 
           {/* Items */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">Sản phẩm</h2>
-            <div className="space-y-4">
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold">Sản phẩm</h2>
+            <div className="space-y-3">
               {order.items.map(item => (
-                <div key={item.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <div key={item.id} className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5 transition-colors">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
                     ) : (
-                      <FiPackage className="text-slate-400 text-xl" />
+                      <FiPackage className="text-slate-400 text-3xl" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium truncate">{item.productName}</h4>
-                    <p className="text-sm text-slate-500">{item.variantName} | x{item.quantity}</p>
+                    <h4 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate" title={item.productName}>
+                      {item.productName}
+                    </h4>
+                    <p className="text-sm text-slate-500 mt-0.5">
+                      {item.variantName ? `${item.variantName} | ` : ''}Số lượng: x{item.quantity}
+                    </p>
                   </div>
-                  <div className="font-bold text-purple-600">{formatPrice(item.subtotal)}</div>
+                  <div className="text-right flex-shrink-0 space-y-0.5">
+                    <div className="text-sm text-slate-500 mb-1">{formatPrice(Number(item.unitPrice || 0))}</div>
+                    <div className="font-bold text-purple-600 text-lg">{formatPrice(item.subtotal)}</div>
+                  </div>
                 </div>
               ))}
             </div>

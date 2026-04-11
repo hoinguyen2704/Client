@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { FiMessageSquare, FiStar, FiTrash2 } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import type { FeedbackResponse, OrderItemResponse, OrderResponse, ReviewTab, ReviewableItem, ReviewedEntry, ReviewCandidate } from '@/types';
-import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog } from '@/components';
+import type { FeedbackResponse, OrderResponse, ReviewTab, ReviewableItem, ReviewedEntry, ReviewCandidate } from '@/types';
+import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog, SlidingTabs } from '@/components';
 import { formatDateShort as formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
@@ -13,6 +12,7 @@ const SHIPPED_ORDER_STATUS = 'SHIPPED';
 const MAX_REVIEW_ATTEMPTS = 2;
 const FETCH_PAGE_SIZE = 50;
 const MAX_FETCH_PAGES = 10;
+const FEEDBACK_BATCH_SIZE = 5;
 
 
 
@@ -84,21 +84,27 @@ export default function MyReviews() {
           })),
       );
 
-      const candidateResults = await Promise.all(
-        candidates.map(async (candidate) => {
-          try {
-            const res = await feedbackService.getMyFeedback(
-              candidate.item.productId as string,
-              candidate.item.variantId,
-              candidate.order.id,
-            );
-            const feedbacks = [...(res.data || [])].sort((a, b) => toTimestamp(a.createdAt) - toTimestamp(b.createdAt));
-            return { candidate, feedbacks };
-          } catch {
-            return { candidate, feedbacks: [] as FeedbackResponse[] };
-          }
-        }),
-      );
+      // Batch feedback calls to avoid N+1 request flooding
+      const candidateResults: { candidate: ReviewCandidate; feedbacks: FeedbackResponse[] }[] = [];
+      for (let i = 0; i < candidates.length; i += FEEDBACK_BATCH_SIZE) {
+        const batch = candidates.slice(i, i + FEEDBACK_BATCH_SIZE);
+        const batchResults = await Promise.all(
+          batch.map(async (candidate) => {
+            try {
+              const res = await feedbackService.getMyFeedback(
+                candidate.item.productId as string,
+                candidate.item.variantId,
+                candidate.order.id,
+              );
+              const feedbacks = [...(res.data || [])].sort((a, b) => toTimestamp(a.createdAt) - toTimestamp(b.createdAt));
+              return { candidate, feedbacks };
+            } catch {
+              return { candidate, feedbacks: [] as FeedbackResponse[] };
+            }
+          }),
+        );
+        candidateResults.push(...batchResults);
+      }
 
       const nextItemFeedbackMap: Record<string, FeedbackResponse[]> = {};
       candidateResults.forEach(({ candidate, feedbacks }) => {
@@ -207,28 +213,15 @@ export default function MyReviews() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Nhận xét của tôi</h1>
 
-      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-2 shadow-sm border border-slate-100 dark:border-slate-800 flex overflow-x-auto hide-scrollbar">
-        <button
-          onClick={() => setActiveTab('to-review')}
-          className={`flex-1 min-w-[150px] py-3 px-4 rounded-xl font-medium text-center transition-all ${
-            activeTab === 'to-review'
-              ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md'
-              : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          Cần đánh giá {toReviewItems.length > 0 ? `(${toReviewItems.length})` : ''}
-        </button>
-        <button
-          onClick={() => setActiveTab('reviewed')}
-          className={`flex-1 min-w-[150px] py-3 px-4 rounded-xl font-medium text-center transition-all ${
-            activeTab === 'reviewed'
-              ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md'
-              : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          Lịch sử đánh giá {reviewedEntries.length > 0 ? `(${reviewedEntries.length})` : ''}
-        </button>
-      </div>
+      <SlidingTabs
+        tabs={[
+          { id: 'to-review', label: `Cần đánh giá${toReviewItems.length > 0 ? ` (${toReviewItems.length})` : ''}` },
+          { id: 'reviewed', label: `Lịch sử đánh giá${reviewedEntries.length > 0 ? ` (${reviewedEntries.length})` : ''}` },
+        ]}
+        activeTab={activeTab}
+        onChange={(id) => setActiveTab(id as ReviewTab)}
+        variant="pill"
+      />
 
       {loading ? (
         <div className="space-y-3">
@@ -237,26 +230,21 @@ export default function MyReviews() {
           ))}
         </div>
       ) : (
-        <AnimatePresence mode="wait">
-          {activeTab === 'to-review' ? (
-            <motion.div
-              key="to-review"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="space-y-4"
-            >
+        <div key={activeTab} className="animate-[fadeSlideIn_0.3s_ease-out]">
+          {activeTab === 'to-review' && (
+            <div className="space-y-4">
               {toReviewItems.length > 0 ? (
                 toReviewItems.map((item) => (
                   <div
                     key={item.itemKey}
-                    className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between"
+                    className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between"
                   >
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <img
                         src={item.productImage || 'https://placehold.co/120x120/f1f5f9/94a3b8?text=No+Image'}
                         alt={item.productName}
                         className="w-20 h-20 object-cover rounded-xl bg-slate-100 dark:bg-slate-800"
+                        loading="lazy"
                       />
                       <div className="min-w-0">
                         <h3 className="font-bold line-clamp-2">{item.productName}</h3>
@@ -274,7 +262,7 @@ export default function MyReviews() {
                   </div>
                 ))
               ) : (
-                <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
                   <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl">
                     <FiStar />
                   </div>
@@ -282,15 +270,11 @@ export default function MyReviews() {
                   <p className="text-slate-500">Bạn đã đánh giá tất cả sản phẩm đã mua.</p>
                 </div>
               )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="reviewed"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="space-y-4"
-            >
+            </div>
+          )}
+
+          {activeTab === 'reviewed' && (
+            <div className="space-y-4">
               {reviewedEntries.length > 0 ? (
                 reviewedEntries.map((entry) => {
                   const canReviewMore = entry.round === entry.totalRounds && entry.totalRounds < MAX_REVIEW_ATTEMPTS;
@@ -298,13 +282,14 @@ export default function MyReviews() {
                   return (
                     <div
                       key={entry.key}
-                      className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow"
+                      className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start gap-4">
                         <img
                           src={entry.productImage || 'https://placehold.co/120x120/f1f5f9/94a3b8?text=No+Image'}
                           alt={entry.productName}
                           className="w-16 h-16 rounded-xl object-cover bg-slate-100 dark:bg-slate-800"
+                          loading="lazy"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -377,9 +362,9 @@ export default function MyReviews() {
                   }
                 />
               )}
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       )}
 
       <Modal

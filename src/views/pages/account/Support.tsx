@@ -97,7 +97,11 @@ export default function Support() {
   }, [fetchTickets, fetchTicketDetail, selectedTicketId]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const chatEnd = chatEndRef.current;
+    const container = chatEnd?.parentElement;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
   }, [selectedTicket?.id, selectedTicket?.messages]);
 
   const handleCreate = async () => {
@@ -146,7 +150,6 @@ export default function Support() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl sm:text-2xl font-bold">Hỗ trợ</h1>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)] gap-4 sm:gap-6">
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[46dvh] min-h-[300px] sm:min-h-[340px] lg:h-[calc(100dvh-420px)] lg:min-h-[500px]">
           <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-slate-800 space-y-2.5 sm:space-y-3">

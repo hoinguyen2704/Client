@@ -26,7 +26,7 @@ export default function Settings() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Notifications */}
-        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 h-fit">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 h-fit">
           <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
             <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
               <FiBell />
@@ -127,7 +127,7 @@ export default function Settings() {
 
         <div className="space-y-8">
           {/* Security */}
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
               <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
                 <FiShield />
@@ -211,7 +211,7 @@ export default function Settings() {
           </div>
 
           {/* Social Accounts */}
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Liên kết tài khoản</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">

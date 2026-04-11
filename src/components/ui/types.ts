@@ -324,3 +324,18 @@ export interface QuantitySelectorProps {
   overMaxWarning?: string;
   className?: string;
 }
+
+// SlidingTabs
+export interface TabItem {
+  id: string;
+  label: string;
+}
+
+export interface SlidingTabsProps {
+  tabs: TabItem[];
+  activeTab: string;
+  onChange: (tabId: string) => void;
+  /** 'pill' = gradient bg slider (2–3 tabs), 'underline' = bottom border slider (many tabs) */
+  variant?: 'pill' | 'underline';
+  className?: string;
+}

@@ -4,7 +4,7 @@ import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/uti
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import { Button, ConfirmDialog, Modal, ModalCancelButton, Pagination, PrimaryButton, StarRating } from '@/components';
+import { Button, ConfirmDialog, Modal, ModalCancelButton, Pagination, PrimaryButton, StarRating, SlidingTabs } from '@/components';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
@@ -92,14 +92,12 @@ export default function Orders() {
       <h1 className="text-xl sm:text-2xl font-bold">Quản lý đơn hàng</h1>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3 sm:space-y-4">
-        <div className="flex overflow-x-auto pb-2 hide-scrollbar border-b border-slate-100 dark:border-slate-800">
-          {CLIENT_ORDER_TABS.map(tab => (
-            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setPage(1); }}
-              className={`px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <SlidingTabs
+          tabs={CLIENT_ORDER_TABS}
+          activeTab={activeTab}
+          onChange={(id) => { setActiveTab(id); setPage(1); }}
+          variant="underline"
+        />
         <div className="relative">
           <input type="text" placeholder="Tìm kiếm theo Mã đơn hàng..." value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -128,18 +126,26 @@ export default function Orders() {
                 <div>{getClientStatusBadge(order.orderStatus)}</div>
               </div>
 
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-3">
                 {order.items.map(item => (
-                  <div key={item.id} className="flex items-start gap-3 sm:gap-4 p-1.5 sm:p-2 -mx-1.5 sm:-mx-2 rounded-xl">
-                    <div className="w-14 h-14 sm:w-20 sm:h-20 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400"><FiPackage className="text-xl sm:text-2xl" /></div>
+                  <div key={item.id} className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+                    <div className="w-16 h-18 sm:w-20 sm:h-20 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                      ) : (
+                        <FiPackage className="text-slate-400 text-2xl" />
+                      )}
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-sm sm:text-base line-clamp-1">{item.productName}</h3>
-                      <p className="text-xs sm:text-sm text-slate-500 mt-1">Phân loại: {item.variantName} | Số lượng: x{item.quantity}</p>
+                      <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white line-clamp-1" title={item.productName}>{item.productName}</h3>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                        {item.variantName ? `${item.variantName} | ` : ''}Số lượng: x{item.quantity}
+                      </p>
                     </div>
                     <div className="flex flex-col items-end gap-1.5 sm:gap-2 shrink-0">
                       <div className="font-bold text-sm sm:text-base text-purple-600">{formatPrice(item.unitPrice)}</div>
                       {order.orderStatus === 'SHIPPED' && (
-                        <button onClick={() => handleOpenReview(order, item)} className="px-2.5 sm:px-3 py-1 text-xs sm:text-sm rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                        <button onClick={() => handleOpenReview(order, item)} className="px-2.5 sm:px-3 py-1 text-xs sm:text-sm rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors bg-white dark:bg-transparent">
                           Đánh giá
                         </button>
                       )}
