@@ -99,7 +99,7 @@ export default function ProductPickerModal({ open, onClose, onConfirm, initialSe
       size="xl"
       footer={
         <div className="flex justify-between items-center w-full">
-          <div className="text-sm text-slate-500">
+          <div className="text-md text-slate-500">
             Đã chọn: <strong className="text-primary-600">{selectedCount}</strong> phân loại
           </div>
           <div className="gap-2 flex">
@@ -154,7 +154,7 @@ export default function ProductPickerModal({ open, onClose, onConfirm, initialSe
                       <img src={product.mainImageUrl || '/placeholder.png'} alt={product.name} className="w-10 h-10 object-cover rounded-lg border border-slate-200" />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-slate-800 truncate">{product.name}</div>
-                        <div className="text-xs text-slate-500">{variants.length} phân loại</div>
+                        <div className="text-sm text-slate-500">{variants.length} phân loại</div>
                       </div>
                     </div>
 
@@ -183,12 +183,12 @@ export default function ProductPickerModal({ open, onClose, onConfirm, initialSe
                                 </div>
                               </div>
                               <div className="flex-1">
-                                <div className="text-sm font-medium text-slate-700">
+                                <div className="text-md font-medium text-slate-700">
                                   {variant.variantName ? variant.variantName : 'Mặc định'}
                                 </div>
-                                <div className="text-xs text-slate-500">Mã: {variant.sku} • Kho: {variant.stockQuantity}</div>
+                                <div className="text-sm text-slate-500">Mã: {variant.sku} • Kho: {variant.stockQuantity}</div>
                               </div>
-                              <div className="font-semibold text-sm text-slate-700">
+                              <div className="font-semibold text-md text-slate-700">
                                 {formatPrice(variant.price)}
                               </div>
                             </div>

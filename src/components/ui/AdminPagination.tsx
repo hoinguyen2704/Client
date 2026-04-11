@@ -26,7 +26,7 @@ export default function AdminPagination({
   }
 
   return (
-    <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500">
+    <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-md text-slate-500">
       <div>
         Hiển thị {start}-{end} của {totalItems.toLocaleString()} {label}
       </div>

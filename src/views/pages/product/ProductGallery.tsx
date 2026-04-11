@@ -2,7 +2,7 @@ import type { ProductGalleryProps } from './types';
 
 export default function ProductGallery({ images, activeImage, onImageChange, productName, discount }: ProductGalleryProps) {
   return (
-    <div className="w-full lg:w-5/12">
+    <div className="w-full lg:w-4/12">
       <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800 mb-4 group">
         <img
           src={images[activeImage]}

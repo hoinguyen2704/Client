@@ -100,7 +100,7 @@ export default function AuthLayout({
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">{f.title}</h3>
-                    <p className="text-white/70 text-sm mt-1">{f.desc}</p>
+                    <p className="text-white/70 text-md mt-1">{f.desc}</p>
                   </div>
                 </motion.div>
               ))}

@@ -105,7 +105,7 @@ export default function Dashboard() {
               { value: 'YEAR', label: 'Năm' },
             ].map((p) => (
               <button key={p.value} onClick={() => setPeriod(p.value)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${period === p.value ? 'bg-white dark:bg-slate-700 shadow-sm text-purple-600' : 'text-slate-500 hover:text-slate-900'}`}>
+                className={`px-3 py-1.5 rounded-lg text-md font-medium whitespace-nowrap transition-colors ${period === p.value ? 'bg-white dark:bg-slate-700 shadow-sm text-purple-600' : 'text-slate-500 hover:text-slate-900'}`}>
                 {p.label}
               </button>
             ))}
@@ -196,7 +196,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-max min-w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-xs sm:text-sm">
+                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm sm:text-md">
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium whitespace-nowrap w-[1%]">Mã đơn</th>
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium whitespace-nowrap">Khách hàng</th>
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium whitespace-nowrap w-[1%]">Ngày đặt</th>
@@ -207,10 +207,10 @@ export default function Dashboard() {
                   <tbody>
                     {stats.recentOrders.map((order: RecentOrderItem, index: number) => (
                       <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="py-2.5 sm:py-4 pr-4 text-sm font-medium whitespace-nowrap">{order.orderNumber}</td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-sm whitespace-nowrap">{order.customerName}</td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-sm text-slate-500 whitespace-nowrap">{formatDate(order.createdAt)}</td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-sm text-right font-bold whitespace-nowrap">{formatPrice(order.totalAmount)}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md font-medium whitespace-nowrap">{order.orderNumber}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md whitespace-nowrap">{order.customerName}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md text-slate-500 whitespace-nowrap">{formatDate(order.createdAt)}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md text-right font-bold whitespace-nowrap">{formatPrice(order.totalAmount)}</td>
                         <td className="py-2.5 sm:py-4 whitespace-nowrap"><StatusBadge status={order.status} /></td>
                       </tr>
                     ))}
@@ -221,7 +221,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-xs sm:text-sm">
+                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm sm:text-md">
                       <th className="pb-2.5 sm:pb-3 pr-3 sm:pr-4 font-medium whitespace-nowrap w-[1%]">Thời gian</th>
                       <th className="pb-2.5 sm:pb-3 pr-3 sm:pr-4 font-medium text-center whitespace-nowrap w-[1%]">Số đơn</th>
                       <th className="pb-2.5 sm:pb-3 font-medium text-right whitespace-nowrap w-[1%]">Doanh thu</th>
@@ -233,20 +233,20 @@ export default function Dashboard() {
                       const displayLabel = item.label.replace('|_TODAY', '').split('|').join(' – ');
                       return (
                         <tr key={index} className={`border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isToday ? 'bg-purple-50 dark:bg-purple-900/10' : ''}`}>
-                          <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-sm font-medium whitespace-nowrap">
+                          <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-md font-medium whitespace-nowrap">
                             {displayLabel}
-                            {isToday && <span className="ml-2 text-xs font-bold text-purple-600 bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded-full">Hôm nay</span>}
+                            {isToday && <span className="ml-2 text-sm font-bold text-purple-600 bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded-full">Hôm nay</span>}
                           </td>
-                          <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-sm text-center whitespace-nowrap">{item.orders}</td>
-                          <td className="py-2.5 sm:py-4 text-sm text-right font-bold text-green-600 whitespace-nowrap">{formatPrice(item.revenue)}</td>
+                          <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-md text-center whitespace-nowrap">{item.orders}</td>
+                          <td className="py-2.5 sm:py-4 text-md text-right font-bold text-green-600 whitespace-nowrap">{formatPrice(item.revenue)}</td>
                         </tr>
                       );
                     })}
                   </tbody>
                   <tfoot className="sticky bottom-0 z-10 bg-white dark:bg-slate-900">
                     <tr className="border-t-2 border-slate-200 dark:border-slate-800">
-                      <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-sm font-bold text-right pt-3 sm:pt-4 whitespace-nowrap">Tổng cộng:</td>
-                      <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-sm text-center font-bold pt-3 sm:pt-4 whitespace-nowrap">{stats.revenueChart?.reduce((acc: number, item: RevenueChartItem) => acc + item.orders, 0) || 0}</td>
+                      <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-md font-bold text-right pt-3 sm:pt-4 whitespace-nowrap">Tổng cộng:</td>
+                      <td className="py-2.5 sm:py-4 pr-3 sm:pr-4 text-md text-center font-bold pt-3 sm:pt-4 whitespace-nowrap">{stats.revenueChart?.reduce((acc: number, item: RevenueChartItem) => acc + item.orders, 0) || 0}</td>
                       <td className="py-2.5 sm:py-4 text-right font-bold text-base sm:text-lg pt-3 sm:pt-4 text-green-600 whitespace-nowrap">
                         {formatPrice(stats.revenueChart?.reduce((acc: number, item: RevenueChartItem) => acc + item.revenue, 0) || 0)}
                       </td>
@@ -258,7 +258,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-max min-w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-xs sm:text-sm">
+                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm sm:text-md">
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Top</th>
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium whitespace-nowrap">Khách hàng</th>
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Số đơn</th>
@@ -268,18 +268,18 @@ export default function Dashboard() {
                   <tbody>
                     {stats.topCustomers?.map((customer: TopCustomerItem, index: number) => (
                       <tr key={customer.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="py-2.5 sm:py-4 pr-4 text-center text-sm font-bold text-slate-400 whitespace-nowrap">#{index + 1}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-center text-md font-bold text-slate-400 whitespace-nowrap">#{index + 1}</td>
                         <td className="py-2.5 sm:py-4 pr-4">
                           <div className="flex items-center gap-2 sm:gap-3">
                             <UserAvatar name={customer.name} size="sm" />
                             <div className="min-w-0">
-                              <p className="font-bold text-sm truncate">{customer.name}</p>
-                              <p className="text-xs text-slate-500">{customer.email || 'Không có email'}</p>
+                              <p className="font-bold text-md truncate">{customer.name}</p>
+                              <p className="text-sm text-slate-500">{customer.email || 'Không có email'}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-sm text-center text-slate-500 whitespace-nowrap">{customer.totalOrders}</td>
-                        <td className="py-2.5 sm:py-4 text-sm text-right font-bold text-purple-600 whitespace-nowrap">{formatPrice(customer.totalSpent)}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center text-slate-500 whitespace-nowrap">{customer.totalOrders}</td>
+                        <td className="py-2.5 sm:py-4 text-md text-right font-bold text-purple-600 whitespace-nowrap">{formatPrice(customer.totalSpent)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -289,7 +289,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-max min-w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-xs sm:text-sm">
+                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm sm:text-md">
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Top</th>
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium whitespace-nowrap">Sản phẩm</th>
                       <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Đã bán</th>
@@ -299,7 +299,7 @@ export default function Dashboard() {
                   <tbody>
                     {stats.topProducts?.map((p: TopProductItem, index: number) => (
                       <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="py-2.5 sm:py-4 pr-4 text-center text-sm font-bold text-slate-400 whitespace-nowrap">#{index + 1}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-center text-md font-bold text-slate-400 whitespace-nowrap">#{index + 1}</td>
                         <td className="py-2.5 sm:py-4 pr-4">
                           <div className="flex items-center gap-2 sm:gap-3">
                             {p.imageUrl ? (
@@ -309,11 +309,11 @@ export default function Dashboard() {
                                 ?
                               </div>
                             )}
-                            <span className="font-bold text-sm line-clamp-1">{p.name}</span>
+                            <span className="font-bold text-md line-clamp-1">{p.name}</span>
                           </div>
                         </td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-sm text-center font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">{p.totalSold}</td>
-                        <td className="py-2.5 sm:py-4 text-sm text-right font-bold text-emerald-600 whitespace-nowrap">{formatPrice(p.revenue)}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">{p.totalSold}</td>
+                        <td className="py-2.5 sm:py-4 text-md text-right font-bold text-emerald-600 whitespace-nowrap">{formatPrice(p.revenue)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -324,12 +324,12 @@ export default function Dashboard() {
                 <div className="bg-red-50 dark:bg-red-900/10 rounded-3xl p-5 sm:p-8 text-center border border-red-100 dark:border-red-900/30">
                   <p className="text-red-500 font-bold mb-2 uppercase tracking-wide">Đơn bị hủy</p>
                   <h2 className="text-4xl sm:text-6xl font-black text-red-600 mb-2">{stats.cancelledOrders}</h2>
-                  <p className="text-sm text-red-600/70 font-medium">Khách hàng hủy hoặc không thanh toán thành công</p>
+                  <p className="text-md text-red-600/70 font-medium">Khách hàng hủy hoặc không thanh toán thành công</p>
                 </div>
                 <div className="bg-orange-50 dark:bg-orange-900/10 rounded-3xl p-5 sm:p-8 text-center border border-orange-100 dark:border-orange-900/30">
                   <p className="text-orange-500 font-bold mb-2 uppercase tracking-wide">Yêu cầu hoàn trả</p>
                   <h2 className="text-4xl sm:text-6xl font-black text-orange-600 mb-2">{stats.returnedOrders}</h2>
-                  <p className="text-sm text-orange-600/70 font-medium">Yêu cầu trả hàng hoàn tiền từ khách hàng</p>
+                  <p className="text-md text-orange-600/70 font-medium">Yêu cầu trả hàng hoàn tiền từ khách hàng</p>
                 </div>
               </div>
             ) : activeModal === 'reviews' ? (
@@ -349,16 +349,16 @@ export default function Dashboard() {
                     const percent = stats.totalFeedbacks ? Math.round((count / stats.totalFeedbacks) * 100) : 0;
                     return (
                       <div key={stars} className="flex items-center gap-4">
-                        <div className="flex items-center gap-1.5 w-16 text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <div className="flex items-center gap-1.5 w-16 text-md font-bold text-slate-700 dark:text-slate-300">
                           {stars} <span className="text-yellow-400 text-lg leading-none">★</span>
                         </div>
                         <div className="flex-1 h-3.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                           <div className="h-full bg-yellow-400 rounded-full transition-all duration-1000" style={{ width: `${percent}%` }} />
                         </div>
-                        <div className="w-12 text-sm font-bold text-right text-slate-600 dark:text-slate-400">
+                        <div className="w-12 text-md font-bold text-right text-slate-600 dark:text-slate-400">
                           {percent}%
                         </div>
-                        <div className="w-12 text-sm text-right text-slate-400">
+                        <div className="w-12 text-md text-right text-slate-400">
                           ({count})
                         </div>
                       </div>

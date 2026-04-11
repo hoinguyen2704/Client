@@ -71,7 +71,7 @@ export default memo(function StatusPricingSection(props: Props) {
                     setStatus(opt.value);
                     setShowStatusDropdown(false);
                   }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors text-left ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-md transition-colors text-left ${
                     status === opt.value
                       ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
                       : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
@@ -104,7 +104,7 @@ export default memo(function StatusPricingSection(props: Props) {
           placeholder="0"
           className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
         />
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-sm text-slate-400 mt-1">
           Giá sale/giảm giá nằm ở từng phân loại (Giá gốc so sánh)
         </p>
       </div>

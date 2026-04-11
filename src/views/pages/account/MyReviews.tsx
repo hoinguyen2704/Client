@@ -248,11 +248,11 @@ export default function MyReviews() {
                       />
                       <div className="min-w-0">
                         <h3 className="font-bold line-clamp-2">{item.productName}</h3>
-                        <p className="text-sm text-slate-500 mt-1">Phân loại: {item.variantName || 'Mặc định'}</p>
-                        <p className="text-sm text-slate-500">Đơn hàng: {item.orderNumber}</p>
-                        <p className="text-sm text-slate-500">Ngày giao: {formatDate(item.deliveredAt)}</p>
+                        <p className="text-md text-slate-500 mt-1">Phân loại: {item.variantName || 'Mặc định'}</p>
+                        <p className="text-md text-slate-500">Đơn hàng: {item.orderNumber}</p>
+                        <p className="text-md text-slate-500">Ngày giao: {formatDate(item.deliveredAt)}</p>
                         {item.feedbacks.length > 0 && (
-                          <p className="text-xs text-orange-600 mt-1">Đã đánh giá {item.feedbacks.length}/{MAX_REVIEW_ATTEMPTS} lần</p>
+                          <p className="text-sm text-orange-600 mt-1">Đã đánh giá {item.feedbacks.length}/{MAX_REVIEW_ATTEMPTS} lần</p>
                         )}
                       </div>
                     </div>
@@ -295,14 +295,14 @@ export default function MyReviews() {
                           <div className="flex flex-wrap items-center gap-2 mb-1">
                             <h3 className="font-bold line-clamp-1">{entry.productName}</h3>
                             {entry.totalRounds > 1 && (
-                              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-600">
+                              <span className="px-2 py-0.5 rounded-full text-sm font-semibold bg-purple-100 text-purple-600">
                                 Lần {entry.round}/{MAX_REVIEW_ATTEMPTS}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-slate-500">Phân loại: {entry.variantName || 'Mặc định'}</p>
-                          <p className="text-sm text-slate-500">Đơn hàng: {entry.orderNumber}</p>
-                          <p className="text-sm text-slate-500">Ngày đánh giá: {formatDate(entry.review.createdAt)}</p>
+                          <p className="text-md text-slate-500">Phân loại: {entry.variantName || 'Mặc định'}</p>
+                          <p className="text-md text-slate-500">Đơn hàng: {entry.orderNumber}</p>
+                          <p className="text-md text-slate-500">Ngày đánh giá: {formatDate(entry.review.createdAt)}</p>
                         </div>
                       </div>
 
@@ -312,10 +312,10 @@ export default function MyReviews() {
 
                         {entry.review.adminReply && (
                           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
-                            <div className="flex items-center gap-2 mb-1 text-purple-600 font-bold text-sm">
+                            <div className="flex items-center gap-2 mb-1 text-purple-600 font-bold text-md">
                               <FiMessageSquare /> Phản hồi từ Hozitech
                             </div>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">{entry.review.adminReply}</p>
+                            <p className="text-md text-slate-600 dark:text-slate-400">{entry.review.adminReply}</p>
                           </div>
                         )}
                       </div>
@@ -391,34 +391,34 @@ export default function MyReviews() {
               />
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white line-clamp-2">{selectedItem.productName}</h4>
-                <p className="text-sm text-slate-500">Phân loại: {selectedItem.variantName || 'Mặc định'}</p>
-                <p className="text-sm text-slate-500">Đơn hàng: {selectedItem.orderNumber}</p>
+                <p className="text-md text-slate-500">Phân loại: {selectedItem.variantName || 'Mặc định'}</p>
+                <p className="text-md text-slate-500">Đơn hàng: {selectedItem.orderNumber}</p>
               </div>
             </div>
 
             <form id="review-form" onSubmit={handleSubmitReview} className="space-y-6">
               {selectedItem.feedbacks.length > 0 && (
                 <div className="space-y-3">
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Đánh giá trước đó</p>
+                  <p className="text-md font-semibold text-slate-700 dark:text-slate-300">Đánh giá trước đó</p>
                   {selectedItem.feedbacks.map((fb, idx) => (
                     <div key={fb.id} className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm font-semibold">Lần {idx + 1}</p>
+                        <p className="text-md font-semibold">Lần {idx + 1}</p>
                         <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
                       </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">{fb.content}</p>
+                      <p className="text-md text-slate-600 dark:text-slate-400">{fb.content}</p>
                     </div>
                   ))}
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Chất lượng sản phẩm</label>
+                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">Chất lượng sản phẩm</label>
                 <StarRating value={rating} onChange={setRating} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Nội dung đánh giá</label>
+                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">Nội dung đánh giá</label>
                 <textarea
                   required
                   value={reviewContent}

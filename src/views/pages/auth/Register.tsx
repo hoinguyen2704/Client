@@ -109,13 +109,13 @@ export default function Register() {
 
       {error && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-2xl text-sm sm:text-lg">
+          className="flex items-center gap-3 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-2xl text-md sm:text-lg">
           <FiAlertCircle className="text-xl shrink-0" /><span>{error}</span>
         </motion.div>
       )}
       {success && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-2xl text-sm sm:text-lg">
+          className="flex items-center gap-3 p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-2xl text-md sm:text-lg">
           <FiCheckCircle className="text-xl shrink-0" /><span>Đăng ký thành công! Đang chuyển hướng...</span>
         </motion.div>
       )}
@@ -173,7 +173,7 @@ export default function Register() {
                 <div className={`flex-1 rounded-full ${passwordStrength.score >= 2 ? passwordStrength.color : 'bg-slate-200 dark:bg-slate-700'}`} />
                 <div className={`flex-1 rounded-full ${passwordStrength.score >= 3 ? passwordStrength.color : 'bg-slate-200 dark:bg-slate-700'}`} />
               </div>
-              <span className={`text-sm font-semibold uppercase tracking-wider ${passwordStrength.score === 1 ? 'text-red-500' : passwordStrength.score === 2 ? 'text-yellow-500' : 'text-emerald-500'}`}>
+              <span className={`text-md font-semibold uppercase tracking-wider ${passwordStrength.score === 1 ? 'text-red-500' : passwordStrength.score === 2 ? 'text-yellow-500' : 'text-emerald-500'}`}>
                 {passwordStrength.label}
               </span>
             </div>

@@ -48,7 +48,7 @@ export default function StarRating({
         </button>
       ))}
       {showLabel && (
-        <span className="ml-3 text-sm font-medium text-slate-500">
+        <span className="ml-3 text-md font-medium text-slate-500">
           {labels[value] || ''}
         </span>
       )}

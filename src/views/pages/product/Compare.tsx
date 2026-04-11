@@ -118,7 +118,7 @@ export default function Compare() {
         <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent inline-block">
           So sánh sản phẩm
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+        <p className="text-slate-500 dark:text-slate-400 mt-2 text-md">
           {lockedCategoryName ? (
             <>
               So sánh trong danh mục{" "}
@@ -134,16 +134,16 @@ export default function Compare() {
       {/* Category Lock Badge */}
       {lockedCategoryName && compareItems.length > 0 && (
         <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-          <span className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 text-purple-600 text-xs sm:text-sm font-medium border border-purple-100 dark:border-purple-800/50">
-            <FiInfo className="text-xs shrink-0" />
+          <span className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 text-purple-600 text-sm sm:text-md font-medium border border-purple-100 dark:border-purple-800/50">
+            <FiInfo className="text-sm shrink-0" />
             {compareItems.length}/4 sản phẩm
           </span>
           {compareItems.length > 1 && (
             <button
               onClick={clearAll}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-2xl text-xs sm:text-sm text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-2xl text-sm sm:text-md text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100 transition-colors"
             >
-              <FiTrash2 className="text-xs" /> Xóa tất cả
+              <FiTrash2 className="text-sm" /> Xóa tất cả
             </button>
           )}
         </div>
@@ -165,13 +165,13 @@ export default function Compare() {
             </div>
           </div>
           <h3 className="text-lg sm:text-xl font-bold mb-2">Chưa có sản phẩm nào</h3>
-          <p className="text-slate-500 mb-5 sm:mb-6 max-w-sm text-sm">
+          <p className="text-slate-500 mb-5 sm:mb-6 max-w-sm text-md">
             Thêm ít nhất 2 sản phẩm cùng danh mục để so sánh chi tiết thông số
             kỹ thuật, giá cả và đánh giá
           </p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm sm:text-base font-bold hover:shadow-lg hover:shadow-purple-500/25 hover:-translate-y-0.5 transition-all"
+            className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-md sm:text-base font-bold hover:shadow-lg hover:shadow-purple-500/25 hover:-translate-y-0.5 transition-all"
           >
             Thêm sản phẩm đầu tiên
           </button>
@@ -197,7 +197,7 @@ export default function Compare() {
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-700">
                     <th className="p-2.5 sm:p-4 border-r border-slate-200 dark:border-slate-700 align-middle">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
                         So sánh
                       </span>
                     </th>
@@ -211,7 +211,7 @@ export default function Compare() {
                             onClick={() => removeItem(item.id)}
                             className="absolute -top-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all z-10"
                           >
-                            <FiX className="text-sm" />
+                            <FiX className="text-md" />
                           </button>
                           <div className="flex flex-col items-center text-center">
                             {item.image ? (
@@ -229,15 +229,15 @@ export default function Compare() {
                             )}
                             <Link
                               to={`/product/${item.slug}`}
-                              className="font-bold text-xs sm:text-sm hover:text-purple-600 transition-colors line-clamp-2 leading-snug mb-1"
+                              className="font-bold text-sm sm:text-md hover:text-purple-600 transition-colors line-clamp-2 leading-snug mb-1"
                             >
                               {item.name}
                             </Link>
-                            <div className="text-sm sm:text-lg font-black text-purple-600">
+                            <div className="text-md sm:text-lg font-black text-purple-600">
                               {formatPrice(item.price)}
                             </div>
                             {item.rating && (
-                              <div className="flex items-center gap-1 mt-1 text-xs text-amber-500">
+                              <div className="flex items-center gap-1 mt-1 text-sm text-amber-500">
                                 <FiStar className="fill-amber-400 text-amber-400" />{" "}
                                 {item.rating}
                               </div>
@@ -253,7 +253,7 @@ export default function Compare() {
                           className="w-full py-4 sm:py-8 rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400 hover:text-purple-600 hover:border-purple-400 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all"
                         >
                           <FiPlus className="text-xl sm:text-2xl mb-1" />
-                          <span className="text-xs font-medium">Thêm SP</span>
+                          <span className="text-sm font-medium">Thêm SP</span>
                         </button>
                       </th>
                     )}
@@ -264,7 +264,7 @@ export default function Compare() {
                 <tbody>
                   {/* Category */}
                   <tr className="bg-slate-50 dark:bg-slate-800/40">
-                    <td className="px-3 sm:px-5 py-3 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
                       Danh mục
                     </td>
                     {compareItems.map((item) => (
@@ -272,7 +272,7 @@ export default function Compare() {
                         key={item.id}
                         className="px-2.5 sm:px-4 py-3 text-center border-b border-r border-slate-200 dark:border-slate-700 last:border-r-0"
                       >
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-900/30 text-purple-600">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-purple-100 dark:bg-purple-900/30 text-purple-600">
                           {item.categoryName || "—"}
                         </span>
                       </td>
@@ -284,13 +284,13 @@ export default function Compare() {
 
                   {/* Brand */}
                   <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/20 transition-colors">
-                    <td className="px-3 sm:px-5 py-3 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
                       Thương hiệu
                     </td>
                     {compareItems.map((item) => (
                       <td
                         key={item.id}
-                        className="px-2.5 sm:px-4 py-3 text-center text-xs sm:text-sm font-medium border-b border-r border-slate-200 dark:border-slate-700 last:border-r-0"
+                        className="px-2.5 sm:px-4 py-3 text-center text-sm sm:text-md font-medium border-b border-r border-slate-200 dark:border-slate-700 last:border-r-0"
                       >
                         {item.brand || "—"}
                       </td>
@@ -302,7 +302,7 @@ export default function Compare() {
 
                   {/* Price */}
                   <tr className="bg-gradient-to-r from-purple-50/40 to-blue-50/40 dark:from-purple-950/10 dark:to-blue-950/10">
-                    <td className="px-3 sm:px-5 py-3 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
                       Giá bán
                     </td>
                     {compareItems.map((item) => {
@@ -313,7 +313,7 @@ export default function Compare() {
                           className={`px-2.5 sm:px-4 py-3 text-center border-b border-r border-slate-200 dark:border-slate-700 last:border-r-0 ${best ? "bg-green-50/80 dark:bg-green-900/10" : ""}`}
                         >
                           <span
-                            className={`font-black text-sm sm:text-base ${best ? "text-green-600" : "text-slate-900 dark:text-white"}`}
+                            className={`font-black text-md sm:text-base ${best ? "text-green-600" : "text-slate-900 dark:text-white"}`}
                           >
                             {formatPrice(item.price)}
                           </span>
@@ -332,7 +332,7 @@ export default function Compare() {
 
                   {/* Rating */}
                   <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/20 transition-colors">
-                    <td className="px-3 sm:px-5 py-3 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
                       Đánh giá
                     </td>
                     {compareItems.map((item) => {
@@ -350,7 +350,7 @@ export default function Compare() {
                                 >
                                   {item.rating}
                                 </span>
-                                <FiStar className="text-amber-400 fill-amber-400 text-sm" />
+                                <FiStar className="text-amber-400 fill-amber-400 text-md" />
                               </div>
                               {best && (
                                 <div className="text-[10px] text-amber-500 font-bold mt-0.5">
@@ -379,7 +379,7 @@ export default function Compare() {
                         }
                         className="px-3 sm:px-5 py-2.5 sm:py-3 bg-slate-100 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700"
                       >
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
                           Thông số kỹ thuật
                         </span>
                       </td>
@@ -392,7 +392,7 @@ export default function Compare() {
                       key={specKey}
                       className={`${idx % 2 === 0 ? "bg-slate-50/50 dark:bg-slate-800/10" : ""} hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors`}
                     >
-                      <td className="px-3 sm:px-5 py-3 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700 align-middle">
+                      <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700 align-middle">
                         {specKey}
                       </td>
                       {compareItems.map((item) => {
@@ -405,7 +405,7 @@ export default function Compare() {
                         return (
                           <td
                             key={item.id}
-                            className="px-2.5 sm:px-4 py-3 text-center text-xs sm:text-sm border-b border-r border-slate-200 dark:border-slate-700 last:border-r-0 align-middle"
+                            className="px-2.5 sm:px-4 py-3 text-center text-sm sm:text-md border-b border-r border-slate-200 dark:border-slate-700 last:border-r-0 align-middle"
                           >
                             <span
                               className={
@@ -442,7 +442,7 @@ export default function Compare() {
       >
         <div className="space-y-3">
           {lockedCategoryName && (
-            <div className="flex items-center gap-2 text-xs text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-xl">
+            <div className="flex items-center gap-2 text-sm text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-xl">
               <FiInfo className="shrink-0" />
               Chỉ hiển thị sản phẩm trong danh mục{" "}
               <strong>{lockedCategoryName}</strong>
@@ -460,7 +460,7 @@ export default function Compare() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
-              className="w-full h-11 pl-11 pr-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+              className="w-full h-11 pl-11 pr-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
             />
           </div>
         </div>
@@ -469,12 +469,12 @@ export default function Compare() {
           {searching ? (
             <div className="flex flex-col items-center py-12 text-slate-400">
               <div className="w-8 h-8 border-2 border-purple-300 border-t-purple-600 rounded-full animate-spin mb-3" />
-              <span className="text-sm">Đang tìm...</span>
+              <span className="text-md">Đang tìm...</span>
             </div>
           ) : searchResults.length === 0 ? (
             <div className="flex flex-col items-center py-12 text-slate-400">
               <FiSearch className="text-3xl mb-3" />
-              <span className="text-sm">
+              <span className="text-md">
                 {searchQuery
                   ? "Không tìm thấy sản phẩm"
                   : "Nhập tên sản phẩm để tìm"}
@@ -514,11 +514,11 @@ export default function Compare() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-sm line-clamp-1">
+                    <h4 className="font-medium text-md line-clamp-1">
                       {product.name}
                     </h4>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-purple-600 font-bold text-sm">
+                      <span className="text-purple-600 font-bold text-md">
                         {formatPrice(product.price)}
                       </span>
                       {product.categoryName && (
@@ -535,15 +535,15 @@ export default function Compare() {
                   </div>
                   {isSelected ? (
                     <div className="w-8 h-8 rounded-xl bg-purple-500 text-white flex items-center justify-center shrink-0">
-                      <FiCheck className="text-sm" />
+                      <FiCheck className="text-md" />
                     </div>
                   ) : isDiffCat ? (
                     <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0">
-                      <FiX className="text-sm" />
+                      <FiX className="text-md" />
                     </div>
                   ) : (
                     <div className="w-8 h-8 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:border-purple-500 hover:text-purple-500 shrink-0 transition-colors">
-                      <FiPlus className="text-sm" />
+                      <FiPlus className="text-md" />
                     </div>
                   )}
                 </motion.div>

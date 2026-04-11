@@ -97,7 +97,7 @@ export default function MyReturns() {
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
           <button
             onClick={handleSearch}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-3 rounded-lg text-xs font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-3 rounded-lg text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors"
           >
             Tìm
           </button>
@@ -121,7 +121,7 @@ export default function MyReturns() {
               <FiClipboard />
             </div>
             <h3 className="text-lg sm:text-xl font-bold mb-2">Bạn chưa có yêu cầu trả hàng</h3>
-            <p className="text-sm sm:text-base text-slate-500 mb-6">
+            <p className="text-md sm:text-base text-slate-500 mb-6">
               Bạn có thể tạo yêu cầu từ trang chi tiết đơn hàng (đối với đơn đã nhận).
             </p>
             <Link to="/user/orders" className="inline-flex h-11 px-6 rounded-xl items-center justify-center font-semibold bg-purple-600 text-white hover:bg-purple-700 transition">Đi tới Danh sách đơn hàng</Link>
@@ -139,16 +139,16 @@ export default function MyReturns() {
                     <ReturnStatusBadge status={item.status} />
                     <RefundStatusBadge status={item.refundStatus} />
                   </div>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-md text-slate-500">
                     Đơn hàng: <span className="font-semibold text-slate-700 dark:text-slate-200">{item.orderNumber}</span>
                   </p>
-                  <p className="text-sm text-slate-500">Tạo lúc: {formatDateTime(item.createdAt)}</p>
+                  <p className="text-md text-slate-500">Tạo lúc: {formatDateTime(item.createdAt)}</p>
                 </div>
                 <div className="text-left sm:text-right">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">Yêu cầu hoàn</p>
+                  <p className="text-sm text-slate-500 uppercase tracking-wide">Yêu cầu hoàn</p>
                   <p className="text-lg font-bold text-purple-600">{formatPrice(Number(item.requestedAmount || 0))}</p>
                   {item.approvedAmount != null && (
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-sm text-slate-500 mt-1">
                       Duyệt: <span className="font-semibold">{formatPrice(Number(item.approvedAmount || 0))}</span>
                     </p>
                   )}
@@ -156,13 +156,13 @@ export default function MyReturns() {
               </div>
 
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto_auto] sm:items-center">
-                <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-1">
+                <p className="text-md text-slate-600 dark:text-slate-300 line-clamp-1">
                   Lý do: <span className="font-medium">{item.reason}</span>
                 </p>
 
                 <Link
                   to={`/user/returns/${item.returnNumber}`}
-                  className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg border border-slate-200 dark:border-slate-700 text-md font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   Xem chi tiết <FiChevronRight />
                 </Link>

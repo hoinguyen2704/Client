@@ -91,7 +91,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
                 <img src={product.mainImageUrl || ''} alt={product.name} className="w-12 h-12 rounded-lg object-cover" referrerPolicy="no-referrer" />
                 <div>
                   <h4 className="font-medium text-slate-900 dark:text-white line-clamp-1">{product.name}</h4>
-                  <p className="text-sm text-purple-600 font-bold">
+                  <p className="text-md text-purple-600 font-bold">
                     {(product.variants?.[0]?.price || product.originPrice || 0).toLocaleString('vi-VN')}đ
                   </p>
                 </div>

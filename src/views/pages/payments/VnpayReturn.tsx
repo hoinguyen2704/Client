@@ -71,10 +71,10 @@ export default function VnpayReturn() {
               <FiCheck className="text-4xl sm:text-5xl text-emerald-500" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-slate-800 dark:text-white">Đặt hàng thành công!</h1>
-            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-2">
+            <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-2">
               Mã đơn hàng của bạn là <span className="font-bold text-slate-900 dark:text-white">#{txnRef}</span>.
             </p>
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-5 text-sm text-left space-y-2 border border-slate-100 dark:border-slate-700 w-full inline-block">
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-5 text-md text-left space-y-2 border border-slate-100 dark:border-slate-700 w-full inline-block">
                 <div className="flex justify-between">
                     <span className="text-slate-500">Số tiền:</span>
                     <span className="font-bold text-slate-800 dark:text-white">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</span>
@@ -102,11 +102,11 @@ export default function VnpayReturn() {
               <FiAlertCircle className="text-4xl sm:text-5xl text-red-500" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-slate-800 dark:text-white">Thanh toán thất bại</h1>
-            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">
+            <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">
               {message} Vui lòng thử lại hoặc chọn phương thức thanh toán khác.
             </p>
             {txnRef && (
-              <div className="bg-red-50 dark:bg-red-900/10 rounded-xl p-3 mb-5 text-sm text-left space-y-1 border border-red-100 dark:border-red-900/50">
+              <div className="bg-red-50 dark:bg-red-900/10 rounded-xl p-3 mb-5 text-md text-left space-y-1 border border-red-100 dark:border-red-900/50">
                   <div className="flex justify-between">
                       <span className="text-red-500 font-medium whitespace-nowrap mr-2">Mã đơn hàng:</span>
                       <span className="font-mono text-slate-700 dark:text-slate-300 truncate">{txnRef}</span>

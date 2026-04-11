@@ -36,7 +36,7 @@ export default function Pagination({
   return (
     <div className={`flex justify-center items-center gap-1.5 sm:gap-2 pt-3 sm:pt-4 ${className}`}>
       <button
-        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-colors bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl text-md font-medium transition-colors bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
         aria-label="Trang trước"
@@ -48,7 +48,7 @@ export default function Pagination({
         p === '...' ? (
           <span
             key={`dots-${i}`}
-            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-slate-400 text-sm"
+            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-slate-400 text-md"
           >
             ...
           </span>
@@ -56,7 +56,7 @@ export default function Pagination({
           <button
             key={p}
             onClick={() => onPageChange(p)}
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-sm font-medium transition-colors ${
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-md font-medium transition-colors ${
               p === currentPage
                 ? 'bg-purple-600 text-white shadow-sm'
                 : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -68,7 +68,7 @@ export default function Pagination({
       )}
 
       <button
-        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-colors bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl text-md font-medium transition-colors bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
         aria-label="Trang sau"

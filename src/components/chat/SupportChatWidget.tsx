@@ -206,7 +206,7 @@ export default function SupportChatWidget() {
           >
             <div className="h-14 px-3 sm:px-4 flex items-center justify-between text-white bg-gradient-to-r from-purple-600 to-blue-600">
               <div>
-                <h3 className="font-bold text-sm">Hỗ trợ trực tiếp</h3>
+                <h3 className="font-bold text-md">Hỗ trợ trực tiếp</h3>
                 <p className="text-[11px] text-white/80">Realtime với admin</p>
               </div>
               <button
@@ -231,7 +231,7 @@ export default function SupportChatWidget() {
                   className="w-full"
                 />
               ) : (
-                <p className="text-xs text-slate-500">
+                <p className="text-sm text-slate-500">
                   {canDirectSupport
                     ? 'Chưa có ticket, gửi tin nhắn để tạo mới.'
                     : 'Đăng nhập để bắt đầu chat trực tiếp với admin.'}
@@ -242,11 +242,11 @@ export default function SupportChatWidget() {
             <div className="px-2.5 sm:px-3 py-2 border-b border-slate-100 dark:border-slate-800 min-h-10 sm:min-h-11">
               {selectedTicket ? (
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs text-slate-500 truncate">{selectedTicket.ticketNumber}</p>
+                  <p className="text-sm text-slate-500 truncate">{selectedTicket.ticketNumber}</p>
                   <StatusBadge status={selectedTicket.status} className="text-[10px]" />
                 </div>
               ) : (
-                <p className="text-xs text-slate-400">Phiên chat mới</p>
+                <p className="text-sm text-slate-400">Phiên chat mới</p>
               )}
             </div>
 
@@ -258,7 +258,7 @@ export default function SupportChatWidget() {
                     className={`flex ${msg.senderType === 'USER' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[92%] sm:max-w-[85%] px-3 py-2 rounded-2xl text-sm ${
+                      className={`max-w-[92%] sm:max-w-[85%] px-3 py-2 rounded-2xl text-md ${
                         msg.senderType === 'USER'
                           ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
                           : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-bl-md'
@@ -272,7 +272,7 @@ export default function SupportChatWidget() {
                   </div>
                 ))
               ) : (
-                <div className="h-full min-h-24 flex items-center justify-center text-center text-slate-400 text-sm px-4">
+                <div className="h-full min-h-24 flex items-center justify-center text-center text-slate-400 text-md px-4">
                   <p>
                     {canDirectSupport
                       ? 'Bắt đầu cuộc trò chuyện với admin bằng cách gửi một tin nhắn.'
@@ -287,18 +287,18 @@ export default function SupportChatWidget() {
               {!canDirectSupport ? (
                 <button
                   onClick={() => navigate('/login')}
-                  className="w-full h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-semibold"
+                  className="w-full h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white text-md font-semibold"
                 >
                   Đăng nhập để chat
                 </button>
               ) : isClosed ? (
-                <div className="h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-sm flex items-center">
+                <div className="h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-md flex items-center">
                   Ticket đã đóng, gửi tin nhắn để tạo cuộc trò chuyện mới.
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <input
-                    className="flex-1 h-9 sm:h-10 px-3 rounded-lg text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                    className="flex-1 h-9 sm:h-10 px-3 rounded-lg text-md bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                     placeholder="Nhập tin nhắn..."
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}

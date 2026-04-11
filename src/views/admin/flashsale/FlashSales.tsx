@@ -145,7 +145,7 @@ export default function FlashSales() {
         <div className="overflow-x-auto min-h-[300px]">
           <table className="w-full min-w-[900px] text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm bg-slate-50/50 dark:bg-slate-800/50">
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md bg-slate-50/50 dark:bg-slate-800/50">
                 <th className="p-3 sm:p-4 font-medium">Tên sự kiện</th>
                 <th className="p-3 sm:p-4 font-medium">Bắt đầu</th>
                 <th className="p-3 sm:p-4 font-medium">Kết thúc</th>
@@ -162,12 +162,12 @@ export default function FlashSales() {
               ) : sales.map((sale) => (
                 <tr key={sale.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <td className="p-3 sm:p-4">
-                    <div className="font-medium text-sm">{sale.name}</div>
-                    {sale.description && <div className="text-xs text-slate-400 mt-1">{sale.description}</div>}
+                    <div className="font-medium text-md">{sale.name}</div>
+                    {sale.description && <div className="text-sm text-slate-400 mt-1">{sale.description}</div>}
                   </td>
-                  <td className="p-3 sm:p-4 text-sm text-slate-500">{new Date(sale.startTime).toLocaleString('vi-VN')}</td>
-                  <td className="p-3 sm:p-4 text-sm text-slate-500">{new Date(sale.endTime).toLocaleString('vi-VN')}</td>
-                  <td className="p-3 sm:p-4 text-sm font-medium">{sale.items?.length || 0} SP</td>
+                  <td className="p-3 sm:p-4 text-md text-slate-500">{new Date(sale.startTime).toLocaleString('vi-VN')}</td>
+                  <td className="p-3 sm:p-4 text-md text-slate-500">{new Date(sale.endTime).toLocaleString('vi-VN')}</td>
+                  <td className="p-3 sm:p-4 text-md font-medium">{sale.items?.length || 0} SP</td>
                   <td className="p-3 sm:p-4">
                     <CustomSelect
                       value={sale.status}
@@ -178,7 +178,7 @@ export default function FlashSales() {
                         { label: 'Đã hủy', value: 'CANCELLED', colorClass: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 hover:bg-rose-100' }
                       ]}
                       onChange={(val) => handleUpdateStatus(sale.id, val.toString())}
-                      className="w-36 text-sm"
+                      className="w-36 text-md"
                     />
                   </td>
                   <td className="p-3 sm:p-4">
@@ -265,7 +265,7 @@ export default function FlashSales() {
             </div>
 
             <div className="border border-slate-200 rounded-xl overflow-auto max-h-[300px]">
-              <table className="w-full min-w-[760px] text-left bg-white text-sm">
+              <table className="w-full min-w-[760px] text-left bg-white text-md">
                 <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
                   <tr>
                     <th className="p-3 font-medium text-slate-600">Sản phẩm</th>
@@ -290,7 +290,7 @@ export default function FlashSales() {
                             <img src={item.imageUrl || '/placeholder.png'} alt="" className="w-10 h-10 object-cover rounded-lg border border-slate-100 flex-shrink-0" />
                             <div className="min-w-0">
                               <div className="font-medium text-slate-800 truncate" title={item.productName}>{item.productName}</div>
-                              <div className="text-xs text-slate-500">{item.variantName}</div>
+                              <div className="text-sm text-slate-500">{item.variantName}</div>
                             </div>
                           </div>
                         </td>

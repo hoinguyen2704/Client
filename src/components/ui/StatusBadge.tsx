@@ -6,7 +6,7 @@ export default function StatusBadge({ status, label, className }: StatusBadgePro
   const config = STATUS_CONFIG[status as StatusType] || { label: status, className: 'bg-slate-100 text-slate-600' };
 
   return (
-    <span className={cn('px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap', config.className, className)}>
+    <span className={cn('px-3 py-1 rounded-full text-sm font-bold whitespace-nowrap', config.className, className)}>
       {label || config.label}
     </span>
   );

@@ -65,7 +65,7 @@ export default function AdminSidebar() {
             {menuItems.map((item) => (
               <NavLink key={item.path} to={item.path}
                 className={({ isActive }) => cn(
-                  'flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all font-medium text-sm sm:text-base',
+                  'flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all font-medium text-md sm:text-base',
                   sidebarCollapsed && 'justify-center px-3',
                   isActive
                     ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20'

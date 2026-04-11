@@ -55,7 +55,7 @@ export default function AddressBook() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm gap-3 sm:gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Sổ địa chỉ</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">Quản lý địa chỉ nhận hàng của bạn</p>
+          <p className="text-sm sm:text-md text-slate-500 mt-1">Quản lý địa chỉ nhận hàng của bạn</p>
         </div>
         <PrimaryButton onClick={() => { resetForm(); setShowForm(true); }} icon={<FiPlus className="text-base" />} className="w-full sm:w-auto">
           Thêm địa chỉ mới
@@ -71,10 +71,10 @@ export default function AddressBook() {
             <FiMapPin className="text-3xl sm:text-4xl text-purple-500" />
           </div>
           <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 relative z-10 text-slate-800 dark:text-white">Chưa có địa chỉ nào</h3>
-          <p className="text-sm sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm relative z-10">Thêm địa chỉ nhận hàng để tiện cho việc thanh toán và để chúng tôi giao hàng nhanh chóng hơn.</p>
+          <p className="text-md sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm relative z-10">Thêm địa chỉ nhận hàng để tiện cho việc thanh toán và để chúng tôi giao hàng nhanh chóng hơn.</p>
           <button
             onClick={() => { resetForm(); setShowForm(true); }}
-            className="px-6 py-3 bg-white dark:bg-slate-800 border-2 border-purple-100 dark:border-purple-900/50 hover:border-purple-500 hover:text-purple-700 text-purple-600 dark:text-purple-400 font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 shadow-sm hover:shadow-md text-sm sm:text-base"
+            className="px-6 py-3 bg-white dark:bg-slate-800 border-2 border-purple-100 dark:border-purple-900/50 hover:border-purple-500 hover:text-purple-700 text-purple-600 dark:text-purple-400 font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 shadow-sm hover:shadow-md text-md sm:text-base"
           >
             <FiPlus />
             Thêm địa chỉ ngay
@@ -87,12 +87,12 @@ export default function AddressBook() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center flex-wrap gap-2 sm:gap-3 mb-2">
-                    <span className="font-bold text-sm sm:text-base">{addr.fullName}</span>
+                    <span className="font-bold text-md sm:text-base">{addr.fullName}</span>
                     <span className="text-slate-400">|</span>
-                    <span className="text-xs sm:text-sm text-slate-500">{addr.phoneNumber}</span>
-                    {addr.isDefault && <span className="px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-600">Mặc định</span>}
+                    <span className="text-sm sm:text-md text-slate-500">{addr.phoneNumber}</span>
+                    {addr.isDefault && <span className="px-2 py-0.5 rounded text-sm font-medium bg-purple-100 text-purple-600">Mặc định</span>}
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-500">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
+                  <p className="text-sm sm:text-md text-slate-500">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
                 </div>
                 <div className="flex items-center gap-1 sm:gap-2 ml-2">
                   {!addr.isDefault && <button onClick={() => handleSetDefault(addr.id)} className="p-2 text-slate-400 hover:text-green-600 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20" title="Đặt mặc định"><FiCheck /></button>}
@@ -113,8 +113,8 @@ export default function AddressBook() {
         scrollable
         footer={
           <>
-            <button onClick={resetForm} className="px-5 sm:px-10 py-3 sm:py-4 rounded-2xl font-bold text-sm sm:text-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Hủy bỏ</button>
-            <button onClick={handleSubmit} className="px-5 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm sm:text-lg font-bold rounded-2xl transition-all shadow-xl shadow-purple-500/30 transform hover:-translate-y-1">
+            <button onClick={resetForm} className="px-5 sm:px-10 py-3 sm:py-4 rounded-2xl font-bold text-md sm:text-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Hủy bỏ</button>
+            <button onClick={handleSubmit} className="px-5 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-md sm:text-lg font-bold rounded-2xl transition-all shadow-xl shadow-purple-500/30 transform hover:-translate-y-1">
               Lưu địa chỉ
             </button>
           </>
@@ -123,33 +123,33 @@ export default function AddressBook() {
         <div className="space-y-5 sm:space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Họ và tên người nhận</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-sm sm:text-lg" placeholder="Nhập họ và tên" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
+              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Họ và tên người nhận</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Nhập họ và tên" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Số điện thoại liên hệ</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-sm sm:text-lg" placeholder="Nhập số điện thoại" value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
+              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Số điện thoại liên hệ</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Nhập số điện thoại" value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Tỉnh/Thành phố</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-sm sm:text-lg" placeholder="Ví dụ: TP. Hà Nội" value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
+              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Tỉnh/Thành phố</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: TP. Hà Nội" value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quận/Huyện</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-sm sm:text-lg" placeholder="Ví dụ: Cầu Giấy" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
+              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quận/Huyện</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: Cầu Giấy" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Phường/Xã</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-sm sm:text-lg" placeholder="Ví dụ: Minh Khai" value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
+              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Phường/Xã</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: Minh Khai" value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
             </div>
           </div>
 
           <div className="space-y-2 sm:space-y-3">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Địa chỉ cụ thể (Số nhà, tên đường)</label>
-            <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-sm sm:text-lg" placeholder="Ví dụ: 123 đường Xuân Thủy" value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
+            <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Địa chỉ cụ thể (Số nhà, tên đường)</label>
+            <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: 123 đường Xuân Thủy" value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
           </div>
 
           <div className="pt-1 sm:pt-4">
@@ -159,8 +159,8 @@ export default function AddressBook() {
                 <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none stroke-[3] text-lg" />
               </div>
               <div>
-                <span className="text-sm sm:text-lg font-bold text-slate-800 dark:text-slate-200">Đặt làm địa chỉ mặc định</span>
-                <p className="text-xs sm:text-base text-slate-500 mt-0.5">Chúng tôi sẽ dùng địa chỉ này ưu tiên cho các đơn hàng tiếp theo của bạn.</p>
+                <span className="text-md sm:text-lg font-bold text-slate-800 dark:text-slate-200">Đặt làm địa chỉ mặc định</span>
+                <p className="text-sm sm:text-base text-slate-500 mt-0.5">Chúng tôi sẽ dùng địa chỉ này ưu tiên cho các đơn hàng tiếp theo của bạn.</p>
               </div>
             </label>
           </div>

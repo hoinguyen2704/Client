@@ -37,14 +37,14 @@ export default function Wishlist() {
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-5 sm:py-8 md:py-12 space-y-5 sm:space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col items-center justify-center text-center gap-2 sm:gap-3">
-        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-bold rounded-2xl shadow-sm border border-purple-100 dark:border-purple-800 mb-1 sm:mb-2 text-sm sm:text-base">
+        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-bold rounded-2xl shadow-sm border border-purple-100 dark:border-purple-800 mb-1 sm:mb-2 text-md sm:text-base">
           <FiHeart className="text-xl" />
           <span>{items.length} sản phẩm</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
           Danh sách Yêu thích
         </h1>
-        <p className="text-sm sm:text-base text-slate-500">Lưu trữ những thiết bị công nghệ bạn đang để mắt tới</p>
+        <p className="text-md sm:text-base text-slate-500">Lưu trữ những thiết bị công nghệ bạn đang để mắt tới</p>
       </div>
 
       {loading ? (
@@ -76,14 +76,14 @@ export default function Wishlist() {
             <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-slate-800 dark:text-slate-200">
               Trái tim bạn đang trống trải!
             </h3>
-            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">
+            <p className="text-md sm:text-base text-slate-500 max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">
               Bạn chưa thêm sản phẩm nào vào danh sách yêu thích. Hãy tiếp tục
               khám phá và lưu lại những món đồ công nghệ ưa thích để mua sau
               nhé.
             </p>
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/30 hover:-translate-y-1 transition-all text-sm sm:text-base"
+              className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/30 hover:-translate-y-1 transition-all text-md sm:text-base"
             >
               <FiShoppingCart className="text-xl" /> Khám phá ngay
             </Link>
@@ -112,7 +112,7 @@ export default function Wishlist() {
                     className="block relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800"
                   >
                     {discount > 0 && (
-                      <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-10 px-2 sm:px-3 py-0.5 sm:py-1 bg-red-500 text-white text-[10px] sm:text-xs font-black rounded-lg sm:rounded-xl shadow-lg shadow-red-500/30">
+                      <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-10 px-2 sm:px-3 py-0.5 sm:py-1 bg-red-500 text-white text-[10px] sm:text-sm font-black rounded-lg sm:rounded-xl shadow-lg shadow-red-500/30">
                         -{discount}%
                       </div>
                     )}
@@ -126,7 +126,7 @@ export default function Wishlist() {
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-3">
                         <FiShoppingCart className="text-5xl opacity-50" />
-                        <span className="text-sm font-medium">No Image</span>
+                        <span className="text-md font-medium">No Image</span>
                       </div>
                     )}
 
@@ -137,7 +137,7 @@ export default function Wishlist() {
                   <div className="p-3 sm:p-5 flex flex-col flex-1">
                     <Link
                       to={`/product/${item.productSlug}`}
-                      className="font-bold text-sm sm:text-lg line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors mb-2 sm:mb-3 leading-snug"
+                      className="font-bold text-md sm:text-lg line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors mb-2 sm:mb-3 leading-snug"
                     >
                       {item.productName}
                     </Link>
@@ -148,7 +148,7 @@ export default function Wishlist() {
                           {formatPrice(item.productPrice)}
                         </span>
                         {discount > 0 && (
-                          <span className="text-xs sm:text-sm text-slate-400 line-through font-medium">
+                          <span className="text-sm sm:text-md text-slate-400 line-through font-medium">
                             {formatPrice(item.productCompareAtPrice!)}
                           </span>
                         )}
@@ -165,7 +165,7 @@ export default function Wishlist() {
 
                         <Link
                           to={`/product/${item.productSlug}`}
-                          className="flex-1 h-10 sm:h-12 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-500 hover:text-white transition-all flex items-center justify-center gap-1.5 sm:gap-2 group/link text-xs sm:text-base"
+                          className="flex-1 h-10 sm:h-12 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-500 hover:text-white transition-all flex items-center justify-center gap-1.5 sm:gap-2 group/link text-sm sm:text-base"
                         >
                           Tùy chọn mua{" "}
                           <FiArrowRight className="group-hover/link:translate-x-1 transition-transform" />

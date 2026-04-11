@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { FiStar, FiUser, FiMessageSquare, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiStar, FiUser, FiMessageSquare } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import type { ProductResponse, FeedbackResponse } from '@/types';
-import { StarRating } from '@/components';
+import { StarRating, ExpandToggle } from '@/components';
 import feedbackService from '@/apis/services/feedbackService';
 
 const COLLAPSED_HEIGHT = 320; // px
@@ -79,7 +79,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
           { id: 'reviews', label: `Đánh giá (${reviews})` },
         ].map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 py-3 sm:py-4 px-2 text-center font-bold text-xs sm:text-sm lg:text-lg transition-colors relative ${activeTab === tab.id ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}>
+            className={`flex-1 py-3 sm:py-4 px-2 text-center font-bold text-sm sm:text-md lg:text-lg transition-colors relative ${activeTab === tab.id ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}>
             {tab.label}
             {activeTab === tab.id && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-purple-600 to-blue-500" />}
           </button>
@@ -101,25 +101,25 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                       <tbody>
                         {specEntries.map(([key, value], idx) => (
                           <tr key={key} className={idx % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50 dark:bg-slate-800/50'}>
-                            <td className="py-3 sm:py-4 px-4 sm:px-6 md:px-8 text-sm sm:text-base font-medium text-slate-500 w-1/3 border-b border-slate-100 dark:border-slate-800">{key}</td>
-                            <td className="py-3 sm:py-4 px-4 sm:px-6 md:px-8 text-sm sm:text-base font-bold border-b border-slate-100 dark:border-slate-800">{value}</td>
+                            <td className="py-3 sm:py-4 px-4 sm:px-6 md:px-8 text-md sm:text-base font-medium text-slate-500 w-1/3 border-b border-slate-100 dark:border-slate-800">{key}</td>
+                            <td className="py-3 sm:py-4 px-4 sm:px-6 md:px-8 text-md sm:text-base font-bold border-b border-slate-100 dark:border-slate-800">{value}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
                 ) : (
-                  <p className="text-slate-500 text-sm sm:text-base text-center py-8">Chưa có thông số kỹ thuật cho sản phẩm này.</p>
+                  <p className="text-slate-500 text-md sm:text-base text-center py-8">Chưa có thông số kỹ thuật cho sản phẩm này.</p>
                 )}
               </motion.div>
             )}
             {activeTab === 'description' && (
               <motion.div key="desc" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}
-                className="prose dark:prose-invert max-w-none text-sm sm:text-base lg:text-lg prose-img:w-full prose-img:rounded-2xl prose-img:mx-auto prose-a:text-purple-600 w-full overflow-hidden [&_.cps-block-content]:!max-h-none [&>div>div]:!max-h-none">
+                className="prose dark:prose-invert max-w-none text-md sm:text-base lg:text-lg prose-img:w-full prose-img:rounded-2xl prose-img:mx-auto prose-a:text-purple-600 w-full overflow-hidden [&_.cps-block-content]:!max-h-none [&>div>div]:!max-h-none">
                 {product.description ? (
                   <div dangerouslySetInnerHTML={{ __html: product.description.replace(/style="[^"]*max-height[^"]*"/g, '') }} />
                 ) : (
-                  <p className="text-slate-500 text-sm sm:text-base">Chưa có mô tả cho sản phẩm này.</p>
+                  <p className="text-slate-500 text-md sm:text-base">Chưa có mô tả cho sản phẩm này.</p>
                 )}
               </motion.div>
             )}
@@ -132,21 +132,21 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                     <div className="flex justify-center gap-1 text-yellow-400 text-base sm:text-xl mb-1 sm:mb-2">
                       <StarRating value={Math.round(rating)} onChange={() => {}} readOnly size="sm" />
                     </div>
-                    <div className="text-slate-500 text-sm sm:text-base">{reviews} đánh giá</div>
+                    <div className="text-slate-500 text-md sm:text-base">{reviews} đánh giá</div>
                   </div>
                   <div className="flex-1 w-full space-y-2">
                     {[5, 4, 3, 2, 1].map(star => (
                       <div key={star} className="flex items-center gap-2 md:gap-4">
-                        <div className="flex items-center gap-1 w-9 md:w-12 text-sm sm:text-base font-medium">{star} <FiStar className="text-yellow-400 fill-current" /></div>
+                        <div className="flex items-center gap-1 w-9 md:w-12 text-md sm:text-base font-medium">{star} <FiStar className="text-yellow-400 fill-current" /></div>
                         <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                           <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 rounded-full transition-all" style={{ width: `${starDistribution[star]}%` }}></div>
                         </div>
-                        <span className="text-xs sm:text-sm text-slate-400 w-8 text-right">{starDistribution[star]}%</span>
+                        <span className="text-sm sm:text-md text-slate-400 w-8 text-right">{starDistribution[star]}%</span>
                       </div>
                     ))}
                   </div>
                   <div className="md:w-1/4 flex flex-col items-center justify-center w-full">
-                    <p className="text-sm sm:text-base text-slate-500 text-center">Chỉ khách hàng đã mua và nhận hàng thành công mới có thể đánh giá.</p>
+                    <p className="text-md sm:text-base text-slate-500 text-center">Chỉ khách hàng đã mua và nhận hàng thành công mới có thể đánh giá.</p>
                   </div>
                 </div>
 
@@ -174,10 +174,10 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                               )}
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <h4 className="font-bold text-sm sm:text-base">{mainFb.userName}</h4>
+                                  <h4 className="font-bold text-md sm:text-base">{mainFb.userName}</h4>
                                   {group.length > 1 && <span className="px-1.5 py-0.5 text-[10px] font-medium bg-slate-100 dark:bg-slate-700 text-slate-500 rounded">Lần 1</span>}
                                 </div>
-                                <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mt-0.5">
+                                <div className="flex items-center gap-2 text-sm sm:text-md text-slate-400 mt-0.5">
                                    <span>{formatDate(mainFb.createdAt)}</span>
                                    {mainFb.variantName && (
                                       <>
@@ -190,11 +190,11 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                             </div>
                             <StarRating value={mainFb.rating} onChange={() => {}} readOnly size="sm" />
                           </div>
-                          {mainFb.content && <p className="mt-3 text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">{mainFb.content}</p>}
+                          {mainFb.content && <p className="mt-3 text-md sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">{mainFb.content}</p>}
                           {mainFb.adminReply && (
                             <div className="mt-3 p-2.5 sm:p-4 bg-blue-50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-800/30">
-                              <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> Phản hồi từ shop</p>
-                              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300">{mainFb.adminReply}</p>
+                              <p className="text-md font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> Phản hồi từ shop</p>
+                              <p className="text-md sm:text-base text-slate-700 dark:text-slate-300">{mainFb.adminReply}</p>
                             </div>
                           )}
                           
@@ -205,20 +205,20 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                             return (
                             <div className="mt-5 pt-5 border-t border-slate-200 dark:border-slate-700">
                               <div className="flex items-center justify-between mb-2">
-                                 <p className="text-sm sm:text-base font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                 <p className="text-md sm:text-base font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                    Đánh giá lại ({afterText})
-                                   <span className="px-1.5 py-0.5 text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded">Mới</span>
+                                   <span className="px-1.5 py-0.5 text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded">Mới</span>
                                  </p>
-                                 <div className="flex items-center gap-2 text-sm text-slate-400">
+                                 <div className="flex items-center gap-2 text-md text-slate-400">
                                     <span>{formatDate(group[1].createdAt)}</span>
                                     <StarRating value={group[1].rating} onChange={() => {}} readOnly size="sm" />
                                  </div>
                               </div>
-                              {group[1].content && <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">{group[1].content}</p>}
+                              {group[1].content && <p className="text-md sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">{group[1].content}</p>}
                               {group[1].adminReply && (
                                 <div className="mt-3 p-2.5 sm:p-4 bg-blue-50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-800/30">
-                                  <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> Phản hồi từ shop</p>
-                                  <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300">{group[1].adminReply}</p>
+                                  <p className="text-md font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> Phản hồi từ shop</p>
+                                  <p className="text-md sm:text-base text-slate-700 dark:text-slate-300">{group[1].adminReply}</p>
                                 </div>
                               )}
                             </div>
@@ -229,7 +229,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                     })}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-sm text-slate-500">
+                  <div className="text-center py-8 text-md text-slate-500">
                     <p>Chưa có đánh giá nào cho sản phẩm này.</p>
                   </div>
                 )}
@@ -245,16 +245,11 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
 
         {/* Nút thu gọn / mở rộng */}
         <div className="flex justify-center mt-3">
-          <button
-            onClick={() => setExpanded(prev => !prev)}
-            className="flex items-center gap-1.5 px-5 py-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-full transition-colors"
-          >
-            {expanded ? (
-              <>Thu gọn <FiChevronUp className="text-base" /></>
-            ) : (
-              <>Xem thêm <FiChevronDown className="text-base" /></>
-            )}
-          </button>
+          <ExpandToggle
+            expanded={expanded}
+            onToggle={() => setExpanded(prev => !prev)}
+            variant="outline"
+          />
         </div>
       </div>
     </div>

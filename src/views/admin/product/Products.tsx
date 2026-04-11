@@ -131,7 +131,7 @@ export default function Products() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">Quản lý sản phẩm</h1>
           {selectedItems.length > 0 && (
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-md text-slate-500 mt-1">
               Đã chọn <span className="font-bold text-purple-600">{selectedItems.length}</span> sản phẩm
             </p>
           )}
@@ -216,7 +216,7 @@ export default function Products() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[920px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                 <th className="p-4 font-medium w-10">
                   <Checkbox 
                     checked={selectedItems.length === products.length && products.length > 0}
@@ -275,7 +275,7 @@ export default function Products() {
                             className="w-12 h-12 rounded-lg object-cover bg-slate-100 dark:bg-slate-800" />
                           <div>
                             <span className="font-bold line-clamp-1 max-w-[250px]">{product.name}</span>
-                            <span className="text-xs text-slate-400 block">{product.brandName || ''}</span>
+                            <span className="text-sm text-slate-400 block">{product.brandName || ''}</span>
                           </div>
                         </div>
                       </td>

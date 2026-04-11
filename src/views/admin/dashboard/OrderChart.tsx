@@ -29,29 +29,29 @@ export default function OrderChart({ stats }: DashboardChildProps) {
 
       <div className="grid grid-cols-2 min-[420px]:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-1 leading-tight">Tổng đơn (kỳ này)</p>
-          <p className="text-sm sm:text-lg font-bold text-blue-700 dark:text-blue-400">{totalOrders.toLocaleString()}</p>
+          <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Tổng đơn (kỳ này)</p>
+          <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{totalOrders.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-2.5 sm:p-4">
           <div className="flex items-center gap-1 mb-1">
-            <FiCheckCircle className="text-emerald-500 text-xs" />
-            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">Đơn mới</p>
+            <FiCheckCircle className="text-emerald-500 text-sm" />
+            <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400">Đơn mới</p>
           </div>
-          <p className="text-sm sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{stats.newOrders.toLocaleString()}</p>
+          <p className="text-md sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{stats.newOrders.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-900/20 dark:to-red-800/10 rounded-2xl p-2.5 sm:p-4">
           <div className="flex items-center gap-1 mb-1">
-            <FiXCircle className="text-red-500 text-xs" />
-            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">Hủy/Trả</p>
+            <FiXCircle className="text-red-500 text-sm" />
+            <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400">Hủy/Trả</p>
           </div>
-          <p className="text-sm sm:text-lg font-bold text-red-700 dark:text-red-400">{(stats.cancelledOrders + stats.returnedOrders).toLocaleString()}</p>
+          <p className="text-md sm:text-lg font-bold text-red-700 dark:text-red-400">{(stats.cancelledOrders + stats.returnedOrders).toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/20 dark:to-amber-800/10 rounded-2xl p-2.5 sm:p-4">
           <div className="flex items-center gap-1 mb-1">
-            <FiTrendingUp className="text-amber-500 text-xs" />
-            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">Cao nhất</p>
+            <FiTrendingUp className="text-amber-500 text-sm" />
+            <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400">Cao nhất</p>
           </div>
-          <p className="text-sm sm:text-lg font-bold text-amber-700 dark:text-amber-400">{maxItem.orders} <span className="text-[10px] sm:text-xs font-normal text-slate-400">({maxItem.name.split('|')[0]})</span></p>
+          <p className="text-md sm:text-lg font-bold text-amber-700 dark:text-amber-400">{maxItem.orders} <span className="text-[10px] sm:text-sm font-normal text-slate-400">({maxItem.name.split('|')[0]})</span></p>
         </div>
       </div>
 

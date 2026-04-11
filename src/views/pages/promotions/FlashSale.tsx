@@ -41,7 +41,7 @@ export default function FlashSale() {
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-10 sm:py-12 text-center">
         <FiZap className="text-5xl sm:text-6xl text-slate-300 mx-auto mb-4" />
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Chưa có Flash Sale</h2>
-        <p className="text-sm sm:text-base text-slate-500">Hãy quay lại sau để không bỏ lỡ các ưu đãi hấp dẫn!</p>
+        <p className="text-md sm:text-base text-slate-500">Hãy quay lại sau để không bỏ lỡ các ưu đãi hấp dẫn!</p>
       </div>
     );
   }
@@ -61,12 +61,12 @@ export default function FlashSale() {
                     <FiZap className="text-yellow-300" />
                     FLASH SALE
                   </h1>
-                  <p className="text-white/80 text-sm sm:text-base mt-1 sm:mt-2">{sale.name}</p>
+                  <p className="text-white/80 text-md sm:text-base mt-1 sm:mt-2">{sale.name}</p>
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2 w-full md:w-auto justify-between md:justify-start">
                   <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     <FiClock className="text-base sm:text-xl" />
-                    <span className="text-xs sm:text-sm">Kết thúc sau:</span>
+                    <span className="text-sm sm:text-md">Kết thúc sau:</span>
                   </div>
                   <SaleCountdown endTime={sale.endTime} />
                 </div>
@@ -99,21 +99,21 @@ export default function FlashSale() {
                         </div>
                       )}
                       {discount > 0 && (
-                        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
+                        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-red-500 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
                           -{discount}%
                         </div>
                       )}
                     </div>
                     <div className="p-2.5 sm:p-4">
-                      <h3 className="font-bold line-clamp-2 text-[12px] sm:text-sm group-hover:text-red-500 transition-colors h-[34px] sm:h-[40px] mb-1.5 sm:mb-2 leading-snug">
+                      <h3 className="font-bold line-clamp-2 text-[12px] sm:text-md group-hover:text-red-500 transition-colors h-[34px] sm:h-[40px] mb-1.5 sm:mb-2 leading-snug">
                         {item.productName}
                       </h3>
-                      <div className="text-[10px] sm:text-xs text-slate-500 mb-1.5 sm:mb-2 h-[28px] sm:h-[32px] line-clamp-2">
+                      <div className="text-[10px] sm:text-sm text-slate-500 mb-1.5 sm:mb-2 h-[28px] sm:h-[32px] line-clamp-2">
                         {item.variantName || ''}
                       </div>
                       <div className="flex items-center gap-1.5 sm:gap-2 mb-2.5 sm:mb-3">
                         <span className="text-[15px] sm:text-lg font-bold text-red-600">{formatPrice(item.flashPrice)}</span>
-                        <span className="text-[11px] sm:text-sm text-slate-400 line-through">{formatPrice(item.originalPrice)}</span>
+                        <span className="text-[11px] sm:text-md text-slate-400 line-through">{formatPrice(item.originalPrice)}</span>
                       </div>
                       <div className="relative h-1.5 sm:h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-1">
                         <div
@@ -121,7 +121,7 @@ export default function FlashSale() {
                           style={{ width: `${soldPercent}%` }}
                         />
                       </div>
-                      <p className="text-[10px] sm:text-xs text-slate-500">
+                      <p className="text-[10px] sm:text-sm text-slate-500">
                         {item.remainingStock > 0 ? `Còn ${item.remainingStock} sản phẩm` : 'Đã hết'}
                       </p>
                     </div>
@@ -155,7 +155,7 @@ function SaleCountdown({ endTime }: { endTime: string }) {
       ].map((t, i) => (
         <div key={i} className="bg-white/20 backdrop-blur rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[44px] sm:min-w-[56px]">
           <div className="text-lg sm:text-2xl font-black leading-none">{String(t.val).padStart(2, '0')}</div>
-          <div className="text-[10px] sm:text-xs text-white/70">{t.label}</div>
+          <div className="text-[10px] sm:text-sm text-white/70">{t.label}</div>
         </div>
       ))}
     </div>

@@ -66,8 +66,10 @@ const useAuthStore = create<AuthState>()(
         Promise.resolve().then(async () => {
           const { default: useCartStore } = await import('./useCartStore');
           const { default: useWishlistStore } = await import('./useWishlistStore');
+          const { default: useNotificationStore } = await import('./useNotificationStore');
           useCartStore.getState().syncFromServer();
           useWishlistStore.getState().syncFromServer();
+          useNotificationStore.getState().syncFromServer();
         });
       },
 
@@ -77,8 +79,10 @@ const useAuthStore = create<AuthState>()(
         Promise.resolve().then(async () => {
           const { default: useCartStore } = await import('./useCartStore');
           const { default: useWishlistStore } = await import('./useWishlistStore');
+          const { default: useNotificationStore } = await import('./useNotificationStore');
           useCartStore.getState().clearCart();
           useWishlistStore.getState().clearWishlist();
+          useNotificationStore.getState().reset();
         });
         set({ token: null, refreshToken: null, user: null, isAuthenticated: false });
         window.location.href = '/login';

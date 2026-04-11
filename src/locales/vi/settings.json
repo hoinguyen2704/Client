@@ -1,0 +1,53 @@
+{
+  "title": "Cài đặt tài khoản",
+  "displayOptions": {
+    "title": "Tùy chọn hiển thị",
+    "darkMode": "Chế độ tối (Dark Mode)",
+    "darkModeDesc": "Chuyển giao diện để bảo vệ mắt",
+    "language": "Ngôn ngữ",
+    "promotions": "Nhận thông báo khuyến mãi",
+    "promotionsDesc": "Mã giảm giá, chương trình sale"
+  },
+  "notifications": {
+    "title": "Cài đặt thông báo",
+    "channels": "Kênh nhận thông báo",
+    "emailTitle": "Email",
+    "emailDesc": "Nhận thông báo qua email",
+    "smsTitle": "SMS",
+    "smsDesc": "Nhận tin nhắn văn bản",
+    "appTitle": "Thông báo đẩy (App)",
+    "appDesc": "Nhận thông báo trên ứng dụng",
+    "types": "Loại thông báo",
+    "ordersTitle": "Cập nhật đơn hàng",
+    "ordersDesc": "Trạng thái giao hàng, thanh toán"
+  },
+  "security": {
+    "title": "Bảo mật",
+    "password": {
+      "title": "Mật khẩu",
+      "lastUpdated": "Cập nhật lần cuối: 30 ngày trước",
+      "buttonChange": "Đổi mật khẩu",
+      "buttonCancel": "Hủy",
+      "current": "Mật khẩu hiện tại",
+      "new": "Mật khẩu mới",
+      "confirm": "Xác nhận mật khẩu mới",
+      "save": "Lưu mật khẩu mới"
+    },
+    "twoFactor": {
+      "title": "Xác thực 2 bước (2FA)",
+      "desc": "Tăng cường bảo mật tài khoản"
+    }
+  },
+  "socialAccounts": {
+    "title": "Liên kết tài khoản",
+    "linked": "Đã liên kết",
+    "notLinked": "Chưa liên kết",
+    "unlink": "Hủy liên kết",
+    "linkNow": "Liên kết ngay"
+  },
+  "deleteAccount": {
+    "title": "Xóa tài khoản",
+    "warning": "Khi xóa tài khoản, tất cả dữ liệu cá nhân, lịch sử đơn hàng và điểm tích lũy sẽ bị xóa vĩnh viễn và không thể khôi phục.",
+    "button": "Yêu cầu xóa tài khoản"
+  }
+}

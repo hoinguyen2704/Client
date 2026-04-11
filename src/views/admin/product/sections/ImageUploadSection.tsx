@@ -21,7 +21,7 @@ export default memo(function ImageUploadSection(props: Props) {
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold">Hình ảnh sản phẩm</h2>
           {existingImages.length > 0 && (
-            <span className="text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">
+            <span className="text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">
               {existingImages.length} ảnh
             </span>
           )}
@@ -77,12 +77,12 @@ export default memo(function ImageUploadSection(props: Props) {
             className={`text-2xl ${isDragging ? "text-purple-500" : "text-slate-400"}`}
           />
         </div>
-        <span className="font-semibold text-sm text-slate-600 dark:text-slate-300">
+        <span className="font-semibold text-md text-slate-600 dark:text-slate-300">
           {isDragging
             ? "Thả ảnh vào đây!"
             : "Kéo thả hoặc bấm để chọn ảnh"}
         </span>
-        <span className="text-xs text-slate-400 mt-1">
+        <span className="text-sm text-slate-400 mt-1">
           PNG, JPG, WEBP (Max 5MB)
         </span>
       </div>
@@ -111,7 +111,7 @@ export default memo(function ImageUploadSection(props: Props) {
                 }}
                 className="absolute top-2 right-2 w-8 h-8 bg-red-500/90 backdrop-blur-sm text-white rounded-lg flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 hover:scale-110"
               >
-                <FiTrash2 className="text-sm" />
+                <FiTrash2 className="text-md" />
               </button>
             </div>
           ))}
@@ -144,7 +144,7 @@ export default memo(function ImageUploadSection(props: Props) {
                 }}
                 className="absolute top-2 right-2 w-8 h-8 bg-red-500/90 backdrop-blur-sm text-white rounded-lg flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 hover:scale-110"
               >
-                <FiTrash2 className="text-sm" />
+                <FiTrash2 className="text-md" />
               </button>
             </div>
           ))}

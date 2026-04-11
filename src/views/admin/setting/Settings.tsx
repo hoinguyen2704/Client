@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiCheck, FiLoader } from 'react-icons/fi';
 import { Button, CustomSelect, Modal, ModalCancelButton, FormInput, SwitchToggle } from '@/components';
 import { toast } from 'sonner';
@@ -7,6 +8,7 @@ import type { SettingResponse } from '@/types';
 import type { SettingUpdateRequest } from '@/apis/services/adminSettingService';
 
 export default function Settings() {
+  const { t } = useTranslation('adminSettings');
   const AI_FEATURES_UNDER_DEVELOPMENT = true;
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [original, setOriginal] = useState<Record<string, string>>({});
@@ -116,176 +118,188 @@ export default function Settings() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        {/* General Config */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
-              <FiSettings />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">
+        {/* Cột Trái */}
+        <div className="space-y-4 sm:space-y-6">
+          {/* General Config */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
+                <FiSettings />
+              </div>
+              <h2 className="text-lg font-bold">Cấu hình chung</h2>
             </div>
-            <h2 className="text-lg font-bold">Cấu hình chung</h2>
-          </div>
 
-          <div className="space-y-4">
-            <FormInput label="Tên cửa hàng" type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Đơn vị tiền tệ</label>
-                <CustomSelect
-                  value={val('CURRENCY', 'VND')}
-                  onChange={(v) => set('CURRENCY', v)}
-                  options={[
-                    { value: 'VND', label: 'VNĐ (Việt Nam Đồng)' },
-                    { value: 'USD', label: 'USD (Đô la Mỹ)' }
-                  ]}
-                  className="w-full"
-                />
-              </div>
-              <FormInput label="Thuế mặc định (%)" type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
-            </div>
-            <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/40 space-y-4">
-              <div className="flex items-start sm:items-center justify-between gap-3">
-                <div>
-                  <h3 className="font-bold text-sm">Bật áp dụng thuế</h3>
-                  <p className="text-xs text-slate-500 mt-1">Tính thuế ở bước checkout và lưu snapshot vào đơn hàng.</p>
-                </div>
-                {renderToggle('TAX_ENABLED', 'primary')}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <FormInput label="Tên cửa hàng" type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Chế độ thuế</label>
+                  <label className="text-md font-medium text-slate-700 dark:text-slate-300">Đơn vị tiền tệ</label>
                   <CustomSelect
-                    value={val('TAX_MODE', 'INCLUDED')}
-                    onChange={(v) => set('TAX_MODE', v)}
+                    value={val('CURRENCY', 'VND')}
+                    onChange={(v) => set('CURRENCY', v)}
                     options={[
-                      { value: 'INCLUDED', label: 'Đã gồm trong giá' },
-                      { value: 'EXCLUDED', label: 'Cộng thêm vào tổng' }
+                      { value: 'VND', label: 'VNĐ (Việt Nam Đồng)' },
+                      { value: 'USD', label: 'USD (Đô la Mỹ)' }
                     ]}
                     className="w-full"
                   />
                 </div>
-                <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900 flex items-start sm:items-center justify-between gap-3">
+                <FormInput label="Thuế mặc định (%)" type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
+              </div>
+              <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/40 space-y-4">
+                <div className="flex items-start sm:items-center justify-between gap-3">
                   <div>
-                    <h4 className="font-semibold text-sm">Áp thuế lên phí ship</h4>
-                    <p className="text-xs text-slate-500 mt-1">Nếu tắt, chỉ tính thuế trên tiền hàng.</p>
+                    <h3 className="font-bold text-md">Bật áp dụng thuế</h3>
+                    <p className="text-sm text-slate-500 mt-1">Tính thuế ở bước checkout và lưu snapshot vào đơn hàng.</p>
                   </div>
-                  {renderToggle('TAX_APPLY_ON_SHIPPING', 'primary')}
+                  {renderToggle('TAX_ENABLED', 'primary')}
+                </div>
+                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity ${!bool('TAX_ENABLED') ? 'opacity-50 pointer-events-none select-none' : ''}`}>
+                  <div className="space-y-2">
+                    <label className="text-md font-medium text-slate-700 dark:text-slate-300">Chế độ thuế</label>
+                    <CustomSelect
+                      value={val('TAX_MODE', 'INCLUDED')}
+                      onChange={(v) => set('TAX_MODE', v)}
+                      options={[
+                        { value: 'INCLUDED', label: 'Đã gồm trong giá' },
+                        { value: 'EXCLUDED', label: 'Cộng thêm vào tổng' }
+                      ]}
+                      className="w-full"
+                      disabled={!bool('TAX_ENABLED')}
+                    />
+                  </div>
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900 flex items-start sm:items-center justify-between gap-3">
+                    <div>
+                      <h4 className="font-semibold text-md">Áp thuế lên phí ship</h4>
+                      <p className="text-sm text-slate-500 mt-1">Nếu tắt, chỉ tính thuế trên tiền hàng.</p>
+                    </div>
+                    {renderToggle('TAX_APPLY_ON_SHIPPING', 'primary', !bool('TAX_ENABLED'))}
+                  </div>
+                </div>
+              </div>
+              <FormInput label="Email liên hệ" type="email" value={val('SHOP_EMAIL')} onChange={(e) => set('SHOP_EMAIL', e.target.value)} />
+              <FormInput label="Email hỗ trợ" type="email" value={val('SUPPORT_EMAIL')} onChange={(e) => set('SUPPORT_EMAIL', e.target.value)} />
+              <FormInput label="Hotline" type="text" value={val('HOTLINE')} onChange={(e) => set('HOTLINE', e.target.value)} />
+              <FormInput label="Địa chỉ" type="text" value={val('SHOP_ADDRESS')} onChange={(e) => set('SHOP_ADDRESS', e.target.value)} />
+            </div>
+          </div>
+
+          {/* AI Dashboard */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
+                  <FiCpu />
+                </div>
+                <h2 className="text-lg font-bold">AI Dashboard (ML Ops)</h2>
+              </div>
+              <Button
+                onClick={() => {
+                  if (!AI_FEATURES_UNDER_DEVELOPMENT) setIsAiModalOpen(true);
+                }}
+                variant="ghost"
+                size="sm"
+                className="text-indigo-600"
+                disabled={AI_FEATURES_UNDER_DEVELOPMENT}
+              >
+                {AI_FEATURES_UNDER_DEVELOPMENT ? 'Đang phát triển' : 'Cấu hình thuật toán'}
+              </Button>
+            </div>
+
+            <div className="relative">
+              {/* The Overlay */}
+              {AI_FEATURES_UNDER_DEVELOPMENT && (
+                <div className="absolute inset-x-0 inset-y-[-10px] z-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-[2px] flex items-center justify-center rounded-xl p-4">
+                  <div className="px-6 py-4 rounded-xl shadow-lg border border-amber-200 bg-amber-50 text-amber-700 font-medium flex items-center gap-2">
+                    Tính năng AI Dashboard đang phát triển, tạm thời bị khóa.
+                  </div>
+                </div>
+              )}
+
+              <div className={`space-y-4 ${AI_FEATURES_UNDER_DEVELOPMENT ? 'pointer-events-none select-none' : ''}`}>
+                <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                  <div>
+                    <h3 className="font-bold text-md">Recommendation Engine</h3>
+                    <p className="text-sm text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
+                  </div>
+                  {renderToggle('RECOMMENDATION_ENABLED', 'blue', false)}
+                </div>
+
+                <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                  <div>
+                    <h3 className="font-bold text-md">AI Content Generator</h3>
+                    <p className="text-sm text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
+                  </div>
+                  {renderToggle('AI_CONTENT_ENABLED', 'blue', false)}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
+                    <div className="text-indigo-500 mb-1 flex justify-center"><FiTrendingUp /></div>
+                    <div className="text-xl font-bold">—</div>
+                    <div className="text-sm text-slate-500">Lần gợi ý</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
+                    <div className="text-blue-500 mb-1 flex justify-center"><FiMousePointer /></div>
+                    <div className="text-xl font-bold">—</div>
+                    <div className="text-sm text-slate-500">Tỷ lệ click</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
+                    <div className="text-green-500 mb-1 flex justify-center"><FiShoppingCart /></div>
+                    <div className="text-xl font-bold">—</div>
+                    <div className="text-sm text-slate-500">Chuyển đổi</div>
+                  </div>
                 </div>
               </div>
             </div>
-            <FormInput label="Email liên hệ" type="email" value={val('SHOP_EMAIL')} onChange={(e) => set('SHOP_EMAIL', e.target.value)} />
-            <FormInput label="Email hỗ trợ" type="email" value={val('SUPPORT_EMAIL')} onChange={(e) => set('SUPPORT_EMAIL', e.target.value)} />
-            <FormInput label="Hotline" type="text" value={val('HOTLINE')} onChange={(e) => set('HOTLINE', e.target.value)} />
-            <FormInput label="Địa chỉ" type="text" value={val('SHOP_ADDRESS')} onChange={(e) => set('SHOP_ADDRESS', e.target.value)} />
           </div>
         </div>
 
-        {/* AI Dashboard */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
-                <FiCpu />
+        {/* Cột Phải */}
+        <div className="space-y-4 sm:space-y-6">
+          {/* Payment Config */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
+              <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
+                <FiCreditCard />
               </div>
-              <h2 className="text-lg font-bold">AI Dashboard (ML Ops)</h2>
-            </div>
-            <Button
-              onClick={() => {
-                if (!AI_FEATURES_UNDER_DEVELOPMENT) setIsAiModalOpen(true);
-              }}
-              variant="ghost"
-              size="sm"
-              className="text-indigo-600"
-              disabled={AI_FEATURES_UNDER_DEVELOPMENT}
-            >
-              {AI_FEATURES_UNDER_DEVELOPMENT ? 'Đang phát triển' : 'Cấu hình thuật toán'}
-            </Button>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-              <div>
-                <h3 className="font-bold text-sm">Recommendation Engine</h3>
-                <p className="text-xs text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
-              </div>
-              {renderToggle('RECOMMENDATION_ENABLED', 'blue', AI_FEATURES_UNDER_DEVELOPMENT)}
+              <h2 className="text-lg font-bold">Cấu hình Thanh toán</h2>
             </div>
 
-            <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-              <div>
-                <h3 className="font-bold text-sm">AI Content Generator</h3>
-                <p className="text-xs text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
-              </div>
-              {renderToggle('AI_CONTENT_ENABLED', 'blue', AI_FEATURES_UNDER_DEVELOPMENT)}
-            </div>
-
-            {AI_FEATURES_UNDER_DEVELOPMENT && (
-              <div className="px-4 py-3 rounded-xl border border-amber-200 bg-amber-50 text-amber-700 text-sm">
-                Tính năng AI Dashboard đang phát triển, tạm thời bị khóa cấu hình.
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
-                <div className="text-indigo-500 mb-1 flex justify-center"><FiTrendingUp /></div>
-                <div className="text-xl font-bold">—</div>
-                <div className="text-xs text-slate-500">Lần gợi ý</div>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
-                <div className="text-blue-500 mb-1 flex justify-center"><FiMousePointer /></div>
-                <div className="text-xl font-bold">—</div>
-                <div className="text-xs text-slate-500">Tỷ lệ click</div>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
-                <div className="text-green-500 mb-1 flex justify-center"><FiShoppingCart /></div>
-                <div className="text-xl font-bold">—</div>
-                <div className="text-xs text-slate-500">Chuyển đổi</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Config */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
-              <FiCreditCard />
-            </div>
-            <h2 className="text-lg font-bold">Cấu hình Thanh toán</h2>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              { key: 'COD_ENABLED', title: 'Thanh toán khi nhận hàng (COD)', desc: 'Cho phép khách hàng thanh toán tiền mặt' },
-              { key: 'VNPAY_ENABLED', title: 'Thanh toán qua VNPay', desc: 'Cổng thanh toán nội địa và quốc tế' },
-              { key: 'MOMO_ENABLED', title: 'Thanh toán qua MoMo', desc: 'Ví điện tử phổ biến tại Việt Nam' },
-              { key: 'BANK_TRANSFER_ENABLED', title: 'Chuyển khoản ngân hàng', desc: 'Chuyển khoản trực tiếp qua ngân hàng' },
-            ].map(pm => (
-              <div key={pm.key} className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-                <div>
-                  <h3 className="font-bold text-sm">{pm.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1">{pm.desc}</p>
+            <div className="space-y-4">
+              {[
+                { key: 'COD_ENABLED', title: 'Thanh toán khi nhận hàng (COD)', desc: 'Cho phép khách hàng thanh toán tiền mặt' },
+                { key: 'VNPAY_ENABLED', title: 'Thanh toán qua VNPay', desc: 'Cổng thanh toán nội địa và quốc tế' },
+                { key: 'MOMO_ENABLED', title: 'Thanh toán qua MoMo', desc: 'Ví điện tử phổ biến tại Việt Nam' },
+                { key: 'BANK_TRANSFER_ENABLED', title: 'Chuyển khoản ngân hàng', desc: 'Chuyển khoản trực tiếp qua ngân hàng' },
+              ].map(pm => (
+                <div key={pm.key} className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                  <div>
+                    <h3 className="font-bold text-md">{pm.title}</h3>
+                    <p className="text-sm text-slate-500 mt-1">{pm.desc}</p>
+                  </div>
+                  {renderToggle(pm.key)}
                 </div>
-                {renderToggle(pm.key)}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Shipping Config */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
-              <FiTruck />
+              ))}
             </div>
-            <h2 className="text-lg font-bold">Cấu hình Vận chuyển</h2>
           </div>
 
-          <div className="space-y-4">
-            <FormInput label="Phí ship mặc định (VNĐ)" type="number" value={val('DEFAULT_SHIPPING_FEE', '30000')} onChange={(e) => set('DEFAULT_SHIPPING_FEE', e.target.value)} />
-            <div className="space-y-2">
-              <FormInput label="Ngưỡng Freeship (VNĐ)" type="number" value={val('FREE_SHIPPING_THRESHOLD', '500000')} onChange={(e) => set('FREE_SHIPPING_THRESHOLD', e.target.value)} />
-              <p className="text-xs text-slate-500">Đơn hàng có giá trị lớn hơn hoặc bằng ngưỡng này sẽ được miễn phí vận chuyển.</p>
+          {/* Shipping Config */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
+            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
+              <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
+                <FiTruck />
+              </div>
+              <h2 className="text-lg font-bold">Cấu hình Vận chuyển</h2>
+            </div>
+
+            <div className="space-y-4">
+              <FormInput label="Phí ship mặc định (VNĐ)" type="number" value={val('DEFAULT_SHIPPING_FEE', '30000')} onChange={(e) => set('DEFAULT_SHIPPING_FEE', e.target.value)} />
+              <div className="space-y-2">
+                <FormInput label="Ngưỡng Freeship (VNĐ)" type="number" value={val('FREE_SHIPPING_THRESHOLD', '500000')} onChange={(e) => set('FREE_SHIPPING_THRESHOLD', e.target.value)} />
+                <p className="text-sm text-slate-500">Đơn hàng có giá trị lớn hơn hoặc bằng ngưỡng này sẽ được miễn phí vận chuyển.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -306,7 +320,7 @@ export default function Settings() {
       >
         <div className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Thuật toán cốt lõi</label>
+            <label className="text-md font-medium">Thuật toán cốt lõi</label>
             <CustomSelect
               value={val('ALGORITHM', 'COLLABORATIVE')}
               onChange={(v) => set('ALGORITHM', v)}
@@ -321,7 +335,7 @@ export default function Settings() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-md">
                 <label className="font-medium">Độ ưu tiên sản phẩm mới</label>
                 <span className="text-indigo-600 font-bold">{num('NEW_PRODUCT_PRIORITY', 70)}%</span>
               </div>
@@ -329,7 +343,7 @@ export default function Settings() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-md">
                 <label className="font-medium">Độ đa dạng gợi ý (Exploration)</label>
                 <span className="text-indigo-600 font-bold">{num('EXPLORATION_RATE', 30)}%</span>
               </div>

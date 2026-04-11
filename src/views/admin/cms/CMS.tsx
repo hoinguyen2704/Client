@@ -324,7 +324,7 @@ export default function CMS() {
                   </div>
                 </div>
                 <div className="p-3 sm:p-4 flex justify-between items-center gap-2">
-                  <span className="font-bold text-sm">{banner.title}</span>
+                  <span className="font-bold text-md">{banner.title}</span>
                   <StatusBadge status={banner.isActive ? 'active' : 'hidden'} />
                 </div>
               </div>
@@ -336,7 +336,7 @@ export default function CMS() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[860px] text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                   <th className="p-3 sm:p-4 font-medium">Tiêu đề</th>
                   <th className="p-3 sm:p-4 font-medium">Tác giả</th>
                   <th className="p-3 sm:p-4 font-medium">Ngày tạo</th>
@@ -415,7 +415,7 @@ export default function CMS() {
       >
         <div className="space-y-4">
           <div className="space-y-2">
-            <p className="text-sm font-semibold">Upload ảnh banner</p>
+            <p className="text-md font-semibold">Upload ảnh banner</p>
             <input
               ref={bannerFileInputRef}
               type="file"
@@ -436,7 +436,7 @@ export default function CMS() {
             >
               {uploadingBannerImage ? 'Đang tải ảnh...' : 'Chọn ảnh từ máy'}
             </Button>
-            <p className="text-xs text-slate-500">Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.</p>
+            <p className="text-sm text-slate-500">Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.</p>
             {bannerForm.imageUrl && (
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800">
                 <img src={bannerForm.imageUrl} alt="Banner preview" className="w-full h-40 object-cover" />
@@ -472,8 +472,8 @@ export default function CMS() {
           />
           <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-800/50">
             <div>
-              <p className="text-sm font-semibold">Hiển thị banner</p>
-              <p className="text-xs text-slate-500 mt-0.5">Tắt nếu muốn ẩn banner khỏi trang chủ</p>
+              <p className="text-md font-semibold">Hiển thị banner</p>
+              <p className="text-sm text-slate-500 mt-0.5">Tắt nếu muốn ẩn banner khỏi trang chủ</p>
             </div>
             <SwitchToggle
               checked={bannerForm.isActive}
@@ -504,7 +504,7 @@ export default function CMS() {
       >
         <div className="space-y-4">
           <div className="space-y-2">
-            <p className="text-sm font-semibold">Upload thumbnail</p>
+            <p className="text-md font-semibold">Upload thumbnail</p>
             <input
               ref={articleFileInputRef}
               type="file"
@@ -525,7 +525,7 @@ export default function CMS() {
             >
               {uploadingArticleThumbnail ? 'Đang tải ảnh...' : 'Chọn ảnh từ máy'}
             </Button>
-            <p className="text-xs text-slate-500">Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.</p>
+            <p className="text-sm text-slate-500">Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.</p>
             {articleForm.thumbnailUrl && (
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800">
                 <img src={articleForm.thumbnailUrl} alt="Thumbnail preview" className="w-full h-40 object-cover" />
@@ -556,8 +556,8 @@ export default function CMS() {
           />
           <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-800/50">
             <div>
-              <p className="text-sm font-semibold">Xuất bản ngay</p>
-              <p className="text-xs text-slate-500 mt-0.5">Nếu tắt, bài viết sẽ ở trạng thái nháp</p>
+              <p className="text-md font-semibold">Xuất bản ngay</p>
+              <p className="text-sm text-slate-500 mt-0.5">Nếu tắt, bài viết sẽ ở trạng thái nháp</p>
             </div>
             <SwitchToggle
               checked={articleForm.isPublished}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo, FiMessageSquare } from 'react-icons/fi';
 import notificationService from '@/apis/services/notificationService';
+import useNotificationStore from '@/stores/useNotificationStore';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { NotificationResponse, UserNotificationRealtimePayload } from '@/types';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
@@ -43,6 +44,7 @@ export default function Notifications() {
     try {
       await notificationService.markAsRead(id);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+      useNotificationStore.getState().decrementUnread();
     } catch { /* ignore */ }
   };
 
@@ -50,6 +52,7 @@ export default function Notifications() {
     try {
       await notificationService.markAllAsRead();
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      useNotificationStore.getState().clearUnread();
     } catch { /* ignore */ }
   };
   const unreadCount = notifications.filter(n => !n.isRead).length;
@@ -58,7 +61,7 @@ export default function Notifications() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Thông báo</h1>
         {unreadCount > 0 && (
-          <button onClick={handleMarkAllRead} className="flex items-center gap-2 text-sm text-purple-600 hover:underline font-medium">
+          <button onClick={handleMarkAllRead} className="flex items-center gap-2 text-md text-purple-600 hover:underline font-medium">
             <FiCheckCircle /> Đọc tất cả ({unreadCount})
           </button>
         )}
@@ -83,11 +86,11 @@ export default function Notifications() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold text-sm">{n.title}</h4>
+                    <h4 className="font-bold text-md">{n.title}</h4>
                     {!n.isRead && <span className="w-2 h-2 rounded-full bg-purple-600 shrink-0" />}
                   </div>
-                  <p className="text-sm text-slate-500 line-clamp-2">{n.content}</p>
-                  <span className="text-xs text-slate-400 mt-2 block">{formatDate(n.createdAt)}</span>
+                  <p className="text-md text-slate-500 line-clamp-2">{n.content}</p>
+                  <span className="text-sm text-slate-400 mt-2 block">{formatDate(n.createdAt)}</span>
                 </div>
                 {!n.isRead && (
                   <button className="p-1 text-slate-400 hover:text-green-600 shrink-0" title="Đánh dấu đã đọc"><FiCheck /></button>

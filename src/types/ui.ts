@@ -1,5 +1,6 @@
-import type { ProductResponse, ProductImageResponse } from './product';
+import type { ProductResponse, ProductImageResponse, ProductVariantResponse } from './product';
 import type { BannerResponse } from './cms';
+import type { ResolvedVariantPricing } from '@/utils/pricing';
 
 //  Flash Sale / Promotion Countdown
 export interface TimeLeft {
@@ -54,4 +55,71 @@ export interface CompareProduct {
   categoryId?: string;
   categoryName?: string;
   categorySlug?: string;
+}
+
+//  Variant Selector (from VariantSelector.tsx)
+export interface VariantSelectorProps {
+  /** List of product variants to display */
+  variants: ProductVariantResponse[];
+  /** Pre-computed pricing for each variant, keyed by variant id */
+  pricingMap: Record<string, ResolvedVariantPricing>;
+  /** Currently selected variant index */
+  selectedIndex: number;
+  /** Callback fired when a variant is selected */
+  onSelect: (index: number) => void;
+  /** Section label (default: "Phiên bản") */
+  label?: string;
+  /** Additional class name for the root wrapper */
+  className?: string;
+}
+
+//  Expand / Collapse Toggle (from ExpandToggle.tsx)
+export interface ExpandToggleProps {
+  /** Whether the content is currently expanded */
+  expanded: boolean;
+  /** Toggle callback */
+  onToggle: () => void;
+  /** Label shown when collapsed (default: "Xem thêm") */
+  expandLabel?: string;
+  /** Label shown when expanded (default: "Thu gọn") */
+  collapseLabel?: string;
+  /** Visual variant: "text" (minimal) or "outline" (bordered) */
+  variant?: 'text' | 'outline';
+  /** Additional class name */
+  className?: string;
+}
+
+// Voucher / Coupon UI
+import type { CouponResponse } from '@/types/coupon';
+
+export interface VoucherCardProps {
+  v: CouponResponse;
+  showSaveBtn?: boolean;
+  isSaving: boolean;
+  onCopy: (code: string) => void;
+  onSave: (v: CouponResponse) => void;
+  onUnsave: (id: string) => void;
+}
+
+export interface VoucherSectionProps {
+  iconType: 'gift' | 'bookmark';
+  title: string;
+  badgeClass: string;
+  vouchers: CouponResponse[];
+  savingId: string | null;
+  expanded: boolean;
+  onToggle: () => void;
+  loading?: boolean;
+  minToExpand?: number;
+  onCopy: (code: string) => void;
+  onSave: (v: CouponResponse) => void;
+  onUnsave: (id: string) => void;
+  emptyTitle: string;
+  emptyDescription: string;
+}
+
+// Notification UI
+export interface NotificationDropdownProps {
+  /** Size variant for bell icon */
+  iconSize?: string;
 }

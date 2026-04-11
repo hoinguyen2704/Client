@@ -19,6 +19,7 @@ const TONE_MAP = {
   success: 'bg-green-500',
   blue: 'bg-blue-500',
   slate: 'bg-slate-500',
+  purple: 'bg-purple-500',
 } as const;
 
 export default function SwitchToggle({

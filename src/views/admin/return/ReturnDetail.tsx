@@ -217,7 +217,7 @@ export default function ReturnDetail() {
               {returnRequest.returnNumber}
               <ReturnStatusBadge status={returnRequest.status} />
             </h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 text-md mt-1">
               Đơn hàng: <span className="font-semibold text-slate-700 dark:text-slate-200">{returnRequest.orderNumber}</span> | Tạo lúc{' '}
               {formatDateTime(returnRequest.createdAt)}
             </p>
@@ -244,7 +244,7 @@ export default function ReturnDetail() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                     <th className="pb-3 font-medium">Sản phẩm</th>
                     <th className="pb-3 font-medium">Phân loại</th>
                     <th className="pb-3 font-medium text-right">Đơn giá</th>
@@ -276,14 +276,14 @@ export default function ReturnDetail() {
             </h2>
 
             {returnRequest.refunds.length === 0 ? (
-              <div className="p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-sm text-slate-500">
+              <div className="p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-md text-slate-500">
                 Chưa có giao dịch hoàn tiền nào cho yêu cầu này.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[740px] text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                       <th className="pb-3 font-medium">Thời gian</th>
                       <th className="pb-3 font-medium">Provider</th>
                       <th className="pb-3 font-medium">Mã giao dịch</th>
@@ -316,7 +316,7 @@ export default function ReturnDetail() {
               <FiFileText className="text-blue-600" />
               Thông tin yêu cầu
             </h2>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-md">
               <div>
                 <p className="text-slate-500">Khách hàng</p>
                 <p className="font-semibold">{returnRequest.userName || 'Không rõ'}</p>
@@ -335,7 +335,7 @@ export default function ReturnDetail() {
                 <p className="font-medium">{returnRequest.adminNote || 'Chưa có'}</p>
               </div>
               {returnRequest.resolvedAt && (
-                <div className="flex items-center gap-2 text-xs text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-2 text-sm text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <FiClock />
                   Đã xử lý lúc {formatDateTime(returnRequest.resolvedAt)}
                 </div>
@@ -348,7 +348,7 @@ export default function ReturnDetail() {
               <FiDollarSign className="text-purple-600" />
               Số tiền
             </h2>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-md">
               <div className="flex justify-between">
                 <span className="text-slate-500">Yêu cầu hoàn</span>
                 <span className="font-semibold">{formatPrice(Number(returnRequest.requestedAmount || 0))}</span>
@@ -378,13 +378,13 @@ export default function ReturnDetail() {
                 value={approvedAmount}
                 onChange={(e) => setApprovedAmount(e.target.value)}
                 placeholder="Số tiền duyệt (để trống = full)"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <textarea
                 value={reviewNote}
                 onChange={(e) => setReviewNote(e.target.value)}
                 placeholder="Ghi chú duyệt/từ chối"
-                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <Button
@@ -422,7 +422,7 @@ export default function ReturnDetail() {
               value={statusNote}
               onChange={(e) => setStatusNote(e.target.value)}
               placeholder="Ghi chú cập nhật trạng thái"
-              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
             />
             <Button
               variant="outline"
@@ -446,7 +446,7 @@ export default function ReturnDetail() {
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(e.target.value)}
                 placeholder="Số tiền hoàn (để trống = số tiền duyệt)"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <CustomSelect
                 value={refundProvider}
@@ -464,20 +464,20 @@ export default function ReturnDetail() {
                 value={transactionId}
                 onChange={(e) => setTransactionId(e.target.value)}
                 placeholder="Mã giao dịch hoàn tiền"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <input
                 type="text"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value.toUpperCase())}
                 placeholder="Đơn vị tiền tệ"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <textarea
                 value={rawPayload}
                 onChange={(e) => setRawPayload(e.target.value)}
                 placeholder="Raw payload (optional)"
-                className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+                className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
               />
               <Button
                 variant="success"

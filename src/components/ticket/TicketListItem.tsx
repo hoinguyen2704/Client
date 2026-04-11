@@ -23,12 +23,12 @@ function TicketListItemRaw({ ticket, isSelected, onClick, showUserName }: Ticket
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="font-bold text-sm truncate">{ticket.subject}</p>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="font-bold text-md truncate">{ticket.subject}</p>
+          <p className="text-sm text-slate-500 mt-1">
             {showUserName && ticket.userName ? <span className="font-medium text-slate-700 dark:text-slate-300">{ticket.userName} • </span> : ''}
             {ticket.ticketNumber} • {formatDate(ticket.createdAt)}
           </p>
-          <p className="text-xs text-slate-400 mt-1">{ticket.messages?.length || 0} tin nhắn</p>
+          <p className="text-sm text-slate-400 mt-1">{ticket.messages?.length || 0} tin nhắn</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <StatusBadge status={ticket.status} className="text-[10px]" />

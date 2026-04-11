@@ -56,7 +56,7 @@ export default function Terms() {
           </p>
         </section>
 
-        <p className="text-sm text-gray-500 mt-8">
+        <p className="text-md text-gray-500 mt-8">
           Cập nhật lần cuối: {new Date().toLocaleDateString('vi-VN')}
         </p>
       </div>

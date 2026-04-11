@@ -1,9 +1,10 @@
 import { useState, useRef, useCallback } from 'react';
-import { FiBell, FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield, FiHelpCircle, FiMenu } from 'react-icons/fi';
+import { FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield, FiHelpCircle, FiMenu } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useClickOutside } from '@/hooks';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
+import NotificationDropdown from '@/components/ui/NotificationDropdown';
 import type { AdminHeaderProps } from './types';
 
 export default function AdminHeader({ onLogout }: AdminHeaderProps) {
@@ -33,11 +34,8 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
       </div>
 
       <div className="flex items-center gap-1.5 sm:gap-4">
-        {/* Notification Bell */}
-        <button className="p-2 sm:p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative">
-          <FiBell className="text-lg sm:text-xl" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
+        {/* Notification Dropdown */}
+        <NotificationDropdown iconSize="text-lg sm:text-xl" />
 
         <div className="h-7 sm:h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1 sm:mx-2"></div>
 
@@ -54,9 +52,9 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                 <FiUser className="text-lg text-purple-500 dark:text-purple-400" />
               </div>
             )}
-            <div className="hidden md:block text-sm text-left">
+            <div className="hidden md:block text-md text-left">
               <p className="font-bold">{user?.name || 'Admin'}</p>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</p>
             </div>
             <FiChevronDown className={`text-slate-400 ml-0.5 sm:ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
           </button>
@@ -75,8 +73,8 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                     </div>
                   )}
                   <div>
-                    <p className="font-bold text-sm">{user?.name || 'Admin'}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email || ''}</p>
+                    <p className="font-bold text-md">{user?.name || 'Admin'}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{user?.email || ''}</p>
                     <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-bold rounded-md">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</span>
                   </div>
                 </div>
@@ -87,7 +85,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                 <Link 
                   to="/user/profile" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   <FiUser className="text-lg text-slate-400" />
                   Hồ sơ cá nhân
@@ -95,7 +93,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                 <Link 
                   to="/admin/settings" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   <FiSettings className="text-lg text-slate-400" />
                   Cài đặt hệ thống
@@ -103,7 +101,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                 <Link 
                   to="/admin/customers" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   <FiShield className="text-lg text-slate-400" />
                   Phân quyền
@@ -111,7 +109,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                 <Link 
                   to="/admin/tickets" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   <FiHelpCircle className="text-lg text-slate-400" />
                   Trợ giúp
@@ -122,7 +120,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
               <div className="border-t border-slate-100 dark:border-slate-800 pt-1">
                 <button 
                   onClick={() => { setIsMenuOpen(false); onLogout(); }}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors w-full"
+                  className="flex items-center gap-3 px-4 py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors w-full"
                 >
                   <FiLogOut className="text-lg" />
                   Đăng xuất

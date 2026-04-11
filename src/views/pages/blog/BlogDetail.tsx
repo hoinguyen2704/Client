@@ -42,7 +42,7 @@ export default function BlogDetail() {
         )}
         <div className="p-8">
           <h1 className="text-3xl font-black mb-4">{article.title}</h1>
-          <div className="flex items-center gap-4 text-sm text-slate-500 mb-8 pb-6 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-4 text-md text-slate-500 mb-8 pb-6 border-b border-slate-100 dark:border-slate-800">
             {article.authorName && <span className="flex items-center gap-1"><FiUser /> {article.authorName}</span>}
             <span className="flex items-center gap-1"><FiCalendar /> {formatDate(article.createdAt)}</span>
           </div>

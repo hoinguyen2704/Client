@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import LogoIcon from '../ui/LogoIcon';
 import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
+import NotificationDropdown from '@/components/ui/NotificationDropdown';
 import { useClickOutside } from '@/hooks';
 import type { HeaderProps } from './types';
 import { SHOP } from '@/constants/shopConstants';
@@ -79,6 +80,9 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             >
               {theme === 'light' ? <FiMoon className="text-xl" /> : <FiSun className="text-xl" />}
             </button>
+            {user && (
+              <NotificationDropdown iconSize="text-xl" />
+            )}
             <button className="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
               <FiSearch className="text-xl" />
             </button>
@@ -91,7 +95,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             <Link to="/cart" className="p-2 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-colors relative">
               <FiShoppingCart className="text-xl" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs flex items-center justify-center rounded-full shadow-md">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-sm flex items-center justify-center rounded-full shadow-md">
                   {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
@@ -115,20 +119,20 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                       className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden z-50"
                     >
                       <div className="p-4 border-b border-slate-100 dark:border-slate-700">
-                        <p className="font-bold text-sm truncate">{user.email}</p>
-                        <p className="text-xs text-slate-500 capitalize mt-0.5">{user.role}</p>
+                        <p className="font-bold text-md truncate">{user.email}</p>
+                        <p className="text-sm text-slate-500 capitalize mt-0.5">{user.role}</p>
                       </div>
                       <div className="p-2">
                         {user.role?.toLowerCase() === 'admin' ? (
-                          <Link to="/admin" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                          <Link to="/admin" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                             <FiSettings className="text-lg" /> Quản trị viên
                           </Link>
                         ) : (
                           <>
-                            <Link to="/user/profile" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                            <Link to="/user/profile" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                               <FiUser className="text-lg" /> Tài khoản của tôi
                             </Link>
-                            <Link to="/user/orders" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                            <Link to="/user/orders" onClick={() => setIsUserMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                               <FiBox className="text-lg" /> Đơn mua
                             </Link>
                           </>
@@ -139,7 +143,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                             onLogout();
                             setIsUserMenuOpen(false);
                           }}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                         >
                           <FiLogOut className="text-lg" /> Đăng xuất
                         </button>

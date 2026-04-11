@@ -157,10 +157,10 @@ export default function OrderTracking() {
             </div>
             <div>
               <h3 className="font-bold text-purple-800 dark:text-purple-200">Đơn hàng đang có yêu cầu trả hàng</h3>
-              <p className="text-sm text-purple-600 dark:text-purple-300 mt-0.5">Tiến trình xử lý đang diễn ra. Vui lòng kiểm tra chi tiết.</p>
+              <p className="text-md text-purple-600 dark:text-purple-300 mt-0.5">Tiến trình xử lý đang diễn ra. Vui lòng kiểm tra chi tiết.</p>
             </div>
           </div>
-          <Link to={`/user/returns`} className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg text-sm font-semibold text-purple-600 shadow-sm border border-purple-100 dark:border-slate-700 whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700">
+          <Link to={`/user/returns`} className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg text-md font-semibold text-purple-600 shadow-sm border border-purple-100 dark:border-slate-700 whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700">
             Xem chi tiết
           </Link>
         </div>
@@ -192,12 +192,12 @@ export default function OrderTracking() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold line-clamp-1">{line.productName}</p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-sm text-slate-500 mt-1">
                       {line.variantName} | Đã mua: {line.quantity} | {formatPrice(Number(line.unitPrice || 0))}
                     </p>
                   </div>
                   <div className={`flex items-center gap-3 transition-opacity ${selectedReturnItems[line.id] ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-                    <span className="text-sm font-medium text-slate-500">Số lượng:</span>
+                    <span className="text-md font-medium text-slate-500">Số lượng:</span>
                     <QuantitySelector
                       value={returnItemQuantities[line.id] ?? line.quantity}
                       onChange={(val) => handleQuantityChange(line.id, val)}
@@ -280,10 +280,10 @@ export default function OrderTracking() {
                     <div key={history.id} className="flex gap-4">
                       {/* Left: Time */}
                       <div className="w-20 flex-shrink-0 text-right pt-1">
-                        <div className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                        <div className="text-md font-medium text-slate-800 dark:text-slate-200">
                           {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                         </div>
-                        <div className="text-xs text-slate-500 mt-1">
+                        <div className="text-sm text-slate-500 mt-1">
                           {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                         </div>
                       </div>
@@ -303,7 +303,7 @@ export default function OrderTracking() {
                           {history.status === 'SHIPPED' ? 'Giao hàng thành công' : history.description}
                         </h4>
                         {isFirst && history.status === 'SHIPPED' && (
-                          <div className="inline-flex items-center gap-1 text-sm text-purple-600 mt-1 cursor-pointer hover:underline">
+                          <div className="inline-flex items-center gap-1 text-md text-purple-600 mt-1 cursor-pointer hover:underline">
                             <FiCheck /> Đơn hàng đã được giao thành công
                           </div>
                         )}
@@ -328,7 +328,7 @@ export default function OrderTracking() {
                       <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
                         <Icon />
                       </div>
-                      <span className={`text-xs mt-2 font-medium ${isActive ? 'text-purple-600' : 'text-slate-400'}`}>{step.label}</span>
+                      <span className={`text-sm mt-2 font-medium ${isActive ? 'text-purple-600' : 'text-slate-400'}`}>{step.label}</span>
                     </div>
                   );
                 })}
@@ -359,12 +359,12 @@ export default function OrderTracking() {
                     <h4 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate" title={item.productName}>
                       {item.productName}
                     </h4>
-                    <p className="text-sm text-slate-500 mt-0.5">
+                    <p className="text-md text-slate-500 mt-0.5">
                       {item.variantName ? `${item.variantName} | ` : ''}Số lượng: x{item.quantity}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0 space-y-0.5">
-                    <div className="text-sm text-slate-500 mb-1">{formatPrice(Number(item.unitPrice || 0))}</div>
+                    <div className="text-md text-slate-500 mb-1">{formatPrice(Number(item.unitPrice || 0))}</div>
                     <div className="font-bold text-purple-600 text-lg">{formatPrice(item.subtotal)}</div>
                   </div>
                 </div>
@@ -377,7 +377,7 @@ export default function OrderTracking() {
         <div className="space-y-6">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4">Thông tin đơn hàng</h2>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-md">
               <div className="flex justify-between"><span className="text-slate-500">Ngày đặt</span><span className="font-medium">{formatDate(order.createdAt)}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Cập nhật lần cuối</span><span className="font-medium">{formatDate(order.updatedAt || order.createdAt)}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Thanh toán</span><span className="font-medium">{order.paymentMethod}</span></div>
@@ -403,13 +403,13 @@ export default function OrderTracking() {
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-3">Địa chỉ giao hàng</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400">{order.shippingAddress}</p>
+            <p className="text-md text-slate-600 dark:text-slate-400">{order.shippingAddress}</p>
           </div>
 
           {order.note && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-3">Ghi chú</h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400">{order.note}</p>
+              <p className="text-md text-slate-600 dark:text-slate-400">{order.note}</p>
             </div>
           )}
         </div>

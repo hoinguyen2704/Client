@@ -1,0 +1,73 @@
+{
+  "title": "System & AI Settings",
+  "saving": "Saving...",
+  "save": "Save settings",
+  "noChanges": "No changes to save",
+  "saveSuccess": "Successfully saved settings!",
+  "saveError": "Failed to save settings!",
+  "loadError": "Failed to load system settings",
+  
+  "general": {
+    "title": "General Configuration",
+    "storeName": "Store Name",
+    "currency": "Currency",
+    "currencyVND": "VND (Vietnamese Dong)",
+    "currencyUSD": "USD (US Dollar)",
+    "defaultTax": "Default Tax (%)",
+    "enableTax": "Enable Tax",
+    "enableTaxDesc": "Calculate tax at checkout and save snapshot to order.",
+    "taxMode": "Tax Mode",
+    "taxModeIncluded": "Included in price",
+    "taxModeExcluded": "Excluded from price",
+    "taxOnShipping": "Apply tax on shipping fee",
+    "taxOnShippingDesc": "If off, calculate tax only on items amount.",
+    "contactEmail": "Contact Email",
+    "supportEmail": "Support Email",
+    "hotline": "Hotline",
+    "address": "Address"
+  },
+
+  "ai": {
+    "title": "AI Dashboard (ML Ops)",
+    "underDevelopment": "Under development",
+    "configure": "Configure Algorithm",
+    "lockedMsg": "AI Dashboard feature is under development, temporarily locked.",
+    "recommendation": "Recommendation Engine",
+    "recommendationDesc": "Automated product recommendation system",
+    "aiContent": "AI Content Generator",
+    "aiContentDesc": "Automatically generate product description",
+    "suggestions": "Suggestions",
+    "clickRate": "Click Rate",
+    "conversions": "Conversions"
+  },
+
+  "payment": {
+    "title": "Payment Configuration",
+    "cod": "Cash on Delivery (COD)",
+    "codDesc": "Allow customers to pay in cash",
+    "vnpay": "VNPay Payment",
+    "vnpayDesc": "Domestic and international payment gateway",
+    "momo": "MoMo Payment",
+    "momoDesc": "Popular e-wallet in Vietnam",
+    "bank": "Bank Transfer",
+    "bankDesc": "Direct bank transfer"
+  },
+
+  "shipping": {
+    "title": "Shipping Configuration",
+    "defaultFee": "Default Shipping Fee",
+    "freeshipThreshold": "Free Shipping Threshold",
+    "freeshipDesc": "Orders with a value greater than or equal to this threshold will have free shipping."
+  },
+
+  "aiModal": {
+    "title": "Suggestion Algorithm Config",
+    "close": "Close",
+    "coreAlgo": "Core Algorithm",
+    "algoCollab": "Collaborative Filtering",
+    "algoContent": "Content-based Filtering",
+    "algoHybrid": "Hybrid MLOps Model",
+    "newProductPriority": "New Product Priority",
+    "diversity": "Recommendation Diversity (Exploration)"
+  }
+}

@@ -23,16 +23,16 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-1 leading-tight">Tổng doanh thu</p>
-          <p className="text-sm sm:text-lg font-bold text-purple-700 dark:text-purple-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
+          <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Tổng doanh thu</p>
+          <p className="text-md sm:text-lg font-bold text-purple-700 dark:text-purple-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-1 leading-tight">Trung bình</p>
-          <p className="text-sm sm:text-lg font-bold text-blue-700 dark:text-blue-400">{avg >= 1e6 ? `${(avg / 1e6).toFixed(0)}M` : avg.toLocaleString()}</p>
+          <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Trung bình</p>
+          <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{avg >= 1e6 ? `${(avg / 1e6).toFixed(0)}M` : avg.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-1 leading-tight">Cao nhất ({maxItem.name.split('|')[0]})</p>
-          <p className="text-sm sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{maxItem.revenue >= 1e6 ? `${(maxItem.revenue / 1e6).toFixed(0)}M` : maxItem.revenue.toLocaleString()}</p>
+          <p className="text-[10px] sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Cao nhất ({maxItem.name.split('|')[0]})</p>
+          <p className="text-md sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{maxItem.revenue >= 1e6 ? `${(maxItem.revenue / 1e6).toFixed(0)}M` : maxItem.revenue.toLocaleString()}</p>
         </div>
       </div>
 

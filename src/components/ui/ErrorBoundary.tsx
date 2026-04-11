@@ -39,12 +39,12 @@ export default class ErrorBoundary extends Component<Props, State> {
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Đã xảy ra lỗi</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">
+              <p className="text-slate-500 dark:text-slate-400 text-md">
                 Ứng dụng gặp sự cố không mong đợi. Vui lòng thử tải lại trang.
               </p>
             </div>
             {this.state.error && (
-              <details className="text-left bg-slate-100 dark:bg-slate-900 rounded-xl p-4 text-xs text-slate-500 dark:text-slate-400">
+              <details className="text-left bg-slate-100 dark:bg-slate-900 rounded-xl p-4 text-sm text-slate-500 dark:text-slate-400">
                 <summary className="cursor-pointer font-medium mb-2">Chi tiết lỗi</summary>
                 <pre className="overflow-auto whitespace-pre-wrap">{this.state.error.message}</pre>
               </details>

@@ -74,7 +74,7 @@ export default function CustomerDetail() {
               <span className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-800 ${user.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'}`} />
             </div>
             <h2 className="text-lg sm:text-xl font-bold mb-1">{user.fullName}</h2>
-            <p className="text-slate-500 text-sm mb-4">@{user.userName || user.email.split('@')[0]}</p>
+            <p className="text-slate-500 text-md mb-4">@{user.userName || user.email.split('@')[0]}</p>
 
             <div className="flex justify-center gap-2 mb-6">
               <StatusBadge status={user.status === 'ACTIVE' ? 'active' : 'banned'} label={user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'} />
@@ -90,7 +90,7 @@ export default function CustomerDetail() {
               {user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
             </Button>
 
-            <div className="mt-5 sm:mt-6 space-y-3 text-left text-sm">
+            <div className="mt-5 sm:mt-6 space-y-3 text-left text-md">
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                 <FiMail className="text-slate-400 shrink-0" />
                 <span className="truncate">{user.email}</span>
@@ -115,27 +115,27 @@ export default function CustomerDetail() {
             </div>
             <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <span className="text-sm text-slate-500">Họ tên</span>
+                <span className="text-md text-slate-500">Họ tên</span>
                 <p className="font-bold">{user.fullName}</p>
               </div>
               <div>
-                <span className="text-sm text-slate-500">Email</span>
+                <span className="text-md text-slate-500">Email</span>
                 <p className="font-bold">{user.email}</p>
               </div>
               <div>
-                <span className="text-sm text-slate-500">Số điện thoại</span>
+                <span className="text-md text-slate-500">Số điện thoại</span>
                 <p className="font-bold">{user.phoneNumber || '—'}</p>
               </div>
               <div>
-                <span className="text-sm text-slate-500">Giới tính</span>
+                <span className="text-md text-slate-500">Giới tính</span>
                 <p className="font-bold">{user.gender || '—'}</p>
               </div>
               <div>
-                <span className="text-sm text-slate-500">Ngày sinh</span>
+                <span className="text-md text-slate-500">Ngày sinh</span>
                 <p className="font-bold">{user.dateOfBirth ? formatDate(user.dateOfBirth) : '—'}</p>
               </div>
               <div>
-                <span className="text-sm text-slate-500">Ngày tạo</span>
+                <span className="text-md text-slate-500">Ngày tạo</span>
                 <p className="font-bold">{formatDate(user.createdAt)}</p>
               </div>
             </div>

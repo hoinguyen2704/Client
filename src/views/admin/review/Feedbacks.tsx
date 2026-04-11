@@ -72,17 +72,17 @@ export default function Feedbacks() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
                     <div>
                       <span className="font-bold">{review.userName}</span>
-                      <span className="text-slate-400 text-sm ml-2">{formatDate(review.createdAt)}</span>
+                      <span className="text-slate-400 text-md ml-2">{formatDate(review.createdAt)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <StarRating value={review.rating} onChange={() => {}} readOnly size="sm" showLabel={false} />
                     </div>
                   </div>
-                  <p className="text-sm text-slate-500 mb-1">SP: <span className="font-medium text-slate-700 dark:text-slate-300">{review.productName}</span></p>
+                  <p className="text-md text-slate-500 mb-1">SP: <span className="font-medium text-slate-700 dark:text-slate-300">{review.productName}</span></p>
                   <p className="text-slate-700 dark:text-slate-300">{review.content}</p>
 
                   {review.adminReply && (
-                    <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-sm">
+                    <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-md">
                       <span className="font-bold text-blue-600">Admin:</span> {review.adminReply}
                     </div>
                   )}
@@ -106,7 +106,7 @@ export default function Feedbacks() {
                         defaultValue=""
                         autoFocus
                         onKeyDown={(e) => { if (e.key === 'Enter') handleReply(review.id); }}
-                        className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 outline-none text-sm" />
+                        className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 outline-none text-md" />
                       <Button onClick={() => handleReply(review.id)} size="sm" className="w-full sm:w-auto">Gửi</Button>
                     </div>
                   )}

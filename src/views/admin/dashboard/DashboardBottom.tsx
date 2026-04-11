@@ -26,7 +26,7 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                 <th className="pb-3 font-medium">Mã đơn</th>
                 <th className="pb-3 font-medium">Khách hàng</th>
                 <th className="pb-3 font-medium">Ngày đặt</th>
@@ -59,21 +59,21 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="text-center">
             <div className="text-4xl sm:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-1">{avgRating}</div>
-            <div className="flex justify-center text-yellow-400 text-sm mb-1">
+            <div className="flex justify-center text-yellow-400 text-md mb-1">
               {Array.from({ length: 5 }).map((_, i) => <FiStar key={i} className="fill-current" />)}
             </div>
-            <div className="text-xs text-slate-500">{totalReviews} đánh giá</div>
+            <div className="text-sm text-slate-500">{totalReviews} đánh giá</div>
           </div>
           <div className="flex-1">
             <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
-              <div className="text-sm text-slate-500 mb-1">Tháng này</div>
+              <div className="text-md text-slate-500 mb-1">Tháng này</div>
               <div className="text-xl font-bold text-purple-600 dark:text-purple-400">+{stats.newFeedbacks}</div>
             </div>
           </div>
         </div>
         <div className="space-y-3">
           {distribution.map((dist) => (
-            <div key={dist.stars} className="flex items-center gap-3 text-sm">
+            <div key={dist.stars} className="flex items-center gap-3 text-md">
               <div className="flex items-center gap-1 w-12 font-medium">{dist.stars} <FiStar className="text-yellow-400 fill-current" /></div>
               <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${dist.percent}%` }} />

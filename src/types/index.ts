@@ -17,3 +17,4 @@ export * from './user';
 export * from './setting';
 export * from './payment';
 export * from './ui';
+export * from './typography';

@@ -6,7 +6,7 @@ import { getApiErrorMessage } from '@/utils/error';
 import userService from '@/apis/services/userService';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
-import { Button, CustomSelect, SwitchToggle } from '@/components';
+import { Button, CustomSelect } from '@/components';
 import type { UserResponse } from '@/types';
 
 export default function Profile() {
@@ -25,12 +25,6 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  // Preferences
-  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
-  const isDarkMode = useUIStore((s) => s.darkMode);
-  const toggleDarkMode = useUIStore((s) => s.toggleDarkMode);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -142,7 +136,6 @@ export default function Profile() {
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold">Hồ sơ cá nhân</h1>
-
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Avatar Upload */}
@@ -193,7 +186,7 @@ export default function Profile() {
               onClick={() => avatarInputRef.current?.click()}
               variant="ghost"
               size="sm"
-              className="text-sm text-purple-600 hover:underline"
+              className="text-md text-purple-600 hover:underline"
             >
               Thay đổi ảnh đại diện
             </Button>
@@ -267,7 +260,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
         {/* Change Password */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-3 mb-6">
@@ -319,105 +312,6 @@ export default function Profile() {
             >
               {savingPassword ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
             </Button>
-          </div>
-        </div>
-
-        {/* Security & Preferences */}
-        <div className="space-y-8">
-          {/* 2FA */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl">
-                  <FiShield />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold">Xác thực 2 lớp (2FA)</h2>
-                  <p className="text-sm text-slate-500">Tăng cường bảo mật tài khoản</p>
-                </div>
-              </div>
-              <SwitchToggle
-                checked={is2FAEnabled}
-                onChange={setIs2FAEnabled}
-                tone="success"
-                ariaLabel="Bật tắt xác thực 2 lớp"
-              />
-            </div>
-
-            <AnimatePresence>
-              {is2FAEnabled && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center text-center">
-                    <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=otpauth://totp/Hozitech:${user?.email}?secret=JBSWY3DPEHPK3PXP&issuer=Hozitech`} alt="QR Code" className="w-32 h-32 mb-4 rounded-lg bg-white p-2" />
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Quét mã QR này bằng ứng dụng Google Authenticator hoặc Authy để thiết lập 2FA.</p>
-                    <div className="flex gap-2 w-full">
-                      <input type="text" placeholder="Nhập mã 6 số..." className="flex-1 h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 text-center tracking-widest font-mono" maxLength={6} />
-                      <Button variant="success" size="sm" className="px-4">Xác nhận</Button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Preferences */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-xl font-bold mb-6">Tùy chọn hiển thị</h2>
-
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xl">
-                    {isDarkMode ? <FiMoon /> : <FiSun />}
-                  </div>
-                  <span className="font-medium">Chế độ tối (Dark Mode)</span>
-                </div>
-                <SwitchToggle
-                  checked={isDarkMode}
-                  onChange={toggleDarkMode}
-                  tone="primary"
-                  ariaLabel="Bật tắt chế độ tối"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
-                    <FiGlobe />
-                  </div>
-                  <span className="font-medium">Ngôn ngữ</span>
-                </div>
-                <CustomSelect
-                  value="vi"
-                  onChange={() => {}}
-                  className="w-32 h-10"
-                  options={[
-                    { value: 'vi', label: 'Tiếng Việt' },
-                    { value: 'en', label: 'English' }
-                  ]}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl">
-                    <FiBell />
-                  </div>
-                  <span className="font-medium">Nhận thông báo khuyến mãi</span>
-                </div>
-                <SwitchToggle
-                  checked={notificationsEnabled}
-                  onChange={setNotificationsEnabled}
-                  tone="primary"
-                  ariaLabel="Bật tắt thông báo khuyến mãi"
-                />
-              </div>
-            </div>
           </div>
         </div>
       </div>

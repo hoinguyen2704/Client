@@ -67,7 +67,7 @@ export default function AdminReturns() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">Quản lý trả hàng / hoàn tiền</h1>
-          <p className="text-sm text-slate-500 mt-1">Danh sách yêu cầu trả hàng của khách và trạng thái hoàn tiền.</p>
+          <p className="text-md text-slate-500 mt-1">Danh sách yêu cầu trả hàng của khách và trạng thái hoàn tiền.</p>
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-slate-500 font-medium">Tổng số trang này</p>
+              <p className="text-md text-slate-500 font-medium">Tổng số trang này</p>
               <h3 className="text-2xl font-bold mt-1 text-slate-800 dark:text-slate-100">{returns.length}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
@@ -86,7 +86,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-slate-500 font-medium">Chờ duyệt</p>
+              <p className="text-md text-slate-500 font-medium">Chờ duyệt</p>
               <h3 className="text-2xl font-bold mt-1 text-amber-600">
                 {returns.filter(r => r.status === 'REQUESTED').length}
               </h3>
@@ -99,7 +99,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-slate-500 font-medium">Đang xử lý</p>
+              <p className="text-md text-slate-500 font-medium">Đang xử lý</p>
               <h3 className="text-2xl font-bold mt-1 text-blue-600">
                 {returns.filter(r => ['APPROVED', 'IN_TRANSIT', 'RECEIVED', 'QC_PASSED', 'QC_FAILED'].includes(r.status)).length}
               </h3>
@@ -112,7 +112,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-slate-500 font-medium">Cần hoàn tiền</p>
+              <p className="text-md text-slate-500 font-medium">Cần hoàn tiền</p>
               <h3 className="text-2xl font-bold mt-1 text-emerald-600">
                 {returns.filter(r => canProcessRefund(r.status) && r.refundStatus !== 'SUCCESS').length}
               </h3>
@@ -147,7 +147,7 @@ export default function AdminReturns() {
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="hidden lg:grid grid-cols-[minmax(140px,1fr)_minmax(130px,1fr)_minmax(160px,1fr)_130px_180px_120px_200px] gap-4 p-4 xl:p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm font-semibold rounded-t-2xl">
+        <div className="hidden lg:grid grid-cols-[minmax(140px,1fr)_minmax(130px,1fr)_minmax(160px,1fr)_130px_180px_120px_200px] gap-4 p-4 xl:p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md font-semibold rounded-t-2xl">
           <div>Mã yêu cầu</div>
           <div>Mã đơn</div>
           <div>Khách hàng</div>
@@ -187,30 +187,30 @@ export default function AdminReturns() {
                 className="group relative flex flex-col lg:grid lg:grid-cols-[minmax(140px,1fr)_minmax(130px,1fr)_minmax(160px,1fr)_130px_180px_120px_200px] gap-3 sm:gap-4 items-center p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300"
               >
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Mã yêu cầu:</span>
+                  <span className="lg:hidden text-slate-500 text-md">Mã yêu cầu:</span>
                   <div className="font-bold text-purple-600">{item.returnNumber}</div>
                 </div>
 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Mã đơn:</span>
+                  <span className="lg:hidden text-slate-500 text-md">Mã đơn:</span>
                   <div className="font-medium">{item.orderNumber}</div>
                 </div>
 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Khách hàng:</span>
-                  <div className="text-sm">
+                  <span className="lg:hidden text-slate-500 text-md">Khách hàng:</span>
+                  <div className="text-md">
                     <div className="font-medium text-slate-800 dark:text-slate-100">{item.userName || 'Không rõ'}</div>
                     <div className="text-slate-500">{item.userEmail || '-'}</div>
                   </div>
                 </div>
 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Yêu cầu hoàn:</span>
+                  <span className="lg:hidden text-slate-500 text-md">Yêu cầu hoàn:</span>
                   <div className="font-bold">{formatPrice(Number(item.requestedAmount || 0))}</div>
                 </div>
 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Trạng thái:</span>
+                  <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
                   <div className="flex flex-wrap gap-1.5 justify-end lg:justify-start">
                     <ReturnStatusBadge status={item.status} />
                     <RefundStatusBadge status={item.refundStatus} />
@@ -218,8 +218,8 @@ export default function AdminReturns() {
                 </div>
 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Ngày tạo:</span>
-                  <div className="text-slate-500 text-sm font-medium">{formatDate(item.createdAt)}</div>
+                  <span className="lg:hidden text-slate-500 text-md">Ngày tạo:</span>
+                  <div className="text-slate-500 text-md font-medium">{formatDate(item.createdAt)}</div>
                 </div>
 
                 <div className="w-full lg:w-auto mt-3 lg:mt-0 flex justify-end items-center gap-2 flex-wrap">

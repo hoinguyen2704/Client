@@ -53,7 +53,7 @@ export default function Blog() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6 text-white">
                   <h2 className="text-2xl font-bold mb-2 group-hover:text-purple-300 transition-colors">{articles[0].title}</h2>
-                  <div className="flex items-center gap-3 text-sm text-white/80">
+                  <div className="flex items-center gap-3 text-md text-white/80">
                     {articles[0].authorName && <span className="flex items-center gap-1"><FiUser /> {articles[0].authorName}</span>}
                     <span className="flex items-center gap-1"><FiCalendar /> {formatDate(articles[0].createdAt)}</span>
                   </div>
@@ -70,7 +70,7 @@ export default function Blog() {
                     )}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold line-clamp-2 group-hover:text-purple-600 transition-colors">{art.title}</h3>
-                      <span className="text-xs text-slate-500 mt-1 block">{formatDate(art.createdAt)}</span>
+                      <span className="text-sm text-slate-500 mt-1 block">{formatDate(art.createdAt)}</span>
                     </div>
                   </Link>
                 ))}
@@ -92,7 +92,7 @@ export default function Blog() {
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold line-clamp-2 group-hover:text-purple-600 transition-colors mb-2">{art.title}</h3>
-                    <div className="flex items-center gap-3 text-xs text-slate-500">
+                    <div className="flex items-center gap-3 text-sm text-slate-500">
                       {art.authorName && <span>{art.authorName}</span>}
                       <span>{formatDate(art.createdAt)}</span>
                     </div>

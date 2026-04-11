@@ -63,7 +63,7 @@ export default function Home() {
         <ProductSection
           icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30"><FiCpu className="text-2xl" /></div>}
           title="Sản phẩm nổi bật"
-          subtitle={<p className="text-sm text-slate-500">Được đề xuất cho bạn</p>}
+          subtitle={<p className="text-md text-slate-500">Được đề xuất cho bạn</p>}
           products={featured}
           layout="scroll"
         />

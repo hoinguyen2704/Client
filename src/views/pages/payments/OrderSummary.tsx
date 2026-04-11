@@ -21,7 +21,7 @@ export default function OrderSummary({ cartItems, currentStep, onBack, onNext }:
     <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-4 sm:p-6 sticky top-24 sm:top-28">
       <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Tóm tắt đơn hàng</h2>
       
-      <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6 text-sm sm:text-base text-slate-600 dark:text-slate-400">
+      <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6 text-md sm:text-base text-slate-600 dark:text-slate-400">
         <div className="flex justify-between">
           <span>Tạm tính ({cartItems.length} sản phẩm)</span>
           <span className="font-medium text-slate-900 dark:text-slate-100">{formatPrice(subtotal)}</span>

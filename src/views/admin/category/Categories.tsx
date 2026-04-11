@@ -188,7 +188,7 @@ export default function Categories() {
             {/* Basic info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1.5">
+                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
                   Tên danh mục *
                 </label>
                 <input
@@ -199,11 +199,11 @@ export default function Categories() {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1.5">
+                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
                   Mô tả
                 </label>
                 <input
@@ -213,7 +213,7 @@ export default function Categories() {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
                 />
               </div>
             </div>
@@ -223,10 +223,10 @@ export default function Categories() {
               <div className="bg-slate-50 dark:bg-slate-800/50 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200 dark:border-slate-700">
                 <div className="flex items-center gap-2 min-w-0">
                   <FiList className="text-purple-500" />
-                  <span className="font-medium text-sm">
+                  <span className="font-medium text-md">
                     Gợi ý thông số kỹ thuật
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-sm text-slate-400">
                     ({specTemplates.length} thông số)
                   </span>
                 </div>
@@ -244,7 +244,7 @@ export default function Categories() {
 
               {specTemplates.length === 0 ? (
                 <div className="p-6 text-center">
-                  <p className="text-sm text-slate-400 mb-3">
+                  <p className="text-md text-slate-400 mb-3">
                     Chưa có thông số gợi ý nào
                   </p>
                   <Button
@@ -261,10 +261,10 @@ export default function Categories() {
                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {/* Header */}
                   <div className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-slate-50/50 dark:bg-slate-800/30">
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                    <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                       Tên thông số
                     </span>
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                    <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                       Gợi ý (placeholder)
                     </span>
                     <span></span>
@@ -281,7 +281,7 @@ export default function Categories() {
                           updateSpecRow(index, "specKey", e.target.value)
                         }
                         placeholder="VD: Màn hình, RAM..."
-                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                       />
                       <input
                         type="text"
@@ -290,7 +290,7 @@ export default function Categories() {
                           updateSpecRow(index, "hint", e.target.value)
                         }
                         placeholder="VD: 6.7 inch OLED, 120Hz"
-                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                       />
                       <div className="flex items-center justify-center">
                         <TrashButton onClick={() => removeSpecRow(index)} />
@@ -338,7 +338,7 @@ export default function Categories() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                 <th className="p-3 sm:p-4 font-medium">Danh mục</th>
                 <th className="p-3 sm:p-4 font-medium">Slug</th>
                 <th className="p-3 sm:p-4 font-medium text-center">Thông số</th>
@@ -373,14 +373,14 @@ export default function Categories() {
                         <div>
                           <span className="font-bold">{cat.name}</span>
                           {cat.description && (
-                            <span className="text-xs text-slate-400 block">
+                            <span className="text-sm text-slate-400 block">
                               {cat.description}
                             </span>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 text-slate-500 font-mono text-sm">
+                    <td className="p-3 sm:p-4 text-slate-500 font-mono text-md">
                       {cat.slug}
                     </td>
                     <td className="p-3 sm:p-4 text-center">
@@ -390,7 +390,7 @@ export default function Categories() {
                           {cat.specTemplates!.length}
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-300">—</span>
+                        <span className="text-sm text-slate-300">—</span>
                       )}
                     </td>
                     <td className="p-3 sm:p-4">

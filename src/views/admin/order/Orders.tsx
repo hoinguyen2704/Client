@@ -88,7 +88,7 @@ export default function AdminOrders() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         
         {/* Desktop Header */}
-        <div className="hidden lg:grid grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-4 xl:p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm font-semibold rounded-t-2xl">
+        <div className="hidden lg:grid grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-4 xl:p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md font-semibold rounded-t-2xl">
           <div>Mã đơn hàng</div>
           <div>Ngày đặt</div>
           <div>SP</div>
@@ -122,35 +122,35 @@ export default function AdminOrders() {
                 {/* Mobile: Order Header */}
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
                   <div className="font-bold text-purple-600 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 lg:hidden"><FiPackage className="text-sm" /></div>
+                    <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 lg:hidden"><FiPackage className="text-md" /></div>
                     {order.orderNumber}
                   </div>
-                  <div className="lg:hidden text-slate-500 text-sm">{formatDate(order.createdAt)}</div>
+                  <div className="lg:hidden text-slate-500 text-md">{formatDate(order.createdAt)}</div>
                 </div>
 
                 <div className="hidden lg:block text-slate-500 font-medium">{formatDate(order.createdAt)}</div>
                 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Số lượng SP:</span>
-                  <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-xs lg:text-sm w-max">
+                  <span className="lg:hidden text-slate-500 text-md">Số lượng SP:</span>
+                  <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max">
                     {order.items?.length || 0}
                   </div>
                 </div>
 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Tổng tiền:</span>
+                  <span className="lg:hidden text-slate-500 text-md">Tổng tiền:</span>
                   <div className="font-bold">{formatPrice(order.totalAmount)}</div>
                 </div>
 
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Thanh toán:</span>
-                  <div className="text-slate-500 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-xs lg:text-sm w-max border lg:border-none border-slate-200 dark:border-slate-700">
+                  <span className="lg:hidden text-slate-500 text-md">Thanh toán:</span>
+                  <div className="text-slate-500 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
                     {order.paymentMethod}
                   </div>
                 </div>
 
                 <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between items-center lg:block">
-                  <span className="lg:hidden text-slate-500 text-sm">Trạng thái:</span>
+                  <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
                   <CustomSelect 
                     value={order.orderStatus} 
                     onChange={(val) => handleStatusChange(order.id, val)}

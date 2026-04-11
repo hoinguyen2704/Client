@@ -101,8 +101,8 @@ export default function Cart() {
             <FiShoppingBag className="text-5xl sm:text-6xl text-slate-300 dark:text-slate-600" />
           </div>
           <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-slate-800 dark:text-white">Giỏ hàng trống</h3>
-          <p className="text-sm sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm">Có vẻ như bạn chưa thêm sản phẩm nào vào giỏ. Khám phá hàng ngàn deal hot ngay hôm nay!</p>
-          <Link to="/search" className="px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-2xl hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-purple-500/25 transform hover:-translate-y-1">
+          <p className="text-md sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm">Có vẻ như bạn chưa thêm sản phẩm nào vào giỏ. Khám phá hàng ngàn deal hot ngay hôm nay!</p>
+          <Link to="/search" className="px-6 sm:px-8 py-3.5 sm:py-4 text-md sm:text-base bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-2xl hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-purple-500/25 transform hover:-translate-y-1">
             MUA SẮM NGAY
           </Link>
         </div>
@@ -112,7 +112,7 @@ export default function Cart() {
             <div className="flex items-center justify-between p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" checked={allSelectableSelected} onChange={toggleAll} className="w-4 h-4 rounded border-slate-300" />
-                <span className="font-medium text-sm">Chọn tất cả ({items.length})</span>
+                <span className="font-medium text-md">Chọn tất cả ({items.length})</span>
               </label>
               <Button onClick={handleClearCart} variant="ghost" size="lg" icon={<FiTrash2 />} className="text-red-500 shrink-0">Xóa tất cả</Button>
             </div>
@@ -136,15 +136,15 @@ export default function Cart() {
                   </Link>
                   <div className="min-w-0 flex-1 flex flex-col items-start">
                     <Link to={`/product/${item.productSlug}`} className="hover:text-purple-600 transition-colors w-full">
-                      <h3 className="font-bold line-clamp-2 text-sm sm:text-base">{item.productName}</h3>
+                      <h3 className="font-bold line-clamp-2 text-md sm:text-base">{item.productName}</h3>
                     </Link>
                     <Link to={`/product/${item.productSlug}`} className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-0.5 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group cursor-pointer" title="Nhấn để đổi cấu hình khác">
-                      <p className="text-xs sm:text-sm font-medium text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 line-clamp-1">{item.variantName}</p>
+                      <p className="text-sm sm:text-md font-medium text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 line-clamp-1">{item.variantName}</p>
                       <span className="text-[10px] font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">Thay đổi</span>
                     </Link>
-                    <p className="text-purple-600 font-bold mt-1 text-sm sm:text-base">{formatPrice(item.price)}</p>
+                    <p className="text-purple-600 font-bold mt-1 text-md sm:text-base">{formatPrice(item.price)}</p>
                     {item.available === false && (
-                      <p className="text-xs text-red-500 mt-1">{item.issueMessage || 'Sản phẩm không còn khả dụng'}</p>
+                      <p className="text-sm text-red-500 mt-1">{item.issueMessage || 'Sản phẩm không còn khả dụng'}</p>
                     )}
                   </div>
                 </div>
@@ -167,7 +167,7 @@ export default function Cart() {
           {/* Summary */}
           <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-100 dark:border-slate-800 h-fit sticky top-24 sm:top-28 space-y-4 sm:space-y-6 shadow-sm">
             <h2 className="text-lg sm:text-xl font-bold border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">Tóm tắt đơn hàng</h2>
-            <div className="space-y-3 sm:space-y-4 text-sm sm:text-[15px]">
+            <div className="space-y-3 sm:space-y-4 text-md sm:text-[15px]">
               <div className="flex justify-between"><span className="text-slate-500">Sản phẩm đã chọn</span><span className="font-medium">{selectedItems.length}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Tạm tính</span><span className="font-medium">{formatPrice(total)}</span></div>
               <hr className="border-slate-100 dark:border-slate-800" />

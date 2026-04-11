@@ -140,7 +140,7 @@ export default function ProductDetail() {
   return (
     <div className="w-full px-4 md:px-8 lg:px-12 py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-sm text-slate-500 mb-8">
+      <nav className="flex text-md text-slate-500 mb-8">
         <ol className="flex items-center space-x-2">
           <li><Link to="/" className="hover:text-purple-600">Trang chủ</Link></li>
           <li><FiChevronRight /></li>

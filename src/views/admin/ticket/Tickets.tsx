@@ -160,7 +160,7 @@ export default function Tickets() {
                 <div className="flex flex-wrap justify-between items-start gap-3">
                   <div>
                     <h2 className="text-base sm:text-lg font-bold">{selectedTicket.subject}</h2>
-                    <p className="text-sm text-slate-500 mt-1">{selectedTicket.userName} ({selectedTicket.userEmail})</p>
+                    <p className="text-md text-slate-500 mt-1">{selectedTicket.userName} ({selectedTicket.userEmail})</p>
                   </div>
                   <CustomSelect value={selectedTicket.status} onChange={(val) => handleStatusChange(selectedTicket.id, val)}
                     options={TICKET_STATUS_OPTIONS} className="w-full sm:w-36 z-10" />
@@ -169,7 +169,7 @@ export default function Tickets() {
               <div className="flex-1 p-3 sm:p-6 overflow-y-auto space-y-3 sm:space-y-4 min-h-0">
                 {selectedTicket.messages?.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.senderType === 'ADMIN' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[92%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-sm sm:text-base ${
+                    <div className={`max-w-[92%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-md sm:text-base ${
                       msg.senderType === 'ADMIN' ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                     }`}>
                       <p>{msg.content}</p>
@@ -182,7 +182,7 @@ export default function Tickets() {
               <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-2">
                 <input type="text" placeholder="Nhập câu trả lời..." value={replyText} onChange={(e) => setReplyText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleReply()}
-                  className="flex-1 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base" />
+                  className="flex-1 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md sm:text-base" />
                 <Button onClick={handleReply} size="md" icon={<FiMessageCircle />} className="w-full sm:w-auto">
                 Gửi
                 </Button>

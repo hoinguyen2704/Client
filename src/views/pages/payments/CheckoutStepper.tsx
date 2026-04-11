@@ -19,7 +19,7 @@ export default function CheckoutStepper({ currentStep }: CheckoutStepperProps) {
             <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold z-10 transition-colors ${currentStep >= step.id ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-lg shadow-purple-500/30' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}`}>
               {currentStep > step.id ? <FiCheck /> : <step.icon />}
             </div>
-            <span className={`absolute top-14 w-32 text-center text-sm font-medium ${currentStep >= step.id ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`}>
+            <span className={`absolute top-14 w-32 text-center text-md font-medium ${currentStep >= step.id ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`}>
               {step.title}
             </span>
           </div>

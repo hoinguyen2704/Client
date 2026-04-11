@@ -88,12 +88,12 @@ export default function OrderDetail() {
               Đơn hàng {order.orderNumber}
               <StatusBadge status={order.orderStatus} />
             </h1>
-            <p className="text-slate-500 text-sm mt-1">{formatDate(order.createdAt)}</p>
+            <p className="text-slate-500 text-md mt-1">{formatDate(order.createdAt)}</p>
           </div>
         </div>
       <div className="flex flex-col sm:flex-row sm:items-end gap-3">
           <div className="w-full sm:w-56">
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5">Trạng thái đơn hàng</label>
+            <label className="block text-sm font-semibold text-slate-500 mb-1.5">Trạng thái đơn hàng</label>
             <CustomSelect
               value={editStatus || order.orderStatus}
               onChange={handleUpdateStatus}
@@ -124,10 +124,10 @@ export default function OrderDetail() {
                     <div key={history.id} className="flex gap-4">
                       {/* Left: Time */}
                       <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
-                        <div className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                        <div className="text-md font-medium text-slate-800 dark:text-slate-200">
                           {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                         </div>
-                        <div className="text-xs text-slate-500 mt-1">
+                        <div className="text-sm text-slate-500 mt-1">
                           {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                         </div>
                       </div>
@@ -147,7 +147,7 @@ export default function OrderDetail() {
                           {history.status === 'SHIPPED' ? 'Giao hàng thành công' : history.description}
                         </h4>
                         {isFirst && history.status === 'SHIPPED' && (
-                          <div className="inline-flex items-center gap-1 text-sm text-purple-600 mt-1">
+                          <div className="inline-flex items-center gap-1 text-md text-purple-600 mt-1">
                             <FiCheck /> Đơn hàng đã được giao thành công
                           </div>
                         )}
@@ -165,7 +165,7 @@ export default function OrderDetail() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[620px] text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                     <th className="pb-3 font-medium">Sản phẩm</th>
                     <th className="pb-3 font-medium text-center">Đơn giá</th>
                     <th className="pb-3 font-medium text-center">SL</th>
@@ -177,7 +177,7 @@ export default function OrderDetail() {
                     <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0">
                       <td className="py-4">
                         <div className="font-bold">{item.productName}</div>
-                        <div className="text-sm text-slate-500">{item.variantName}</div>
+                        <div className="text-md text-slate-500">{item.variantName}</div>
                       </td>
                       <td className="py-4 text-center font-medium">{formatPrice(item.unitPrice)}</td>
                       <td className="py-4 text-center font-medium">{item.quantity}</td>
@@ -192,7 +192,7 @@ export default function OrderDetail() {
           {/* Note */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4">Ghi chú</h2>
-            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-sm border border-yellow-100 dark:border-yellow-900/50">
+            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-md border border-yellow-100 dark:border-yellow-900/50">
               {order.note || 'Không có ghi chú.'}
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function OrderDetail() {
           {/* Customer Info */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-purple-600" /> Khách hàng</h2>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-md">
               {order.customerName && (
                 <div className="flex items-start justify-between gap-3">
                   <span className="text-slate-500">Họ tên:</span>
@@ -228,13 +228,13 @@ export default function OrderDetail() {
           {/* Shipping */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> Giao hàng</h2>
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{order.shippingAddress}</p>
+            <p className="text-md text-slate-700 dark:text-slate-300 leading-relaxed">{order.shippingAddress}</p>
           </div>
 
           {/* Payment */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><FiCreditCard className="text-green-600" /> Thanh toán</h2>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-md">
               <div className="flex items-start justify-between gap-3">
                 <span className="text-slate-500">Phương thức:</span>
                 <span className="font-medium">{order.paymentMethod}</span>
@@ -255,7 +255,7 @@ export default function OrderDetail() {
           {/* Summary / Total */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4">Tổng thanh toán</h2>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-md">
               <div className="flex justify-between text-slate-500"><span>Tạm tính</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
               <div className="flex justify-between text-slate-500"><span>Phí vận chuyển</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
               {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm giá sản phẩm</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
@@ -282,46 +282,46 @@ export default function OrderDetail() {
       <div className="flex justify-between items-start mb-8">
         <div>
           <h2 className="text-3xl font-bold font-serif mb-2 text-[#2539e6]">{SHOP.fullName}</h2>
-          <p className="text-sm">123 Đường Công Nghệ, Quận IT, TP.HCM</p>
-          <p className="text-sm">SĐT: 0123.456.789</p>
-          <p className="text-sm">Email: {SHOP.email}</p>
+          <p className="text-md">123 Đường Công Nghệ, Quận IT, TP.HCM</p>
+          <p className="text-md">SĐT: 0123.456.789</p>
+          <p className="text-md">Email: {SHOP.email}</p>
         </div>
         <div className="text-right">
           <h1 className="text-2xl font-bold uppercase tracking-widest text-[#2539e6]">Hóa Đơn</h1>
           <p className="font-bold text-lg mt-2 font-mono">#{order.orderNumber}</p>
-          <p className="text-sm text-slate-600">Ngày: {formatDate(order.createdAt)}</p>
+          <p className="text-md text-slate-600">Ngày: {formatDate(order.createdAt)}</p>
         </div>
       </div>
 
       <div className="mb-8 border-t border-slate-200 pt-6 flex justify-between">
         <div>
-          <h3 className="font-bold text-slate-500 uppercase text-xs mb-2">Khách hàng</h3>
+          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">Khách hàng</h3>
           <p className="font-bold text-base">{order.customerName}</p>
-          <p className="text-sm">{order.shippingAddress || 'Nhận tại cửa hàng'}</p>
+          <p className="text-md">{order.shippingAddress || 'Nhận tại cửa hàng'}</p>
         </div>
         <div className="text-right">
-          <h3 className="font-bold text-slate-500 uppercase text-xs mb-2">Thanh toán & Giao hàng</h3>
-          <p className="text-sm"><strong>Phương thức:</strong> {order.paymentMethod}</p>
-          <p className="text-sm"><strong>Trạng thái:</strong> {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thu tiền'}</p>
+          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">Thanh toán & Giao hàng</h3>
+          <p className="text-md"><strong>Phương thức:</strong> {order.paymentMethod}</p>
+          <p className="text-md"><strong>Trạng thái:</strong> {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thu tiền'}</p>
         </div>
       </div>
 
       <table className="w-full text-left mb-8 border-collapse">
         <thead>
-          <tr className="border-b-2 border-slate-800 text-sm">
+          <tr className="border-b-2 border-slate-800 text-md">
             <th className="py-2 font-bold">Sản phẩm</th>
             <th className="py-2 font-bold text-center">SL</th>
             <th className="py-2 font-bold text-right">Đơn giá</th>
             <th className="py-2 font-bold text-right">Thành tiền</th>
           </tr>
         </thead>
-        <tbody className="text-sm">
+        <tbody className="text-md">
           {order.items?.map((item, idx) => (
             <tr key={idx} className="border-b border-slate-200">
               <td className="py-3 pr-4">
                 <div className="font-medium text-base">{item.productName}</div>
                 {item.variantName && (
-                  <div className="text-xs mt-1 italic">N/L: {item.variantName}</div>
+                  <div className="text-sm mt-1 italic">N/L: {item.variantName}</div>
                 )}
               </td>
               <td className="py-3 text-center">{item.quantity}</td>
@@ -333,7 +333,7 @@ export default function OrderDetail() {
       </table>
 
       <div className="flex justify-end mb-12">
-        <div className="w-64 space-y-2 text-sm">
+        <div className="w-64 space-y-2 text-md">
           <div className="flex justify-between"><span>Tạm tính:</span> <span>{formatPrice(order.subtotal + order.shippingFee)}</span></div>
           {(order.discountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm giá sản phẩm:</span> <span>-{formatPrice(order.discountAmount!)}</span></div>}
           {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm phí vận chuyển:</span> <span>-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
@@ -350,7 +350,7 @@ export default function OrderDetail() {
         </div>
       </div>
 
-      <div className="flex justify-between text-center mx-12 mt-16 text-sm">
+      <div className="flex justify-between text-center mx-12 mt-16 text-md">
         <div>
           <p className="font-bold mb-24">Người mua hàng</p>
           <p className="text-slate-500 italic">(Ký, ghi rõ họ tên)</p>
@@ -361,7 +361,7 @@ export default function OrderDetail() {
         </div>
       </div>
 
-      <div className="mt-20 text-center text-xs text-slate-500 border-t border-slate-200 pt-4">
+      <div className="mt-20 text-center text-sm text-slate-500 border-t border-slate-200 pt-4">
         Cảm ơn quý khách đã mua bán tại {SHOP.fullName}!
       </div>
     </div>

@@ -188,7 +188,7 @@ export default function Support() {
             ) : tickets.length === 0 ? (
               <div className="p-8 text-center text-slate-400">
                 <FiMessageSquare className="text-3xl mx-auto mb-2" />
-                <p className="text-sm">Bạn chưa có yêu cầu hỗ trợ nào</p>
+                <p className="text-md">Bạn chưa có yêu cầu hỗ trợ nào</p>
               </div>
             ) : (
               tickets.map((ticket) => (
@@ -211,7 +211,7 @@ export default function Support() {
                   <h2 className="text-base sm:text-lg font-bold">{selectedTicket.subject}</h2>
                   <StatusBadge status={selectedTicket.status} />
                 </div>
-                <p className="text-sm sm:text-base text-slate-500">
+                <p className="text-md sm:text-base text-slate-500">
                   {selectedTicket.ticketNumber} • {formatDate(selectedTicket.createdAt)}
                 </p>
               </div>
@@ -223,7 +223,7 @@ export default function Support() {
                     className={`flex ${msg.senderType === 'USER' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[92%] sm:max-w-[82%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-sm sm:text-base ${
+                      className={`max-w-[92%] sm:max-w-[82%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-md sm:text-base ${
                         msg.senderType === 'USER'
                           ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
                           : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-bl-md'
@@ -245,7 +245,7 @@ export default function Support() {
 
               <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800">
                 {isChatClosed ? (
-                  <div className="h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm sm:text-md text-slate-500 flex items-center">
+                  <div className="h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-md sm:text-md text-slate-500 flex items-center">
                     Ticket đã đóng, bạn không thể gửi thêm phản hồi.
                   </div>
                 ) : (
@@ -275,7 +275,7 @@ export default function Support() {
               <div>
                 <FiMessageSquare className="text-4xl mx-auto mb-3" />
                 <p>Chọn một yêu cầu bên trái để bắt đầu chat với admin</p>
-                <p className="text-sm mt-1">Tin nhắn sẽ được cập nhật realtime.</p>
+                <p className="text-md mt-1">Tin nhắn sẽ được cập nhật realtime.</p>
               </div>
             </div>
           )}

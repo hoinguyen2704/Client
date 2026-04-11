@@ -23,7 +23,7 @@ export default function CategoryChart({ stats }: DashboardChildProps) {
         <>
           <div className="flex items-center gap-2 mb-4">
             <div className="w-4 h-3 bg-blue-500 rounded-sm" />
-            <span className="text-sm text-slate-500">Số lượng bán</span>
+            <span className="text-md text-slate-500">Số lượng bán</span>
           </div>
           <div className="h-72 sm:h-96">
             <ResponsiveContainer width="100%" height="100%">

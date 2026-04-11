@@ -16,19 +16,19 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
       icon: 'text-[10px]',
       line: 'h-0.5',
       vLine: 'w-0.5',
-      label: 'text-xs',
+      label: 'text-sm',
       time: 'text-[10px]',
       desc: 'text-[10px]',
       gap: 'gap-2',
     },
     md: {
       dot: 'w-10 h-10',
-      icon: 'text-sm',
+      icon: 'text-md',
       line: 'h-1',
       vLine: 'w-1',
-      label: 'text-sm',
-      time: 'text-xs',
-      desc: 'text-xs',
+      label: 'text-md',
+      time: 'text-sm',
+      desc: 'text-sm',
       gap: 'gap-3',
     },
   }[size];
@@ -77,10 +77,10 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
                 <div className="w-24 text-right pt-2 flex-shrink-0">
                   {step.timestamp && (
                     <>
-                      <div className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                      <div className="font-medium text-md text-slate-800 dark:text-slate-200">
                         {step.timestamp.split(' ')[1]}
                       </div>
-                      <div className="text-xs text-slate-500">{step.timestamp.split(' ')[0]}</div>
+                      <div className="text-sm text-slate-500">{step.timestamp.split(' ')[0]}</div>
                     </>
                   )}
                 </div>

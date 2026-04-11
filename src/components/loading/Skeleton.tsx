@@ -41,7 +41,7 @@ export function LoadingScreen() {
           <div className="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-800" />
           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-600 animate-spin" />
         </div>
-        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Đang tải...</p>
+        <p className="text-md text-slate-500 dark:text-slate-400 font-medium">Đang tải...</p>
       </div>
     </div>
   );

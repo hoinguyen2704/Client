@@ -113,7 +113,7 @@ export default function Search() {
   return (
     <div className="w-full px-3 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-xs sm:text-sm text-slate-500 mb-5 sm:mb-8">
+      <nav className="flex text-sm sm:text-md text-slate-500 mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
           <li><Link to="/" className="hover:text-purple-600">Trang chủ</Link></li>
           <li><span className="mx-2">/</span></li>
@@ -124,7 +124,7 @@ export default function Search() {
       <div className="flex flex-col lg:flex-row gap-5 sm:gap-8">
         {/* Mobile Filter Toggle */}
         <button 
-          className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-sm font-semibold"
+          className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-md font-semibold"
           onClick={() => setIsFilterOpen(true)}
         >
           <FiFilter /> Lọc sản phẩm
@@ -170,7 +170,7 @@ export default function Search() {
                           onChange={() => handleBrandChange(brand.slug)}
                           className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
                         />
-                        <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
+                        <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-md" />
                       </div>
                       <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{brand.name}</span>
                     </label>
@@ -191,11 +191,11 @@ export default function Search() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
             <h1 className="text-xl sm:text-2xl font-bold">
               {query ? `Kết quả cho "${query}"` : 'Tất cả sản phẩm'} 
-              <span className="text-slate-500 text-sm sm:text-lg font-normal"> ({totalElements})</span>
+              <span className="text-slate-500 text-md sm:text-lg font-normal"> ({totalElements})</span>
             </h1>
             
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-xs sm:text-sm text-slate-500">Sắp xếp:</span>
+              <span className="text-sm sm:text-md text-slate-500">Sắp xếp:</span>
               <div>
                 <CustomSelect 
                   value={sortBy === 'price' ? (sortDir === 'asc' ? 'price-asc' : 'price-desc') : 'newest'}
@@ -242,7 +242,7 @@ export default function Search() {
                 <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold mb-2">Không tìm thấy sản phẩm nào</h2>
-              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
+              <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
                 Vui lòng thử lại với các tiêu chí khác.
               </p>
               <Button onClick={clearFilters} size="md">

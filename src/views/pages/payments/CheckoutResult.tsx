@@ -22,7 +22,7 @@ export default function CheckoutResult({ isSuccess, onRetry }: CheckoutResultPro
               <FiCheck className="text-4xl sm:text-5xl text-green-500" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">Đặt hàng thành công!</h1>
-            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">
+            <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">
               Cảm ơn bạn đã mua sắm tại Hozitech. Mã đơn hàng của bạn là <span className="font-bold text-slate-900 dark:text-white">#HZT-889922</span>.
             </p>
             <Button href="/user/tracking" fullWidth size="lg" className="mb-3 sm:mb-4">
@@ -38,7 +38,7 @@ export default function CheckoutResult({ isSuccess, onRetry }: CheckoutResultPro
               <FiAlertCircle className="text-4xl sm:text-5xl text-red-500" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">Thanh toán thất bại</h1>
-            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">
+            <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">
               Đã có lỗi xảy ra trong quá trình xử lý thanh toán. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.
             </p>
             <button 

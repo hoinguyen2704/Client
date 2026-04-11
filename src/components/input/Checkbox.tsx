@@ -25,7 +25,7 @@ export default function Checkbox({
         onChange={handleChange}
         {...rest}
       />
-      <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none stroke-[3] text-sm" />
+      <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none stroke-[3] text-md" />
     </span>
   );
 }

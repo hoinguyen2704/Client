@@ -75,7 +75,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">Địa chỉ</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">132/72/6 đường Cầu Diễn, Nguyên Xá, phường Tây Tựu, Thành phố Hà Nội</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">132/72/6 đường Cầu Diễn, Nguyên Xá, phường Tây Tựu, Thành phố Hà Nội</p>
                   </div>
                 </div>
 
@@ -85,8 +85,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">Điện thoại</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">0828443833 (Hỗ trợ 24/7)</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">0828443833 (Zalo/Viber)</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">0828443833 (Hỗ trợ 24/7)</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">0828443833 (Zalo/Viber)</p>
                   </div>
                 </div>
 
@@ -96,8 +96,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">Email</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">hozinium@gmail.com</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">hozinium@gmail.com</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">hozinium@gmail.com</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">hozinium@gmail.com</p>
                   </div>
                 </div>
 
@@ -107,8 +107,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">Giờ làm việc</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Thứ 2 - Thứ 6: 8:00 - 20:00</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Thứ 7 - CN: 9:00 - 18:00</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">Thứ 2 - Thứ 6: 8:00 - 20:00</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">Thứ 7 - CN: 9:00 - 18:00</p>
                   </div>
                 </div>
               </div>

@@ -4,6 +4,7 @@ export { default as CustomSelect } from "./input/CustomSelect";
 export { default as EmptyState } from "./ui/EmptyState";
 export { default as StatusBadge } from "./ui/StatusBadge";
 export { default as ProductCard } from "./product/ProductCard";
+export { default as VariantSelector } from "./product/VariantSelector";
 export { default as Chatbot } from "./chat/Chatbot";
 export { default as LogoIcon } from "./ui/LogoIcon";
 export { default as ErrorBoundary } from "./ui/ErrorBoundary";
@@ -24,6 +25,7 @@ export { default as OptimizedImage } from "./ui/OptimizedImage";
 export { default as PrimaryButton } from "./button/PrimaryButton";
 export { default as TrashButton } from "./button/TrashButton";
 export { default as BackButton } from "./button/BackButton";
+export { default as ExpandToggle } from "./button/ExpandToggle";
 export {
   default as Modal,
   ModalCancelButton,

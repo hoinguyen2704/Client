@@ -127,7 +127,7 @@ export default function AdminVouchers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1020px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                 <th className="p-3 sm:p-4 font-medium">Mã Voucher</th>
                 <th className="p-3 sm:p-4 font-medium">Loại / Giá trị</th>
                 <th className="p-3 sm:p-4 font-medium text-center">Đã dùng</th>
@@ -169,7 +169,7 @@ export default function AdminVouchers() {
                           ? `${v.discountValue}%`
                           : formatPrice(v.discountValue)}
                       </div>
-                      <div className="text-xs text-slate-500 flex gap-1 items-center mt-1">
+                      <div className="text-sm text-slate-500 flex gap-1 items-center mt-1">
                         <span className={`px-1.5 py-0.5 rounded ${v.couponCategory === "SHIPPING" ? "bg-teal-100 text-teal-600" : "bg-purple-100 text-purple-600"}`}>
                            {v.couponCategory === "SHIPPING" ? "Freeship" : "Sản phẩm"}
                         </span>
@@ -196,7 +196,7 @@ export default function AdminVouchers() {
                         )}
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 text-sm text-slate-500">
+                    <td className="p-3 sm:p-4 text-md text-slate-500">
                       <div>
                         Từ: {v.startDate ? formatDate(v.startDate) : "—"}
                       </div>
@@ -204,23 +204,23 @@ export default function AdminVouchers() {
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       {v.isPublic ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                           <FiGlobe className="text-[10px]" /> Công khai
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                           <FiLock className="text-[10px]" /> Riêng tư
                         </span>
                       )}
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       {v.applyType === "SPECIFIC_PRODUCTS" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                           <FiPackage className="text-[10px]" />{" "}
                           {v.applicableProducts?.length || 0} SP
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-400">Tất cả</span>
+                        <span className="text-sm text-slate-400">Tất cả</span>
                       )}
                     </td>
                     <td className="p-3 sm:p-4">
@@ -300,7 +300,7 @@ export default function AdminVouchers() {
 
                 {/* Discount Type */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Loại Giảm Giá</label>
+                  <label className="text-md font-medium">Loại Giảm Giá</label>
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -312,7 +312,7 @@ export default function AdminVouchers() {
                         }
                         className="text-purple-600"
                       />
-                      <span className="text-sm">Theo %</span>
+                      <span className="text-md">Theo %</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -324,14 +324,14 @@ export default function AdminVouchers() {
                         }
                         className="text-purple-600"
                       />
-                      <span className="text-sm">Tiền cố định</span>
+                      <span className="text-md">Tiền cố định</span>
                     </label>
                   </div>
                 </div>
 
                 {/* Coupon Category */}
                 <div className="space-y-3">
-                  <label className="text-sm font-medium">Nhóm Voucher</label>
+                  <label className="text-md font-medium">Nhóm Voucher</label>
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
                      <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -343,7 +343,7 @@ export default function AdminVouchers() {
                         }
                         className="text-purple-600"
                       />
-                      <span className="text-sm">Voucher Sản Phẩm (Nền tảng / Shop)</span>
+                      <span className="text-md">Voucher Sản Phẩm (Nền tảng / Shop)</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -355,7 +355,7 @@ export default function AdminVouchers() {
                         }
                         className="text-purple-600"
                       />
-                      <span className="text-sm">Voucher Freeship</span>
+                      <span className="text-md">Voucher Freeship</span>
                     </label>
                   </div>
                 </div>
@@ -431,7 +431,7 @@ export default function AdminVouchers() {
                 <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-100 dark:border-blue-900/50 space-y-3">
                   <div className="flex items-start sm:items-center justify-between gap-3">
                     <div>
-                      <div className="text-sm font-bold flex items-center gap-2">
+                      <div className="text-md font-bold flex items-center gap-2">
                         {form.isPublic ? (
                           <FiGlobe className="text-blue-500" />
                         ) : (
@@ -439,7 +439,7 @@ export default function AdminVouchers() {
                         )}
                         Hiển thị công khai
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-sm text-slate-500 mt-0.5">
                         {form.isPublic
                           ? "Voucher sẽ hiển thị trên trang của khách hàng, họ có thể lưu & sử dụng"
                           : "Chỉ khi khách hàng nhập đúng mã mới dùng được"}
@@ -460,7 +460,7 @@ export default function AdminVouchers() {
 
                 {/* Apply Type */}
                 <div className="space-y-3">
-                  <label className="text-sm font-medium">Phạm vi áp dụng</label>
+                  <label className="text-md font-medium">Phạm vi áp dụng</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button
                       type="button"
@@ -477,10 +477,10 @@ export default function AdminVouchers() {
                           : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
                       }`}
                     >
-                      <div className="text-sm font-bold">
+                      <div className="text-md font-bold">
                         🛒 Tất cả sản phẩm
                       </div>
-                      <div className="text-xs text-slate-500 mt-0.5">
+                      <div className="text-sm text-slate-500 mt-0.5">
                         Áp dụng cho toàn bộ đơn hàng
                       </div>
                     </button>
@@ -495,16 +495,16 @@ export default function AdminVouchers() {
                           : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
                       }`}
                     >
-                      <div className="text-sm font-bold">
+                      <div className="text-md font-bold">
                         📦 Sản phẩm cụ thể
                       </div>
-                      <div className="text-xs text-slate-500 mt-0.5">
+                      <div className="text-sm text-slate-500 mt-0.5">
                         Chỉ giảm cho SP được chọn
                       </div>
                     </button>
                   </div>
                   {form.applyType === "SPECIFIC_PRODUCTS" && (
-                    <div className="text-xs text-amber-600 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50">
+                    <div className="text-sm text-amber-600 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50">
                       💡 Tính năng chọn sản phẩm cụ thể sẽ được cập nhật trong
                       phiên bản tiếp theo. Hiện tại voucher sẽ áp dụng cho tất
                       cả SP.

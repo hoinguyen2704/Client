@@ -22,7 +22,7 @@ export default function RecentlyViewed() {
         <h1 className="text-xl sm:text-2xl font-bold">Sản phẩm đã xem</h1>
         {viewedProducts.length > 0 && (
           <button onClick={clearHistory}
-            className="flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm sm:text-md">
+            className="flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-md sm:text-md">
             <FiTrash2 /> Xóa lịch sử
           </button>
         )}
@@ -41,13 +41,13 @@ export default function RecentlyViewed() {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-300"><FiClock className="text-4xl" /></div>
                     )}
-                    <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-md text-white text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg flex items-center gap-1">
+                    <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-md text-white text-[10px] sm:text-sm px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg flex items-center gap-1">
                       <FiClock /> {formatDate(product.viewedAt)}
                     </div>
                   </div>
                   <div className="p-3 sm:p-4">
-                    <h3 className="font-bold text-sm sm:text-base line-clamp-2 group-hover:text-purple-600 transition-colors mb-1.5 sm:mb-2">{product.name}</h3>
-                    <span className="text-sm sm:text-lg font-bold text-purple-600">{formatPrice(product.price)}</span>
+                    <h3 className="font-bold text-md sm:text-base line-clamp-2 group-hover:text-purple-600 transition-colors mb-1.5 sm:mb-2">{product.name}</h3>
+                    <span className="text-md sm:text-lg font-bold text-purple-600">{formatPrice(product.price)}</span>
                   </div>
                 </Link>
               </motion.div>

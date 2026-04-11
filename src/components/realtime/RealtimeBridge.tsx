@@ -38,6 +38,10 @@ function handleUserToast(event: RealtimeEventEnvelope) {
 
   if (event.type === REALTIME_EVENT_TYPES.USER_NOTIFICATION_CREATED) {
     const payload = (event.data || {}) as UserNotificationRealtimePayload;
+    // Update global badge count immediately
+    import('@/stores/useNotificationStore').then(({ default: store }) =>
+      store.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse)
+    );
     if (payload.type === 'SUPPORT') return;
     toast.info(payload.title || 'Thông báo mới', {
       description: payload.content || '',
@@ -59,6 +63,14 @@ function handleAdminToast(event: RealtimeEventEnvelope) {
         ? `${payload.ticketNumber} có phản hồi mới từ khách hàng`
         : 'Khách hàng vừa gửi phản hồi mới');
     }
+  }
+
+  // Admin also receives notification events — update badge
+  if (event.type === REALTIME_EVENT_TYPES.USER_NOTIFICATION_CREATED) {
+    const payload = (event.data || {}) as UserNotificationRealtimePayload;
+    import('@/stores/useNotificationStore').then(({ default: store }) =>
+      store.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse)
+    );
   }
 }
 

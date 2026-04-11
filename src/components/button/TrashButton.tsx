@@ -21,7 +21,7 @@ export default function TrashButton({ onClick, className = '', title = 'Xóa', c
         iconOnly ? 'w-9 h-9 shrink-0' : 'px-3 py-1.5 text-xs font-semibold'
       } ${className}`}
     >
-      <FiTrash2 className={iconOnly ? "text-[1.1rem]" : "text-sm"} />
+      <FiTrash2 className={iconOnly ? "text-[1.7rem]" : "text-sm"} />
       {children && <span>{children}</span>}
     </button>
   );

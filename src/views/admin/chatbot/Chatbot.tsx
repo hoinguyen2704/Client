@@ -150,7 +150,7 @@ export default function Chatbot() {
         <p>Không thể kết nối đến Chatbot Server</p>
         <button
           onClick={loadConfig}
-          className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors text-sm"
+          className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors text-md"
         >
           Thử lại
         </button>
@@ -166,7 +166,7 @@ export default function Chatbot() {
           <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <FiCpu className="text-purple-600" /> Quản lý AI Chatbot
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-md text-slate-500 mt-1">
             Powered by Gemini AI — Model: {config.ai?.model}
           </p>
         </div>
@@ -174,7 +174,7 @@ export default function Chatbot() {
           <button
             onClick={() => setShowResetConfirm(true)}
             disabled={saving}
-            className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
+            className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
             <FiRefreshCw className={saving ? "animate-spin" : ""} /> Khôi phục
             mặc định
@@ -182,7 +182,7 @@ export default function Chatbot() {
           <button
             onClick={handleSave}
             disabled={saving || !dirty}
-            className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
+            className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
             <FiSave /> {saving ? "Đang lưu..." : "Lưu cấu hình"}
           </button>
@@ -191,7 +191,7 @@ export default function Chatbot() {
 
       {/* Unsaved indicator */}
       {dirty && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 px-4 py-2 rounded-xl text-md flex items-center gap-2">
           <FiAlertTriangle /> Có thay đổi chưa lưu
         </div>
       )}
@@ -200,14 +200,14 @@ export default function Chatbot() {
       <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
         <button
           onClick={() => setActiveTab("settings")}
-          className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiSettings className="inline mr-1.5 -mt-0.5" />
           Cấu hình
         </button>
         <button
           onClick={() => setActiveTab("overview")}
-          className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiActivity className="inline mr-1.5 -mt-0.5" />
           Tổng quan
@@ -222,14 +222,14 @@ export default function Chatbot() {
             {/* Card: Thông tin cửa hàng */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-1">🏪 Thông tin cửa hàng</h2>
-              <p className="text-xs text-slate-500 mb-5">
+              <p className="text-sm text-slate-500 mb-5">
                 Thông tin này được nhúng vào System Prompt để bot giới thiệu cho
                 khách.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Tên cửa hàng
                   </label>
                   <input
@@ -238,11 +238,11 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("shopInfo", "name", e.target.value)
                     }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Slogan
                   </label>
                   <input
@@ -251,11 +251,11 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("shopInfo", "slogan", e.target.value)
                     }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Địa chỉ
                   </label>
                   <input
@@ -264,11 +264,11 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("shopInfo", "address", e.target.value)
                     }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Hotline
                   </label>
                   <input
@@ -277,11 +277,11 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("shopInfo", "hotline", e.target.value)
                     }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Email hỗ trợ
                   </label>
                   <input
@@ -290,11 +290,11 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("shopInfo", "email", e.target.value)
                     }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Website
                   </label>
                   <input
@@ -303,7 +303,7 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("shopInfo", "website", e.target.value)
                     }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
               </div>
@@ -312,13 +312,13 @@ export default function Chatbot() {
             {/* Card: Cấu hình AI */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-1">🧠 Cấu hình AI</h2>
-              <p className="text-xs text-slate-500 mb-5">
+              <p className="text-sm text-slate-500 mb-5">
                 Điều chỉnh model, nhiệt độ sáng tạo, và quy tắc hành vi bot.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Model AI
                   </label>
                   <CustomSelect
@@ -329,7 +329,7 @@ export default function Chatbot() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
+                  <label className="block text-md font-medium mb-1.5">
                     Temperature:{" "}
                     <span className="text-purple-600 font-bold">
                       {config.ai?.temperature ?? 0.7}
@@ -350,7 +350,7 @@ export default function Chatbot() {
                     }
                     className="w-full mt-2 accent-purple-600"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <div className="flex justify-between text-sm text-slate-400 mt-1">
                     <span>0 — Chính xác</span>
                     <span>1 — Sáng tạo</span>
                   </div>
@@ -358,7 +358,7 @@ export default function Chatbot() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label className="block text-md font-medium mb-1.5">
                   System Prompt (Quy tắc hành vi)
                 </label>
                 <textarea
@@ -367,10 +367,10 @@ export default function Chatbot() {
                     updateField("ai", "systemRules", e.target.value)
                   }
                   rows={8}
-                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm resize-y font-mono leading-relaxed"
+                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md resize-y font-mono leading-relaxed"
                   placeholder="Nhập các quy tắc cho chatbot..."
                 />
-                <p className="text-xs text-slate-500 mt-1.5">
+                <p className="text-sm text-slate-500 mt-1.5">
                   Mỗi dòng bắt đầu bằng «-» là 1 quy tắc. Thay đổi sẽ ảnh hưởng
                   trực tiếp đến cách bot trả lời.
                 </p>
@@ -378,12 +378,12 @@ export default function Chatbot() {
 
               {/* Runtime Parameters */}
               <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-4">
-                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
+                <h3 className="text-md font-bold text-slate-700 dark:text-slate-300 mb-3">
                   ⚙️ Thông số vận hành
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1.5">
+                    <label className="block text-md font-medium mb-1.5">
                       Số sản phẩm tối đa / lần trả lời
                     </label>
                     <input
@@ -401,15 +401,15 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                     />
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 3. Giới hạn sản phẩm hiển thị trong mỗi câu trả
                       lời.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1.5">
+                    <label className="block text-md font-medium mb-1.5">
                       Số lần retry khi AI lỗi
                     </label>
                     <input
@@ -427,14 +427,14 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                     />
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 1. Số lần thử lại khi Gemini API timeout/lỗi.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1.5">
+                    <label className="block text-md font-medium mb-1.5">
                       Timeout AI phân tích (ms)
                     </label>
                     <input
@@ -453,14 +453,14 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                     />
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 25000ms. Thời gian chờ AI phân tích câu hỏi.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1.5">
+                    <label className="block text-md font-medium mb-1.5">
                       Timeout truy vấn DB (ms)
                     </label>
                     <input
@@ -479,9 +479,9 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                     />
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 6000ms. Thời gian chờ truy vấn database.
                     </p>
                   </div>
@@ -497,7 +497,7 @@ export default function Chatbot() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold">Trạng thái Chatbot</h2>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-sm text-slate-500 mt-1">
                     {config.isEnabled
                       ? "Chatbot đang hoạt động trên trang khách hàng"
                       : "Chatbot đang tắt — khách hàng không thấy widget"}
@@ -518,19 +518,19 @@ export default function Chatbot() {
               <h2 className="text-lg font-bold">🎨 Giao diện Widget</h2>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label className="block text-md font-medium mb-1.5">
                   Tên Bot
                 </label>
                 <input
                   type="text"
                   value={config.bot?.name || ""}
                   onChange={(e) => updateField("bot", "name", e.target.value)}
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label className="block text-md font-medium mb-1.5">
                   Subtitle
                 </label>
                 <input
@@ -539,12 +539,12 @@ export default function Chatbot() {
                   onChange={(e) =>
                     updateField("bot", "subtitle", e.target.value)
                   }
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label className="block text-md font-medium mb-1.5">
                   Màu sắc chủ đạo
                 </label>
                 <div className="flex items-center gap-3">
@@ -562,13 +562,13 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("bot", "themeColor", e.target.value)
                     }
-                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm uppercase font-mono"
+                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md uppercase font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label className="block text-md font-medium mb-1.5">
                   Avatar Bot
                 </label>
                 <div className="flex items-center gap-4">
@@ -590,7 +590,7 @@ export default function Chatbot() {
                       updateField("bot", "avatarUrl", e.target.value)
                     }
                     placeholder="URL ảnh avatar..."
-                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
               </div>
@@ -605,10 +605,10 @@ export default function Chatbot() {
                   updateField("bot", "welcomeMessage", e.target.value)
                 }
                 rows={5}
-                className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm resize-y"
+                className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md resize-y"
                 placeholder="Tin nhắn chào khách khi mở chatbot..."
               />
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-slate-500">
                 Hỗ trợ Markdown: **bold**, *italic*, - danh sách
               </p>
             </div>
@@ -618,7 +618,7 @@ export default function Chatbot() {
               <h2 className="text-lg font-bold">
                 ⚡ Gợi ý nhanh (Quick Suggestions)
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-slate-500">
                 Các chip gợi ý hiển thị dưới tin nhắn chào.
               </p>
 
@@ -633,7 +633,7 @@ export default function Chatbot() {
                         newSugg[idx] = e.target.value;
                         updateTopLevel("suggestions", newSugg);
                       }}
-                      className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                      className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                     />
                     <button
                       onClick={() => removeSuggestion(idx)}
@@ -652,12 +652,12 @@ export default function Chatbot() {
                   onChange={(e) => setNewSuggestion(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addSuggestion()}
                   placeholder="Thêm gợi ý mới..."
-                  className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                  className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                 />
                 <button
                   onClick={addSuggestion}
                   disabled={!newSuggestion.trim()}
-                  className="h-10 px-3 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 text-sm font-medium flex items-center justify-center gap-1 w-full sm:w-auto"
+                  className="h-10 px-3 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 text-md font-medium flex items-center justify-center gap-1 w-full sm:w-auto"
                 >
                   <FiPlus /> Thêm
                 </button>
@@ -675,7 +675,7 @@ export default function Chatbot() {
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">
+                  <p className="text-slate-500 text-md font-medium mb-1">
                     Trạng thái
                   </p>
                   <h3 className="text-xl font-bold">
@@ -697,7 +697,7 @@ export default function Chatbot() {
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">
+                  <p className="text-slate-500 text-md font-medium mb-1">
                     Model AI
                   </p>
                   <h3 className="text-lg font-bold">
@@ -708,7 +708,7 @@ export default function Chatbot() {
                   <FiCpu />
                 </div>
               </div>
-              <div className="text-sm text-slate-500">
+              <div className="text-md text-slate-500">
                 Temperature: {config.ai?.temperature ?? "N/A"}
               </div>
             </div>
@@ -716,7 +716,7 @@ export default function Chatbot() {
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">
+                  <p className="text-slate-500 text-md font-medium mb-1">
                     Cửa hàng
                   </p>
                   <h3 className="text-lg font-bold">
@@ -727,7 +727,7 @@ export default function Chatbot() {
                   <FiCheckCircle />
                 </div>
               </div>
-              <div className="text-sm text-slate-500">
+              <div className="text-md text-slate-500">
                 Hotline: {config.shopInfo?.hotline || "N/A"}
               </div>
             </div>
@@ -735,7 +735,7 @@ export default function Chatbot() {
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">
+                  <p className="text-slate-500 text-md font-medium mb-1">
                     Gợi ý nhanh
                   </p>
                   <h3 className="text-2xl font-bold">
@@ -746,7 +746,7 @@ export default function Chatbot() {
                   <FiClock />
                 </div>
               </div>
-              <div className="text-sm text-slate-500">
+              <div className="text-md text-slate-500">
                 suggestions đang hoạt động
               </div>
             </div>
@@ -757,7 +757,7 @@ export default function Chatbot() {
             <h2 className="text-lg font-bold mb-4">
               📋 Cấu hình hiện tại (JSON)
             </h2>
-            <pre className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-xs font-mono overflow-x-auto max-h-96 overflow-y-auto">
+            <pre className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-sm font-mono overflow-x-auto max-h-96 overflow-y-auto">
               {JSON.stringify(config, null, 2)}
             </pre>
           </div>

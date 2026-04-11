@@ -5,8 +5,8 @@ import type { QuantitySelectorProps } from '../ui/types';
 const sizeConfig = {
   sm: {
     wrapper: 'rounded-lg',
-    button: 'w-8 h-8 rounded-md text-sm',
-    input: 'w-10 h-8 text-sm',
+    button: 'w-8 h-8 rounded-md text-md',
+    input: 'w-10 h-8 text-md',
   },
   md: {
     wrapper: 'rounded-2xl p-1',

@@ -23,11 +23,11 @@ export default function Footer() {
               {SHOP.name}
             </span>
           </Link>
-          <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+          <p className="text-slate-500 dark:text-slate-400 text-md leading-relaxed">
             {SHOP.name} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm
             công nghệ chính hãng, uy tín và chất lượng hàng đầu Việt Nam.
           </p>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 text-md">
             <p>
               <strong className="text-slate-800 dark:text-white">
                 Địa chỉ:
@@ -49,10 +49,10 @@ export default function Footer() {
 
         {/* Col 2: Về chúng tôi */}
         <div>
-          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-sm">
+          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
             Về {SHOP.name}
           </h3>
-          <ul className="space-y-3 text-sm">
+          <ul className="space-y-3 text-md">
             <li>
               <Link
                 to="/about"
@@ -98,10 +98,10 @@ export default function Footer() {
 
         {/* Col 3: Hỗ trợ khách hàng */}
         <div>
-          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-sm">
+          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
             Hỗ trợ khách hàng
           </h3>
-          <ul className="space-y-3 text-sm">
+          <ul className="space-y-3 text-md">
             <li>
               <Link
                 to="/support/shopping"
@@ -147,7 +147,7 @@ export default function Footer() {
 
         {/* Col 4: Kết nối & Thanh toán */}
         <div>
-          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-sm">
+          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
             Kết nối với chúng tôi
           </h3>
           <div className="flex gap-4 mb-8">
@@ -177,7 +177,7 @@ export default function Footer() {
             </a>
           </div>
 
-          <h3 className="text-slate-900 dark:text-white font-bold mb-4 uppercase tracking-wider text-sm">
+          <h3 className="text-slate-900 dark:text-white font-bold mb-4 uppercase tracking-wider text-md">
             Phương thức thanh toán
           </h3>
           <div className="flex gap-3 text-3xl text-slate-400 dark:text-slate-500">
@@ -188,7 +188,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+      <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-md text-slate-500">
         <p>{SHOP.copyright}</p>
         <p>Thiết kế và phát triển bởi Hội Nguyễn</p>
       </div>

@@ -30,13 +30,13 @@ export default memo(function VariantSection(props: Props) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-bold">Phân loại hàng</h2>
-          <span className="text-xs font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2.5 py-1 rounded-full">
+          <span className="text-sm font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2.5 py-1 rounded-full">
             {variants.length} phân loại
           </span>
         </div>
         <button
           onClick={addVariant}
-          className="text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all"
+          className="text-md font-semibold text-white bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all"
         >
           <FiPlus /> Thêm phân loại
         </button>
@@ -56,10 +56,10 @@ export default memo(function VariantSection(props: Props) {
               {/* Card header */}
               <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/80 dark:to-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                  <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 text-white text-sm font-bold flex items-center justify-center shadow-sm">
                     {index + 1}
                   </span>
-                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <span className="text-md font-semibold text-slate-700 dark:text-slate-300">
                     {variant.variantName || `Phân loại ${index + 1}`}
                   </span>
                 </div>
@@ -79,7 +79,7 @@ export default memo(function VariantSection(props: Props) {
               <div className="p-4 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       SKU
                     </label>
                     <input
@@ -89,11 +89,11 @@ export default memo(function VariantSection(props: Props) {
                         updateVariant(index, "sku", e.target.value)
                       }
                       placeholder="VD: SP-001-BK"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Tên phân loại
                     </label>
                     <input
@@ -107,11 +107,11 @@ export default memo(function VariantSection(props: Props) {
                         )
                       }
                       placeholder="VD: Đen - 256GB"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Giá bán (VNĐ)
                     </label>
                     <input
@@ -121,11 +121,11 @@ export default memo(function VariantSection(props: Props) {
                         updateVariant(index, "price", e.target.value)
                       }
                       placeholder="0"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Giá gốc so sánh (VNĐ)
                     </label>
                     <input
@@ -139,13 +139,13 @@ export default memo(function VariantSection(props: Props) {
                         )
                       }
                       placeholder="Giá trước giảm"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Tồn kho
                     </label>
                     <input
@@ -155,7 +155,7 @@ export default memo(function VariantSection(props: Props) {
                         updateVariant(index, "stock", e.target.value)
                       }
                       placeholder="0"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm transition-colors"
+                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
                     />
                   </div>
                   <div className="flex items-end">
@@ -164,7 +164,7 @@ export default memo(function VariantSection(props: Props) {
                       onClick={() =>
                         updateVariant(index, "active", !variant.active)
                       }
-                      className={`h-10 px-4 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
+                      className={`h-10 px-4 rounded-lg text-md font-medium flex items-center gap-2 transition-colors ${
                         variant.active
                           ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
                           : "bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700"
@@ -180,10 +180,10 @@ export default memo(function VariantSection(props: Props) {
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-3 bg-slate-50/70 dark:bg-slate-800/40">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                      <p className="text-md font-semibold text-slate-700 dark:text-slate-300">
                         Ảnh theo phân loại
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-sm text-slate-500">
                         Ảnh trong khung này thuộc riêng SKU:{" "}
                         <span className="font-semibold">
                           {variant.sku || "chưa có SKU"}
@@ -215,7 +215,7 @@ export default memo(function VariantSection(props: Props) {
                     onClick={() =>
                       variantFileInputRefs.current[variantUiKey]?.click()
                     }
-                    className="h-9 px-3 rounded-lg text-sm font-medium bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-600 text-slate-700 dark:text-slate-200 transition-colors"
+                    className="h-9 px-3 rounded-lg text-md font-medium bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-600 text-slate-700 dark:text-slate-200 transition-colors"
                   >
                     Tải ảnh cho phân loại
                   </button>
@@ -242,7 +242,7 @@ export default memo(function VariantSection(props: Props) {
                             }
                             className="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-red-500/90 text-white flex items-center justify-center"
                           >
-                            <FiTrash2 className="text-xs" />
+                            <FiTrash2 className="text-sm" />
                           </button>
                         </div>
                       ))}
@@ -277,7 +277,7 @@ export default memo(function VariantSection(props: Props) {
                             }
                             className="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-red-500/90 text-white flex items-center justify-center"
                           >
-                            <FiTrash2 className="text-xs" />
+                            <FiTrash2 className="text-sm" />
                           </button>
                         </div>
                       ))}
@@ -294,10 +294,10 @@ export default memo(function VariantSection(props: Props) {
             <div className="w-14 h-14 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center mx-auto mb-3">
               <FiPlus className="text-2xl text-purple-500" />
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+            <p className="text-slate-500 dark:text-slate-400 text-md font-medium">
               Chưa có phân loại nào
             </p>
-            <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">
+            <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">
               Bấm "Thêm phân loại" để bắt đầu
             </p>
           </div>

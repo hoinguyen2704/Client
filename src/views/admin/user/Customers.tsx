@@ -94,7 +94,7 @@ export default function Customers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[940px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-sm">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
                 <th className="p-3 sm:p-4 font-medium">Người dùng</th>
                 <th className="p-3 sm:p-4 font-medium">Email</th>
                 <th className="p-3 sm:p-4 font-medium">SĐT</th>

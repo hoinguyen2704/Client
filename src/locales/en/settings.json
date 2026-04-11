@@ -1,0 +1,53 @@
+{
+  "title": "Account Settings",
+  "displayOptions": {
+    "title": "Display Options",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Switch interface to protect eyes",
+    "language": "Language",
+    "promotions": "Promotional Notifications",
+    "promotionsDesc": "Coupons, sales programs"
+  },
+  "notifications": {
+    "title": "Notification Settings",
+    "channels": "Notification Channels",
+    "emailTitle": "Email",
+    "emailDesc": "Receive notifications via email",
+    "smsTitle": "SMS",
+    "smsDesc": "Receive text messages",
+    "appTitle": "Push Notifications (App)",
+    "appDesc": "Receive notifications on the app",
+    "types": "Notification Types",
+    "ordersTitle": "Order Updates",
+    "ordersDesc": "Delivery status, payment"
+  },
+  "security": {
+    "title": "Security",
+    "password": {
+      "title": "Password",
+      "lastUpdated": "Last updated: 30 days ago",
+      "buttonChange": "Change password",
+      "buttonCancel": "Cancel",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "save": "Save new password"
+    },
+    "twoFactor": {
+      "title": "Two-Factor Authentication (2FA)",
+      "desc": "Enhance account security"
+    }
+  },
+  "socialAccounts": {
+    "title": "Linked Accounts",
+    "linked": "Linked",
+    "notLinked": "Not linked",
+    "unlink": "Unlink",
+    "linkNow": "Link now"
+  },
+  "deleteAccount": {
+    "title": "Delete Account",
+    "warning": "When you delete your account, all personal data, order history, and accumulated points will be permanently deleted and cannot be recovered.",
+    "button": "Request account deletion"
+  }
+}

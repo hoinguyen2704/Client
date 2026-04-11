@@ -1,0 +1,73 @@
+{
+  "title": "Cài Đặt Hệ Thống & AI",
+  "saving": "Đang lưu...",
+  "save": "Lưu cấu hình",
+  "noChanges": "Không có thay đổi nào để lưu",
+  "saveSuccess": "Đã lưu thành công!",
+  "saveError": "Lưu cấu hình thất bại!",
+  "loadError": "Không thể tải cấu hình hệ thống",
+  
+  "general": {
+    "title": "Cấu hình chung",
+    "storeName": "Tên cửa hàng",
+    "currency": "Đơn vị tiền tệ",
+    "currencyVND": "VNĐ (Việt Nam Đồng)",
+    "currencyUSD": "USD (Đô la Mỹ)",
+    "defaultTax": "Thuế mặc định (%)",
+    "enableTax": "Bật áp dụng thuế",
+    "enableTaxDesc": "Tính thuế ở bước checkout và lưu snapshot vào đơn hàng.",
+    "taxMode": "Chế độ thuế",
+    "taxModeIncluded": "Đã gồm trong giá",
+    "taxModeExcluded": "Cộng thêm vào tổng",
+    "taxOnShipping": "Áp thuế lên phí ship",
+    "taxOnShippingDesc": "Nếu tắt, chỉ tính thuế trên tiền hàng.",
+    "contactEmail": "Email liên hệ",
+    "supportEmail": "Email hỗ trợ",
+    "hotline": "Hotline",
+    "address": "Địa chỉ"
+  },
+
+  "ai": {
+    "title": "AI Dashboard (ML Ops)",
+    "underDevelopment": "Đang phát triển",
+    "configure": "Cấu hình thuật toán",
+    "lockedMsg": "Tính năng AI Dashboard đang phát triển, tạm thời bị khóa.",
+    "recommendation": "Recommendation Engine",
+    "recommendationDesc": "Hệ thống gợi ý sản phẩm tự động",
+    "aiContent": "AI Content Generator",
+    "aiContentDesc": "Tự động tạo mô tả sản phẩm",
+    "suggestions": "Lần gợi ý",
+    "clickRate": "Tỷ lệ click",
+    "conversions": "Chuyển đổi"
+  },
+
+  "payment": {
+    "title": "Cấu hình Thanh toán",
+    "cod": "Thanh toán khi nhận hàng (COD)",
+    "codDesc": "Cho phép khách hàng thanh toán tiền mặt",
+    "vnpay": "Thanh toán qua VNPay",
+    "vnpayDesc": "Cổng thanh toán nội địa và quốc tế",
+    "momo": "Thanh toán qua MoMo",
+    "momoDesc": "Ví điện tử phổ biến tại Việt Nam",
+    "bank": "Chuyển khoản ngân hàng",
+    "bankDesc": "Chuyển khoản trực tiếp qua ngân hàng"
+  },
+
+  "shipping": {
+    "title": "Cấu hình Vận chuyển",
+    "defaultFee": "Phí ship mặc định",
+    "freeshipThreshold": "Ngưỡng Freeship",
+    "freeshipDesc": "Đơn hàng có giá trị lớn hơn hoặc bằng ngưỡng này sẽ được miễn phí vận chuyển."
+  },
+
+  "aiModal": {
+    "title": "Cấu hình Thuật toán Gợi ý",
+    "close": "Đóng",
+    "coreAlgo": "Thuật toán cốt lõi",
+    "algoCollab": "Collaborative Filtering",
+    "algoContent": "Content-based Filtering",
+    "algoHybrid": "Hybrid MLOps Model",
+    "newProductPriority": "Độ ưu tiên sản phẩm mới",
+    "diversity": "Độ đa dạng gợi ý (Exploration)"
+  }
+}

@@ -226,8 +226,8 @@ export default function Chatbot() {
                   )}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-bold text-sm sm:text-base truncate">{botName}</h3>
-                  <p className="text-xs text-white/80 truncate">
+                  <h3 className="font-bold text-md sm:text-base truncate">{botName}</h3>
+                  <p className="text-sm text-white/80 truncate">
                     {botSubtitle}
                   </p>
                 </div>
@@ -274,7 +274,7 @@ export default function Chatbot() {
                   </div>
                   <div
                     className={
-                      "max-w-[92%] sm:max-w-[80%] p-2.5 sm:p-3 rounded-2xl text-sm " +
+                      "max-w-[92%] sm:max-w-[80%] p-2.5 sm:p-3 rounded-2xl text-md " +
                       (msg.role === "user"
                         ? "bg-blue-600 text-white rounded-tr-none"
                         : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-none shadow-sm")
@@ -326,7 +326,7 @@ export default function Chatbot() {
                     <button
                       key={s}
                       onClick={() => handleSuggestion(s)}
-                      className="text-xs px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"
+                      className="text-sm px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"
                     >
                       {s}
                     </button>
@@ -345,7 +345,7 @@ export default function Chatbot() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Hỏi về sản phẩm, giá cả, khuyến mãi..."
-                  className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-3 sm:pl-4 pr-12 py-2.5 sm:py-3 text-sm focus:ring-2 focus:ring-purple-500 resize-none h-[40px] sm:h-[44px] max-h-[120px] overflow-y-auto"
+                  className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-3 sm:pl-4 pr-12 py-2.5 sm:py-3 text-md focus:ring-2 focus:ring-purple-500 resize-none h-[40px] sm:h-[44px] max-h-[120px] overflow-y-auto"
                   rows={1}
                 />
                 <button

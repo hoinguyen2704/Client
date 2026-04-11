@@ -18,13 +18,13 @@ export default function DashboardLists({ stats }: DashboardChildProps) {
                 {product.imageUrl ? (
                   <img src={product.imageUrl} alt={product.name} className="w-12 h-12 rounded-lg object-cover" />
                 ) : (
-                  <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-xs">N/A</div>
+                  <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">N/A</div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-sm truncate">{product.name}</h4>
-                  <p className="text-xs text-slate-500">{product.totalSold} đã bán</p>
+                  <h4 className="font-medium text-md truncate">{product.name}</h4>
+                  <p className="text-sm text-slate-500">{product.totalSold} đã bán</p>
                 </div>
-                <div className="text-right"><p className="font-bold text-sm text-purple-600 dark:text-purple-400">{formatPrice(product.revenue)}</p></div>
+                <div className="text-right"><p className="font-bold text-md text-purple-600 dark:text-purple-400">{formatPrice(product.revenue)}</p></div>
               </div>
             ))
           )}
@@ -46,7 +46,7 @@ export default function DashboardLists({ stats }: DashboardChildProps) {
                   const percent = Math.round((cat.totalSold / totalSold) * 100);
                   return (
                     <div key={cat.id}>
-                      <div className="flex justify-between text-sm mb-1">
+                      <div className="flex justify-between text-md mb-1">
                         <span className="font-medium">{cat.name}</span>
                         <span className="text-slate-500">{cat.totalSold} SP ({percent}%)</span>
                       </div>
@@ -72,10 +72,10 @@ export default function DashboardLists({ stats }: DashboardChildProps) {
                 <div key={customer.id} className="flex items-center gap-4">
                   <UserAvatar name={customer.name} />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-sm truncate">{customer.name}</h4>
-                    <p className="text-xs text-slate-500">{customer.totalOrders} đơn hàng</p>
+                    <h4 className="font-medium text-md truncate">{customer.name}</h4>
+                    <p className="text-sm text-slate-500">{customer.totalOrders} đơn hàng</p>
                   </div>
-                  <div className="text-right"><p className="font-bold text-sm text-blue-600 dark:text-blue-400">{formatPrice(customer.totalSpent)}</p></div>
+                  <div className="text-right"><p className="font-bold text-md text-blue-600 dark:text-blue-400">{formatPrice(customer.totalSpent)}</p></div>
                 </div>
               ))
             )}

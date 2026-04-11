@@ -3,6 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiRotateCcw, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings, FiChevronDown } from 'react-icons/fi';
 import { cn } from '../../utils/cn';
 import useAuthStore from '@/stores/useAuthStore';
+import useNotificationStore from '@/stores/useNotificationStore';
 import { useClickOutside } from '@/hooks';
 
 const menuItems = [
@@ -25,6 +26,7 @@ export default function UserLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
+  const unreadCount = useNotificationStore((s) => s.unreadCount);
   useClickOutside(mobileMenuRef, useCallback(() => setIsMobileMenuOpen(false), []));
 
   useEffect(() => {
@@ -61,7 +63,7 @@ export default function UserLayout() {
               </div>
               <div className="min-w-0">
                 <h3 className="font-bold text-base sm:text-lg truncate">{user?.name || 'Thành viên'}</h3>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-sm sm:text-md text-slate-500 dark:text-slate-400 truncate">
                   {user?.role === 'ADMIN' ? 'Quản trị viên' : 'Khách hàng'}
                 </p>
               </div>
@@ -70,7 +72,7 @@ export default function UserLayout() {
             <div className="lg:hidden relative" ref={mobileMenuRef}>
               <button
                 onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-between text-sm font-semibold"
+                className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-between text-md font-semibold"
               >
                 <span className="flex items-center gap-2 min-w-0">
                   <ActiveMenuIcon className="text-base shrink-0" />
@@ -88,14 +90,19 @@ export default function UserLayout() {
                         to={item.path}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={({ isActive }) => cn(
-                          "flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-sm",
+                          "flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-md",
                           isActive
                             ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
                             : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
                         )}
                       >
                         <item.icon className="text-base" />
-                        {item.label}
+                        <span className="flex-1">{item.label}</span>
+                        {item.path === '/user/notifications' && unreadCount > 0 && (
+                          <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                            {unreadCount > 99 ? '99+' : unreadCount}
+                          </span>
+                        )}
                       </NavLink>
                     ))}
 
@@ -105,7 +112,7 @@ export default function UserLayout() {
                           setIsMobileMenuOpen(false);
                           handleLogout();
                         }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-md text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                       >
                         <FiLogOut className="text-base" />
                         Đăng xuất
@@ -130,7 +137,12 @@ export default function UserLayout() {
                     )}
                   >
                     <item.icon className="text-lg" />
-                    {item.label}
+                    <span className="flex-1">{item.label}</span>
+                    {item.path === '/user/notifications' && unreadCount > 0 && (
+                      <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
                   </NavLink>
                 ))}
               </div>

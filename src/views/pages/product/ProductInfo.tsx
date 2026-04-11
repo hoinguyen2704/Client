@@ -9,7 +9,7 @@ import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 import { cartService } from '@/apis';
-import { PrimaryButton, QuantitySelector } from '@/components';
+import { PrimaryButton, QuantitySelector, VariantSelector } from '@/components';
 import { resolveVariantPricing } from '@/utils/pricing';
 import { getApiErrorMessage } from '@/utils/error';
 
@@ -142,7 +142,7 @@ export default function ProductInfo({
   };
 
   return (
-    <div className="w-full lg:w-7/12 flex flex-col">
+    <div className="w-full lg:w-5/12 flex flex-col">
       <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">{product.name}</h1>
 
       <div className="flex items-center gap-4 mb-6 flex-wrap">
@@ -181,7 +181,7 @@ export default function ProductInfo({
         )}
       </div>
       {pricing.isFlashSale && (
-        <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold text-sm">
+        <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold text-md">
           <FiZap className="text-base" />
           Flash Sale -{pricing.discount}%{activeFlashItem ? ` • Còn ${activeFlashItem.remainingStock} suất giá sốc` : ''}
         </div>
@@ -191,7 +191,7 @@ export default function ProductInfo({
       {highlightSpecs.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-8">
           {highlightSpecs.map(([key, value]) => (
-            <span key={key} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-700">
+            <span key={key} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-md font-medium rounded-lg border border-slate-200 dark:border-slate-700">
               {value}
             </span>
           ))}
@@ -201,28 +201,12 @@ export default function ProductInfo({
       {/* Variants */}
       <div className="space-y-6 mb-8">
         {/* Variant buttons */}
-        {variants.length > 1 && (
-          <div>
-            <h3 className="font-bold mb-3">Phiên bản</h3>
-            <div className="flex flex-wrap gap-3">
-              {variants.map((v, idx) => {
-                const variantPricing = variantPricingMap[v.id];
-                return (
-                  <button key={v.id} onClick={() => setSelectedVariantIdx(idx)}
-                    className={`px-6 py-2.5 rounded-xl border-2 font-medium transition-all ${selectedVariantIdx === idx ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'}`}>
-                    {v.variantName || v.sku}
-                    <span className="block text-xs mt-0.5">{formatPrice(variantPricing.salePrice)}</span>
-                    {variantPricing.originPrice > variantPricing.salePrice && (
-                      <span className="block text-[11px] mt-0.5 text-slate-400 line-through">
-                        {formatPrice(variantPricing.originPrice)}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <VariantSelector
+          variants={variants}
+          pricingMap={variantPricingMap}
+          selectedIndex={selectedVariantIdx}
+          onSelect={setSelectedVariantIdx}
+        />
 
         {/* Quantity */}
         <div className="pt-2">
@@ -235,7 +219,7 @@ export default function ProductInfo({
               max={stock}
               overMaxWarning={`Chỉ còn ${stock} sản phẩm có sẵn!`}
             />
-            <span className="text-sm text-slate-500 font-medium">{stock > 0 ? `${stock} sản phẩm có sẵn` : 'Hết hàng'}</span>
+            <span className="text-md text-slate-500 font-medium">{stock > 0 ? `${stock} sản phẩm có sẵn` : 'Hết hàng'}</span>
           </div>
         </div>
       </div>

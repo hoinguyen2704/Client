@@ -6,7 +6,7 @@ import {
 
 // Base class shared between input and textarea
 const BASE_CLASS =
-  "w-full rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-purple-500 outline-none transition-all disabled:opacity-50";
+  "w-full rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-2 focus:ring-purple-500 outline-none transition-all disabled:opacity-50";
 
 const INPUT_CLASS = `${BASE_CLASS} h-10 px-4`;
 const TEXTAREA_CLASS = `${BASE_CLASS} p-4 resize-none`;
@@ -26,7 +26,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   ({ label, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label className="block text-md font-medium text-slate-700 dark:text-slate-300">
           {label}
         </label>
       )}
@@ -51,7 +51,7 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
   ({ label, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label className="block text-md font-medium text-slate-700 dark:text-slate-300">
           {label}
         </label>
       )}
@@ -85,7 +85,7 @@ export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
   ({ label, options, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label className="block text-md font-medium text-slate-700 dark:text-slate-300">
           {label}
         </label>
       )}

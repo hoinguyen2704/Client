@@ -120,8 +120,8 @@ export default function Orders() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800 mb-3 sm:mb-4">
                 <div>
                   <span className="font-bold text-base sm:text-lg mr-4">{order.orderNumber}</span>
-                   <div className="text-slate-500 text-xs sm:text-sm mt-1">Ngày đặt: {formatDate(order.createdAt)}</div>
-                  <div className="text-slate-500 text-xs sm:text-sm mt-1">Cập nhật: {formatDateTime(order.updatedAt || order.createdAt)}</div>
+                   <div className="text-slate-500 text-sm sm:text-md mt-1">Ngày đặt: {formatDate(order.createdAt)}</div>
+                  <div className="text-slate-500 text-sm sm:text-md mt-1">Cập nhật: {formatDateTime(order.updatedAt || order.createdAt)}</div>
                 </div>
                 <div>{getClientStatusBadge(order.orderStatus)}</div>
               </div>
@@ -137,15 +137,15 @@ export default function Orders() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white line-clamp-1" title={item.productName}>{item.productName}</h3>
-                      <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                      <h3 className="font-bold text-md sm:text-base text-slate-900 dark:text-white line-clamp-1" title={item.productName}>{item.productName}</h3>
+                      <p className="text-sm sm:text-md text-slate-500 mt-1">
                         {item.variantName ? `${item.variantName} | ` : ''}Số lượng: x{item.quantity}
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1.5 sm:gap-2 shrink-0">
-                      <div className="font-bold text-sm sm:text-base text-purple-600">{formatPrice(item.unitPrice)}</div>
+                      <div className="font-bold text-md sm:text-base text-purple-600">{formatPrice(item.unitPrice)}</div>
                       {order.orderStatus === 'SHIPPED' && (
-                        <button onClick={() => handleOpenReview(order, item)} className="px-2.5 sm:px-3 py-1 text-xs sm:text-sm rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors bg-white dark:bg-transparent">
+                        <button onClick={() => handleOpenReview(order, item)} className="px-2.5 sm:px-3 py-1 text-sm sm:text-md rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors bg-white dark:bg-transparent">
                           Đánh giá
                         </button>
                       )}
@@ -155,7 +155,7 @@ export default function Orders() {
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-slate-100 dark:border-slate-800">
-                <div className="text-slate-500 text-sm sm:text-base">
+                <div className="text-slate-500 text-md sm:text-base">
                   Tổng tiền: <span className="text-lg sm:text-xl font-bold text-purple-600 ml-2">{formatPrice(order.totalAmount)}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
@@ -173,7 +173,7 @@ export default function Orders() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-100 dark:border-slate-800">
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl sm:text-4xl"><FiPackage /></div>
             <h3 className="text-lg sm:text-xl font-bold mb-2">Không tìm thấy đơn hàng</h3>
-            <p className="text-sm sm:text-base text-slate-500 mb-6">Bạn chưa có đơn hàng nào trong trạng thái này.</p>
+            <p className="text-md sm:text-base text-slate-500 mb-6">Bạn chưa có đơn hàng nào trong trạng thái này.</p>
             <Button href="/search" size="lg">Tiếp tục mua sắm</Button>
           </div>
         )}
@@ -200,16 +200,16 @@ export default function Orders() {
           <div className="space-y-6">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
               <h4 className="font-bold">{selectedItem.productName}</h4>
-              <p className="text-sm text-slate-500 mt-1">Phân loại: {selectedItem.variantName}</p>
+              <p className="text-md text-slate-500 mt-1">Phân loại: {selectedItem.variantName}</p>
             </div>
             
             {oldFeedbacks.map((fb, idx) => (
               <div key={fb.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 opacity-80">
                  <div className="flex items-center justify-between mb-2">
-                    <p className="font-bold text-sm text-slate-700 dark:text-slate-300">Đánh giá {idx === 0 ? 'lần 1' : 'lần ' + (idx + 1)}</p>
+                    <p className="font-bold text-md text-slate-700 dark:text-slate-300">Đánh giá {idx === 0 ? 'lần 1' : 'lần ' + (idx + 1)}</p>
                     <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
                  </div>
-                 <p className="text-sm text-slate-600 dark:text-slate-400">{fb.content}</p>
+                 <p className="text-md text-slate-600 dark:text-slate-400">{fb.content}</p>
               </div>
             ))}
 

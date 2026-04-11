@@ -179,7 +179,7 @@ export default function Products() {
   return (
     <div className="w-full px-3 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-xs sm:text-sm text-slate-500 mb-5 sm:mb-8">
+      <nav className="flex text-sm sm:text-md text-slate-500 mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
           <li>
             <Link to="/" className="hover:text-purple-600">
@@ -200,7 +200,7 @@ export default function Products() {
       <div className="flex flex-col lg:flex-row gap-5 sm:gap-8">
         {/* Mobile Filter Toggle */}
         <button
-          className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-sm font-semibold"
+          className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-md font-semibold"
           onClick={() => setIsFilterOpen(true)}
         >
           <FiFilter /> Lọc sản phẩm
@@ -235,7 +235,7 @@ export default function Products() {
                       setPage(1);
                     }}
                     placeholder="Tên sản phẩm..."
-                    className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-sm focus:ring-2 focus:ring-purple-500"
+                    className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-md focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
               </div>
@@ -293,12 +293,12 @@ export default function Products() {
                             onChange={() => handleBrandChange(brand.slug)}
                             className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
                           />
-                          <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-sm" />
+                          <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-md" />
                         </div>
                         <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                           {brand.name}
                           {brand.productCount > 0 && (
-                            <span className="text-xs text-slate-400 ml-1">
+                            <span className="text-sm text-slate-400 ml-1">
                               ({brand.productCount})
                             </span>
                           )}
@@ -313,7 +313,7 @@ export default function Products() {
               {(keyword || selectedCategorySlug || selectedBrand) && (
                 <button
                   onClick={handleClearFilters}
-                  className="w-full py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors font-medium"
+                  className="w-full py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors font-medium"
                 >
                   Xóa bộ lọc
                 </button>
@@ -335,13 +335,13 @@ export default function Products() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
             <h1 className="text-xl sm:text-2xl font-bold">
               Tất cả sản phẩm{" "}
-              <span className="text-slate-500 text-sm sm:text-lg font-normal">
+              <span className="text-slate-500 text-md sm:text-lg font-normal">
                 ({pageInfo?.total || 0})
               </span>
             </h1>
 
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-xs sm:text-sm text-slate-500">Sắp xếp theo:</span>
+              <span className="text-sm sm:text-md text-slate-500">Sắp xếp theo:</span>
               <div>
                 <CustomSelect
                   value={currentSortValue()}
@@ -399,7 +399,7 @@ export default function Products() {
               <h2 className="text-xl sm:text-2xl font-bold mb-2">
                 Không tìm thấy sản phẩm nào
               </h2>
-              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
+              <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
                 Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với bộ
                 lọc của bạn. Vui lòng thử lại với các tiêu chí khác.
               </p>

@@ -91,13 +91,13 @@ export default memo(function BasicInfoSection(props: Props) {
                 <div className="absolute left-0 top-full mt-2 w-full bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
                   <div className="p-2 border-b border-slate-100 dark:border-slate-700">
                     <div className="relative">
-                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-md" />
                       <input
                         type="text"
                         value={categorySearch}
                         onChange={(e) => setCategorySearch(e.target.value)}
                         placeholder="Tìm danh mục..."
-                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
+                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                         autoFocus
                       />
                     </div>
@@ -109,7 +109,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         setCategoryId("");
                         setShowCategoryDropdown(false);
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
                         !categoryId
                           ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
                           : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
@@ -137,7 +137,7 @@ export default memo(function BasicInfoSection(props: Props) {
                             setShowCategoryDropdown(false);
                             setCategorySearch("");
                           }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
                             categoryId === cat.id
                               ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
                               : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
@@ -173,7 +173,7 @@ export default memo(function BasicInfoSection(props: Props) {
                               setIsCreatingCategory(false);
                           }}
                           placeholder="Tên danh mục mới..."
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
+                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           autoFocus
                         />
                         <button
@@ -182,12 +182,12 @@ export default memo(function BasicInfoSection(props: Props) {
                           disabled={
                             savingCategory || !newCategoryName.trim()
                           }
-                          className="h-8 px-3 rounded-lg bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
+                          className="h-8 px-3 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
                         >
                           {savingCategory ? (
-                            <FiLoader className="animate-spin text-xs" />
+                            <FiLoader className="animate-spin text-sm" />
                           ) : (
-                            <FiCheck className="text-xs" />
+                            <FiCheck className="text-sm" />
                           )}
                         </button>
                         <button
@@ -196,7 +196,7 @@ export default memo(function BasicInfoSection(props: Props) {
                             setIsCreatingCategory(false);
                             setNewCategoryName("");
                           }}
-                          className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition-colors"
+                          className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm transition-colors"
                         >
                           ✕
                         </button>
@@ -205,9 +205,9 @@ export default memo(function BasicInfoSection(props: Props) {
                       <button
                         type="button"
                         onClick={() => setIsCreatingCategory(true)}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
                       >
-                        <FiPlus className="text-xs" /> Thêm danh mục mới
+                        <FiPlus className="text-sm" /> Thêm danh mục mới
                       </button>
                     )}
                   </div>
@@ -247,13 +247,13 @@ export default memo(function BasicInfoSection(props: Props) {
                 <div className="absolute left-0 top-full mt-2 w-full bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
                   <div className="p-2 border-b border-slate-100 dark:border-slate-700">
                     <div className="relative">
-                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-md" />
                       <input
                         type="text"
                         value={brandSearch}
                         onChange={(e) => setBrandSearch(e.target.value)}
                         placeholder="Tìm thương hiệu..."
-                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
+                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                         autoFocus
                       />
                     </div>
@@ -265,7 +265,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         setBrandId("");
                         setShowBrandDropdown(false);
                       }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
                         !brandId
                           ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
                           : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
@@ -293,7 +293,7 @@ export default memo(function BasicInfoSection(props: Props) {
                             setShowBrandDropdown(false);
                             setBrandSearch("");
                           }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
                             brandId === brand.id
                               ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
                               : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
@@ -327,19 +327,19 @@ export default memo(function BasicInfoSection(props: Props) {
                               setIsCreatingBrand(false);
                           }}
                           placeholder="Tên thương hiệu mới..."
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
+                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           autoFocus
                         />
                         <button
                           type="button"
                           onClick={handleCreateBrand}
                           disabled={savingBrand || !newBrandName.trim()}
-                          className="h-8 px-3 rounded-lg bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
+                          className="h-8 px-3 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
                         >
                           {savingBrand ? (
-                            <FiLoader className="animate-spin text-xs" />
+                            <FiLoader className="animate-spin text-sm" />
                           ) : (
-                            <FiCheck className="text-xs" />
+                            <FiCheck className="text-sm" />
                           )}
                         </button>
                         <button
@@ -348,7 +348,7 @@ export default memo(function BasicInfoSection(props: Props) {
                             setIsCreatingBrand(false);
                             setNewBrandName("");
                           }}
-                          className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition-colors"
+                          className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm transition-colors"
                         >
                           ✕
                         </button>
@@ -357,9 +357,9 @@ export default memo(function BasicInfoSection(props: Props) {
                       <button
                         type="button"
                         onClick={() => setIsCreatingBrand(true)}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
                       >
-                        <FiPlus className="text-xs" /> Thêm thương hiệu mới
+                        <FiPlus className="text-sm" /> Thêm thương hiệu mới
                       </button>
                     )}
                   </div>
@@ -387,18 +387,18 @@ export default memo(function BasicInfoSection(props: Props) {
           <div className="relative" ref={templatePopupRef}>
             <button
               onClick={() => setShowTemplatePopup(!showTemplatePopup)}
-              className="text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
+              className="text-md font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
               title="Chọn các thông số gợi ý theo Danh mục"
             >
               Gợi ý mẫu
             </button>
             {showTemplatePopup && (
               <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 p-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-2">
+                <p className="text-sm text-slate-400 font-medium uppercase tracking-wider mb-2">
                   Chọn thông số muốn thêm
                 </p>
                 {!categoryId ? (
-                  <p className="text-sm text-amber-600 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
+                  <p className="text-md text-amber-600 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
                     Vui lòng chọn Danh mục trước!
                   </p>
                 ) : (
@@ -428,7 +428,7 @@ export default memo(function BasicInfoSection(props: Props) {
                                   ]);
                                 }
                               }}
-                              className={`flex-1 flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
+                              className={`flex-1 flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
                                 alreadyAdded
                                   ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
                                   : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
@@ -460,7 +460,7 @@ export default memo(function BasicInfoSection(props: Props) {
                               className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-red-500 rounded transition-all"
                               title="Xóa khỏi gợi ý"
                             >
-                              <FiTrash2 className="text-xs" />
+                              <FiTrash2 className="text-sm" />
                             </button>
                           </div>
                         );
@@ -472,7 +472,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         <input
                           type="text"
                           placeholder="Thêm thông số gợi ý..."
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
+                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -517,13 +517,13 @@ export default memo(function BasicInfoSection(props: Props) {
                             });
                             setSpecs(newSpecs);
                           }}
-                          className="text-xs font-medium text-blue-600 hover:underline"
+                          className="text-sm font-medium text-blue-600 hover:underline"
                         >
                           Chọn tất cả
                         </button>
                         <button
                           onClick={() => setShowTemplatePopup(false)}
-                          className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                          className="text-sm font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                         >
                           Đóng
                         </button>
@@ -548,7 +548,7 @@ export default memo(function BasicInfoSection(props: Props) {
                   setSpecs(newSpecs);
                 }}
                 placeholder="Tên thông số (VD: Màn hình)"
-                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-md"
               />
               <input
                 type="text"
@@ -559,7 +559,7 @@ export default memo(function BasicInfoSection(props: Props) {
                   setSpecs(newSpecs);
                 }}
                 placeholder={getHintForSpec(spec.key)}
-                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-md"
               />
               <TrashButton
                 onClick={() => {
@@ -574,14 +574,14 @@ export default memo(function BasicInfoSection(props: Props) {
 
           {specs.length === 0 && (
             <div className="text-center py-6 text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-              <p className="text-sm">Chưa có thông số kỹ thuật nào.</p>
+              <p className="text-md">Chưa có thông số kỹ thuật nào.</p>
             </div>
           )}
         </div>
 
         <button
           onClick={() => setSpecs([...specs, { key: "", value: "" }])}
-          className="text-sm font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 mt-2"
+          className="text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 mt-2"
         >
           <FiPlus /> Thêm thông số mới
         </button>

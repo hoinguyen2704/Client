@@ -183,7 +183,7 @@ export default function ReturnDetail() {
                     <h4 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate" title={line.productName}>
                       {line.productName}
                     </h4>
-                    <p className="text-sm text-slate-500 mt-0.5">
+                    <p className="text-md text-slate-500 mt-0.5">
                       {line.variantName ? `${line.variantName} | ` : ''} 
                       {formatPrice(Number(line.unitPrice || 0))} × {line.requestedQuantity}
                     </p>
@@ -191,7 +191,7 @@ export default function ReturnDetail() {
                   <div className="text-right flex-shrink-0 space-y-0.5">
                     <p className="font-bold text-purple-600 text-lg">{formatPrice(Number(line.lineAmount || 0))}</p>
                     {line.approvedQuantity != null && (
-                      <p className="text-xs font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full inline-block">
+                      <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full inline-block">
                         Duyệt: {line.approvedQuantity}
                       </p>
                     )}
