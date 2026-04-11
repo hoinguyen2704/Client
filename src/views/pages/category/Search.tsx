@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { FiFilter, FiChevronDown, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiCheck } from 'react-icons/fi';
-import { AnimatePresence, motion } from 'motion/react';
+import { FiFilter, FiX, FiSearch, FiCheck } from 'react-icons/fi';
+import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { productService, categoryService, brandService } from '@/apis';
-import type { ProductResponse, CategoryResponse, BrandResponse, PageResponse } from '@/types';
-import { Button, ProductCard, CustomSelect } from '@/components';
+import type { ProductResponse, CategoryResponse, BrandResponse } from '@/types';
+import { Button, Pagination, ProductCard, CustomSelect } from '@/components';
 import { toast } from 'sonner';
 
 export default function Search() {
@@ -230,30 +230,7 @@ export default function Search() {
                 ))}
               </div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center mt-8 sm:mt-12">
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
-                      <FiChevronLeft />
-                    </button>
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      const pageNum = page <= 3 ? i + 1 : Math.min(page - 2 + i, totalPages);
-                      return (
-                        <button key={pageNum} onClick={() => setPage(pageNum)}
-                          className={`w-9 h-9 sm:w-10 sm:h-10 text-sm rounded-xl flex items-center justify-center font-bold ${page === pageNum ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                    <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50">
-                      <FiChevronRight />
-                    </button>
-                  </div>
-                </div>
-              )}
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-8 sm:mt-12" />
             </>
           ) : (
             <motion.div 

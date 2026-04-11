@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiBook, FiCalendar, FiUser } from 'react-icons/fi';
 import cmsService from '@/apis/services/cmsService';
 import { formatDateLong as formatDate } from '@/utils/format';
+import { Pagination } from '@/components';
 import type { ArticleResponse } from '@/types';
 
 export default function Blog() {
@@ -101,16 +102,7 @@ export default function Blog() {
             </div>
           )}
 
-          {totalPages > 1 && (
-            <div className="flex justify-center gap-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => setPage(p)}
-                  className={`w-10 h-10 rounded-xl text-sm font-medium transition-colors ${p === page ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200'}`}>
-                  {p}
-                </button>
-              ))}
-            </div>
-          )}
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
         </>
       )}
     </div>

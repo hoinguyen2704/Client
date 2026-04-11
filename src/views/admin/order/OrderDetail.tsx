@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage } from 'react-icons/fi';
+import { FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiCheck } from 'react-icons/fi';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
 import { Button, StatusBadge, CustomSelect, BackButton } from '@/components';
 import { toast } from 'sonner';
@@ -91,7 +91,7 @@ export default function OrderDetail() {
             <p className="text-slate-500 text-sm mt-1">{formatDate(order.createdAt)}</p>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-end gap-3">
           <div className="w-full sm:w-56">
             <label className="block text-xs font-semibold text-slate-500 mb-1.5">Trạng thái đơn hàng</label>
             <CustomSelect
@@ -109,8 +109,57 @@ export default function OrderDetail() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Items */}
+        {/* Main Column (Timeline + Items) */}
         <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          {/* Vertical Timeline */}
+          {order.statusHistories && order.statusHistories.length > 0 && (
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <div className="relative">
+                {order.statusHistories.map((history, idx) => {
+                  const time = new Date(history.createdAt);
+                  const isFirst = idx === 0;
+                  const isLast = idx === order.statusHistories!.length - 1;
+
+                  return (
+                    <div key={history.id} className="flex gap-4">
+                      {/* Left: Time */}
+                      <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
+                        <div className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                          {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                        </div>
+                      </div>
+
+                      {/* Middle: Line & Dot */}
+                      <div className="relative flex flex-col items-center">
+                        {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
+                        
+                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                        
+                        {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
+                      </div>
+
+                      {/* Right: Content */}
+                      <div className="pb-8 pt-1 flex-1">
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                          {history.status === 'SHIPPED' ? 'Giao hàng thành công' : history.description}
+                        </h4>
+                        {isFirst && history.status === 'SHIPPED' && (
+                          <div className="inline-flex items-center gap-1 text-sm text-purple-600 mt-1">
+                            <FiCheck /> Đơn hàng đã được giao thành công
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Items */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4 sm:mb-6"><FiPackage className="text-purple-600" /> Sản phẩm ({order.items?.length || 0})</h2>
             <div className="overflow-x-auto">
@@ -140,33 +189,11 @@ export default function OrderDetail() {
             </div>
           </div>
 
-          {/* Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold mb-4">Ghi chú</h2>
-              <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-sm border border-yellow-100 dark:border-yellow-900/50">
-                {order.note || 'Không có ghi chú.'}
-              </div>
-            </div>
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold mb-4">Tổng thanh toán</h2>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-slate-500"><span>Tạm tính</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
-                <div className="flex justify-between text-slate-500"><span>Phí vận chuyển</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
-                {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm giá sản phẩm</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
-                {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm phí vận chuyển</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
-                {(order.taxAmount || 0) > 0 && (
-                  <div className="flex justify-between text-slate-500">
-                    <span>Thuế VAT ({order.taxPercent ?? 0}%{order.taxMode === 'INCLUDED' ? ', đã gồm' : ''})</span>
-                    <span className={`font-medium ${order.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
-                      {order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}
-                    </span>
-                  </div>
-                )}
-                <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-purple-600">
-                  <span>Tổng cộng</span><span>{formatPrice(order.totalAmount)}</span>
-                </div>
-              </div>
+          {/* Note */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h2 className="text-lg font-bold mb-4">Ghi chú</h2>
+            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-sm border border-yellow-100 dark:border-yellow-900/50">
+              {order.note || 'Không có ghi chú.'}
             </div>
           </div>
         </div>
@@ -222,6 +249,28 @@ export default function OrderDetail() {
                   <span className="font-mono font-bold text-purple-600">{order.couponCode}</span>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Summary / Total */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <h2 className="text-lg font-bold mb-4">Tổng thanh toán</h2>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between text-slate-500"><span>Tạm tính</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
+              <div className="flex justify-between text-slate-500"><span>Phí vận chuyển</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
+              {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm giá sản phẩm</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
+              {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm phí vận chuyển</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
+              {(order.taxAmount || 0) > 0 && (
+                <div className="flex justify-between text-slate-500">
+                  <span>Thuế VAT ({order.taxPercent ?? 0}%{order.taxMode === 'INCLUDED' ? ', đã gồm' : ''})</span>
+                  <span className={`font-medium ${order.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
+                    {order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}
+                  </span>
+                </div>
+              )}
+              <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-purple-600">
+                <span>Tổng cộng</span><span>{formatPrice(order.totalAmount)}</span>
+              </div>
             </div>
           </div>
         </div>

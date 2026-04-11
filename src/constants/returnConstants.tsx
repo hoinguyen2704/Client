@@ -176,3 +176,64 @@ export const RETURN_STATUS_TRANSITIONS: Record<ReturnStatus, ReturnStatus[]> = {
 export const canProcessRefund = (status: string) =>
   status === 'APPROVED' || status === 'QC_PASSED' || status === 'REFUND_PENDING';
 
+//  Shared Timeline Builder 
+import type { TimelineStep } from '@/components/ui/types';
+import { formatDateFull } from '@/utils/format';
+
+export function buildReturnTimelineSteps(
+  status: ReturnStatus,
+  createdAt?: string,
+  resolvedAt?: string,
+): { steps: TimelineStep[]; currentStepIndex: number } {
+  let baseFlow: ReturnStatus[] = [
+    'REQUESTED', 'APPROVED', 'IN_TRANSIT', 'RECEIVED',
+    'QC_PASSED', 'REFUND_PENDING', 'REFUNDED', 'CLOSED',
+  ];
+
+  if (status === 'REJECTED') {
+    baseFlow = ['REQUESTED', 'REJECTED', 'CLOSED'];
+  } else if (status === 'CANCELLED') {
+    baseFlow = ['REQUESTED', 'CANCELLED'];
+  } else if (status === 'QC_FAILED') {
+    baseFlow = ['REQUESTED', 'APPROVED', 'IN_TRANSIT', 'RECEIVED', 'QC_FAILED', 'CLOSED'];
+  }
+
+  const currentIndex = baseFlow.indexOf(status);
+
+  const steps: TimelineStep[] = baseFlow.map((s) => {
+    const meta = getReturnStatusMeta(s);
+    let color = 'from-purple-500 to-purple-600';
+    if (s === 'REJECTED' || s === 'CANCELLED' || s === 'QC_FAILED') color = 'from-red-500 to-red-600';
+    else if (s === 'REFUNDED' || s === 'CLOSED') color = 'from-emerald-500 to-emerald-600';
+    else if (s === 'QC_PASSED' || s === 'APPROVED') color = 'from-blue-500 to-blue-600';
+
+    return { key: s, label: meta.label, colorClass: color };
+  });
+
+  if (createdAt && steps[0]) steps[0].timestamp = formatDateFull(createdAt);
+  if (resolvedAt && currentIndex >= 0 && steps[currentIndex]) {
+    steps[currentIndex].timestamp = formatDateFull(resolvedAt);
+  }
+
+  return { steps, currentStepIndex: currentIndex !== -1 ? currentIndex : 0 };
+}
+
+//  Shared Badge Components 
+
+export function ReturnStatusBadge({ status }: { status: string }) {
+  const meta = getReturnStatusMeta(status);
+  return (
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${meta.className}`}>
+      {meta.label}
+    </span>
+  );
+}
+
+export function RefundStatusBadge({ status }: { status: string }) {
+  const meta = getRefundStatusMeta(status);
+  return (
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${meta.className}`}>
+      {meta.label}
+    </span>
+  );
+}

@@ -24,9 +24,11 @@ import { CustomSelect, ConfirmDialog } from "@/components";
 
 /*  Model options cho dropdown  */
 const MODEL_OPTIONS = [
-  { value: "gemini-3-flash-preview", label: "Gemini 3 Flash" },
-  { value: "gemini-3-pro-preview", label: "Gemini 3 Pro" },
-  { value: "gemini-2-flash-preview", label: "Gemini 2 Flash" },
+  { value: "gemini-3-flash-preview", label: "gemini-3-flash-preview" },
+  { value: "gemini-3-pro-preview", label: "gemini-3-pro-preview" },
+  { value: "gemini-2-flash-preview", label: "gemini-2-flash-preview" },
+  { value: "gemini-2.5-flash", label: "gemini-2.5-flash" },
+  { value: "gemini-2.0-flash", label: "gemini-2.0-flash" },
 ];
 
 export default function Chatbot() {
@@ -212,7 +214,7 @@ export default function Chatbot() {
         </button>
       </div>
 
-      {/* ═══════════ TAB: CẤU HÌNH ═══════════ */}
+      {/*  TAB: CẤU HÌNH  */}
       {activeTab === "settings" && (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           {/*  Cột trái: 2/3  */}
@@ -665,7 +667,7 @@ export default function Chatbot() {
         </div>
       )}
 
-      {/* ═══════════ TAB: TỔNG QUAN ═══════════ */}
+      {/*  TAB: TỔNG QUAN  */}
       {activeTab === "overview" && (
         <div className="space-y-4 sm:space-y-6">
           {/* Stats Cards - placeholder */}

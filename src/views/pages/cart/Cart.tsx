@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FiTrash2, FiMinus, FiPlus, FiShoppingBag, FiInfo } from 'react-icons/fi';
+import { FiTrash2, FiShoppingBag, FiInfo } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
-import { Button, IconButton, PrimaryButton } from '@/components';
+import { Button, IconButton, PrimaryButton, QuantitySelector } from '@/components';
 import type { CartResponse } from '@/types';
 
 export default function Cart() {
@@ -114,7 +114,7 @@ export default function Cart() {
                 <input type="checkbox" checked={allSelectableSelected} onChange={toggleAll} className="w-4 h-4 rounded border-slate-300" />
                 <span className="font-medium text-sm">Chọn tất cả ({items.length})</span>
               </label>
-              <Button onClick={handleClearCart} variant="ghost" size="sm" icon={<FiTrash2 />} className="text-red-500 shrink-0">Xóa tất cả</Button>
+              <Button onClick={handleClearCart} variant="ghost" size="lg" icon={<FiTrash2 />} className="text-red-500 shrink-0">Xóa tất cả</Button>
             </div>
 
             {items.map(item => (
@@ -150,11 +150,15 @@ export default function Cart() {
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-2 pl-7 sm:pl-0">
                   <div className="flex items-center gap-1.5 sm:gap-2">
-                    <button disabled={item.available === false} onClick={() => handleUpdateQty(item.id, item.quantity - 1)} className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"><FiMinus className="text-sm" /></button>
-                    <span className="w-8 sm:w-10 text-center font-bold text-sm sm:text-base">{item.quantity}</span>
-                    <button disabled={item.available === false} onClick={() => handleUpdateQty(item.id, item.quantity + 1)} className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"><FiPlus className="text-sm" /></button>
+                    <QuantitySelector
+                      value={item.quantity}
+                      onChange={(val) => handleUpdateQty(item.id, val)}
+                      min={1}
+                      size="md"
+                      disabled={item.available === false}
+                    />
                   </div>
-                  <IconButton onClick={() => handleRemove(item.id)} variant="ghost" icon={<FiTrash2 />} className="text-slate-400 hover:text-red-500 shrink-0" />
+                  <IconButton onClick={() => handleRemove(item.id)} variant="ghost" size="lg" icon={<FiTrash2 className="text-lg" />} className="text-slate-400 hover:text-red-500 shrink-0" />
                 </div>
               </div>
             ))}

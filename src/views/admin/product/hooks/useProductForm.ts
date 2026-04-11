@@ -40,7 +40,7 @@ export default function useProductForm() {
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
-  // ── Form state ──
+  //  Form state 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -56,11 +56,11 @@ export default function useProductForm() {
     { id: string; imageUrl: string }[]
   >([]);
 
-  // ── Dropdown data ──
+  //  Dropdown data 
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [brands, setBrands] = useState<BrandResponse[]>([]);
 
-  // ── UI state ──
+  //  UI state 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -75,7 +75,7 @@ export default function useProductForm() {
     {},
   );
 
-  // ── Dropdown UI state ──
+  //  Dropdown UI state 
   const [showTemplatePopup, setShowTemplatePopup] = useState(false);
   const templatePopupRef = useRef<HTMLDivElement>(null);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -87,7 +87,7 @@ export default function useProductForm() {
   const brandDropdownRef = useRef<HTMLDivElement>(null);
   const statusDropdownRef = useRef<HTMLDivElement>(null);
 
-  // ── Inline create state ──
+  //  Inline create state 
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [savingCategory, setSavingCategory] = useState(false);
@@ -95,7 +95,7 @@ export default function useProductForm() {
   const [newBrandName, setNewBrandName] = useState("");
   const [savingBrand, setSavingBrand] = useState(false);
 
-  // ── Spec template helpers ──
+  //  Spec template helpers 
   const getSelectedCategoryTemplates = (): SpecTemplateResponse[] => {
     const cat = categories.find((c) => c.id === categoryId);
     return cat?.specTemplates || [];
@@ -115,7 +115,7 @@ export default function useProductForm() {
     );
   };
 
-  // ── Close popups on outside click ──
+  //  Close popups on outside click 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -147,7 +147,7 @@ export default function useProductForm() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ── Inline create handlers ──
+  //  Inline create handlers 
   const handleCreateCategory = async () => {
     if (!newCategoryName.trim()) return;
     setSavingCategory(true);
@@ -186,7 +186,7 @@ export default function useProductForm() {
     }
   };
 
-  // ── Fetch dropdown data ──
+  //  Fetch dropdown data 
   const fetchDropdowns = useCallback(async () => {
     try {
       const [catRes, brandRes] = await Promise.all([
@@ -200,7 +200,7 @@ export default function useProductForm() {
     }
   }, []);
 
-  // ── Fetch product for edit ──
+  //  Fetch product for edit 
   const fetchProduct = useCallback(async () => {
     if (!id) return;
     setLoading(true);
@@ -285,7 +285,7 @@ export default function useProductForm() {
     }
   }, [isEditMode, fetchProduct]);
 
-  // ── Variant helpers ──
+  //  Variant helpers 
   const addVariant = useCallback(() => {
     setVariants((prev) => [...prev, { ...emptyVariant }]);
   }, []);
@@ -440,7 +440,7 @@ export default function useProductForm() {
     }
   };
 
-  // ── Image upload helpers ──
+  //  Image upload helpers 
   const handleImageFiles = (files: File[]) => {
     if (!files.length) return;
     if (isEditMode && id) {
@@ -472,7 +472,7 @@ export default function useProductForm() {
     }
   };
 
-  // ── Submit ──
+  //  Submit 
   const handleSubmit = async () => {
     if (!name.trim()) {
       setError("Vui lòng nhập tên sản phẩm");

@@ -4,7 +4,7 @@ import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/uti
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import { Button, ConfirmDialog, Modal, ModalCancelButton, PrimaryButton, StarRating } from '@/components';
+import { Button, ConfirmDialog, Modal, ModalCancelButton, Pagination, PrimaryButton, StarRating } from '@/components';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { CLIENT_ORDER_TABS, getClientStatusBadge } from '@/constants/orderConstants';
@@ -172,16 +172,7 @@ export default function Orders() {
           </div>
         )}
 
-        {totalPages > 1 && (
-          <div className="flex justify-center gap-1.5 sm:gap-2 pt-3 sm:pt-4">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button key={p} onClick={() => setPage(p)}
-                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-sm font-medium transition-colors ${p === page ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200'}`}>
-                {p}
-              </button>
-            ))}
-          </div>
-        )}
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
 
       <Modal

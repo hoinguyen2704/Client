@@ -18,6 +18,7 @@ export { default as Button } from "./button/Button";
 export { default as IconButton } from "./button/IconButton";
 export { default as AdminSearch, FilterButton } from "./ui/AdminSearch";
 export { default as AdminPagination } from "./ui/AdminPagination";
+export { default as Pagination } from "./ui/Pagination";
 export { default as ConfirmDialog } from "./dialog/ConfirmDialog";
 export { default as OptimizedImage } from "./ui/OptimizedImage";
 export { default as PrimaryButton } from "./button/PrimaryButton";
@@ -34,6 +35,8 @@ export { FormInput, FormTextarea, FormSelect } from "./input/FormInput";
 export { default as SwitchToggle } from "./input/SwitchToggle";
 export { default as Checkbox } from "./input/Checkbox";
 export { default as Radio } from "./input/Radio";
+export { default as QuantitySelector } from "./input/QuantitySelector";
+export { StatusTimeline } from "./ui/StatusTimeline";
 
 //  Types (re-export for convenience)
 export * from "./ui/types";

@@ -4,15 +4,13 @@ import {
   FiFilter,
   FiChevronDown,
   FiX,
-  FiChevronLeft,
-  FiChevronRight,
   FiSearch,
   FiCheck,
   FiLoader,
 } from "react-icons/fi";
 import { AnimatePresence, motion } from "motion/react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Button, ProductCard, CustomSelect } from "@/components";
+import { Button, Pagination, ProductCard, CustomSelect } from "@/components";
 import { productService, categoryService, brandService } from "@/apis";
 import type {
   ProductResponse,
@@ -208,7 +206,7 @@ export default function Products() {
           <FiFilter /> Lọc sản phẩm
         </button>
 
-        {/* ═══ Sidebar Filters ═══ */}
+        {/*  Sidebar Filters  */}
         <aside
           className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}
         >
@@ -332,7 +330,7 @@ export default function Products() {
           />
         )}
 
-        {/* ═══ Main Content ═══ */}
+        {/*  Main Content  */}
         <main className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
             <h1 className="text-xl sm:text-2xl font-bold">
@@ -387,54 +385,7 @@ export default function Products() {
                 ))}
               </div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center mt-8 sm:mt-12">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setPage(Math.max(1, page - 1))}
-                      disabled={page <= 1}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
-                    >
-                      <FiChevronLeft />
-                    </button>
-
-                    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                      let pageNum: number;
-                      if (totalPages <= 5) {
-                        pageNum = i + 1;
-                      } else if (page <= 3) {
-                        pageNum = i + 1;
-                      } else if (page >= totalPages - 2) {
-                        pageNum = totalPages - 4 + i;
-                      } else {
-                        pageNum = page - 2 + i;
-                      }
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => setPage(pageNum)}
-                          className={`w-9 h-9 sm:w-10 sm:h-10 text-sm rounded-xl flex items-center justify-center font-bold transition-colors ${
-                            pageNum === page
-                              ? "bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20"
-                              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-
-                    <button
-                      onClick={() => setPage(Math.min(totalPages, page + 1))}
-                      disabled={page >= totalPages}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
-                    >
-                      <FiChevronRight />
-                    </button>
-                  </div>
-                </div>
-              )}
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-8 sm:mt-12" />
             </>
           ) : (
             <motion.div

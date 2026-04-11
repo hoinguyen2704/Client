@@ -150,8 +150,8 @@ export default function ProductDetail() {
         </ol>
       </nav>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 mb-12">
-        <div className="flex flex-col lg:flex-row gap-12">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 md:p-6 shadow-sm border border-slate-100 dark:border-slate-800 mb-6">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           <ProductGallery
             images={finalGalleryImages}
             activeImage={activeImage}

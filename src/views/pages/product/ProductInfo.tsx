@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiPlus, FiMinus, FiZap } from 'react-icons/fi';
+import { FiStar, FiHeart, FiShoppingCart, FiCheck, FiZap } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
@@ -9,7 +9,7 @@ import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 import { cartService } from '@/apis';
-import { PrimaryButton } from '@/components';
+import { PrimaryButton, QuantitySelector } from '@/components';
 import { resolveVariantPricing } from '@/utils/pricing';
 import { getApiErrorMessage } from '@/utils/error';
 
@@ -228,40 +228,13 @@ export default function ProductInfo({
         <div className="pt-2">
           <h3 className="font-bold mb-3">Số lượng</h3>
           <div className="flex items-center gap-6">
-            <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
-              <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 shadow-sm transition-all active:scale-95">
-                <FiMinus />
-              </button>
-              <input type="text" value={quantity}
-                onChange={(e) => { 
-                  if (e.target.value === '') {
-                    setQuantity(1);
-                    return;
-                  }
-                  const num = parseInt(e.target.value); 
-                  if (!isNaN(num) && num > 0) {
-                    if (num > stock) {
-                      toast.warning(`Chỉ còn ${stock} sản phẩm có sẵn!`);
-                      setQuantity(stock);
-                    } else {
-                      setQuantity(num);
-                    }
-                  } 
-                }}
-                className="w-16 h-10 text-center border-none bg-transparent font-bold text-lg focus:ring-0 p-0" />
-              <button type="button" onClick={() => {
-                  if (quantity >= stock) {
-                    toast.warning(`Chỉ còn ${stock} sản phẩm có sẵn!`);
-                  } else {
-                    setQuantity(quantity + 1);
-                  }
-                }}
-                className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 shadow-sm transition-all active:scale-95 disabled:opacity-50"
-                disabled={quantity >= stock}>
-                <FiPlus />
-              </button>
-            </div>
+            <QuantitySelector
+              value={quantity}
+              onChange={setQuantity}
+              min={1}
+              max={stock}
+              overMaxWarning={`Chỉ còn ${stock} sản phẩm có sẵn!`}
+            />
             <span className="text-sm text-slate-500 font-medium">{stock > 0 ? `${stock} sản phẩm có sẵn` : 'Hết hàng'}</span>
           </div>
         </div>

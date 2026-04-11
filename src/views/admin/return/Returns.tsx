@@ -1,22 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
-import { FiClipboard, FiXCircle, FiCheckCircle } from 'react-icons/fi';
+import { FiClipboard, FiXCircle, FiCheckCircle, FiClock, FiTruck, FiCreditCard } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { ActionButtons, AdminPagination, AdminSearch, Button, CustomSelect } from '@/components';
 import returnService from '@/apis/services/returnService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { RETURN_FILTER_OPTIONS, getRefundStatusMeta, getReturnStatusMeta } from '@/constants/returnConstants';
+import { RETURN_FILTER_OPTIONS, canProcessRefund, ReturnStatusBadge, RefundStatusBadge } from '@/constants/returnConstants';
 import { formatDate, formatPrice } from '@/utils/format';
+import { getApiErrorMessage } from '@/utils/error';
 import type { PageResponse, ReturnRequestResponse } from '@/types';
 
-const getErrorMessage = (err: unknown, fallback: string) => {
-  if (!err || typeof err !== 'object') return fallback;
-  const maybe = err as {
-    message?: string;
-    error?: string;
-    data?: { message?: string };
-  };
-  return maybe.message || maybe.error || maybe.data?.message || fallback;
-};
+
 
 export default function AdminReturns() {
   const [returns, setReturns] = useState<ReturnRequestResponse[]>([]);
@@ -61,29 +54,13 @@ export default function AdminReturns() {
       toast.success(approved ? 'Đã duyệt yêu cầu trả hàng' : 'Đã từ chối yêu cầu trả hàng');
       fetchReturns({ silent: true });
     } catch (err) {
-      toast.error(getErrorMessage(err, 'Cập nhật duyệt trả hàng thất bại'));
+      toast.error(getApiErrorMessage(err, 'Cập nhật duyệt trả hàng thất bại'));
     } finally {
       setReviewingKey(null);
     }
   };
 
-  const renderStatusBadge = (status: string) => {
-    const meta = getReturnStatusMeta(status);
-    return (
-      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ${meta.className}`}>
-        {meta.label}
-      </span>
-    );
-  };
 
-  const renderRefundBadge = (status: string) => {
-    const meta = getRefundStatusMeta(status);
-    return (
-      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${meta.className}`}>
-        {meta.label}
-      </span>
-    );
-  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -91,6 +68,59 @@ export default function AdminReturns() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">Quản lý trả hàng / hoàn tiền</h1>
           <p className="text-sm text-slate-500 mt-1">Danh sách yêu cầu trả hàng của khách và trạng thái hoàn tiền.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-slate-500 font-medium">Tổng số trang này</p>
+              <h3 className="text-2xl font-bold mt-1 text-slate-800 dark:text-slate-100">{returns.length}</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+              <FiClipboard className="text-lg" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-slate-500 font-medium">Chờ duyệt</p>
+              <h3 className="text-2xl font-bold mt-1 text-amber-600">
+                {returns.filter(r => r.status === 'REQUESTED').length}
+              </h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-500">
+              <FiClock className="text-lg" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-slate-500 font-medium">Đang xử lý</p>
+              <h3 className="text-2xl font-bold mt-1 text-blue-600">
+                {returns.filter(r => ['APPROVED', 'IN_TRANSIT', 'RECEIVED', 'QC_PASSED', 'QC_FAILED'].includes(r.status)).length}
+              </h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500">
+              <FiTruck className="text-lg" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-slate-500 font-medium">Cần hoàn tiền</p>
+              <h3 className="text-2xl font-bold mt-1 text-emerald-600">
+                {returns.filter(r => canProcessRefund(r.status) && r.refundStatus !== 'SUCCESS').length}
+              </h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+              <FiCreditCard className="text-lg" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -182,8 +212,8 @@ export default function AdminReturns() {
                 <div className="w-full lg:w-auto flex justify-between items-center lg:block">
                   <span className="lg:hidden text-slate-500 text-sm">Trạng thái:</span>
                   <div className="flex flex-wrap gap-1.5 justify-end lg:justify-start">
-                    {renderStatusBadge(item.status)}
-                    {renderRefundBadge(item.refundStatus)}
+                    <ReturnStatusBadge status={item.status} />
+                    <RefundStatusBadge status={item.refundStatus} />
                   </div>
                 </div>
 

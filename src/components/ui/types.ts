@@ -292,3 +292,35 @@ export interface Message {
   role: "user" | "model";
   text: string;
 }
+
+// StatusTimeline
+export interface TimelineStep {
+  key: string;
+  label: string;
+  icon?: ReactNode;
+  timestamp?: string;
+  description?: string;
+  colorClass?: string;
+}
+
+export interface StatusTimelineProps {
+  steps: TimelineStep[];
+  currentStepIndex: number;
+  variant?: 'horizontal' | 'vertical';
+  size?: 'sm' | 'md';
+}
+
+// QuantitySelector
+export type QuantitySelectorSize = 'sm' | 'md';
+
+export interface QuantitySelectorProps {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+  size?: QuantitySelectorSize;
+  disabled?: boolean;
+  /** Optional warning message when max is exceeded (receives max value) */
+  overMaxWarning?: string;
+  className?: string;
+}

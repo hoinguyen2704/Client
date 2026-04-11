@@ -11,27 +11,22 @@ import {
   FiXCircle,
 } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { BackButton, Button, CustomSelect } from '@/components';
+import { BackButton, Button, CustomSelect, StatusTimeline } from '@/components';
 import returnService from '@/apis/services/returnService';
 import {
   RETURN_STATUS_TRANSITIONS,
   canProcessRefund,
-  getRefundStatusMeta,
+  buildReturnTimelineSteps,
+  ReturnStatusBadge,
+  RefundStatusBadge,
   getReturnStatusMeta,
   type ReturnStatus,
 } from '@/constants/returnConstants';
 import { formatDateFull as formatDateTime, formatPrice } from '@/utils/format';
+import { getApiErrorMessage } from '@/utils/error';
 import type { ProcessRefundRequestPayload, ReturnRequestResponse, ReviewReturnRequestPayload } from '@/types';
 
-const getErrorMessage = (err: unknown, fallback: string) => {
-  if (!err || typeof err !== 'object') return fallback;
-  const maybe = err as {
-    message?: string;
-    error?: string;
-    data?: { message?: string };
-  };
-  return maybe.message || maybe.error || maybe.data?.message || fallback;
-};
+
 
 const createIdempotencyKey = () => {
   if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
@@ -120,7 +115,7 @@ export default function ReturnDetail() {
       setApprovedAmount('');
       toast.success(approved ? 'Đã duyệt yêu cầu trả hàng' : 'Đã từ chối yêu cầu trả hàng');
     } catch (err) {
-      toast.error(getErrorMessage(err, 'Thao tác duyệt trả hàng thất bại'));
+      toast.error(getApiErrorMessage(err, 'Thao tác duyệt trả hàng thất bại'));
     } finally {
       setIsReviewing(false);
     }
@@ -143,7 +138,7 @@ export default function ReturnDetail() {
       setStatusNote('');
       toast.success('Đã cập nhật trạng thái yêu cầu');
     } catch (err) {
-      toast.error(getErrorMessage(err, 'Cập nhật trạng thái thất bại'));
+      toast.error(getApiErrorMessage(err, 'Cập nhật trạng thái thất bại'));
     } finally {
       setIsUpdatingStatus(false);
     }
@@ -166,6 +161,11 @@ export default function ReturnDetail() {
         return;
       }
       payload.amount = amount;
+    } else if (returnRequest.approvedAmount != null && returnRequest.approvedAmount > 0) {
+      payload.amount = returnRequest.approvedAmount;
+    } else {
+      toast.error('Số tiền hoàn không hợp lệ');
+      return;
     }
 
     setIsRefunding(true);
@@ -177,29 +177,12 @@ export default function ReturnDetail() {
       setRawPayload('');
       toast.success('Đã xử lý hoàn tiền thành công');
     } catch (err) {
-      toast.error(getErrorMessage(err, 'Xử lý hoàn tiền thất bại'));
+      toast.error(getApiErrorMessage(err, 'Xử lý hoàn tiền thất bại'));
     } finally {
       setIsRefunding(false);
     }
   };
 
-  const renderStatusBadge = (status: string) => {
-    const meta = getReturnStatusMeta(status);
-    return (
-      <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${meta.className}`}>
-        {meta.label}
-      </span>
-    );
-  };
-
-  const renderRefundBadge = (status: string) => {
-    const meta = getRefundStatusMeta(status);
-    return (
-      <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${meta.className}`}>
-        {meta.label}
-      </span>
-    );
-  };
 
   if (loading) {
     return (
@@ -232,7 +215,7 @@ export default function ReturnDetail() {
           <div>
             <h1 className="text-xl sm:text-2xl font-bold flex flex-wrap items-center gap-2">
               {returnRequest.returnNumber}
-              {renderStatusBadge(returnRequest.status)}
+              <ReturnStatusBadge status={returnRequest.status} />
             </h1>
             <p className="text-slate-500 text-sm mt-1">
               Đơn hàng: <span className="font-semibold text-slate-700 dark:text-slate-200">{returnRequest.orderNumber}</span> | Tạo lúc{' '}
@@ -240,7 +223,15 @@ export default function ReturnDetail() {
             </p>
           </div>
         </div>
-        <div>{renderRefundBadge(returnRequest.refundStatus)}</div>
+        <div><RefundStatusBadge status={returnRequest.refundStatus} /></div>
+      </div>
+
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+        <StatusTimeline 
+          {...buildReturnTimelineSteps(returnRequest.status as ReturnStatus, returnRequest.createdAt, returnRequest.resolvedAt)} 
+          variant="horizontal" 
+          size="md" 
+        />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
@@ -309,7 +300,7 @@ export default function ReturnDetail() {
                         <td className="py-3 text-right font-semibold">
                           {formatPrice(Number(tx.amount || 0))} {tx.currency}
                         </td>
-                        <td className="py-3 text-right">{renderRefundBadge(tx.status)}</td>
+                        <td className="py-3 text-right"><RefundStatusBadge status={tx.status} /></td>
                       </tr>
                     ))}
                   </tbody>
@@ -457,12 +448,16 @@ export default function ReturnDetail() {
                 placeholder="Số tiền hoàn (để trống = số tiền duyệt)"
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40"
               />
-              <input
-                type="text"
+              <CustomSelect
                 value={refundProvider}
-                onChange={(e) => setRefundProvider(e.target.value)}
-                placeholder="Provider (VD: VNPAY / MOMO / MANUAL)"
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm outline-none focus:ring-2 focus:ring-purple-500/40"
+                onChange={setRefundProvider}
+                options={[
+                  { value: 'MANUAL', label: 'Hoàn tiền thủ công (Cash/Bank)' },
+                  { value: 'VNPAY', label: 'Qua VNPAY' },
+                  { value: 'MOMO', label: 'Qua MOMO' },
+                  { value: 'BANK_TRANSFER', label: 'Chuyển khoản Ngân Hàng' },
+                ]}
+                className="w-full"
               />
               <input
                 type="text"
