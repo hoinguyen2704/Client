@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminTicketService from '@/apis/services/adminTicketService';
-import { Button, CustomSelect, AdminPagination } from '@/components';
+import { Button, CustomSelect, Pagination } from '@/components';
 import TicketListItem from '@/components/ticket/TicketListItem';
 import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
 import type { SupportRealtimePayload, TicketResponse, PageResponse } from '@/types';
@@ -140,7 +140,7 @@ export default function Tickets() {
           </div>
           {pageData && (
             <div className="p-3 border-t border-slate-100 dark:border-slate-800">
-              <AdminPagination
+              <Pagination variant="admin"
                 currentPage={page}
                 totalPages={pageData.lastPage}
                 totalItems={pageData.total}

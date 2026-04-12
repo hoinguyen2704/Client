@@ -18,7 +18,6 @@ export { default as ActionButtons } from "./button/ActionButtons";
 export { default as Button } from "./button/Button";
 export { default as IconButton } from "./button/IconButton";
 export { default as AdminSearch, FilterButton } from "./ui/AdminSearch";
-export { default as AdminPagination } from "./ui/AdminPagination";
 export { default as Pagination } from "./ui/Pagination";
 export { default as ConfirmDialog } from "./dialog/ConfirmDialog";
 export { default as OptimizedImage } from "./ui/OptimizedImage";

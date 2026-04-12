@@ -18,3 +18,19 @@ export interface UpdateUserRequest {
   dateOfBirth?: string;
   gender?: string;
 }
+
+export interface LinkedSocialAccountResponse {
+  provider: string;
+  linked: boolean;
+  email?: string;
+  linkedAt?: string;
+}
+
+export interface LinkSocialAccountRequest {
+  provider: "GOOGLE";
+  token: string;
+}
+
+export interface UnlinkSocialAccountRequest {
+  currentPassword: string;
+}

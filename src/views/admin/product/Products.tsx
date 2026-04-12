@@ -3,7 +3,7 @@ import { FiPlus, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo, FiChevronUp, FiC
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { formatPrice } from '@/utils/format';
-import { Button, CustomSelect, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, Checkbox } from '@/components';
+import { Button, CustomSelect, PrimaryButton, AdminSearch, Pagination, ActionButtons, StatusBadge, Checkbox } from '@/components';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
@@ -216,9 +216,9 @@ export default function Products() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[920px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                <th className="p-4 font-medium w-10">
-                  <Checkbox 
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
+                <th className="p-4 font-medium w-10 text-center">
+                  <Checkbox
                     checked={selectedItems.length === products.length && products.length > 0}
                     onCheckedChange={(checked) => handleSelectAll(!!checked)}
                   />
@@ -230,41 +230,41 @@ export default function Products() {
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('originPrice')}>
                   <div className="flex items-center gap-1">Giá bán {sortBy === 'originPrice' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
-                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('totalStock')}>
-                  <div className="flex items-center gap-1">Tồn kho {sortBy === 'totalStock' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none text-center" onClick={() => handleSort('totalStock')}>
+                  <div className="flex items-center justify-center gap-1">Tồn kho {sortBy === 'totalStock' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
-                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('totalSold')}>
-                  <div className="flex items-center gap-1">Đã bán {sortBy === 'totalSold' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none text-center" onClick={() => handleSort('totalSold')}>
+                  <div className="flex items-center justify-center gap-1">Đã bán {sortBy === 'totalSold' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('status')}>
                   <div className="flex items-center gap-1">Trạng thái {sortBy === 'status' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
-                <th className="p-4 font-medium text-right">Thao tác</th>
+                <th className="p-4 font-medium text-center">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                    <td className="p-4"><div className="w-4 h-4 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="flex gap-3"><div className="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg" /><div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded" /></div></td>
+                  <tr key={i} className="border-b border-slate-200 dark:border-slate-700 divide-x divide-slate-200 dark:divide-slate-700 animate-pulse">
+                    <td className="p-4"><div className="w-4 h-4 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
+                    <td className="p-4"><div className="flex gap-3"><div className="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg shrink-0" /><div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded mt-4" /></div></td>
                     <td className="p-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></td>
                     <td className="p-4"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-12 bg-slate-200 dark:bg-slate-700 rounded" /></td>
-                    <td className="p-4"><div className="h-4 w-10 bg-slate-200 dark:bg-slate-700 rounded" /></td>
+                    <td className="p-4"><div className="h-4 w-12 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
+                    <td className="p-4"><div className="h-4 w-10 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
                     <td className="p-4"><div className="h-6 w-16 bg-slate-200 dark:bg-slate-700 rounded-full" /></td>
-                    <td className="p-4"><div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded ml-auto" /></td>
+                    <td className="p-4"><div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
                   </tr>
                 ))
               ) : products.length === 0 ? (
-                <tr><td colSpan={8} className="p-10 sm:p-12 text-center text-slate-400">Không có sản phẩm nào</td></tr>
+                <tr><td colSpan={8} className="p-10 sm:p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">Không có sản phẩm nào</td></tr>
               ) : (
                 products.map((product) => {
                   const stock = totalStock(product);
                   return (
-                    <tr key={product.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                    <tr key={product.id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group divide-x divide-slate-200 dark:divide-slate-700">
                       <td className="p-4">
-                        <Checkbox 
+                        <Checkbox
                           checked={selectedItems.includes(product.id)}
                           onCheckedChange={() => handleSelectItem(product.id)}
                         />
@@ -274,7 +274,7 @@ export default function Products() {
                           <img src={product.mainImageUrl || '/placeholder.png'} alt={product.name}
                             className="w-12 h-12 rounded-lg object-cover bg-slate-100 dark:bg-slate-800" />
                           <div>
-                            <span className="font-bold line-clamp-1 max-w-[250px]">{product.name}</span>
+                            <span className="font-bold line-clamp-1 max-w-[380px]">{product.name}</span>
                             <span className="text-sm text-slate-400 block">{product.brandName || ''}</span>
                           </div>
                         </div>
@@ -306,7 +306,7 @@ export default function Products() {
                             {
                               type: 'more',
                               title: product.status === 'ACTIVE' ? 'Ẩn sản phẩm' : 'Hiện sản phẩm',
-                              icon: product.status === 'ACTIVE' ? <FiToggleRight className="text-[1.3rem] text-green-500" /> : <FiToggleLeft className="text-[1.3rem]" />,
+                              icon: product.status === 'ACTIVE' ? <FiToggleRight className="text-[1.5rem] text-green-500" /> : <FiToggleLeft className="text-[1.5rem]" />,
                               onClick: () => handleToggleStatus(product.id)
                             },
                             {
@@ -330,7 +330,7 @@ export default function Products() {
 
         {/* Pagination */}
         {pageData && (
-          <AdminPagination
+          <Pagination variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}

@@ -3,7 +3,7 @@ import { FiSearch, FiEye, FiDownload, FiPackage } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { formatPrice, formatDate } from '@/utils/format';
-import { Button, StatusBadge, CustomSelect, AdminSearch, AdminPagination, ActionButtons } from '@/components';
+import { Button, StatusBadge, CustomSelect, AdminSearch, Pagination, ActionButtons } from '@/components';
 
 import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';
@@ -88,27 +88,27 @@ export default function AdminOrders() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         
         {/* Desktop Header */}
-        <div className="hidden lg:grid grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-4 p-4 xl:p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md font-semibold rounded-t-2xl">
-          <div>Mã đơn hàng</div>
-          <div>Ngày đặt</div>
-          <div>SP</div>
-          <div>Tổng tiền</div>
-          <div>Thanh toán</div>
-          <div>Trạng thái</div>
-          <div className="text-right print:hidden">Thao tác</div>
+        <div className="hidden lg:grid grid-cols-[350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
+          <div className="px-4 py-4 text-left">Mã đơn hàng</div>
+          <div className="px-4 py-4">Ngày đặt</div>
+          <div className="px-4 py-4">SP</div>
+          <div className="px-4 py-4 text-right">Tổng tiền</div>
+          <div className="px-4 py-4 text-right">Thanh toán</div>
+          <div className="px-4 py-4">Trạng thái</div>
+          <div className="px-4 py-4 text-center print:hidden">Thao tác</div>
         </div>
         
         <div className="flex flex-col">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-3 sm:gap-4 p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
-                <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
-                <div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
-                <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
-                <div className="h-8 w-36 bg-slate-200 dark:bg-slate-700 rounded-xl" />
-                <div className="h-8 w-10 bg-slate-200 dark:bg-slate-700 rounded-lg ml-auto hidden lg:block" />
+              <div key={i} className="flex flex-col lg:grid lg:grid-cols-[350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse">
+                <div className="px-4 py-4 w-full"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-36 bg-slate-200 dark:bg-slate-700 rounded-xl" /></div>
+                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-10 bg-slate-200 dark:bg-slate-700 rounded-lg" /></div>
               </div>
             ))
           ) : orders.length === 0 ? (
@@ -118,48 +118,50 @@ export default function AdminOrders() {
             </div>
           ) : (
             orders.map((order) => (
-              <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[minmax(120px,1fr)_120px_60px_140px_100px_180px_100px] gap-3 sm:gap-4 items-center p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
+              <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
                 {/* Mobile: Order Header */}
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
                   <div className="font-bold text-purple-600 flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 lg:hidden"><FiPackage className="text-md" /></div>
                     {order.orderNumber}
                   </div>
-                  <div className="lg:hidden text-slate-500 text-md">{formatDate(order.createdAt)}</div>
+                  <div className="lg:hidden text-slate-500 text-md ">{formatDate(order.createdAt)}</div>
                 </div>
 
-                <div className="hidden lg:block text-slate-500 font-medium">{formatDate(order.createdAt)}</div>
+                <div className="hidden lg:flex justify-center items-center px-4 py-4 text-slate-700 dark:text-slate-300 font-medium h-full text-center">{formatDate(order.createdAt)}</div>
                 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
                   <span className="lg:hidden text-slate-500 text-md">Số lượng SP:</span>
-                  <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max">
+                  <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max text-slate-700 dark:text-slate-300">
                     {order.items?.length || 0}
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
                   <span className="lg:hidden text-slate-500 text-md">Tổng tiền:</span>
-                  <div className="font-bold">{formatPrice(order.totalAmount)}</div>
+                  <div className="font-bold text-slate-800 dark:text-slate-100">{formatPrice(order.totalAmount)}</div>
                 </div>
 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
                   <span className="lg:hidden text-slate-500 text-md">Thanh toán:</span>
-                  <div className="text-slate-500 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
+                  <div className="text-slate-700 dark:text-slate-300 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
                     {order.paymentMethod}
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between lg:justify-center items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
                   <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
-                  <CustomSelect 
-                    value={order.orderStatus} 
-                    onChange={(val) => handleStatusChange(order.id, val)}
-                    options={ORDER_STATUS_OPTIONS}
-                    className="w-[170px] sm:w-48 lg:w-40"
-                  />
+                  <div className="w-[170px] sm:w-48 lg:w-[150px]">
+                    <CustomSelect 
+                      value={order.orderStatus} 
+                      onChange={(val) => handleStatusChange(order.id, val)}
+                      options={ORDER_STATUS_OPTIONS}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
 
-                <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-end items-center print:hidden">
+                <div className="w-full lg:w-auto mt-2 lg:mt-0 flex justify-end lg:justify-center items-center print:hidden px-4 pb-4 pt-2 lg:px-4 lg:py-4 lg:h-full">
                   <ActionButtons
                     actions={[
                       {
@@ -176,7 +178,7 @@ export default function AdminOrders() {
 
         {/* Pagination */}
         {pageData && (
-          <AdminPagination
+          <Pagination variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}

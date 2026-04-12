@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
-import { Button, CustomSelect, AdminPagination, StarRating, UserAvatar } from '@/components';
+import { Button, CustomSelect, Pagination, StarRating, UserAvatar } from '@/components';
 import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
@@ -118,7 +118,7 @@ export default function Feedbacks() {
       </div>
 
       {pageData && (
-        <AdminPagination
+        <Pagination variant="admin"
           currentPage={page}
           totalPages={pageData.lastPage}
           totalItems={pageData.total}

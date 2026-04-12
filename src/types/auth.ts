@@ -28,7 +28,7 @@ export interface ResetPasswordRequest {
 }
 
 export interface SocialLoginRequest {
-  provider: "GOOGLE" | "FACEBOOK";
+  provider: "GOOGLE";
   token: string;
 }
 

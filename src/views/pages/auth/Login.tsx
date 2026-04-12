@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiTruck, FiHeadphones, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiTruck, FiHeadphones, FiAlertCircle, FiLoader } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import { motion } from 'motion/react';
 import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
 import { SHOP } from '@/constants/shopConstants';
-import { getApiErrorMessage } from '@/utils/error';
+import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
+import { requestGoogleIdToken } from '@/utils/googleAuth';
 import AuthLayout from './AuthLayout';
 
 const features = [
@@ -37,12 +38,42 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [socialLoadingProvider, setSocialLoadingProvider] = useState<'GOOGLE' | 'FACEBOOK' | null>(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((s) => s.login);
 
   const from = resolveFromPath(location.state);
+
+  const completeLogin = (payload: {
+    accessToken: string;
+    refreshToken: string;
+    user: { id: string; fullName: string; email: string; role: string; avatarUrl?: string };
+  }) => {
+    const { accessToken, refreshToken, user } = payload;
+    login(accessToken, refreshToken, {
+      id: user.id,
+      name: user.fullName,
+      email: user.email,
+      role: user.role as 'USER' | 'ADMIN',
+      avatar: user.avatarUrl,
+    }, rememberMe);
+
+    if (user.role === 'ADMIN') {
+      navigate('/admin', { replace: true });
+    } else {
+      navigate(from, { replace: true });
+    }
+  };
+
+  const resolveSocialErrorMessage = (err: unknown): string => {
+    const code = getApiErrorCode(err);
+    if (code === 'SOCIAL_NOT_LINKED') {
+      return 'Tài khoản Google chưa liên kết. Hãy đăng nhập bằng mật khẩu rồi liên kết trong Cài đặt tài khoản.';
+    }
+    return getApiErrorMessage(err, 'Đăng nhập Google thất bại.');
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,26 +82,30 @@ function LoginForm() {
 
     try {
       const res = await authService.login({ email, password });
-      const { accessToken, refreshToken, user } = res.data;
-
-      login(accessToken, refreshToken, {
-        id: user.id,
-        name: user.fullName,
-        email: user.email,
-        role: user.role as 'USER' | 'ADMIN',
-        avatar: user.avatarUrl,
-      }, rememberMe);
-
-      if (user.role === 'ADMIN') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate(from, { replace: true });
-      }
+      completeLogin(res.data);
     } catch (err: unknown) {
       setError(getApiErrorMessage(err, 'Email hoặc mật khẩu không đúng'));
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    setSocialLoadingProvider('GOOGLE');
+    try {
+      const token = await requestGoogleIdToken();
+      const res = await authService.socialLogin({ provider: 'GOOGLE', token });
+      completeLogin(res.data);
+    } catch (err: unknown) {
+      setError(resolveSocialErrorMessage(err));
+    } finally {
+      setSocialLoadingProvider(null);
+    }
+  };
+
+  const handleFacebookLogin = () => {
+    setError('Đăng nhập Facebook chưa được hỗ trợ ở phiên bản này.');
   };
 
   return (
@@ -155,11 +190,16 @@ function LoginForm() {
         </div>
         <div className="mt-8 grid grid-cols-2 gap-5">
           <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
-            <FcGoogle className="text-3xl" /> Google
+            onClick={handleGoogleLogin}
+            disabled={loading || socialLoadingProvider !== null}
+            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
+            {socialLoadingProvider === 'GOOGLE' ? <FiLoader className="text-2xl animate-spin" /> : <FcGoogle className="text-3xl" />}
+            {socialLoadingProvider === 'GOOGLE' ? 'Đang xử lý...' : 'Google'}
           </motion.button>
           <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+            onClick={handleFacebookLogin}
+            disabled={loading || socialLoadingProvider !== null}
+            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
             <FaFacebook className="text-3xl text-blue-600" /> Facebook
           </motion.button>
         </div>

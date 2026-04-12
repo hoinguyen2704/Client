@@ -1,5 +1,12 @@
 import axios from '../axios';
-import type { ApiResponse, UserResponse, UpdateUserRequest } from '@/types';
+import type {
+  ApiResponse,
+  UserResponse,
+  UpdateUserRequest,
+  LinkedSocialAccountResponse,
+  LinkSocialAccountRequest,
+  UnlinkSocialAccountRequest,
+} from '@/types';
 
 const USER_URL = '/users';
 
@@ -20,6 +27,15 @@ const userService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+
+  getSocialAccounts: (): Promise<ApiResponse<LinkedSocialAccountResponse[]>> =>
+    axios.get(`${USER_URL}/me/social-accounts`),
+
+  linkSocialAccount: (data: LinkSocialAccountRequest): Promise<ApiResponse<LinkedSocialAccountResponse>> =>
+    axios.post(`${USER_URL}/me/social-accounts/link`, data),
+
+  unlinkGoogleSocialAccount: (data: UnlinkSocialAccountRequest): Promise<ApiResponse<void>> =>
+    axios.delete(`${USER_URL}/me/social-accounts/GOOGLE`, { data }),
 };
 
 export default userService;

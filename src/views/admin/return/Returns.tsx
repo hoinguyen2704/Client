@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { FiClipboard, FiXCircle, FiCheckCircle, FiClock, FiTruck, FiCreditCard } from 'react-icons/fi';
+import { FiClipboard, FiXCircle, FiCheckCircle, FiClock, FiTruck, FiCreditCard, FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { ActionButtons, AdminPagination, AdminSearch, Button, CustomSelect } from '@/components';
+import { ActionButtons, Pagination, AdminSearch, Button, CustomSelect } from '@/components';
 import returnService from '@/apis/services/returnService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { RETURN_FILTER_OPTIONS, canProcessRefund, ReturnStatusBadge, RefundStatusBadge } from '@/constants/returnConstants';
 import { formatDate, formatPrice } from '@/utils/format';
 import { getApiErrorMessage } from '@/utils/error';
+import { downloadBlob } from '@/utils/download';
 import type { PageResponse, ReturnRequestResponse } from '@/types';
 
 
@@ -60,7 +61,18 @@ export default function AdminReturns() {
     }
   };
 
-
+  const handleExport = async () => {
+    try {
+      const blob = await returnService.adminExport({
+        status: statusFilter || undefined,
+        keyword: searchQuery || undefined,
+      });
+      downloadBlob(blob, `returns_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      toast.success('Xuất Excel thành công!');
+    } catch {
+      toast.error('Xuất Excel thất bại!');
+    }
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -68,6 +80,11 @@ export default function AdminReturns() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">Quản lý trả hàng / hoàn tiền</h1>
           <p className="text-md text-slate-500 mt-1">Danh sách yêu cầu trả hàng của khách và trạng thái hoàn tiền.</p>
+        </div>
+        <div className="flex gap-3 print:hidden">
+          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+            Xuất Excel
+          </Button>
         </div>
       </div>
 
@@ -147,14 +164,15 @@ export default function AdminReturns() {
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="hidden lg:grid grid-cols-[minmax(140px,1fr)_minmax(130px,1fr)_minmax(160px,1fr)_130px_180px_120px_200px] gap-4 p-4 xl:p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md font-semibold rounded-t-2xl">
-          <div>Mã yêu cầu</div>
-          <div>Mã đơn</div>
-          <div>Khách hàng</div>
-          <div>Yêu cầu hoàn</div>
-          <div>Trạng thái</div>
-          <div>Ngày tạo</div>
-          <div className="text-right">Thao tác</div>
+        {/* Desktop Header */}
+        <div className="hidden lg:grid grid-cols-[minmax(100px,1fr)_minmax(120px,1fr)_minmax(150px,1fr)_120px_160px_100px_320px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
+          <div className="px-4 py-4 text-left">Mã yêu cầu</div>
+          <div className="px-4 py-4 text-left">Mã đơn</div>
+          <div className="px-4 py-4 text-left">Khách hàng</div>
+          <div className="px-4 py-4 text-right">Yêu cầu hoàn</div>
+          <div className="px-4 py-4">Trạng thái</div>
+          <div className="px-4 py-4">Ngày tạo</div>
+          <div className="px-4 py-4 text-center">Thao tác</div>
         </div>
 
         <div className="flex flex-col">
@@ -162,15 +180,15 @@ export default function AdminReturns() {
             Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="flex flex-col lg:grid lg:grid-cols-[minmax(140px,1fr)_minmax(130px,1fr)_minmax(160px,1fr)_130px_180px_120px_200px] gap-3 sm:gap-4 p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/50 animate-pulse"
+                className="flex flex-col lg:grid lg:grid-cols-[minmax(100px,1fr)_minmax(120px,1fr)_minmax(150px,1fr)_120px_160px_100px_320px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse"
               >
-                <div className="h-4 w-28 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
-                <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-8 w-40 bg-slate-200 dark:bg-slate-700 rounded-xl" />
-                <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded hidden lg:block" />
-                <div className="h-8 w-36 bg-slate-200 dark:bg-slate-700 rounded-xl ml-auto" />
+                <div className="px-4 py-4 w-full"><div className="h-4 w-28 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-start hidden lg:flex"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-start hidden lg:flex"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-40 bg-slate-200 dark:bg-slate-700 rounded-xl" /></div>
+                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-36 bg-slate-200 dark:bg-slate-700 rounded-xl" /></div>
               </div>
             ))
           ) : returns.length === 0 ? (
@@ -184,68 +202,65 @@ export default function AdminReturns() {
             returns.map((item) => (
               <div
                 key={item.id}
-                className="group relative flex flex-col lg:grid lg:grid-cols-[minmax(140px,1fr)_minmax(130px,1fr)_minmax(160px,1fr)_130px_180px_120px_200px] gap-3 sm:gap-4 items-center p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300"
+                className="group relative flex flex-col lg:grid lg:grid-cols-[minmax(100px,1fr)_minmax(120px,1fr)_minmax(150px,1fr)_120px_160px_100px_320px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300"
               >
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
                   <span className="lg:hidden text-slate-500 text-md">Mã yêu cầu:</span>
                   <div className="font-bold text-purple-600">{item.returnNumber}</div>
                 </div>
 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
                   <span className="lg:hidden text-slate-500 text-md">Mã đơn:</span>
-                  <div className="font-medium">{item.orderNumber}</div>
+                  <div className="font-medium text-slate-700 dark:text-slate-300">{item.orderNumber}</div>
                 </div>
 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
                   <span className="lg:hidden text-slate-500 text-md">Khách hàng:</span>
                   <div className="text-md">
                     <div className="font-medium text-slate-800 dark:text-slate-100">{item.userName || 'Không rõ'}</div>
-                    <div className="text-slate-500">{item.userEmail || '-'}</div>
+                    <div className="text-slate-500 text-sm">{item.userEmail || '-'}</div>
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-right text-slate-800 dark:text-slate-100">
                   <span className="lg:hidden text-slate-500 text-md">Yêu cầu hoàn:</span>
                   <div className="font-bold">{formatPrice(Number(item.requestedAmount || 0))}</div>
                 </div>
 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
                   <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
-                  <div className="flex flex-wrap gap-1.5 justify-end lg:justify-start">
+                  <div className="flex flex-col xl:flex-row xl:flex-wrap gap-1.5 justify-end lg:justify-center w-full">
                     <ReturnStatusBadge status={item.status} />
                     <RefundStatusBadge status={item.refundStatus} />
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto flex justify-between items-center lg:block">
+                <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
                   <span className="lg:hidden text-slate-500 text-md">Ngày tạo:</span>
                   <div className="text-slate-500 text-md font-medium">{formatDate(item.createdAt)}</div>
                 </div>
 
-                <div className="w-full lg:w-auto mt-3 lg:mt-0 flex justify-end items-center gap-2 flex-wrap">
+                <div className="w-full lg:w-auto mt-3 lg:mt-0 flex justify-end lg:justify-center items-center gap-3 px-4 pb-4 pt-2 lg:px-4 lg:py-4 lg:h-full">
                   {item.status === 'REQUESTED' && (
                     <>
                       <Button
                         size="sm"
                         variant="success"
-                        icon={<FiCheckCircle />}
                         onClick={() => handleQuickReview(item, true)}
                         loading={reviewingKey === `${item.id}:approve`}
                       >
-                        Duyệt
+                        ✓ Duyệt
                       </Button>
                       <Button
                         size="sm"
                         variant="danger"
-                        icon={<FiXCircle />}
                         onClick={() => handleQuickReview(item, false)}
                         loading={reviewingKey === `${item.id}:reject`}
                       >
-                        Từ chối
+                        ✗ Từ chối
                       </Button>
                     </>
                   )}
-
                   <ActionButtons
                     actions={[
                       {
@@ -261,7 +276,7 @@ export default function AdminReturns() {
         </div>
 
         {pageData && (
-          <AdminPagination
+          <Pagination variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
@@ -274,4 +289,3 @@ export default function AdminReturns() {
     </div>
   );
 }
-

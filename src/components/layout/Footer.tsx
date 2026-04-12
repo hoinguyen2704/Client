@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from "react-router-dom";
 import {
   FaFacebook,
@@ -9,9 +10,12 @@ import {
   FaCcPaypal,
 } from "react-icons/fa";
 import LogoIcon from "../ui/LogoIcon";
-import { SHOP } from '@/constants/shopConstants';
+import useShopStore from '@/stores/useShopStore';
 
 export default function Footer() {
+  const { shop, fetchShopInfo } = useShopStore();
+  useEffect(() => { fetchShopInfo(); }, [fetchShopInfo]);
+
   return (
     <footer className="bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 pt-16 pb-8 border-t border-slate-200 dark:border-slate-800 mt-auto">
       <div className="w-full px-4 md:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
@@ -20,11 +24,11 @@ export default function Footer() {
           <Link to="/" className="flex items-center gap-3">
               <LogoIcon />
             <span className="text-2xl font-bold text-[#2539e6] dark:text-white">
-              {SHOP.name}
+              {shop.shopName}
             </span>
           </Link>
           <p className="text-slate-500 dark:text-slate-400 text-md leading-relaxed">
-            {SHOP.name} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm
+            {shop.shopName} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm
             công nghệ chính hãng, uy tín và chất lượng hàng đầu Việt Nam.
           </p>
           <div className="space-y-2 text-md">
@@ -32,17 +36,17 @@ export default function Footer() {
               <strong className="text-slate-800 dark:text-white">
                 Địa chỉ:
               </strong>{" "}
-              123 Đường Công Nghệ, Quận 1, TP.HCM
+              {shop.address}
             </p>
             <p>
               <strong className="text-slate-800 dark:text-white">
                 Điện thoại:
               </strong>{" "}
-              1900 1234 (8:00 - 21:00)
+              {shop.hotline}
             </p>
             <p>
               <strong className="text-slate-800 dark:text-white">Email:</strong>{" "}
-              {SHOP.supportEmail}
+              {shop.supportEmail}
             </p>
           </div>
         </div>
@@ -50,7 +54,7 @@ export default function Footer() {
         {/* Col 2: Về chúng tôi */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
-            Về {SHOP.name}
+            Về {shop.shopName}
           </h3>
           <ul className="space-y-3 text-md">
             <li>
@@ -189,7 +193,7 @@ export default function Footer() {
       </div>
 
       <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-md text-slate-500">
-        <p>{SHOP.copyright}</p>
+        <p>© {new Date().getFullYear()} {shop.shopName}. All rights reserved.</p>
         <p>Thiết kế và phát triển bởi Hội Nguyễn</p>
       </div>
     </footer>

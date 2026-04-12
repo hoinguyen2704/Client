@@ -8,7 +8,7 @@ import adminOrderService from '@/apis/services/adminOrderService';
 import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
 
 import type { OrderResponse } from '@/types';
-import { SHOP } from '@/constants/shopConstants';
+import useShopStore from '@/stores/useShopStore';
 import { downloadBlob } from '@/utils/download';
 
 export default function OrderDetail() {
@@ -17,6 +17,7 @@ export default function OrderDetail() {
   const [loading, setLoading] = useState(true);
  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [editStatus, setEditStatus] = useState('');
+  const { shop, fetchShopInfo } = useShopStore();
 
   useEffect(() => {
     if (!id) return;
@@ -30,6 +31,8 @@ export default function OrderDetail() {
       .catch(err => console.error('Failed:', err))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => { fetchShopInfo(); }, [fetchShopInfo]);
 
   const handleUpdateStatus = async (newStatus: string) => {
     if (!order || isUpdatingStatus || !newStatus || newStatus === order.orderStatus) return;
@@ -281,10 +284,10 @@ export default function OrderDetail() {
     <div className="hidden print:block w-full text-black bg-white p-8">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h2 className="text-3xl font-bold font-serif mb-2 text-[#2539e6]">{SHOP.fullName}</h2>
-          <p className="text-md">123 Đường Công Nghệ, Quận IT, TP.HCM</p>
-          <p className="text-md">SĐT: 0123.456.789</p>
-          <p className="text-md">Email: {SHOP.email}</p>
+          <h2 className="text-3xl font-bold font-serif mb-2 text-[#2539e6]">{shop.shopName}</h2>
+          <p className="text-md">{shop.address}</p>
+          <p className="text-md">SĐT: {shop.hotline}</p>
+          <p className="text-md">Email: {shop.shopEmail}</p>
         </div>
         <div className="text-right">
           <h1 className="text-2xl font-bold uppercase tracking-widest text-[#2539e6]">Hóa Đơn</h1>
@@ -362,7 +365,7 @@ export default function OrderDetail() {
       </div>
 
       <div className="mt-20 text-center text-sm text-slate-500 border-t border-slate-200 pt-4">
-        Cảm ơn quý khách đã mua bán tại {SHOP.fullName}!
+        Cảm ơn quý khách đã mua bán tại {shop.shopName}!
       </div>
     </div>
     </>

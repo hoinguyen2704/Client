@@ -77,6 +77,12 @@ const returnService = {
         ? { "Idempotency-Key": idempotencyKey }
         : undefined,
     }),
+
+  adminExport: (params?: {
+    status?: string;
+    keyword?: string;
+  }): Promise<Blob> =>
+    adminAxios.get(`${RETURN_URL}/export`, { params, responseType: 'blob' }),
 };
 
 export default returnService;

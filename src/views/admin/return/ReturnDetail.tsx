@@ -11,12 +11,11 @@ import {
   FiXCircle,
 } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { BackButton, Button, CustomSelect, StatusTimeline } from '@/components';
+import { BackButton, Button, CustomSelect } from '@/components';
 import returnService from '@/apis/services/returnService';
 import {
   RETURN_STATUS_TRANSITIONS,
   canProcessRefund,
-  buildReturnTimelineSteps,
   ReturnStatusBadge,
   RefundStatusBadge,
   getReturnStatusMeta,
@@ -86,6 +85,23 @@ export default function ReturnDetail() {
 
   const allowReview = returnRequest?.status === 'REQUESTED';
   const allowRefund = !!returnRequest && canProcessRefund(returnRequest.status) && returnRequest.refundStatus !== 'SUCCESS';
+  const timelineHistories = useMemo(() => {
+    if (!returnRequest) return [];
+
+    const histories = returnRequest.statusHistories ? [...returnRequest.statusHistories] : [];
+    const hasRequestedStatus = histories.some((history) => history.status === 'REQUESTED');
+
+    if (!hasRequestedStatus) {
+      histories.push({
+        id: `requested-${returnRequest.id}`,
+        status: 'REQUESTED',
+        description: 'Yêu cầu mới',
+        createdAt: returnRequest.createdAt,
+      });
+    }
+
+    return histories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [returnRequest]);
 
   const applyUpdatedReturn = (updated: ReturnRequestResponse) => {
     setReturnRequest(updated);
@@ -226,16 +242,51 @@ export default function ReturnDetail() {
         <div><RefundStatusBadge status={returnRequest.refundStatus} /></div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-        <StatusTimeline 
-          {...buildReturnTimelineSteps(returnRequest.status as ReturnStatus, returnRequest.createdAt, returnRequest.resolvedAt)} 
-          variant="horizontal" 
-          size="md" 
-        />
-      </div>
+      <div className="flex flex-col xl:flex-row gap-4 sm:gap-6 items-start">
+        <div className="flex-1 w-full min-w-0 space-y-4 sm:space-y-6">
+          {/* Vertical Timeline History */}
+          {timelineHistories.length > 0 && (
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+              <div className="relative">
+                {timelineHistories.map((history, idx) => {
+                  const time = new Date(history.createdAt);
+                  const isFirst = idx === 0;
+                  const isLast = idx === timelineHistories.length - 1;
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-        <div className="xl:col-span-2 space-y-4 sm:space-y-6">
+                  return (
+                    <div key={history.id} className="flex gap-4">
+                      {/* Left: Time */}
+                      <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
+                        <div className="text-md font-medium text-slate-800 dark:text-slate-200">
+                          {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                        <div className="text-sm text-slate-500 mt-1">
+                          {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                        </div>
+                      </div>
+
+                      {/* Middle: Line & Dot */}
+                      <div className="relative flex flex-col items-center">
+                        {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
+
+                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
+
+                        {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
+                      </div>
+
+                      {/* Right: Content */}
+                      <div className="pb-8 pt-1 flex-1">
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                          {history.description}
+                        </h4>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4">
               <FiPackage className="text-purple-600" />
@@ -310,7 +361,7 @@ export default function ReturnDetail() {
           </div>
         </div>
 
-        <div className="space-y-4 sm:space-y-6">
+        <div className="w-full xl:w-[380px] 2xl:w-[420px] xl:shrink-0 space-y-4 sm:space-y-6">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
               <FiFileText className="text-blue-600" />
@@ -495,4 +546,3 @@ export default function ReturnDetail() {
     </div>
   );
 }
-

@@ -4,7 +4,7 @@ import { ACTION_STYLES, ACTION_ICONS, ACTION_TITLES } from '../ui/constants';
 
 export default function ActionButtons({ actions }: ActionButtonsProps) {
   return (
-    <div className="flex items-center justify-end gap-2">
+    <div className="flex items-center justify-center gap-2 text-[1.4rem]">
       {actions
         .filter((a) => !a.hidden)
         .map((action, i) => {

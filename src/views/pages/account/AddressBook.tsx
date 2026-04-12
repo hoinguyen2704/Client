@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiCheck } from 'react-icons/fi';
-import { PrimaryButton, ConfirmDialog, Modal } from '@/components';
+import { PrimaryButton, ConfirmDialog, Modal, Button } from '@/components';
 import addressService from '@/apis/services/addressService';
 import { toast } from 'sonner';
 import type { AddressResponse, AddressRequest } from '@/types';
@@ -94,10 +94,20 @@ export default function AddressBook() {
                   </div>
                   <p className="text-sm sm:text-md text-slate-500">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
                 </div>
-                <div className="flex items-center gap-1 sm:gap-2 ml-2">
-                  {!addr.isDefault && <button onClick={() => handleSetDefault(addr.id)} className="p-2 text-slate-400 hover:text-green-600 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20" title="Đặt mặc định"><FiCheck /></button>}
-                  <button onClick={() => handleEdit(addr)} className="p-2 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"><FiEdit2 /></button>
-                  {!addr.isDefault && <button onClick={() => setDeleteTarget(addr.id)} className="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"><FiTrash2 /></button>}
+                <div className="flex items-center gap-2 sm:gap-3 mt-4 sm:mt-0">
+                  {!addr.isDefault && (
+                    <Button variant="outline" size="md" onClick={() => handleSetDefault(addr.id)} title="Đặt làm mặc định" icon={<FiCheck className="text-[1.5rem]" />}>
+                      Mặc định
+                    </Button>
+                  )}
+                  <Button variant="secondary" size="md" onClick={() => handleEdit(addr)} title="Chỉnh sửa" icon={<FiEdit2 className="text-[1.5rem]" />}>
+                    Sửa
+                  </Button>
+                  {!addr.isDefault && (
+                    <Button variant="danger" size="md" onClick={() => setDeleteTarget(addr.id)} title="Xóa" icon={<FiTrash2 className="text-[1.5rem]" />}>
+                      Xóa
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

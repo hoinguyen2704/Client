@@ -12,7 +12,7 @@ import {
   FormInput,
   FormTextarea,
   SwitchToggle,
-  AdminPagination,
+  Pagination,
   ActionButtons,
   ConfirmDialog,
   StatusBadge,
@@ -315,17 +315,23 @@ export default function CMS() {
             <div className="sm:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">Chưa có banner nào</div>
           ) : (
             banners.map((banner) => (
-              <div key={banner.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 group">
+              <div key={banner.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
                 <div className="relative h-40 bg-slate-100 dark:bg-slate-800">
                   <img src={banner.imageUrl} alt={banner.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                    <button onClick={() => openEditBanner(banner)} className="p-2 bg-white rounded-lg shadow-lg"><FiEdit2 /></button>
-                    <button onClick={() => setDeleteTarget({ type: 'banner', id: banner.id })} className="p-2 bg-white rounded-lg shadow-lg text-red-600"><FiTrash2 /></button>
-                  </div>
                 </div>
                 <div className="p-3 sm:p-4 flex justify-between items-center gap-2">
-                  <span className="font-bold text-md">{banner.title}</span>
-                  <StatusBadge status={banner.isActive ? 'active' : 'hidden'} />
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="font-bold text-md truncate">{banner.title}</span>
+                    <StatusBadge status={banner.isActive ? 'active' : 'hidden'} />
+                  </div>
+                  <div className="shrink-0 scale-90 sm:scale-100">
+                    <ActionButtons
+                      actions={[
+                        { type: 'edit', onClick: () => openEditBanner(banner) },
+                        { type: 'delete', onClick: () => setDeleteTarget({ type: 'banner', id: banner.id }) }
+                      ]}
+                    />
+                  </div>
                 </div>
               </div>
             ))
@@ -384,7 +390,7 @@ export default function CMS() {
             </table>
           </div>
           {articlePageData && (
-            <AdminPagination
+            <Pagination variant="admin"
               currentPage={articlePage}
               totalPages={articlePageData.lastPage}
               totalItems={articlePageData.total}

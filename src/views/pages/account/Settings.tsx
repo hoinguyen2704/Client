@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiBell, FiLock, FiSmartphone, FiMail, FiShield, FiKey, FiAlertTriangle, FiSun, FiGlobe, FiLoader } from 'react-icons/fi';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'motion/react';
-import { Button, SwitchToggle, CustomSelect } from '@/components';
+import { Button, SwitchToggle, CustomSelect, Modal, ModalCancelButton, ModalSubmitButton } from '@/components';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { getApiErrorMessage } from '@/utils/error';
+import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
 import userService from '@/apis/services/userService';
+import { requestGoogleIdToken } from '@/utils/googleAuth';
+import type { LinkedSocialAccountResponse } from '@/types';
 
 export default function Settings() {
   const [notifications, setNotifications] = useState({
@@ -25,6 +27,12 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [savingPassword, setSavingPassword] = useState(false);
+  const [socialAccounts, setSocialAccounts] = useState<LinkedSocialAccountResponse[]>([]);
+  const [loadingSocialAccounts, setLoadingSocialAccounts] = useState(true);
+  const [linkingGoogle, setLinkingGoogle] = useState(false);
+  const [unlinkGoogleModalOpen, setUnlinkGoogleModalOpen] = useState(false);
+  const [unlinkPassword, setUnlinkPassword] = useState('');
+  const [unlinkingGoogle, setUnlinkingGoogle] = useState(false);
   const user = useAuthStore(s => s.user);
   const { darkMode, toggleDarkMode, language, setLanguage } = useUIStore();
   const { t } = useTranslation('settings');
@@ -32,6 +40,26 @@ export default function Settings() {
   const handleNotificationChange = (key: keyof typeof notifications) => {
     setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
   };
+
+  useEffect(() => {
+    fetchSocialAccounts();
+  }, []);
+
+  const fetchSocialAccounts = async () => {
+    setLoadingSocialAccounts(true);
+    try {
+      const res = await userService.getSocialAccounts();
+      setSocialAccounts(res.data ?? []);
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Không thể tải trạng thái liên kết tài khoản.'));
+      setSocialAccounts([]);
+    } finally {
+      setLoadingSocialAccounts(false);
+    }
+  };
+
+  const googleSocialAccount = socialAccounts.find((x) => x.provider === 'GOOGLE');
+  const isGoogleLinked = Boolean(googleSocialAccount?.linked);
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword) {
@@ -61,6 +89,66 @@ export default function Settings() {
     }
   };
 
+  const handleLinkGoogle = async () => {
+    if (linkingGoogle) return;
+    setLinkingGoogle(true);
+    try {
+      const token = await requestGoogleIdToken();
+      await userService.linkSocialAccount({ provider: 'GOOGLE', token });
+      await fetchSocialAccounts();
+      toast.success('Liên kết Google thành công!');
+    } catch (err: unknown) {
+      const code = getApiErrorCode(err);
+      if (code === 'GOOGLE_EMAIL_MISMATCH') {
+        toast.error('Email tài khoản Google phải trùng với email tài khoản hiện tại.');
+        return;
+      }
+      if (code === 'SOCIAL_ACCOUNT_ALREADY_LINKED') {
+        toast.error('Tài khoản Google này đã được liên kết ở nơi khác.');
+        return;
+      }
+      toast.error(getApiErrorMessage(err, 'Liên kết Google thất bại.'));
+    } finally {
+      setLinkingGoogle(false);
+    }
+  };
+
+  const openUnlinkGoogleModal = () => {
+    setUnlinkPassword('');
+    setUnlinkGoogleModalOpen(true);
+  };
+
+  const closeUnlinkGoogleModal = () => {
+    if (unlinkingGoogle) return;
+    setUnlinkGoogleModalOpen(false);
+    setUnlinkPassword('');
+  };
+
+  const handleConfirmUnlinkGoogle = async () => {
+    if (unlinkingGoogle) return;
+    if (!unlinkPassword.trim()) {
+      toast.error('Vui lòng nhập mật khẩu để xác minh.');
+      return;
+    }
+    setUnlinkingGoogle(true);
+    try {
+      await userService.unlinkGoogleSocialAccount({ currentPassword: unlinkPassword });
+      await fetchSocialAccounts();
+      setUnlinkGoogleModalOpen(false);
+      setUnlinkPassword('');
+      toast.success('Hủy liên kết Google thành công.');
+    } catch (err: unknown) {
+      const code = getApiErrorCode(err);
+      if (code === 'UNLINK_LAST_LOGIN_METHOD') {
+        toast.error('Không thể hủy liên kết phương thức đăng nhập cuối cùng.');
+        return;
+      }
+      toast.error(getApiErrorMessage(err, 'Hủy liên kết Google thất bại.'));
+    } finally {
+      setUnlinkingGoogle(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t('title')}</h1>
@@ -72,7 +160,7 @@ export default function Settings() {
             <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">
               {t('displayOptions.title')}
             </h2>
-            
+
             <div className="space-y-6">
               <label className="flex items-center justify-between cursor-pointer group">
                 <div className="flex items-center gap-3">
@@ -134,85 +222,85 @@ export default function Settings() {
               </div>
               Cài đặt thông báo
             </h2>
-          
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Kênh nhận thông báo</h3>
-              
-              <label className="flex items-center justify-between cursor-pointer group">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
-                    <FiMail />
-                  </div>
-                  <div>
-                    <p className="font-medium text-slate-900 dark:text-white">Email</p>
-                    <p className="text-md text-slate-500">Nhận thông báo qua email</p>
-                  </div>
-                </div>
-                <SwitchToggle
-                  checked={notifications.email}
-                  onChange={() => handleNotificationChange('email')}
-                  tone="blue"
-                  ariaLabel="Bật tắt thông báo email"
-                />
-              </label>
 
-              <label className="flex items-center justify-between cursor-pointer group">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
-                    <FiSmartphone />
-                  </div>
-                  <div>
-                    <p className="font-medium text-slate-900 dark:text-white">SMS</p>
-                    <p className="text-md text-slate-500">Nhận tin nhắn văn bản</p>
-                  </div>
-                </div>
-                <SwitchToggle
-                  checked={notifications.sms}
-                  onChange={() => handleNotificationChange('sms')}
-                  tone="blue"
-                  ariaLabel="Bật tắt thông báo SMS"
-                />
-              </label>
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Kênh nhận thông báo</h3>
 
-              <label className="flex items-center justify-between cursor-pointer group">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
-                    <FiBell />
+                <label className="flex items-center justify-between cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
+                      <FiMail />
+                    </div>
+                    <div>
+                      <p className="font-medium text-slate-900 dark:text-white">Email</p>
+                      <p className="text-md text-slate-500">Nhận thông báo qua email</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-slate-900 dark:text-white">Thông báo đẩy (App)</p>
-                    <p className="text-md text-slate-500">Nhận thông báo trên ứng dụng</p>
-                  </div>
-                </div>
-                <SwitchToggle
-                  checked={notifications.app}
-                  onChange={() => handleNotificationChange('app')}
-                  tone="blue"
-                  ariaLabel="Bật tắt thông báo ứng dụng"
-                />
-              </label>
-            </div>
+                  <SwitchToggle
+                    checked={notifications.email}
+                    onChange={() => handleNotificationChange('email')}
+                    tone="blue"
+                    ariaLabel="Bật tắt thông báo email"
+                  />
+                </label>
 
-            <div className="space-y-4 pt-4">
-              <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Loại thông báo</h3>
-              
-              <label className="flex items-center justify-between cursor-pointer group">
-                <div>
-                  <p className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Cập nhật đơn hàng</p>
-                  <p className="text-md text-slate-500">Trạng thái giao hàng, thanh toán</p>
-                </div>
-                <SwitchToggle
-                  checked={notifications.orders}
-                  onChange={() => handleNotificationChange('orders')}
-                  tone="blue"
-                  ariaLabel="Bật tắt thông báo đơn hàng"
-                />
-              </label>
+                <label className="flex items-center justify-between cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
+                      <FiSmartphone />
+                    </div>
+                    <div>
+                      <p className="font-medium text-slate-900 dark:text-white">SMS</p>
+                      <p className="text-md text-slate-500">Nhận tin nhắn văn bản</p>
+                    </div>
+                  </div>
+                  <SwitchToggle
+                    checked={notifications.sms}
+                    onChange={() => handleNotificationChange('sms')}
+                    tone="blue"
+                    ariaLabel="Bật tắt thông báo SMS"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
+                      <FiBell />
+                    </div>
+                    <div>
+                      <p className="font-medium text-slate-900 dark:text-white">Thông báo đẩy (App)</p>
+                      <p className="text-md text-slate-500">Nhận thông báo trên ứng dụng</p>
+                    </div>
+                  </div>
+                  <SwitchToggle
+                    checked={notifications.app}
+                    onChange={() => handleNotificationChange('app')}
+                    tone="blue"
+                    ariaLabel="Bật tắt thông báo ứng dụng"
+                  />
+                </label>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Loại thông báo</h3>
+
+                <label className="flex items-center justify-between cursor-pointer group">
+                  <div>
+                    <p className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Cập nhật đơn hàng</p>
+                    <p className="text-md text-slate-500">Trạng thái giao hàng, thanh toán</p>
+                  </div>
+                  <SwitchToggle
+                    checked={notifications.orders}
+                    onChange={() => handleNotificationChange('orders')}
+                    tone="blue"
+                    ariaLabel="Bật tắt thông báo đơn hàng"
+                  />
+                </label>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
         <div className="space-y-8">
           {/* Security */}
@@ -223,7 +311,7 @@ export default function Settings() {
               </div>
               Bảo mật
             </h2>
-            
+
             <div className="space-y-6">
               {/* Password */}
               <div>
@@ -248,7 +336,7 @@ export default function Settings() {
                 </div>
 
                 {isChangingPassword && (
-                  <motion.form 
+                  <motion.form
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     className="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800"
@@ -333,15 +421,26 @@ export default function Settings() {
                   </div>
                   <div>
                     <p className="font-medium text-slate-900 dark:text-white">Google</p>
-                    <p className="text-md text-slate-500">Đã liên kết</p>
+                    {loadingSocialAccounts ? (
+                      <p className="text-md text-slate-500">Đang tải trạng thái...</p>
+                    ) : isGoogleLinked ? (
+                      <p className="text-md text-slate-500">
+                        Đã liên kết{googleSocialAccount?.email ? ` (${googleSocialAccount.email})` : ''}
+                      </p>
+                    ) : (
+                      <p className="text-md text-slate-500">Chưa liên kết</p>
+                    )}
                   </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-md text-slate-500 hover:text-red-500"
+                  disabled={loadingSocialAccounts || linkingGoogle || unlinkingGoogle}
+                  onClick={isGoogleLinked ? openUnlinkGoogleModal : handleLinkGoogle}
+                  icon={linkingGoogle ? <FiLoader className="animate-spin" /> : undefined}
+                  className={`text-md ${isGoogleLinked ? 'text-slate-500 hover:text-red-500' : 'text-blue-600 hover:text-blue-700'}`}
                 >
-                  Hủy liên kết
+                  {linkingGoogle ? 'Đang liên kết...' : isGoogleLinked ? 'Hủy liên kết' : 'Liên kết ngay'}
                 </Button>
               </div>
 
@@ -352,15 +451,16 @@ export default function Settings() {
                   </div>
                   <div>
                     <p className="font-medium text-slate-900 dark:text-white">Facebook</p>
-                    <p className="text-md text-slate-500">Chưa liên kết</p>
+                    <p className="text-md text-slate-500">Sẽ hỗ trợ trong phiên bản sau</p>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-md text-blue-600 hover:text-blue-700"
+                  disabled
+                  className="text-md text-slate-400 cursor-not-allowed"
                 >
-                  Liên kết ngay
+                  Chưa hỗ trợ
                 </Button>
               </div>
             </div>
@@ -385,6 +485,44 @@ export default function Settings() {
           </div>
         </div>
       </div>
+
+      <Modal
+        open={unlinkGoogleModalOpen}
+        onClose={closeUnlinkGoogleModal}
+        title="Xác minh để hủy liên kết Google"
+        size="md"
+        footer={
+          <>
+            <ModalCancelButton onClick={closeUnlinkGoogleModal}>Hủy</ModalCancelButton>
+            <ModalSubmitButton
+              onClick={handleConfirmUnlinkGoogle}
+              variant="danger"
+              icon={unlinkingGoogle ? <FiLoader className="animate-spin" /> : undefined}
+            >
+              {unlinkingGoogle ? 'Đang hủy liên kết...' : 'Hủy liên kết'}
+            </ModalSubmitButton>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-md text-slate-600 dark:text-slate-400">
+            Để bảo mật, vui lòng nhập mật khẩu hiện tại trước khi hủy liên kết Google.
+          </p>
+          <div>
+            <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Mật khẩu hiện tại
+            </label>
+            <input
+              type="password"
+              value={unlinkPassword}
+              onChange={(e) => setUnlinkPassword(e.target.value)}
+              placeholder="••••••••"
+              disabled={unlinkingGoogle}
+              className="w-full h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

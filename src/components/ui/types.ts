@@ -145,16 +145,6 @@ export interface StarRatingProps {
   readOnly?: boolean;
 }
 
-//  AdminPagination
-export interface AdminPaginationProps {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  perPage: number;
-  label?: string;
-  onPageChange: (page: number) => void;
-}
-
 //  AdminSearch
 export interface AdminSearchProps {
   placeholder?: string;

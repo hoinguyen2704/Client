@@ -15,7 +15,7 @@ import adminCouponService from "@/apis/services/adminCouponService";
 import type { CouponResponse, CouponRequest } from "@/types";
 import { formatPrice, formatDate } from "@/utils/format";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
-import { Button, PrimaryButton, AdminSearch, AdminPagination, ActionButtons, StatusBadge, TableRowSkeleton, Modal, FormInput } from "@/components";
+import { Button, PrimaryButton, AdminSearch, Pagination, ActionButtons, StatusBadge, TableRowSkeleton, Modal, FormInput } from "@/components";
 import useAdminList from '@/hooks/useAdminList';
 
 
@@ -250,7 +250,7 @@ export default function AdminVouchers() {
         </div>
 
         {pageData && (
-          <AdminPagination
+          <Pagination variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}

@@ -5,7 +5,7 @@ import { getApiErrorMessage } from '@/utils/error';
 import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse, FlashSaleRequest, FlashSaleItemRequest, FlashSaleItemForm } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { AdminPagination, ActionButtons, PrimaryButton, TrashButton, ConfirmDialog, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea, CustomSelect } from '@/components';
+import { Pagination, ActionButtons, PrimaryButton, TrashButton, ConfirmDialog, Modal, ModalCancelButton, ModalSubmitButton, FormInput, FormTextarea, CustomSelect } from '@/components';
 import useAdminList from '@/hooks/useAdminList';
 import { ProductPickerModal } from '@/components';
 import type { SelectedVariant } from '@/components';
@@ -141,7 +141,7 @@ export default function FlashSales() {
         </PrimaryButton>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="overflow-x-auto min-h-[300px]">
           <table className="w-full min-w-[900px] text-left border-collapse">
             <thead>
@@ -178,7 +178,7 @@ export default function FlashSales() {
                         { label: 'Đã hủy', value: 'CANCELLED', colorClass: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 hover:bg-rose-100' }
                       ]}
                       onChange={(val) => handleUpdateStatus(sale.id, val.toString())}
-                      className="w-36 text-md"
+                      className="w-44 text-md"
                     />
                   </td>
                   <td className="p-3 sm:p-4">
@@ -203,7 +203,7 @@ export default function FlashSales() {
 
         {/* Pagination */}
         {pageData && (
-          <AdminPagination
+          <Pagination variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}

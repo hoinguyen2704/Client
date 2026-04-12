@@ -87,6 +87,14 @@ export interface ReturnRequestResponse {
   resolvedAt?: string;
   items: ReturnItemData[];
   refunds: RefundTransactionData[];
+  statusHistories?: ReturnStatusHistory[];
+}
+
+export interface ReturnStatusHistory {
+  id: string;
+  status: string;
+  description: string;
+  createdAt: string;
 }
 
 export interface ReturnItemData {

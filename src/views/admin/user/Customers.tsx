@@ -3,7 +3,7 @@ import { FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { Button, IconButton, CustomSelect, AdminSearch, AdminPagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
+import { Button, IconButton, CustomSelect, AdminSearch, Pagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';
@@ -94,24 +94,24 @@ export default function Customers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[940px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium">Người dùng</th>
                 <th className="p-3 sm:p-4 font-medium">Email</th>
                 <th className="p-3 sm:p-4 font-medium">SĐT</th>
-                <th className="p-3 sm:p-4 font-medium">Vai trò</th>
-                <th className="p-3 sm:p-4 font-medium">Ngày tạo</th>
-                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
-                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Vai trò</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Ngày tạo</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Trạng thái</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <TableRowSkeleton rows={5} cols={7} />
               ) : users.length === 0 ? (
-                <tr><td colSpan={7} className="p-12 text-center text-slate-400">Không có người dùng nào</td></tr>
+                <tr><td colSpan={7} className="p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">Không có người dùng nào</td></tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <tr key={user.id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x divide-slate-200 dark:divide-slate-700">
                     <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-3">
                         <UserAvatar name={user.fullName} src={user.avatarUrl} />
@@ -120,23 +120,22 @@ export default function Customers() {
                     </td>
                     <td className="p-3 sm:p-4 text-slate-500">{user.email}</td>
                     <td className="p-3 sm:p-4 text-slate-500">{user.phoneNumber || '—'}</td>
-                    <td className="p-3 sm:p-4">
+                    <td className="p-3 sm:p-4 text-center">
                       <StatusBadge status={user.role === 'ADMIN' ? 'admin' : 'user'} />
                     </td>
-                    <td className="p-3 sm:p-4 text-slate-500">{formatDate(user.createdAt)}</td>
-                    <td className="p-3 sm:p-4">
+                    <td className="p-3 sm:p-4 text-slate-500 text-center">{formatDate(user.createdAt)}</td>
+                    <td className="p-3 sm:p-4 text-center">
                       <StatusBadge status={user.status === 'ACTIVE' ? 'active' : 'banned'} label={user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'} />
                     </td>
-                    <td className="p-3 sm:p-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="flex items-center justify-around gap-2">
                         <Link to={`/admin/customers/${user.id}`} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Xem chi tiết">
                           <FiEye />
                         </Link>
                         <IconButton onClick={() => handleToggleStatus(user.id)}
                           icon={user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />}
                           variant={user.status === 'ACTIVE' ? 'danger' : 'primary'}
-                          title={user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
-                        />
+                          title={user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}/>
                       </div>
                     </td>
                   </tr>
@@ -147,7 +146,7 @@ export default function Customers() {
         </div>
 
         {pageData && (
-          <AdminPagination
+          <Pagination variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}

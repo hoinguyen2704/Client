@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiPackage, FiXCircle, FiAlertTriangle } from 'react-icons/fi';
 import { formatDateFull as formatDateTime, formatPrice } from '@/utils/format';
@@ -48,6 +48,52 @@ export default function ReturnDetail() {
     }
   };
 
+  const isCancelled = data?.status === 'CANCELLED' || data?.status === 'REJECTED';
+
+  // Build vertical timeline entries from buildReturnTimelineSteps
+  const { steps: timelineSteps, currentStepIndex } = buildReturnTimelineSteps(
+    ((data?.status as ReturnStatus) || 'REQUESTED'),
+    data?.createdAt,
+    data?.resolvedAt,
+  );
+
+  const statusTimestamps = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (!data) return map;
+
+    const histories = data.statusHistories ? [...data.statusHistories] : [];
+
+    histories.forEach((history) => {
+      if (!history.status || !history.createdAt) return;
+      const existing = map[history.status];
+      if (!existing || new Date(history.createdAt).getTime() > new Date(existing).getTime()) {
+        map[history.status] = history.createdAt;
+      }
+    });
+
+    if (!map.REQUESTED) {
+      map.REQUESTED = data.createdAt;
+    }
+
+    return map;
+  }, [data]);
+
+  // Only show steps up to (and including) the current step
+  const visibleSteps = useMemo(() => {
+    if (!data) return [];
+
+    return timelineSteps
+      .slice(0, currentStepIndex + 1)
+      .map((step) => ({
+        ...step,
+        timestamp:
+          statusTimestamps[step.key] ||
+          (step.key === data.status ? data.resolvedAt || undefined : undefined) ||
+          (step.key === 'REQUESTED' ? data.createdAt : undefined),
+      }))
+      .reverse(); // newest first
+  }, [data, timelineSteps, currentStepIndex, statusTimestamps]);
+
   /* ---------- Loading ---------- */
   if (loading) return (
     <div className="space-y-6">
@@ -67,18 +113,6 @@ export default function ReturnDetail() {
       <Link to="/user/returns" className="text-purple-600 hover:underline">← Quay lại danh sách</Link>
     </div>
   );
-
-  const isCancelled = data.status === 'CANCELLED' || data.status === 'REJECTED';
-
-  // Build vertical timeline entries from buildReturnTimelineSteps
-  const { steps: timelineSteps, currentStepIndex } = buildReturnTimelineSteps(
-    data.status as ReturnStatus,
-    data.createdAt,
-    data.resolvedAt,
-  );
-
-  // Only show steps up to (and including) the current step
-  const visibleSteps = timelineSteps.slice(0, currentStepIndex + 1).reverse(); // newest first
 
   return (
     <div className="space-y-6">

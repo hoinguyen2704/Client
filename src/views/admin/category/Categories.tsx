@@ -18,7 +18,7 @@ import {
   PrimaryButton,
   TrashButton,
   AdminSearch,
-  AdminPagination,
+  Pagination,
   ActionButtons,
   ConfirmDialog,
   StatusBadge,
@@ -251,7 +251,7 @@ export default function Categories() {
                     type="button"
                     onClick={addSpecRow}
                     variant="ghost"
-                    size="sm"
+                    size="md"
                     className="text-purple-600"
                   >
                     + Thêm thông số đầu tiên
@@ -281,7 +281,7 @@ export default function Categories() {
                           updateSpecRow(index, "specKey", e.target.value)
                         }
                         placeholder="VD: Màn hình, RAM..."
-                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                       />
                       <input
                         type="text"
@@ -290,7 +290,7 @@ export default function Categories() {
                           updateSpecRow(index, "hint", e.target.value)
                         }
                         placeholder="VD: 6.7 inch OLED, 120Hz"
-                        className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                       />
                       <div className="flex items-center justify-center">
                         <TrashButton onClick={() => removeSpecRow(index)} />
@@ -338,12 +338,12 @@ export default function Categories() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium">Danh mục</th>
                 <th className="p-3 sm:p-4 font-medium">Slug</th>
                 <th className="p-3 sm:p-4 font-medium text-center">Thông số</th>
-                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
-                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Trạng thái</th>
+                <th className="p-3 sm:p-4 font-medium text-center w-[232px]">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -351,7 +351,7 @@ export default function Categories() {
                 <TableRowSkeleton rows={5} cols={5} />
               ) : categories.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">
+                  <td colSpan={5} className="p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">
                     Không có danh mục nào
                   </td>
                 </tr>
@@ -359,7 +359,7 @@ export default function Categories() {
                 categories.map((cat) => (
                   <tr
                     key={cat.id}
-                    className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x divide-slate-200 dark:divide-slate-700"
                   >
                     <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-3">
@@ -385,7 +385,7 @@ export default function Categories() {
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       {(cat.specTemplates?.length || 0) > 0 ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                        <span className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-full text-md font-bold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 mx-auto">
                           <FiList className="text-[9px]" />{" "}
                           {cat.specTemplates!.length}
                         </span>
@@ -393,19 +393,21 @@ export default function Categories() {
                         <span className="text-sm text-slate-300">—</span>
                       )}
                     </td>
-                    <td className="p-3 sm:p-4">
-                      <StatusBadge status={cat.active ? "active" : "hidden"} />
+                    <td className="p-3 sm:p-4 text-center">
+                      <div className="flex justify-center">
+                        <StatusBadge status={cat.active ? "active" : "hidden"} />
+                      </div>
                     </td>
-                    <td className="p-3 sm:p-4 text-right">
+                    <td className="p-3 sm:p-4">
                       <ActionButtons
                         actions={[
                           {
                             type: "more",
                             title: cat.active ? "Ẩn" : "Hiện",
                             icon: cat.active ? (
-                              <FiToggleRight className="text-green-500 text-xl" />
+                              <FiToggleRight className="text-green-500 text-[1.5rem]" />
                             ) : (
-                              <FiToggleLeft className="text-xl" />
+                              <FiToggleLeft className="text-[1.5rem]" />
                             ),
                             onClick: () => handleToggle(cat.id),
                           },
@@ -428,7 +430,7 @@ export default function Categories() {
         </div>
 
         {pageData && (
-          <AdminPagination
+          <Pagination variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}

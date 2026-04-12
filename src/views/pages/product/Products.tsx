@@ -25,6 +25,8 @@ export default function Products() {
 
   //  Filter state (synced with URL query params)
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(true);
+  const [isBrandOpen, setIsBrandOpen] = useState(true);
   const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const [selectedCategorySlug, setSelectedCategorySlug] = useState(
     searchParams.get("categorySlug") || "",
@@ -201,22 +203,18 @@ export default function Products() {
         {/* Mobile Filter Toggle */}
         <button
           className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-md font-semibold"
-          onClick={() => setIsFilterOpen(true)}
-        >
+          onClick={() => setIsFilterOpen(true)}>
           <FiFilter /> Lọc sản phẩm
         </button>
 
         {/*  Sidebar Filters  */}
-        <aside
-          className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}
-        >
+        <aside className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-0 custom-scrollbar">
             <div className="flex items-center justify-between mb-6 lg:hidden">
               <h2 className="text-lg font-bold">Bộ lọc</h2>
               <button
                 onClick={() => setIsFilterOpen(false)}
-                className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full"
-              >
+                className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full">
                 <FiX />
               </button>
             </div>
@@ -235,77 +233,108 @@ export default function Products() {
                       setPage(1);
                     }}
                     placeholder="Tên sản phẩm..."
-                    className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-md focus:ring-2 focus:ring-purple-500"
-                  />
+                    className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-md focus:ring-2 focus:ring-purple-500"/>
                 </div>
               </div>
 
               {/* Categories */}
               <div>
-                <h3 className="font-bold mb-4 text-lg">Danh mục sản phẩm</h3>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      setSelectedCategorySlug("");
-                      setPage(1);
-                    }}
-                    className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
-                      !selectedCategorySlug
-                        ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
-                    }`}
-                  >
-                    Tất cả danh mục
-                  </button>
-                  {categories.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => handleCategoryChange(cat.slug)}
-                      className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
-                        selectedCategorySlug === cat.slug
-                          ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
-                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
-                      }`}
-                    >
-                      {cat.name}
-                    </button>
-                  ))}
-                </div>
+                <button
+                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                  className="flex items-center justify-between w-full mb-4">
+                  <h3 className="font-bold text-lg">Danh mục sản phẩm</h3>
+                  <motion.span animate={{ rotate: isCategoryOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
+                    <FiChevronDown className="text-slate-400" />
+                  </motion.span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {isCategoryOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden">
+                      <div className="space-y-2">
+                        <button
+                          onClick={() => {
+                            setSelectedCategorySlug("");
+                            setPage(1);
+                          }}
+                          className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
+                            !selectedCategorySlug
+                              ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                              : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                          }`}>
+                          Tất cả danh mục
+                        </button>
+                        {categories.map((cat) => (
+                          <button
+                            key={cat.id}
+                            onClick={() => handleCategoryChange(cat.slug)}
+                            className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
+                              selectedCategorySlug === cat.slug
+                                ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                                : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                            }`}>
+                            {cat.name}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Brands */}
               {brands.length > 0 && (
                 <div>
-                  <h3 className="font-bold mb-4 text-lg">Thương hiệu</h3>
-                  <div className="space-y-3">
-                    {brands.map((brand, i) => (
-                      <motion.label
-                        key={brand.id}
-                        initial={{ opacity: 0, x: -16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.03, duration: 0.2 }}
-                        className="flex items-center gap-3 cursor-pointer group"
-                      >
-                        <div className="relative flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedBrand === brand.slug}
-                            onChange={() => handleBrandChange(brand.slug)}
-                            className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
-                          />
-                          <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-md" />
+                  <button
+                    onClick={() => setIsBrandOpen(!isBrandOpen)}
+                    className="flex items-center justify-between w-full mb-4">
+                    <h3 className="font-bold text-lg">Thương hiệu</h3>
+                    <motion.span animate={{ rotate: isBrandOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
+                      <FiChevronDown className="text-slate-400" />
+                    </motion.span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isBrandOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden">
+                        <div className="space-y-3">
+                          {brands.map((brand, i) => (
+                            <motion.label
+                              key={brand.id}
+                              initial={{ opacity: 0, x: -16 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.03, duration: 0.2 }}
+                              className="flex items-center gap-3 cursor-pointer group">
+                              <div className="relative flex items-center justify-center">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedBrand === brand.slug}
+                                  onChange={() => handleBrandChange(brand.slug)}
+                                  className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"/>
+                                <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-md" />
+                              </div>
+                              <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                {brand.name}
+                                {brand.productCount > 0 && (
+                                  <span className="text-sm text-slate-400 ml-1">
+                                    ({brand.productCount})
+                                  </span>
+                                )}
+                              </span>
+                            </motion.label>
+                          ))}
                         </div>
-                        <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                          {brand.name}
-                          {brand.productCount > 0 && (
-                            <span className="text-sm text-slate-400 ml-1">
-                              ({brand.productCount})
-                            </span>
-                          )}
-                        </span>
-                      </motion.label>
-                    ))}
-                  </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
 
@@ -313,8 +342,7 @@ export default function Products() {
               {(keyword || selectedCategorySlug || selectedBrand) && (
                 <button
                   onClick={handleClearFilters}
-                  className="w-full py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors font-medium"
-                >
+                  className="w-full py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors font-medium">
                   Xóa bộ lọc
                 </button>
               )}
@@ -326,8 +354,7 @@ export default function Products() {
         {isFilterOpen && (
           <div
             className="fixed inset-0 bg-black/50 z-[70] lg:hidden"
-            onClick={() => setIsFilterOpen(false)}
-          />
+            onClick={() => setIsFilterOpen(false)}/>
         )}
 
         {/*  Main Content  */}
@@ -366,8 +393,7 @@ export default function Products() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-pulse"
-                >
+                  className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-pulse">
                   <div className="aspect-square bg-slate-200 dark:bg-slate-800" />
                   <div className="p-4 space-y-3">
                     <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
@@ -391,8 +417,7 @@ export default function Products() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center py-14 sm:py-20 text-center"
-            >
+              className="flex flex-col items-center justify-center py-14 sm:py-20 text-center">
               <div className="w-28 h-28 sm:w-40 sm:h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
                 <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
               </div>
