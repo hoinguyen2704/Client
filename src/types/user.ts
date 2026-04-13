@@ -19,6 +19,25 @@ export interface UpdateUserRequest {
   gender?: string;
 }
 
+export interface EmailChangeRequest {
+  newEmail: string;
+  currentPassword: string;
+}
+
+export interface VerifyEmailChangeRequest {
+  newEmail: string;
+  otpCode: string;
+}
+
+export interface ResendEmailChangeOtpRequest {
+  newEmail: string;
+}
+
+export interface AdminUpdatePhoneRequest {
+  phoneNumber: string;
+  reason: string;
+}
+
 export interface LinkedSocialAccountResponse {
   provider: string;
   linked: boolean;

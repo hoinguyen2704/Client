@@ -98,6 +98,7 @@ export interface CategoryResponse {
   description?: string;
   imageUrl?: string;
   active: boolean;
+  productCount?: number;
   createdAt?: string;
   children?: CategoryResponse[];
   specTemplates?: SpecTemplateResponse[];

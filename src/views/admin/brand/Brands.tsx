@@ -1,0 +1,293 @@
+import { useState } from "react";
+import { FiPlus, FiTag, FiX } from "react-icons/fi";
+import { toast } from "sonner";
+import adminBrandService from "@/apis/services/adminBrandService";
+import { getApiErrorMessage } from "@/utils/error";
+import type { BrandResponse } from "@/types";
+import { PAGE_SIZE } from "@/constants/paginationConstants";
+import useAdminList from "@/hooks/useAdminList";
+import {
+  ActionButtons,
+  AdminSearch,
+  Button,
+  ConfirmDialog,
+  Pagination,
+  PrimaryButton,
+  TableRowSkeleton,
+} from "@/components";
+
+export default function Brands() {
+  const {
+    items: brands,
+    loading,
+    pageData,
+    searchQuery,
+    setSearchQuery,
+    page,
+    setPage,
+    refetch: fetchBrands,
+  } = useAdminList<BrandResponse>(adminBrandService.getAll, {
+    size: PAGE_SIZE.MEDIUM,
+  });
+
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    logoUrl: "",
+  });
+
+  const resetForm = () => {
+    setShowForm(false);
+    setEditId(null);
+    setFormData({ name: "", logoUrl: "" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name.trim()) {
+      toast.error("Tên thương hiệu không được để trống.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const normalizedLogoUrl = formData.logoUrl.trim();
+      const payload = {
+        name: formData.name.trim(),
+        logoUrl: editId ? normalizedLogoUrl : normalizedLogoUrl || undefined,
+      };
+
+      if (editId) {
+        await adminBrandService.update(editId, payload);
+        toast.success("Đã cập nhật thương hiệu!");
+      } else {
+        await adminBrandService.create(payload);
+        toast.success("Đã tạo thương hiệu mới!");
+      }
+
+      resetForm();
+      fetchBrands({ silent: true });
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Lưu thương hiệu thất bại."));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEdit = (brand: BrandResponse) => {
+    setEditId(brand.id);
+    setFormData({
+      name: brand.name || "",
+      logoUrl: brand.logoUrl || "",
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeleteTarget(null);
+    try {
+      await adminBrandService.delete(id);
+      toast.success("Đã xóa thương hiệu!");
+      fetchBrands({ silent: true });
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Không thể xóa thương hiệu này."));
+    }
+  };
+
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold">Quản lý thương hiệu</h1>
+        <PrimaryButton
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+          icon={<FiPlus className="text-base" />}
+          className="w-full sm:w-auto"
+        >
+          Thêm thương hiệu
+        </PrimaryButton>
+      </div>
+
+      <AdminSearch
+        placeholder="Tìm kiếm thương hiệu..."
+        value={searchQuery}
+        onChange={(val) => {
+          setSearchQuery(val);
+          setPage(1);
+        }}
+      />
+
+      {showForm && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4 sm:space-y-5">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-bold">
+              {editId ? "Sửa thương hiệu" : "Thêm thương hiệu mới"}
+            </h2>
+            <Button
+              onClick={resetForm}
+              variant="ghost"
+              size="sm"
+              icon={<FiX />}
+              ariaLabel="Đóng form"
+            />
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
+                  Tên thương hiệu *
+                </label>
+                <input
+                  type="text"
+                  placeholder="VD: Apple, Samsung..."
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  required
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
+                />
+              </div>
+              <div>
+                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
+                  Logo URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://..."
+                  value={formData.logoUrl}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      logoUrl: e.target.value,
+                    }))
+                  }
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 justify-end">
+              <Button
+                type="button"
+                onClick={resetForm}
+                variant="secondary"
+                size="md"
+                className="w-full sm:w-auto"
+              >
+                Hủy
+              </Button>
+              <Button
+                type="submit"
+                disabled={saving}
+                loading={saving}
+                size="md"
+                className="w-full sm:w-auto"
+              >
+                {editId ? "Cập nhật thương hiệu" : "Tạo thương hiệu"}
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px] text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+                <th className="p-3 sm:p-4 font-medium">Thương hiệu</th>
+                <th className="p-3 sm:p-4 font-medium">Slug</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Số sản phẩm</th>
+                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <TableRowSkeleton rows={5} cols={4} />
+              ) : brands.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="p-12 text-center text-slate-400">
+                    Không có thương hiệu nào
+                  </td>
+                </tr>
+              ) : (
+                brands.map((brand) => (
+                  <tr
+                    key={brand.id}
+                    className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                  >
+                    <td className="p-3 sm:p-4">
+                      <div className="flex items-center gap-3">
+                        {brand.logoUrl ? (
+                          <img
+                            src={brand.logoUrl}
+                            alt={brand.name}
+                            className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-slate-700"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600">
+                            <FiTag />
+                          </div>
+                        )}
+                        <span className="font-semibold">{brand.name}</span>
+                      </div>
+                    </td>
+                    <td className="p-3 sm:p-4 text-slate-500">{brand.slug}</td>
+                    <td className="p-3 sm:p-4 text-center">
+                      <span className="inline-flex items-center justify-center min-w-8 px-2 py-1 rounded-full bg-purple-100 text-purple-700 font-semibold text-sm">
+                        {brand.productCount ?? 0}
+                      </span>
+                    </td>
+                    <td className="p-3 sm:p-4 text-right">
+                      <ActionButtons
+                        actions={[
+                          {
+                            type: "edit",
+                            onClick: () => handleEdit(brand),
+                          },
+                          {
+                            type: "delete",
+                            onClick: () => setDeleteTarget(brand.id),
+                          },
+                        ]}
+                      />
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {pageData && (
+          <Pagination
+            variant="admin"
+            currentPage={page}
+            totalPages={pageData.lastPage}
+            totalItems={pageData.total}
+            perPage={PAGE_SIZE.MEDIUM}
+            label="thương hiệu"
+            onPageChange={setPage}
+          />
+        )}
+      </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Xóa thương hiệu?"
+        message="Thao tác này không thể hoàn tác. Nếu thương hiệu đang có sản phẩm, hệ thống sẽ từ chối xóa."
+        confirmLabel="Xóa"
+        cancelLabel="Hủy"
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
+      />
+    </div>
+  );
+}

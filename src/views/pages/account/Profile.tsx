@@ -25,6 +25,13 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [emailChangePassword, setEmailChangePassword] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [pendingEmailChange, setPendingEmailChange] = useState<string | null>(null);
+  const [sendingEmailOtp, setSendingEmailOtp] = useState(false);
+  const [verifyingEmailOtp, setVerifyingEmailOtp] = useState(false);
+  const [resendingEmailOtp, setResendingEmailOtp] = useState(false);
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -93,6 +100,72 @@ export default function Profile() {
       toast.error(getApiErrorMessage(err, 'Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu hiện tại.'));
     } finally {
       setSavingPassword(false);
+    }
+  };
+
+  const handleRequestEmailChange = async () => {
+    const normalizedEmail = newEmail.trim().toLowerCase();
+    if (!normalizedEmail) {
+      toast.error('Vui lòng nhập email mới.');
+      return;
+    }
+    if (!emailChangePassword) {
+      toast.error('Vui lòng nhập mật khẩu hiện tại.');
+      return;
+    }
+
+    setSendingEmailOtp(true);
+    try {
+      await userService.requestEmailChange({
+        newEmail: normalizedEmail,
+        currentPassword: emailChangePassword,
+      });
+      setPendingEmailChange(normalizedEmail);
+      setOtpCode('');
+      toast.success('Đã gửi OTP đến email mới.');
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Không thể gửi OTP đổi email.'));
+    } finally {
+      setSendingEmailOtp(false);
+    }
+  };
+
+  const handleResendEmailOtp = async () => {
+    if (!pendingEmailChange) return;
+    setResendingEmailOtp(true);
+    try {
+      await userService.resendEmailChangeOtp({ newEmail: pendingEmailChange });
+      toast.success('Đã gửi lại OTP.');
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Không thể gửi lại OTP.'));
+    } finally {
+      setResendingEmailOtp(false);
+    }
+  };
+
+  const handleVerifyEmailChange = async () => {
+    if (!pendingEmailChange) return;
+    if (!otpCode.trim()) {
+      toast.error('Vui lòng nhập mã OTP.');
+      return;
+    }
+
+    setVerifyingEmailOtp(true);
+    try {
+      const res = await userService.verifyEmailChange({
+        newEmail: pendingEmailChange,
+        otpCode: otpCode.trim(),
+      });
+      setUser(res.data);
+      useAuthStore.getState().updateUser({ email: res.data.email });
+      toast.success('Đổi email thành công. Vui lòng đăng nhập lại.');
+      setTimeout(() => {
+        useAuthStore.getState().logout();
+      }, 1000);
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Xác thực OTP thất bại.'));
+    } finally {
+      setVerifyingEmailOtp(false);
     }
   };
 
@@ -245,6 +318,84 @@ export default function Profile() {
                   ]}
                 />
               </div>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 space-y-4 bg-slate-50/60 dark:bg-slate-800/30">
+              <div>
+                <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">Đổi email qua OTP</h3>
+                <p className="text-md text-slate-500 mt-1">
+                  Nhập email mới và mật khẩu hiện tại để nhận OTP xác thực. Sau khi xác thực thành công, bạn sẽ cần đăng nhập lại.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Email mới</label>
+                  <input
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Mật khẩu hiện tại</label>
+                  <input
+                    type="password"
+                    value={emailChangePassword}
+                    onChange={(e) => setEmailChangePassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  onClick={handleRequestEmailChange}
+                  disabled={sendingEmailOtp}
+                  icon={sendingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
+                  size="md"
+                >
+                  {sendingEmailOtp ? 'Đang gửi OTP...' : 'Gửi OTP đổi email'}
+                </Button>
+                {pendingEmailChange && (
+                  <span className="text-md text-slate-500 self-center">
+                    OTP đã gửi đến: <span className="font-semibold">{pendingEmailChange}</span>
+                  </span>
+                )}
+              </div>
+
+              {pendingEmailChange && (
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3 items-end">
+                  <div>
+                    <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Mã OTP</label>
+                    <input
+                      type="text"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      placeholder="Nhập mã 6 số"
+                      className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleVerifyEmailChange}
+                    disabled={verifyingEmailOtp}
+                    icon={verifyingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
+                    size="md"
+                  >
+                    {verifyingEmailOtp ? 'Đang xác thực...' : 'Xác thực OTP'}
+                  </Button>
+                  <Button
+                    onClick={handleResendEmailOtp}
+                    disabled={resendingEmailOtp}
+                    icon={resendingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
+                    variant="ghost"
+                    size="md"
+                  >
+                    {resendingEmailOtp ? 'Đang gửi...' : 'Gửi lại OTP'}
+                  </Button>
+                </div>
+              )}
             </div>
 
             <Button

@@ -11,6 +11,7 @@ const AdminReturnDetail = lazy(() => import('@/views/admin/return/ReturnDetail')
 const Products = lazy(() => import('@/views/admin/product/Products'));
 const ProductForm = lazy(() => import('@/views/admin/product/ProductForm'));
 const Categories = lazy(() => import('@/views/admin/category/Categories'));
+const Brands = lazy(() => import('@/views/admin/brand/Brands'));
 const Customers = lazy(() => import('@/views/admin/user/Customers'));
 const CustomerDetail = lazy(() => import('@/views/admin/user/CustomerDetail'));
 const AdminVouchers = lazy(() => import('@/views/admin/coupon/Vouchers'));
@@ -20,6 +21,8 @@ const AdminChatbot = lazy(() => import('@/views/admin/chatbot/Chatbot'));
 const CMS = lazy(() => import('@/views/admin/cms/CMS'));
 const Tickets = lazy(() => import('@/views/admin/ticket/Tickets'));
 const FlashSales = lazy(() => import('@/views/admin/flashsale/FlashSales'));
+const FlashSaleForm = lazy(() => import('@/views/admin/flashsale/FlashSaleForm'));
+const ProductPicker = lazy(() => import('@/views/admin/flashsale/ProductPicker'));
 
 export const adminRoutes = (
   <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN"><AdminLayout /></ProtectedRoute>}>
@@ -33,10 +36,14 @@ export const adminRoutes = (
     <Route path="products/new" element={<ProductForm />} />
     <Route path="products/:id" element={<ProductForm />} />
     <Route path="categories" element={<Categories />} />
+    <Route path="brands" element={<Brands />} />
     <Route path="customers" element={<Customers />} />
     <Route path="customers/:id" element={<CustomerDetail />} />
     <Route path="vouchers" element={<AdminVouchers />} />
     <Route path="flash-sales" element={<FlashSales />} />
+    <Route path="flash-sales/new" element={<FlashSaleForm />} />
+    <Route path="flash-sales/:id/edit" element={<FlashSaleForm />} />
+    <Route path="flash-sales/pick-products" element={<ProductPicker />} />
     <Route path="settings" element={<Settings />} />
     <Route path="feedbacks" element={<Feedbacks />} />
     <Route path="chatbot" element={<AdminChatbot />} />

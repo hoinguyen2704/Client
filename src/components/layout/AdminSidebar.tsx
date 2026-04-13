@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { FiGrid, FiShoppingBag, FiRotateCcw, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap } from 'react-icons/fi';
+import { FiGrid, FiShoppingBag, FiRotateCcw, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap, FiAward } from 'react-icons/fi';
 import LogoIcon from '../ui/LogoIcon';
 import useUIStore from '@/stores/useUIStore';
 import { SHOP } from '@/constants/shopConstants';
@@ -11,6 +11,7 @@ const menuItems = [
   { path: '/admin/returns', icon: FiRotateCcw, label: 'Trả hàng / Hoàn tiền' },
   { path: '/admin/products', icon: FiBox, label: 'Sản phẩm & Kho' },
   { path: '/admin/categories', icon: FiList, label: 'Danh mục' },
+  { path: '/admin/brands', icon: FiAward, label: 'Thương hiệu' },
   { path: '/admin/customers', icon: FiUsers, label: 'Khách hàng' },
   { path: '/admin/vouchers', icon: FiTag, label: 'Voucher' },
   { path: '/admin/flash-sales', icon: FiZap, label: 'Flash Sale' },

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiMail, FiPhone, FiCalendar, FiLock, FiUnlock } from 'react-icons/fi';
-import { formatPrice, formatDate } from '@/utils/format';
+import { formatDate } from '@/utils/format';
+import { getApiErrorMessage } from '@/utils/error';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
 import { Button, StatusBadge, UserAvatar, BackButton } from '@/components';
@@ -12,12 +13,18 @@ export default function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneReason, setPhoneReason] = useState('');
+  const [updatingPhone, setUpdatingPhone] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
     adminUserService.getById(id)
-      .then(res => setUser(res.data))
+      .then(res => {
+        setUser(res.data);
+        setPhoneNumber(res.data.phoneNumber || '');
+      })
       .catch(err => console.error('Failed to load user:', err))
       .finally(() => setLoading(false));
   }, [id]);
@@ -31,6 +38,34 @@ export default function CustomerDetail() {
     } catch (err) {
       console.error(err);
       toast.error('Cập nhật trạng thái người dùng thất bại!');
+    }
+  };
+
+  const handleUpdatePhone = async () => {
+    if (!user) return;
+    if (!phoneNumber.trim()) {
+      toast.error('Vui lòng nhập số điện thoại.');
+      return;
+    }
+    if (!phoneReason.trim()) {
+      toast.error('Vui lòng nhập lý do thay đổi.');
+      return;
+    }
+
+    setUpdatingPhone(true);
+    try {
+      const res = await adminUserService.updatePhone(user.id, {
+        phoneNumber: phoneNumber.trim(),
+        reason: phoneReason.trim(),
+      });
+      setUser(res.data);
+      setPhoneNumber(res.data.phoneNumber || '');
+      setPhoneReason('');
+      toast.success('Cập nhật số điện thoại thành công!');
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Cập nhật số điện thoại thất bại.'));
+    } finally {
+      setUpdatingPhone(false);
     }
   };
   if (loading) {
@@ -137,6 +172,41 @@ export default function CustomerDetail() {
               <div>
                 <span className="text-md text-slate-500">Ngày tạo</span>
                 <p className="font-bold">{formatDate(user.createdAt)}</p>
+              </div>
+            </div>
+
+            <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+              <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-4">
+                <h3 className="text-md font-bold">Cập nhật số điện thoại (Admin)</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-md text-slate-500 mb-2">Số điện thoại mới</label>
+                    <input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="w-full h-11 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                      placeholder="Nhập số điện thoại"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-md text-slate-500 mb-2">Lý do thay đổi</label>
+                    <input
+                      type="text"
+                      value={phoneReason}
+                      onChange={(e) => setPhoneReason(e.target.value)}
+                      className="w-full h-11 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                      placeholder="Bắt buộc"
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={handleUpdatePhone}
+                  disabled={updatingPhone}
+                  size="md"
+                >
+                  {updatingPhone ? 'Đang cập nhật...' : 'Lưu số điện thoại'}
+                </Button>
               </div>
             </div>
           </div>

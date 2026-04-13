@@ -49,6 +49,5 @@ export {
   STAR_LABELS,
   CONFIRM_VARIANT_CONFIG,
 } from "./ui/constants";
-export { default as ProductPickerModal } from "./dialog/ProductPickerModal";
 export type { SelectedVariant } from "./dialog/SelectedVariant";
 export { default as ProtectedRoute } from "./guards/ProtectedRoute";

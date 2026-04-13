@@ -38,6 +38,12 @@ export const ORDER_STATUS_OPTIONS = [
     colorClass:
       "bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400",
   },
+  {
+    value: "RETURNED",
+    label: "Đã hoàn trả",
+    colorClass:
+      "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-400",
+  },
 ];
 
 export const ORDER_FILTER_OPTIONS = [
@@ -54,6 +60,7 @@ export const CLIENT_ORDER_TABS = [
   { id: "SHIPPING", label: "Đang giao" },
   { id: "SHIPPED", label: "Đã giao" },
   { id: "CANCELLED", label: "Đã hủy" },
+  { id: "RETURNED", label: "Đã hoàn trả" },
 ];
 
 export const ORDER_TRACKING_STEPS = [

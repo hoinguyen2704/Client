@@ -3,6 +3,9 @@ import type {
   ApiResponse,
   UserResponse,
   UpdateUserRequest,
+  EmailChangeRequest,
+  VerifyEmailChangeRequest,
+  ResendEmailChangeOtpRequest,
   LinkedSocialAccountResponse,
   LinkSocialAccountRequest,
   UnlinkSocialAccountRequest,
@@ -27,6 +30,15 @@ const userService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+
+  requestEmailChange: (data: EmailChangeRequest): Promise<ApiResponse<void>> =>
+    axios.post(`${USER_URL}/me/email/change-request`, data),
+
+  verifyEmailChange: (data: VerifyEmailChangeRequest): Promise<ApiResponse<UserResponse>> =>
+    axios.post(`${USER_URL}/me/email/verify`, data),
+
+  resendEmailChangeOtp: (data: ResendEmailChangeOtpRequest): Promise<ApiResponse<void>> =>
+    axios.post(`${USER_URL}/me/email/resend-otp`, data),
 
   getSocialAccounts: (): Promise<ApiResponse<LinkedSocialAccountResponse[]>> =>
     axios.get(`${USER_URL}/me/social-accounts`),

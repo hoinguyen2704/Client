@@ -336,22 +336,23 @@ export default function Categories() {
       {/* Categories Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] text-left border-collapse">
+          <table className="w-full min-w-[980px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium">Danh mục</th>
                 <th className="p-3 sm:p-4 font-medium">Slug</th>
                 <th className="p-3 sm:p-4 font-medium text-center">Thông số</th>
+                <th className="p-3 sm:p-4 font-medium text-center">Số sản phẩm</th>
                 <th className="p-3 sm:p-4 font-medium text-center">Trạng thái</th>
                 <th className="p-3 sm:p-4 font-medium text-center w-[232px]">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <TableRowSkeleton rows={5} cols={5} />
+                <TableRowSkeleton rows={5} cols={6} />
               ) : categories.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                  <td colSpan={6} className="p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">
                     Không có danh mục nào
                   </td>
                 </tr>
@@ -392,6 +393,11 @@ export default function Categories() {
                       ) : (
                         <span className="text-sm text-slate-300">—</span>
                       )}
+                    </td>
+                    <td className="p-3 sm:p-4 text-center">
+                      <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-full text-md font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 mx-auto">
+                        {cat.productCount ?? 0}
+                      </span>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       <div className="flex justify-center">
