@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiLock, FiUnlock, FiDownload, FiEye } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { FiLock, FiUnlock, FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { Button, IconButton, CustomSelect, AdminSearch, Pagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
+import { Button, ActionButtons, CustomSelect, AdminSearch, Pagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
 import type { UserResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';
@@ -128,15 +127,20 @@ export default function Customers() {
                       <StatusBadge status={user.status === 'ACTIVE' ? 'active' : 'banned'} label={user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'} />
                     </td>
                     <td className="p-3 sm:p-4 text-center">
-                      <div className="flex items-center justify-around gap-2">
-                        <Link to={`/admin/customers/${user.id}`} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Xem chi tiết">
-                          <FiEye />
-                        </Link>
-                        <IconButton onClick={() => handleToggleStatus(user.id)}
-                          icon={user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />}
-                          variant={user.status === 'ACTIVE' ? 'danger' : 'primary'}
-                          title={user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}/>
-                      </div>
+                      <ActionButtons
+                        actions={[
+                          {
+                            type: 'view',
+                            href: `/admin/customers/${user.id}`,
+                          },
+                          {
+                            type: user.status === 'ACTIVE' ? 'delete' : 'edit',
+                            onClick: () => handleToggleStatus(user.id),
+                            icon: user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />,
+                            title: user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa',
+                          },
+                        ]}
+                      />
                     </td>
                   </tr>
                 ))
