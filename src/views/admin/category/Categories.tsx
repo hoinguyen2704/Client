@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FiPlus,
   FiToggleLeft,
@@ -9,7 +9,8 @@ import {
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import adminCategoryService from "@/apis/services/adminCategoryService";
-import type { CategoryResponse, SpecTemplateRow } from "@/types";
+import adminBrandService from "@/apis/services/adminBrandService";
+import type { BrandResponse, CategoryResponse, SpecTemplateRow } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import useAdminList from "@/hooks/useAdminList";
 import {
@@ -18,6 +19,7 @@ import {
   PrimaryButton,
   TrashButton,
   AdminSearch,
+  CustomSelect,
   Pagination,
   ActionButtons,
   ConfirmDialog,
@@ -28,6 +30,13 @@ import {
 
 
 export default function Categories() {
+  const [brandFilter, setBrandFilter] = useState("");
+  const [brands, setBrands] = useState<BrandResponse[]>([]);
+  const extraParams = useMemo(
+    () => ({ brandId: brandFilter || undefined }),
+    [brandFilter],
+  );
+
   const {
     items: categories,
     loading,
@@ -39,6 +48,7 @@ export default function Categories() {
     refetch: fetchCategories,
   } = useAdminList<CategoryResponse>(adminCategoryService.getAll, {
     size: PAGE_SIZE.LARGE,
+    extraParams,
   });
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -51,6 +61,26 @@ export default function Categories() {
   const [specTemplates, setSpecTemplates] = useState<SpecTemplateRow[]>([]);
   const [saving, setSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const res = await adminBrandService.getAll({ page: 1, size: 100 });
+        setBrands(res.data?.data || []);
+      } catch (err) {
+        console.error("Failed to fetch brands:", err);
+      }
+    };
+    fetchBrands();
+  }, []);
+
+  const brandOptions = useMemo(
+    () => [
+      { value: "", label: "Tất cả nhãn hàng" },
+      ...brands.map((brand) => ({ value: brand.id, label: brand.name })),
+    ],
+    [brands],
+  );
 
   const resetForm = () => {
     setShowForm(false);
@@ -326,12 +356,25 @@ export default function Categories() {
         </div>
       )}
 
-      {/* Search */}
-      <AdminSearch
-        placeholder="Tìm kiếm danh mục..."
-        value={searchQuery}
-        onChange={setSearchQuery}
-      />
+      {/* Search + Filter */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
+        <div className="flex-1">
+          <AdminSearch
+            placeholder="Tìm kiếm danh mục..."
+            value={searchQuery}
+            onChange={setSearchQuery}
+          />
+        </div>
+        <CustomSelect
+          value={brandFilter}
+          onChange={(val) => {
+            setBrandFilter(val);
+            setPage(1);
+          }}
+          options={brandOptions}
+          className="w-full md:w-56"
+        />
+      </div>
 
       {/* Categories Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">

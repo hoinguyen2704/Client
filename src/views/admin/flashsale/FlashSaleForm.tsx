@@ -5,10 +5,13 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { adminFlashSaleService } from '@/apis';
 import type { FlashSaleResponse, FlashSaleItemForm } from '@/types';
-import { PrimaryButton, Button, TrashButton, FormInput, FormTextarea } from '@/components';
+import { PrimaryButton, Button, TrashButton, FormInput, FormTextarea, Pagination } from '@/components';
+import { PAGE_SIZE } from '@/constants/paginationConstants';
 import type { SelectedVariant } from '@/components';
 import { formatDateTime, formatPrice } from '@/utils/format';
 import { PICKER_RESULT_KEY } from './ProductPicker';
+
+const ITEMS_PER_PAGE = PAGE_SIZE.LARGE;
 
 export default function FlashSaleForm() {
   const navigate = useNavigate();
@@ -18,6 +21,8 @@ export default function FlashSaleForm() {
 
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [itemsPage, setItemsPage] = useState(1);
+  const [isEditLoaded, setIsEditLoaded] = useState(!id);
   const [form, setForm] = useState<{
     name: string;
     description?: string;
@@ -28,8 +33,12 @@ export default function FlashSaleForm() {
 
   // Load existing flash sale data when editing
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setIsEditLoaded(true);
+      return;
+    }
     const load = async () => {
+      setIsEditLoaded(false);
       setLoading(true);
       try {
         const res = await adminFlashSaleService.getById(id);
@@ -58,6 +67,7 @@ export default function FlashSaleForm() {
         navigate('/admin/flash-sales');
       } finally {
         setLoading(false);
+        setIsEditLoaded(true);
       }
     };
     load();
@@ -66,8 +76,17 @@ export default function FlashSaleForm() {
   // Receive selected variants back from ProductPicker page
   useEffect(() => {
     const pickerResult = location.state?.[PICKER_RESULT_KEY] as SelectedVariant[] | undefined;
-    if (pickerResult && pickerResult.length > 0) {
-      const newItems: FlashSaleItemForm[] = pickerResult.map(v => ({
+    if (!pickerResult || pickerResult.length === 0) return;
+    if (id && !isEditLoaded) return;
+
+    setForm(prev => {
+      const existingVariantIds = new Set(prev.items.map(i => i.variantId));
+      const dedupedSelections = pickerResult.filter(v => !existingVariantIds.has(v.variantId));
+      if (dedupedSelections.length === 0) {
+        return prev;
+      }
+
+      const newItems: FlashSaleItemForm[] = dedupedSelections.map(v => ({
         variantId: v.variantId,
         productName: v.productName,
         variantName: v.variantName,
@@ -76,11 +95,12 @@ export default function FlashSaleForm() {
         flashPrice: v.originalPrice,
         flashStock: 0,
       }));
-      setForm(prev => ({ ...prev, items: [...prev.items, ...newItems] }));
-      // Clear state so it doesn't re-trigger on re-render
-      window.history.replaceState({}, '');
-    }
-  }, [location.state]);
+
+      return { ...prev, items: [...prev.items, ...newItems] };
+    });
+    // Clear state to avoid accidental re-append
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [id, isEditLoaded, location.pathname, location.state, navigate]);
 
   const handleOpenPicker = () => {
     navigate('/admin/flash-sales/pick-products', {
@@ -180,6 +200,16 @@ export default function FlashSaleForm() {
   const invalidStockCount = form.items.filter((item) => Number(item.flashStock) <= 0).length;
   const hasWarnings = invalidTimeRange || invalidPriceCount > 0 || invalidStockCount > 0;
 
+  const itemsTotalPages = Math.max(1, Math.ceil(form.items.length / ITEMS_PER_PAGE));
+  const startIndex = (itemsPage - 1) * ITEMS_PER_PAGE;
+  const visibleItems = form.items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  useEffect(() => {
+    if (itemsPage > itemsTotalPages) {
+      setItemsPage(itemsTotalPages);
+    }
+  }, [itemsPage, itemsTotalPages]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -194,21 +224,45 @@ export default function FlashSaleForm() {
   return (
     <div className="space-y-6">
       {/* ── Header ── */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate('/admin/flash-sales')}
-          className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 hover:text-slate-700"
-        >
-          <FiArrowLeft size={20} />
-        </button>
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <FiZap className="text-yellow-500" />
-            {isEditing ? 'Sửa Flash Sale' : 'Tạo Flash Sale mới'}
-          </h1>
-          <p className="text-sm text-slate-500 mt-0.5">
-            {isEditing ? 'Chỉnh sửa thông tin và sản phẩm tham gia' : 'Điền thông tin và chọn sản phẩm tham gia sự kiện'}
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/admin/flash-sales')}
+            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 hover:text-slate-700"
+          >
+            <FiArrowLeft size={20} />
+          </button>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <FiZap className="text-yellow-500" />
+              {isEditing ? 'Sửa Flash Sale' : 'Tạo Flash Sale mới'}
+            </h1>
+            <p className="text-sm text-slate-500 mt-0.5">
+              {isEditing ? 'Chỉnh sửa thông tin và sản phẩm tham gia' : 'Điền thông tin và chọn sản phẩm tham gia sự kiện'}
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button
+            onClick={() => navigate('/admin/flash-sales')}
+            variant="secondary"
+            size="md"
+            className="flex-1 sm:flex-none"
+          >
+            Hủy
+          </Button>
+          <PrimaryButton
+            onClick={handleSubmit}
+            disabled={submitting}
+            icon={isEditing ? <FiSave /> : <FiCheck />}
+            className="flex-1 sm:flex-none"
+          >
+            {submitting
+              ? 'Đang lưu...'
+              : isEditing
+                ? 'Cập nhật'
+                : 'Tạo mới'}
+          </PrimaryButton>
         </div>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-6 items-start">
@@ -290,8 +344,10 @@ export default function FlashSaleForm() {
                         </td>
                       </tr>
                     ) : (
-                      form.items.map((item, idx) => (
-                        <tr key={`${item.variantId}-${idx}`} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                      visibleItems.map((item, idx) => {
+                        const actualIndex = startIndex + idx;
+                        return (
+                        <tr key={`${item.variantId}-${actualIndex}`} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
                           <td className="p-3">
                             <div className="flex items-center gap-3">
                               <img
@@ -314,7 +370,7 @@ export default function FlashSaleForm() {
                               min="0"
                               className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
                               value={item.flashPrice}
-                              onChange={(e) => handleChangeItem(idx, 'flashPrice', Number(e.target.value))}
+                              onChange={(e) => handleChangeItem(actualIndex, 'flashPrice', Number(e.target.value))}
                             />
                           </td>
                           <td className="p-3">
@@ -323,44 +379,32 @@ export default function FlashSaleForm() {
                               min="0"
                               className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
                               value={item.flashStock}
-                              onChange={(e) => handleChangeItem(idx, 'flashStock', Number(e.target.value))}
+                              onChange={(e) => handleChangeItem(actualIndex, 'flashStock', Number(e.target.value))}
                             />
                           </td>
                           <td className="p-3 text-center">
-                            <TrashButton onClick={() => handleRemoveItem(idx)} />
+                            <TrashButton onClick={() => handleRemoveItem(actualIndex)} />
                           </td>
                         </tr>
-                      ))
+                      )})
                     )}
                   </tbody>
                 </table>
               </div>
             </div>
+            {form.items.length > ITEMS_PER_PAGE && (
+              <Pagination
+                variant="admin"
+                currentPage={itemsPage}
+                totalPages={itemsTotalPages}
+                onPageChange={setItemsPage}
+                totalItems={form.items.length}
+                perPage={ITEMS_PER_PAGE}
+                label="phân loại"
+              />
+            )}
           </div>
 
-          {/* ── Action Buttons ── */}
-          <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pb-6">
-            <Button
-              onClick={() => navigate('/admin/flash-sales')}
-              variant="secondary"
-              size="md"
-              className="w-full sm:w-auto"
-            >
-              Hủy
-            </Button>
-            <PrimaryButton
-              onClick={handleSubmit}
-              disabled={submitting}
-              icon={isEditing ? <FiSave /> : <FiCheck />}
-              className="w-full sm:w-auto"
-            >
-              {submitting
-                ? 'Đang lưu...'
-                : isEditing
-                  ? 'Cập nhật'
-                  : 'Tạo mới'}
-            </PrimaryButton>
-          </div>
         </div>
 
         <aside className="space-y-4 xl:sticky xl:top-20">

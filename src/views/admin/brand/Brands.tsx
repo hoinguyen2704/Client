@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiPlus, FiTag, FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import adminBrandService from "@/apis/services/adminBrandService";
+import adminCategoryService from "@/apis/services/adminCategoryService";
 import { getApiErrorMessage } from "@/utils/error";
-import type { BrandResponse } from "@/types";
+import type { BrandResponse, CategoryResponse } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import useAdminList from "@/hooks/useAdminList";
 import {
   ActionButtons,
   AdminSearch,
   Button,
+  CustomSelect,
   ConfirmDialog,
   Pagination,
   PrimaryButton,
@@ -17,6 +19,13 @@ import {
 } from "@/components";
 
 export default function Brands() {
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const extraParams = useMemo(
+    () => ({ categoryId: categoryFilter || undefined }),
+    [categoryFilter],
+  );
+
   const {
     items: brands,
     loading,
@@ -28,6 +37,7 @@ export default function Brands() {
     refetch: fetchBrands,
   } = useAdminList<BrandResponse>(adminBrandService.getAll, {
     size: PAGE_SIZE.MEDIUM,
+    extraParams,
   });
 
   const [showForm, setShowForm] = useState(false);
@@ -38,6 +48,26 @@ export default function Brands() {
     name: "",
     logoUrl: "",
   });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await adminCategoryService.getAll({ page: 1, size: 100 });
+        setCategories(res.data?.data || []);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const categoryOptions = useMemo(
+    () => [
+      { value: "", label: "Tất cả danh mục" },
+      ...categories.map((cat) => ({ value: cat.id, label: cat.name })),
+    ],
+    [categories],
+  );
 
   const resetForm = () => {
     setShowForm(false);
@@ -113,14 +143,27 @@ export default function Brands() {
         </PrimaryButton>
       </div>
 
-      <AdminSearch
-        placeholder="Tìm kiếm thương hiệu..."
-        value={searchQuery}
-        onChange={(val) => {
-          setSearchQuery(val);
-          setPage(1);
-        }}
-      />
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
+        <div className="flex-1">
+          <AdminSearch
+            placeholder="Tìm kiếm thương hiệu..."
+            value={searchQuery}
+            onChange={(val) => {
+              setSearchQuery(val);
+              setPage(1);
+            }}
+          />
+        </div>
+        <CustomSelect
+          value={categoryFilter}
+          onChange={(val) => {
+            setCategoryFilter(val);
+            setPage(1);
+          }}
+          options={categoryOptions}
+          className="w-full md:w-56"
+        />
+      </div>
 
       {showForm && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4 sm:space-y-5">

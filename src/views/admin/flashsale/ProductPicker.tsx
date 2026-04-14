@@ -467,14 +467,17 @@ export default function ProductPicker() {
                           {variants.map(variant => {
                             const isAlreadyInSale = initialSelectedIds.includes(variant.id);
                             const isChecked = !!selectedMap[variant.id] || isAlreadyInSale;
+                            const isNewlySelected = !!selectedMap[variant.id];
 
                             return (
                               <div
                                 key={variant.id}
                                 className={`grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_140px_140px_170px] gap-0 items-stretch transition-colors
                                   ${isAlreadyInSale
-                                    ? 'opacity-50 cursor-not-allowed'
-                                    : 'cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30'
+                                    ? 'opacity-50 cursor-not-allowed bg-amber-50/40 dark:bg-amber-500/5'
+                                    : isNewlySelected
+                                      ? 'cursor-pointer bg-purple-100/80 dark:bg-purple-500/25 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] border-y border-purple-200/90 dark:border-purple-400/30 hover:bg-purple-100 dark:hover:bg-purple-500/30'
+                                      : 'cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30'
                                   }`}
                                 onClick={() => !isAlreadyInSale && handleToggleVariant(product, variant)}
                               >
@@ -494,7 +497,7 @@ export default function ProductPicker() {
 
                                   {/* Variant info */}
                                   <div className="flex-1 min-w-0">
-                                    <div className="text-md font-medium text-slate-700 dark:text-slate-200">
+                                    <div className={`text-md font-semibold ${isNewlySelected ? 'text-purple-800 dark:text-purple-200' : 'text-slate-700 dark:text-slate-200'}`}>
                                       {variant.variantName || 'Mặc định'}
                                     </div>
                                     <div className="text-sm text-slate-500">
@@ -525,8 +528,10 @@ export default function ProductPicker() {
                                   </span>
                                 </div>
 
-                                <div className="hidden md:flex items-center justify-end px-4 py-3 border-l border-slate-200 dark:border-slate-700 text-sm text-slate-500">
-                                  Nhấn để chọn
+                                <div className={`hidden md:flex items-center justify-end px-4 py-3 border-l border-slate-200 dark:border-slate-700 text-sm ${
+                                  isNewlySelected ? 'text-purple-700 dark:text-purple-200 font-bold' : 'text-slate-500'
+                                }`}>
+                                  {isNewlySelected ? 'Đã chọn' : 'Nhấn để chọn'}
                                 </div>
 
                                 <div className="md:hidden px-14 pb-3 text-sm text-slate-500 flex items-center gap-4">
