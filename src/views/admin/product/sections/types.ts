@@ -42,6 +42,7 @@ export type VariantSectionProps = Pick<
   | "variantFileInputRefs"
   | "addVariant"
   | "generateVariantCombinations"
+  | "sortVariantsByBestSelling"
   | "removeVariant"
   | "updateVariant"
   | "updateVariantSelection"

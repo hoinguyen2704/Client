@@ -226,6 +226,18 @@ export default function ProductInfo({
     };
   }, [variantPricingMap, variants]);
 
+  const variantSoldRange = useMemo(() => {
+    const soldValues = variants.map((variant) => Math.max(0, variant.grossSoldQty ?? 0));
+    if (soldValues.length === 0) {
+      return null;
+    }
+
+    return {
+      min: Math.min(...soldValues),
+      max: Math.max(...soldValues),
+    };
+  }, [variants]);
+
   const fallbackVariantIdx = clampVariantIndex(selectedVariantIdx, variants.length);
   const fallbackVariant = fallbackVariantIdx >= 0 ? variants[fallbackVariantIdx] : null;
   const fallbackPricing = fallbackVariant
@@ -343,6 +355,14 @@ export default function ProductInfo({
             <span className="text-slate-500">Đã bán <strong>{(product.totalSold ?? 0) > 999 ? `${((product.totalSold ?? 0) / 1000).toFixed(1)}k` : product.totalSold}</strong></span>
           </>
         )}
+        {isSelectionComplete && activeVariant && (
+          <>
+            <span className="text-slate-300 dark:text-slate-600">|</span>
+            <span className="text-slate-500">
+              Phân loại đã chọn bán <strong>{(activeVariant.grossSoldQty ?? 0).toLocaleString('vi-VN')}</strong>
+            </span>
+          </>
+        )}
         {product.brandName && (
           <>
             <span className="text-slate-300 dark:text-slate-600">|</span>
@@ -373,6 +393,16 @@ export default function ProductInfo({
           </span>
         )}
       </div>
+      {isSelectionRequired && !isSelectionComplete && variantSoldRange && (
+        <div className="mb-6 text-sm text-slate-500">
+          Đã bán theo phân loại:{' '}
+          <strong>
+            {variantSoldRange.min === variantSoldRange.max
+              ? variantSoldRange.min.toLocaleString('vi-VN')
+              : `${variantSoldRange.min.toLocaleString('vi-VN')} - ${variantSoldRange.max.toLocaleString('vi-VN')}`}
+          </strong>
+        </div>
+      )}
       {canShowVariantPrice && pricing?.isFlashSale && (
         <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold text-md">
           <FiZap className="text-base" />

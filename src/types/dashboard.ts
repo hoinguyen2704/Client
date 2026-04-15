@@ -12,6 +12,7 @@ export interface DashboardStatsResponse {
   newFeedbacks?: number;
   revenueChart?: RevenueChartItem[];
   topProducts?: TopProductItem[];
+  topVariants?: TopVariantItem[];
   topCategories?: TopCategoryItem[];
   topCustomers?: TopCustomerItem[];
   recentOrders?: RecentOrderItem[];
@@ -29,6 +30,17 @@ export interface TopProductItem {
   name: string;
   imageUrl?: string;
   totalSold: number;
+  revenue: number;
+}
+
+export interface TopVariantItem {
+  variantId: string;
+  productId: string;
+  productName: string;
+  variantName: string;
+  totalSold: number;
+  returnedQty?: number;
+  netSoldQty?: number;
   revenue: number;
 }
 

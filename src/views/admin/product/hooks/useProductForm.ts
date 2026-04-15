@@ -128,6 +128,9 @@ const createEmptyVariant = (
     price: "",
     compareAtPrice: "",
     stock: "",
+    grossSoldQty: 0,
+    returnedQty: 0,
+    netSoldQty: 0,
     active: true,
     images: [],
     pendingFiles: [],
@@ -493,6 +496,9 @@ export default function useProductForm() {
             price: variant.price ?? "",
             compareAtPrice: variant.compareAtPrice ?? "",
             stock: variant.stockQuantity ?? "",
+            grossSoldQty: variant.grossSoldQty ?? 0,
+            returnedQty: variant.returnedQty ?? 0,
+            netSoldQty: variant.netSoldQty ?? Math.max((variant.grossSoldQty ?? 0) - (variant.returnedQty ?? 0), 0),
             active: variant.active ?? true,
             images: (variant.images || []).map((img: ProductImageResponse) => ({
               id: img.id,
@@ -639,6 +645,21 @@ export default function useProductForm() {
     },
     [productCode, updateVariantDerived, variantSchema],
   );
+
+  const sortVariantsByBestSelling = useCallback(() => {
+    setVariants((prev) =>
+      [...prev]
+        .sort((a, b) => {
+          const aScore = a.netSoldQty ?? a.grossSoldQty ?? 0;
+          const bScore = b.netSoldQty ?? b.grossSoldQty ?? 0;
+          return bScore - aScore;
+        })
+        .map((variant, index) => ({
+          ...variant,
+          displayOrder: index + 1,
+        })),
+    );
+  }, []);
 
   const removeVariant = useCallback((index: number) => {
     setVariants((prev) => prev.filter((_, i) => i !== index));
@@ -1081,6 +1102,7 @@ export default function useProductForm() {
     handleCreateBrand,
     addVariant,
     generateVariantCombinations,
+    sortVariantsByBestSelling,
     removeVariant,
     updateVariant,
     updateVariantSelection,

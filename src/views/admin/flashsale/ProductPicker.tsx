@@ -361,9 +361,9 @@ export default function ProductPicker() {
             </div>
           ) : (
             <div className="divide-y divide-slate-200 dark:divide-slate-700">
-              <div className="hidden md:grid grid-cols-[minmax(0,1fr)_140px_140px_170px] gap-0 bg-slate-100 dark:bg-slate-800/60 text-13 font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700">
+              <div className="hidden md:grid grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 bg-slate-100 dark:bg-slate-800/60 text-13 font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700">
                 <div className="px-4 py-3.5">Sản phẩm</div>
-                <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Đã bán</div>
+                <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Đã bán (Net)</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Tồn kho</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Thao tác</div>
               </div>
@@ -392,7 +392,7 @@ export default function ProductPicker() {
                           : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
                         }`}
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_140px_140px_170px] gap-0 items-stretch">
+                      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 items-stretch">
                         <button
                           type="button"
                           onClick={() => handleToggleProduct(product.id)}
@@ -472,7 +472,7 @@ export default function ProductPicker() {
                             return (
                               <div
                                 key={variant.id}
-                                className={`grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_140px_140px_170px] gap-0 items-stretch transition-colors
+                                className={`grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 items-stretch transition-colors
                                   ${isAlreadyInSale
                                     ? 'opacity-50 cursor-not-allowed bg-amber-50/40 dark:bg-amber-500/5'
                                     : isNewlySelected
@@ -512,8 +512,13 @@ export default function ProductPicker() {
                                   </div>
                                 </div>
 
-                                <div className="hidden md:flex items-center justify-end px-4 py-3 border-l border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-400">
-                                  —
+                                <div className="hidden md:flex flex-col items-end justify-center px-4 py-3 border-l border-slate-200 dark:border-slate-700 text-sm">
+                                  <span className="font-semibold text-slate-700 dark:text-slate-200">
+                                    {(variant.netSoldQty ?? Math.max((variant.grossSoldQty ?? 0) - (variant.returnedQty ?? 0), 0)).toLocaleString('vi-VN')}
+                                  </span>
+                                  <span className="text-xs text-slate-500">
+                                    G {(variant.grossSoldQty ?? 0).toLocaleString('vi-VN')} / R {(variant.returnedQty ?? 0).toLocaleString('vi-VN')}
+                                  </span>
                                 </div>
 
                                 <div className="hidden md:flex items-center justify-end px-4 py-3 border-l border-slate-200 dark:border-slate-700">
@@ -535,7 +540,8 @@ export default function ProductPicker() {
                                 </div>
 
                                 <div className="md:hidden px-14 pb-3 text-sm text-slate-500 flex items-center gap-4">
-                                  <span>Đã bán: <strong className="text-slate-400">—</strong></span>
+                                  <span>Net: <strong className="text-slate-700 dark:text-slate-200">{(variant.netSoldQty ?? Math.max((variant.grossSoldQty ?? 0) - (variant.returnedQty ?? 0), 0)).toLocaleString('vi-VN')}</strong></span>
+                                  <span>G/R: <strong className="text-slate-600 dark:text-slate-300">{(variant.grossSoldQty ?? 0).toLocaleString('vi-VN')}/{(variant.returnedQty ?? 0).toLocaleString('vi-VN')}</strong></span>
                                   <span>Tồn: <strong className="text-slate-700 dark:text-slate-200">{(variant.stockQuantity || 0).toLocaleString('vi-VN')}</strong></span>
                                 </div>
                               </div>

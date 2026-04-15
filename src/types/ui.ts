@@ -35,6 +35,9 @@ export interface VariantFormData {
   price: number | "";
   compareAtPrice: number | "";
   stock: number | "";
+  grossSoldQty?: number;
+  returnedQty?: number;
+  netSoldQty?: number;
   active: boolean;
   images: ProductImageResponse[];
   pendingFiles: File[];

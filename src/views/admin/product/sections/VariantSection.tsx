@@ -5,6 +5,7 @@ import {
   FiLoader,
   FiEye,
   FiEyeOff,
+  FiTrendingUp,
 } from "react-icons/fi";
 import { CustomSelect, TrashButton } from "@/components";
 import type { VariantSectionProps as Props } from "./types";
@@ -17,6 +18,7 @@ export default memo(function VariantSection(props: Props) {
     variantFileInputRefs,
     addVariant,
     generateVariantCombinations,
+    sortVariantsByBestSelling,
     removeVariant,
     updateVariant,
     updateVariantSelection,
@@ -87,6 +89,15 @@ export default memo(function VariantSection(props: Props) {
               Sinh tổ hợp
             </button>
           )}
+          <button
+            type="button"
+            onClick={sortVariantsByBestSelling}
+            className="text-md font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors"
+            title="Sắp xếp nhanh danh sách phân loại theo số lượng đã bán (Net)"
+          >
+            <FiTrendingUp />
+            Sắp xếp theo bán chạy
+          </button>
           <button
             onClick={addVariant}
             className="text-md font-semibold text-white bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all"
@@ -312,6 +323,14 @@ export default memo(function VariantSection(props: Props) {
                       {variant.active ? <FiEye /> : <FiEyeOff />}
                       {variant.active ? "Đang bán" : "Đã ẩn"}
                     </button>
+                  </div>
+                  <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2">
+                    <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      Gross / Return / Net
+                    </p>
+                    <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
+                      {(variant.grossSoldQty ?? 0).toLocaleString("vi-VN")} / {(variant.returnedQty ?? 0).toLocaleString("vi-VN")} / {(variant.netSoldQty ?? 0).toLocaleString("vi-VN")}
+                    </p>
                   </div>
                 </div>
 

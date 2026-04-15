@@ -65,6 +65,9 @@ export interface ProductVariantResponse {
   price: number;
   compareAtPrice?: number;
   stockQuantity: number;
+  grossSoldQty?: number;
+  returnedQty?: number;
+  netSoldQty?: number;
   active?: boolean;
   selections?: ProductVariantAttributeValueResponse[];
   attributes?: ProductVariantAttributeValueResponse[];

@@ -102,6 +102,7 @@ export default function ProductForm() {
             variantFileInputRefs={form.variantFileInputRefs}
             addVariant={form.addVariant}
             generateVariantCombinations={form.generateVariantCombinations}
+            sortVariantsByBestSelling={form.sortVariantsByBestSelling}
             removeVariant={form.removeVariant}
             updateVariant={form.updateVariant}
             updateVariantSelection={form.updateVariantSelection}

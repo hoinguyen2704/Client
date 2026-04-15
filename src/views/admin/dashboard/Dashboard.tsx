@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { Button, StatusBadge, Modal, UserAvatar } from '@/components';
 import { formatPrice, formatDate } from '@/utils/format';
 import adminDashboardService from '@/apis/services/adminDashboardService';
-import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem } from '@/types';
+import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem, TopVariantItem } from '@/types';
 import { downloadBlob } from '@/utils/download';
 import DashboardStats from './DashboardStats';
 import RevenueChart from './RevenueChart';
@@ -16,6 +16,9 @@ import DashboardBottom from './DashboardBottom';
 export default function Dashboard() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null);
+  const [topVariants, setTopVariants] = useState<TopVariantItem[]>([]);
+  const [topVariantsLoaded, setTopVariantsLoaded] = useState(false);
+  const [loadingTopVariants, setLoadingTopVariants] = useState(false);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState('WEEK');
 
@@ -93,6 +96,28 @@ export default function Dashboard() {
   }, [period]);
 
   useEffect(() => { fetchStats(); }, [fetchStats]);
+
+  const fetchTopVariants = useCallback(async () => {
+    setLoadingTopVariants(true);
+    setTopVariantsLoaded(false);
+    try {
+      const res = await adminDashboardService.getTopVariants(period, 100);
+      setTopVariants(res.data || []);
+      setTopVariantsLoaded(true);
+    } catch (err) {
+      console.error('Failed to load top variants:', err);
+      toast.error('Không thể tải danh sách phân loại bán chạy');
+      setTopVariants([]);
+      setTopVariantsLoaded(true);
+    } finally {
+      setLoadingTopVariants(false);
+    }
+  }, [period]);
+
+  useEffect(() => {
+    if (activeModal !== 'variants') return;
+    void fetchTopVariants();
+  }, [activeModal, fetchTopVariants]);
   return (
     <div className="space-y-4 sm:space-y-6 pb-10 sm:pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -110,6 +135,14 @@ export default function Dashboard() {
               </button>
             ))}
           </div>
+          <Button
+            onClick={() => setActiveModal('variants')}
+            variant="outline"
+            size="md"
+            className="print:hidden w-full sm:w-auto"
+          >
+            Top phân loại
+          </Button>
           <Button
             onClick={async () => {
               try {
@@ -161,6 +194,7 @@ export default function Dashboard() {
           activeModal === 'revenue' ? 'Chi tiết doanh thu' :
           activeModal === 'customers' ? 'Khách hàng tiềm năng' :
           activeModal === 'products' ? 'Sản phẩm bán chạy' :
+          activeModal === 'variants' ? 'Phân loại bán chạy' :
           activeModal === 'returns' ? 'Thống kê Hoàn / Hủy' :
           activeModal === 'reviews' ? 'Tổng quan đánh giá' : ''
         }
@@ -316,6 +350,44 @@ export default function Dashboard() {
                         <td className="py-2.5 sm:py-4 text-md text-right font-bold text-emerald-600 whitespace-nowrap">{formatPrice(p.revenue)}</td>
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : activeModal === 'variants' ? (
+              <div className="overflow-x-auto">
+                <table className="table-auto w-max min-w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200 dark:border-slate-800 text-slate-500 text-sm sm:text-md">
+                      <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Top</th>
+                      <th className="pb-2.5 sm:pb-3 pr-4 font-medium whitespace-nowrap">Sản phẩm</th>
+                      <th className="pb-2.5 sm:pb-3 pr-4 font-medium whitespace-nowrap">Phân loại</th>
+                      <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Gross</th>
+                      <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Return</th>
+                      <th className="pb-2.5 sm:pb-3 pr-4 font-medium w-[1%] text-center whitespace-nowrap">Net</th>
+                      <th className="pb-2.5 sm:pb-3 font-medium w-[1%] text-right whitespace-nowrap">Doanh thu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(topVariantsLoaded ? topVariants : (stats.topVariants || [])).map((v: TopVariantItem, index: number) => (
+                      <tr key={v.variantId} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td className="py-2.5 sm:py-4 pr-4 text-center text-md font-bold text-slate-400 whitespace-nowrap">#{index + 1}</td>
+                        <td className="py-2.5 sm:py-4 pr-4">
+                          <div className="font-bold text-md line-clamp-1">{v.productName}</div>
+                        </td>
+                        <td className="py-2.5 sm:py-4 pr-4">
+                          <span className="text-md text-slate-600 dark:text-slate-300">{v.variantName || 'Mặc định'}</span>
+                        </td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">{v.totalSold.toLocaleString('vi-VN')}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{(v.returnedQty ?? 0).toLocaleString('vi-VN')}</td>
+                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">{(v.netSoldQty ?? v.totalSold).toLocaleString('vi-VN')}</td>
+                        <td className="py-2.5 sm:py-4 text-md text-right font-bold text-emerald-600 whitespace-nowrap">{formatPrice(v.revenue)}</td>
+                      </tr>
+                    ))}
+                    {loadingTopVariants && topVariants.length === 0 && (
+                      <tr>
+                        <td className="py-4 text-center text-slate-500" colSpan={7}>Đang tải dữ liệu phân loại...</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
