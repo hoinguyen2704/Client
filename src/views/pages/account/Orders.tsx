@@ -53,6 +53,11 @@ export default function Orders() {
 
   const handleCancelOrder = async (orderId: string) => {
     setCancelTarget(null);
+    const targetOrder = orders.find((order) => order.id === orderId);
+    if (!targetOrder || targetOrder.orderStatus !== 'PENDING') {
+      toast.error('Chỉ có thể hủy đơn khi đang ở trạng thái chờ xử lý');
+      return;
+    }
     try {
       await orderService.cancel(orderId);
       fetchOrders();

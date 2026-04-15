@@ -1,5 +1,14 @@
 import { FiPackage, FiTruck, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
+export type AdminOrderStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "PROCESSING"
+  | "SHIPPING"
+  | "SHIPPED"
+  | "CANCELLED"
+  | "RETURNED";
+
 //  ADMIN ORDER CONSTANTS
 export const ORDER_STATUS_OPTIONS = [
   {
@@ -50,6 +59,26 @@ export const ORDER_FILTER_OPTIONS = [
   { value: "", label: "Tất cả trạng thái" },
   ...ORDER_STATUS_OPTIONS,
 ];
+
+export const ADMIN_ORDER_STATUS_TRANSITIONS: Record<AdminOrderStatus, AdminOrderStatus[]> = {
+  PENDING: ["CONFIRMED", "CANCELLED"],
+  CONFIRMED: ["PROCESSING", "CANCELLED"],
+  PROCESSING: ["SHIPPING", "CANCELLED"],
+  SHIPPING: ["SHIPPED"],
+  SHIPPED: ["RETURNED"],
+  CANCELLED: [],
+  RETURNED: [],
+};
+
+export const getAdminOrderStatusOptions = (currentStatus: string) => {
+  const current = currentStatus as AdminOrderStatus;
+  const next = ADMIN_ORDER_STATUS_TRANSITIONS[current] || [];
+  const allowedStatuses = new Set<AdminOrderStatus>([current, ...next]);
+
+  return ORDER_STATUS_OPTIONS.filter((option) =>
+    allowedStatuses.has(option.value as AdminOrderStatus),
+  );
+};
 
 //  CLIENT ACCOUNT ORDER CONSTANTS
 export const CLIENT_ORDER_TABS = [

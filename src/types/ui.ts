@@ -20,6 +20,8 @@ export interface HomeData {
 //  Product Form types (from ProductForm.tsx)
 export interface VariantFormData {
   id?: string;
+  uiKey?: string;
+  displayOrder?: number;
   sku: string;
   variantName: string;
   price: number | "";

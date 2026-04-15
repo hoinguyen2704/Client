@@ -174,7 +174,7 @@ export const RETURN_STATUS_TRANSITIONS: Record<ReturnStatus, ReturnStatus[]> = {
 };
 
 export const canProcessRefund = (status: string) =>
-  status === 'APPROVED' || status === 'QC_PASSED' || status === 'REFUND_PENDING';
+  status === 'QC_PASSED' || status === 'REFUND_PENDING';
 
 //  Shared Timeline Builder 
 import type { TimelineStep } from '@/components/ui/types';

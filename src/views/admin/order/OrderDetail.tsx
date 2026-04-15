@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiCheck } from 'react-icons/fi';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
 import { Button, StatusBadge, CustomSelect, BackButton } from '@/components';
 import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
-import { ORDER_STATUS_OPTIONS } from '@/constants/orderConstants';
+import { getAdminOrderStatusOptions } from '@/constants/orderConstants';
 
 import type { OrderResponse } from '@/types';
 import useShopStore from '@/stores/useShopStore';
@@ -15,24 +15,39 @@ export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
- const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [editStatus, setEditStatus] = useState('');
   const { shop, fetchShopInfo } = useShopStore();
+
+  const fetchOrderDetail = useCallback(
+    async (orderNumber: string, options?: { keepEditStatus?: boolean }) => {
+      const res = await adminOrderService.getByNumber(orderNumber);
+      const found = res.data;
+      if (found) {
+        setOrder(found);
+        if (!options?.keepEditStatus) {
+          setEditStatus(found.orderStatus);
+        }
+      }
+      return found;
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    // Fetch individual order by orderNumber
-    adminOrderService.getByNumber(id)
-      .then(res => {
-        const found = res.data;
-        if (found) { setOrder(found); setEditStatus(found.orderStatus); }
-      })
+    fetchOrderDetail(id)
       .catch(err => console.error('Failed:', err))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, fetchOrderDetail]);
 
   useEffect(() => { fetchShopInfo(); }, [fetchShopInfo]);
+
+  const orderStatusOptions = useMemo(
+    () => (order ? getAdminOrderStatusOptions(order.orderStatus) : []),
+    [order],
+  );
 
   const handleUpdateStatus = async (newStatus: string) => {
     if (!order || isUpdatingStatus || !newStatus || newStatus === order.orderStatus) return;
@@ -43,6 +58,11 @@ export default function OrderDetail() {
       const res = await adminOrderService.updateStatus(order.id, newStatus);
       setOrder(res.data);
       setEditStatus(res.data.orderStatus);
+      try {
+        await fetchOrderDetail(order.orderNumber);
+      } catch (refreshErr) {
+        console.warn('Refetch order detail after status update failed:', refreshErr);
+      }
       toast.success('Cập nhật trạng thái đơn hàng thành công!');
     } catch (err) {
       console.error(err);
@@ -100,9 +120,9 @@ export default function OrderDetail() {
             <CustomSelect
               value={editStatus || order.orderStatus}
               onChange={handleUpdateStatus}
-              options={ORDER_STATUS_OPTIONS}
+              options={orderStatusOptions}
               className="w-full"
-              disabled={isUpdatingStatus}
+              disabled={isUpdatingStatus || orderStatusOptions.length <= 1}
             />
           </div>
           <Button onClick={handleExportInvoice} variant="success" size="md" icon={<FiDownload />} className="w-full sm:w-auto">

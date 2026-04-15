@@ -50,6 +50,7 @@ export default function ReturnDetail() {
   const [refundAmount, setRefundAmount] = useState('');
   const [refundProvider, setRefundProvider] = useState('MANUAL');
   const [transactionId, setTransactionId] = useState('');
+  const [refundAdminNote, setRefundAdminNote] = useState('');
   const [currency, setCurrency] = useState('VND');
   const [rawPayload, setRawPayload] = useState('');
   const [isRefunding, setIsRefunding] = useState(false);
@@ -163,26 +164,42 @@ export default function ReturnDetail() {
   const handleProcessRefund = async () => {
     if (!returnRequest) return;
 
-    const payload: ProcessRefundRequestPayload = {
-      provider: refundProvider.trim() || undefined,
-      transactionId: transactionId.trim() || undefined,
-      currency: currency.trim() || undefined,
-      rawPayload: rawPayload.trim() || undefined,
-    };
-
-    if (refundAmount.trim()) {
-      const amount = Number(refundAmount);
-      if (!Number.isFinite(amount) || amount <= 0) {
-        toast.error('Số tiền hoàn không hợp lệ');
-        return;
-      }
-      payload.amount = amount;
-    } else if (returnRequest.approvedAmount != null && returnRequest.approvedAmount > 0) {
-      payload.amount = returnRequest.approvedAmount;
-    } else {
+    if (!refundAmount.trim()) {
+      toast.error('Vui lòng nhập số tiền hoàn');
+      return;
+    }
+    const amount = Number(refundAmount);
+    if (!Number.isFinite(amount) || amount <= 0) {
       toast.error('Số tiền hoàn không hợp lệ');
       return;
     }
+
+    const provider = refundProvider.trim().toUpperCase();
+    if (!provider) {
+      toast.error('Vui lòng chọn provider hoàn tiền');
+      return;
+    }
+
+    const normalizedTransactionId = transactionId.trim();
+    if (!normalizedTransactionId) {
+      toast.error('Vui lòng nhập mã giao dịch hoàn tiền');
+      return;
+    }
+
+    const adminNote = refundAdminNote.trim();
+    if (!adminNote) {
+      toast.error('Vui lòng nhập ghi chú xử lý hoàn tiền');
+      return;
+    }
+
+    const payload: ProcessRefundRequestPayload = {
+      amount,
+      provider,
+      transactionId: normalizedTransactionId,
+      adminNote,
+      currency: currency.trim() || undefined,
+      rawPayload: rawPayload.trim() || undefined,
+    };
 
     setIsRefunding(true);
     try {
@@ -190,6 +207,7 @@ export default function ReturnDetail() {
       applyUpdatedReturn(res.data);
       setRefundAmount('');
       setTransactionId('');
+      setRefundAdminNote('');
       setRawPayload('');
       toast.success('Đã xử lý hoàn tiền thành công');
     } catch (err) {
@@ -489,14 +507,14 @@ export default function ReturnDetail() {
 
           {allowRefund && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
-              <h2 className="text-lg font-bold">Xử lý hoàn tiền</h2>
+              <h2 className="text-lg font-bold">Xác nhận hoàn tiền thủ công</h2>
               <input
                 type="number"
                 min={0}
                 step="1000"
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(e.target.value)}
-                placeholder="Số tiền hoàn (để trống = số tiền duyệt)"
+                placeholder="Số tiền hoàn (bắt buộc)"
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <CustomSelect
@@ -516,6 +534,12 @@ export default function ReturnDetail() {
                 onChange={(e) => setTransactionId(e.target.value)}
                 placeholder="Mã giao dịch hoàn tiền"
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
+              />
+              <textarea
+                value={refundAdminNote}
+                onChange={(e) => setRefundAdminNote(e.target.value)}
+                placeholder="Ghi chú admin về giao dịch hoàn tiền (bắt buộc)"
+                className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
               />
               <input
                 type="text"
@@ -537,7 +561,7 @@ export default function ReturnDetail() {
                 loading={isRefunding}
                 fullWidth
               >
-                Xác nhận hoàn tiền
+                Xác nhận hoàn tiền thủ công
               </Button>
             </div>
           )}

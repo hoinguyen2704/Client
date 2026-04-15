@@ -8,9 +8,16 @@ import {
   FiSearch,
   FiLoader,
 } from "react-icons/fi";
-import { TrashButton } from "@/components";
-import type { BasicInfoSectionProps as Props } from "./types";
-import { memo } from "react";
+import { ExpandToggle, TrashButton } from "@/components";
+import type { BasicInfoSectionProps } from "./types";
+import { memo, useEffect, useMemo, useState } from "react";
+
+const SPEC_COLLAPSE_THRESHOLD = 6;
+
+type Props = BasicInfoSectionProps & {
+  showBasicInfo?: boolean;
+  showSpecs?: boolean;
+};
 
 export default memo(function BasicInfoSection(props: Props) {
   const {
@@ -39,12 +46,30 @@ export default memo(function BasicInfoSection(props: Props) {
     getHintForSpec,
     handleCreateCategory,
     handleCreateBrand,
+    showBasicInfo = true,
+    showSpecs = true,
   } = props;
+
+  const [showAllSpecs, setShowAllSpecs] = useState(false);
+  useEffect(() => {
+    if (specs.length <= SPEC_COLLAPSE_THRESHOLD && showAllSpecs) {
+      setShowAllSpecs(false);
+    }
+  }, [specs.length, showAllSpecs]);
+
+  const visibleSpecs = useMemo(
+    () =>
+      (showAllSpecs ? specs : specs.slice(0, SPEC_COLLAPSE_THRESHOLD)).map(
+        (spec, index) => ({ spec, index }),
+      ),
+    [specs, showAllSpecs],
+  );
 
   return (
     <div className="space-y-6">
       {/* Basic Info Card */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+      {showBasicInfo && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
         <h2 className="text-lg font-bold mb-4">Thông tin cơ bản</h2>
 
         <div>
@@ -378,10 +403,12 @@ export default memo(function BasicInfoSection(props: Props) {
             className="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 resize-y outline-none"
           />
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Specs JSON Builder */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+      {showSpecs && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold">Thông số kỹ thuật</h2>
           <div className="relative" ref={templatePopupRef}>
@@ -537,7 +564,7 @@ export default memo(function BasicInfoSection(props: Props) {
         </div>
 
         <div className="space-y-3">
-          {specs.map((spec, index) => (
+          {visibleSpecs.map(({ spec, index }) => (
             <div key={index} className="flex items-center gap-3">
               <input
                 type="text"
@@ -579,13 +606,24 @@ export default memo(function BasicInfoSection(props: Props) {
           )}
         </div>
 
+        {specs.length > SPEC_COLLAPSE_THRESHOLD && (
+          <ExpandToggle
+            expanded={showAllSpecs}
+            onToggle={() => setShowAllSpecs((prev) => !prev)}
+            expandLabel="Xem thêm"
+            collapseLabel="Thu gọn"
+            className="mt-1"
+          />
+        )}
+
         <button
           onClick={() => setSpecs([...specs, { key: "", value: "" }])}
           className="text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 mt-2"
         >
           <FiPlus /> Thêm thông số mới
         </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 });

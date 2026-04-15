@@ -8,6 +8,33 @@ import StatusPricingSection from "./sections/StatusPricingSection";
 
 export default function ProductForm() {
   const form = useProductForm();
+  const basicInfoSectionProps = {
+    name: form.name, setName: form.setName,
+    description: form.description, setDescription: form.setDescription,
+    categoryId: form.categoryId, setCategoryId: form.setCategoryId,
+    brandId: form.brandId, setBrandId: form.setBrandId,
+    specs: form.specs, setSpecs: form.setSpecs,
+    categories: form.categories, setCategories: form.setCategories,
+    brands: form.brands,
+    showCategoryDropdown: form.showCategoryDropdown, setShowCategoryDropdown: form.setShowCategoryDropdown,
+    showBrandDropdown: form.showBrandDropdown, setShowBrandDropdown: form.setShowBrandDropdown,
+    categorySearch: form.categorySearch, setCategorySearch: form.setCategorySearch,
+    brandSearch: form.brandSearch, setBrandSearch: form.setBrandSearch,
+    categoryDropdownRef: form.categoryDropdownRef,
+    brandDropdownRef: form.brandDropdownRef,
+    showTemplatePopup: form.showTemplatePopup, setShowTemplatePopup: form.setShowTemplatePopup,
+    templatePopupRef: form.templatePopupRef,
+    isCreatingCategory: form.isCreatingCategory, setIsCreatingCategory: form.setIsCreatingCategory,
+    newCategoryName: form.newCategoryName, setNewCategoryName: form.setNewCategoryName,
+    savingCategory: form.savingCategory,
+    isCreatingBrand: form.isCreatingBrand, setIsCreatingBrand: form.setIsCreatingBrand,
+    newBrandName: form.newBrandName, setNewBrandName: form.setNewBrandName,
+    savingBrand: form.savingBrand,
+    getTemplateKeys: form.getTemplateKeys,
+    getHintForSpec: form.getHintForSpec,
+    handleCreateCategory: form.handleCreateCategory,
+    handleCreateBrand: form.handleCreateBrand,
+  };
 
   // Loading state
   if (form.loading) {
@@ -63,33 +90,7 @@ export default function ProductForm() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Info */}
         <div className="lg:col-span-2 space-y-6">
-          <BasicInfoSection
-            name={form.name} setName={form.setName}
-            description={form.description} setDescription={form.setDescription}
-            categoryId={form.categoryId} setCategoryId={form.setCategoryId}
-            brandId={form.brandId} setBrandId={form.setBrandId}
-            specs={form.specs} setSpecs={form.setSpecs}
-            categories={form.categories} setCategories={form.setCategories}
-            brands={form.brands}
-            showCategoryDropdown={form.showCategoryDropdown} setShowCategoryDropdown={form.setShowCategoryDropdown}
-            showBrandDropdown={form.showBrandDropdown} setShowBrandDropdown={form.setShowBrandDropdown}
-            categorySearch={form.categorySearch} setCategorySearch={form.setCategorySearch}
-            brandSearch={form.brandSearch} setBrandSearch={form.setBrandSearch}
-            categoryDropdownRef={form.categoryDropdownRef}
-            brandDropdownRef={form.brandDropdownRef}
-            showTemplatePopup={form.showTemplatePopup} setShowTemplatePopup={form.setShowTemplatePopup}
-            templatePopupRef={form.templatePopupRef}
-            isCreatingCategory={form.isCreatingCategory} setIsCreatingCategory={form.setIsCreatingCategory}
-            newCategoryName={form.newCategoryName} setNewCategoryName={form.setNewCategoryName}
-            savingCategory={form.savingCategory}
-            isCreatingBrand={form.isCreatingBrand} setIsCreatingBrand={form.setIsCreatingBrand}
-            newBrandName={form.newBrandName} setNewBrandName={form.setNewBrandName}
-            savingBrand={form.savingBrand}
-            getTemplateKeys={form.getTemplateKeys}
-            getHintForSpec={form.getHintForSpec}
-            handleCreateCategory={form.handleCreateCategory}
-            handleCreateBrand={form.handleCreateBrand}
-          />
+          <BasicInfoSection {...basicInfoSectionProps} showSpecs={false} />
 
           <VariantSection
             variants={form.variants}
@@ -103,6 +104,8 @@ export default function ProductForm() {
             removeVariantPendingFile={form.removeVariantPendingFile}
             deleteVariantImage={form.deleteVariantImage}
           />
+
+          <BasicInfoSection {...basicInfoSectionProps} showBasicInfo={false} />
         </div>
 
         {/* Sidebar */}

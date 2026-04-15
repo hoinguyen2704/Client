@@ -35,6 +35,15 @@ const emptyVariant: VariantFormData = {
   pendingFiles: [],
 };
 
+const createVariantUiKey = () =>
+  `variant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+const getNextVariantDisplayOrder = (variants: VariantFormData[]) =>
+  variants.reduce(
+    (maxOrder, variant) => Math.max(maxOrder, variant.displayOrder ?? 0),
+    0,
+  ) + 1;
+
 export default function useProductForm() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -50,7 +59,7 @@ export default function useProductForm() {
   const [status, setStatus] = useState("ACTIVE");
   const [specs, setSpecs] = useState<SpecRow[]>([]);
   const [variants, setVariants] = useState<VariantFormData[]>([
-    { ...emptyVariant },
+    { ...emptyVariant, uiKey: createVariantUiKey(), displayOrder: 1 },
   ]);
   const [existingImages, setExistingImages] = useState<
     { id: string; imageUrl: string }[]
@@ -237,9 +246,10 @@ export default function useProductForm() {
       }
 
       if (p.variants && p.variants.length > 0) {
-        setVariants(
-          p.variants.map((v) => ({
+        const mappedVariants: VariantFormData[] = p.variants.map((v, index) => ({
             id: v.id,
+            uiKey: v.id || createVariantUiKey(),
+            displayOrder: index + 1,
             sku: v.sku ?? "",
             variantName: v.variantName ?? "",
             price: v.price ?? "",
@@ -255,7 +265,11 @@ export default function useProductForm() {
               variantId: v.id,
             })),
             pendingFiles: [],
-          })),
+          }));
+        setVariants(
+          mappedVariants.sort(
+            (a, b) => (b.displayOrder ?? 0) - (a.displayOrder ?? 0),
+          ),
         );
       } else {
         setVariants([]);
@@ -287,7 +301,10 @@ export default function useProductForm() {
 
   //  Variant helpers 
   const addVariant = useCallback(() => {
-    setVariants((prev) => [...prev, { ...emptyVariant }]);
+    setVariants((prev) => [
+      { ...emptyVariant, uiKey: createVariantUiKey(), displayOrder: getNextVariantDisplayOrder(prev) },
+      ...prev,
+    ]);
   }, []);
 
   const removeVariant = useCallback((index: number) => {
@@ -310,8 +327,11 @@ export default function useProductForm() {
     );
   }, []);
 
-  const getVariantUiKey = useCallback((variant: VariantFormData, index: number): string =>
-    variant.id || `variant-${index}-${variant.sku || "new"}`, []);
+  const getVariantUiKey = useCallback(
+    (variant: VariantFormData, index: number): string =>
+      variant.id || variant.uiKey || `variant-${index}`,
+    [],
+  );
 
   const handleVariantFilesSelected = useCallback(async (index: number, files: File[]) => {
     if (files.length === 0) return;
@@ -504,6 +524,7 @@ export default function useProductForm() {
     const variantRequests: ProductVariantRequest[] = variants
       .filter((v) => v.variantName.trim())
       .map((v) => ({
+        id: v.id,
         sku: v.sku,
         variantName: v.variantName,
         price: Number(v.price) || 0,

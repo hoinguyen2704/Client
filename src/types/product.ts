@@ -70,6 +70,7 @@ export interface ProductRequest {
 }
 
 export interface ProductVariantRequest {
+  id?: string;
   sku: string;
   variantName: string;
   price: number;

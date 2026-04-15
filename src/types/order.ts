@@ -143,9 +143,10 @@ export interface UpdateReturnStatusRequestPayload {
 }
 
 export interface ProcessRefundRequestPayload {
-  amount?: number;
-  provider?: string;
-  transactionId?: string;
+  amount: number;
+  provider: string;
+  transactionId: string;
+  adminNote: string;
   currency?: string;
   rawPayload?: string;
 }

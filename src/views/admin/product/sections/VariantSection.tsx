@@ -45,6 +45,7 @@ export default memo(function VariantSection(props: Props) {
       <div className="space-y-4">
         {variants.map((variant, index) => {
           const variantUiKey = getVariantUiKey(variant, index);
+          const variantOrder = variant.displayOrder ?? index + 1;
           const isVariantUploading = Boolean(
             uploadingVariantKeys[variantUiKey],
           );
@@ -57,10 +58,11 @@ export default memo(function VariantSection(props: Props) {
               <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/80 dark:to-slate-800/40 border-b border-slate-200 dark:border-slate-700">
                 <div className="flex items-center gap-2.5">
                   <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 text-white text-sm font-bold flex items-center justify-center shadow-sm">
-                    {index + 1}
+                    {variantOrder}
                   </span>
                   <span className="text-md font-semibold text-slate-700 dark:text-slate-300">
-                    {variant.variantName || `Phân loại ${index + 1}`}
+                    {`Phân loại ${variantOrder}`}
+                    {variant.variantName ? ` - ${variant.variantName}` : ""}
                   </span>
                 </div>
                 {variants.length > 1 && (
@@ -77,7 +79,7 @@ export default memo(function VariantSection(props: Props) {
 
               {/* Card body */}
               <div className="p-4 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       SKU

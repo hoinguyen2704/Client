@@ -6,7 +6,7 @@ import { formatPrice, formatDate } from '@/utils/format';
 import { Button, StatusBadge, CustomSelect, AdminSearch, Pagination, ActionButtons } from '@/components';
 
 import adminOrderService from '@/apis/services/adminOrderService';
-import { ORDER_STATUS_OPTIONS, ORDER_FILTER_OPTIONS } from '@/constants/orderConstants';
+import { ORDER_FILTER_OPTIONS, getAdminOrderStatusOptions } from '@/constants/orderConstants';
 import type { OrderResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { downloadBlob } from '@/utils/download';
@@ -39,11 +39,15 @@ export default function AdminOrders() {
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
+    if (!newStatus) return;
     try {
       await adminOrderService.updateStatus(orderId, newStatus);
       toast.success('Đã cập nhật trạng thái!');
       fetchOrders({ silent: true });
-    } catch (err) { console.error('Update status failed:', err); }
+    } catch (err) {
+      console.error('Update status failed:', err);
+      toast.error('Không thể cập nhật trạng thái theo thứ tự này');
+    }
   };
 
   const handleExport = async () => {
@@ -152,12 +156,18 @@ export default function AdminOrders() {
                 <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between lg:justify-center items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
                   <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
                   <div className="w-[170px] sm:w-48 lg:w-[150px]">
+                    {(() => {
+                      const statusOptions = getAdminOrderStatusOptions(order.orderStatus);
+                      return (
                     <CustomSelect 
                       value={order.orderStatus} 
                       onChange={(val) => handleStatusChange(order.id, val)}
-                      options={ORDER_STATUS_OPTIONS}
+                      options={statusOptions}
                       className="w-full"
+                      disabled={statusOptions.length <= 1}
                     />
+                      );
+                    })()}
                   </div>
                 </div>
 
