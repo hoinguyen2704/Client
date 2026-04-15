@@ -152,6 +152,8 @@ export interface AdminSearchProps {
   onChange: (value: string) => void;
   /** Extra filter elements (selects, buttons) rendered on the right */
   filters?: ReactNode;
+  /** Render as standalone boxed search card (default true). Set false when placed inside another boxed filter container. */
+  boxed?: boolean;
 }
 
 //  ActionButtons

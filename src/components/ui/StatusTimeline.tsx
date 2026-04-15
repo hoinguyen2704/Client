@@ -13,12 +13,12 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
   const sizeClasses = {
     sm: {
       dot: 'w-6 h-6',
-      icon: 'text-[10px]',
+      icon: 'text-10',
       line: 'h-0.5',
       vLine: 'w-0.5',
       label: 'text-sm',
-      time: 'text-[10px]',
-      desc: 'text-[10px]',
+      time: 'text-10',
+      desc: 'text-10',
       gap: 'gap-2',
     },
     md: {

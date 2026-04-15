@@ -72,7 +72,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
       >
         <FiBell className={iconSize} />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm animate-pulse">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-10 font-bold flex items-center justify-center rounded-full shadow-sm animate-pulse">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -93,7 +93,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-md">Thông báo</h3>
                 {unreadCount > 0 && (
-                  <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[11px] font-bold rounded-full">
+                  <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-11 font-bold rounded-full">
                     {unreadCount} mới
                   </span>
                 )}
@@ -147,7 +147,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                         {!n.isRead && <span className="w-1.5 h-1.5 rounded-full bg-purple-600 shrink-0" />}
                       </div>
                       <p className="text-sm text-slate-500 line-clamp-2 leading-snug">{n.content}</p>
-                      <span className="text-[11px] text-slate-400 mt-1 block">{formatDate(n.createdAt)}</span>
+                      <span className="text-11 text-slate-400 mt-1 block">{formatDate(n.createdAt)}</span>
                     </div>
                     {!n.isRead && (
                       <button

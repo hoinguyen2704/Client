@@ -7,9 +7,14 @@ export default function AdminSearch({
   value,
   onChange,
   filters,
+  boxed = true,
 }: AdminSearchProps) {
+  const containerClass = boxed
+    ? "bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4"
+    : "flex flex-col md:flex-row gap-4";
+
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4">
+    <div className={containerClass}>
       <div className="relative flex-1">
         <input
           type="text"

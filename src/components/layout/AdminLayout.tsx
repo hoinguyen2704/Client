@@ -10,14 +10,14 @@ export default function AdminLayout() {
   const sidebarCollapsed = useUIStore((s) => s.sidebarCollapsed);
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50">
+    <div className="admin-border-strong min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50">
       <AdminSidebar />
 
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'}`}>
+      <div className={`flex-1 min-w-0 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'}`}>
         <RealtimeBridge />
         <AdminHeader onLogout={logout} />
 
-        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 overflow-x-clip">
+        <main className="flex-1 min-w-0 p-3 sm:p-4 md:p-6 lg:p-8 overflow-x-clip">
           <Outlet />
         </main>
       </div>

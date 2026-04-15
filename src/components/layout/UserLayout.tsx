@@ -99,7 +99,7 @@ export default function UserLayout() {
                         <item.icon className="text-base" />
                         <span className="flex-1">{item.label}</span>
                         {item.path === '/user/notifications' && unreadCount > 0 && (
-                          <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                          <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-10 font-bold flex items-center justify-center rounded-full">
                             {unreadCount > 99 ? '99+' : unreadCount}
                           </span>
                         )}
@@ -139,7 +139,7 @@ export default function UserLayout() {
                     <item.icon className="text-lg" />
                     <span className="flex-1">{item.label}</span>
                     {item.path === '/user/notifications' && unreadCount > 0 && (
-                      <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                      <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-10 font-bold flex items-center justify-center rounded-full">
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                     )}

@@ -7,6 +7,8 @@ export type BasicInfoSectionProps = Pick<
   | "description" | "setDescription"
   | "categoryId" | "setCategoryId"
   | "brandId" | "setBrandId"
+  | "productCode" | "setProductCode"
+  | "isEditMode"
   | "specs" | "setSpecs"
   | "categories" | "setCategories"
   | "brands"
@@ -26,6 +28,7 @@ export type BasicInfoSectionProps = Pick<
   | "savingBrand"
   | "getTemplateKeys"
   | "getHintForSpec"
+  | "getSpecAttributeIdByKey"
   | "handleCreateCategory"
   | "handleCreateBrand"
 >;
@@ -34,11 +37,15 @@ export type BasicInfoSectionProps = Pick<
 export type VariantSectionProps = Pick<
   UseProductFormReturn,
   | "variants"
+  | "variantSchema"
   | "uploadingVariantKeys"
   | "variantFileInputRefs"
   | "addVariant"
+  | "generateVariantCombinations"
   | "removeVariant"
   | "updateVariant"
+  | "updateVariantSelection"
+  | "regenerateVariantSku"
   | "getVariantUiKey"
   | "handleVariantFilesSelected"
   | "removeVariantPendingFile"

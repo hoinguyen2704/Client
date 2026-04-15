@@ -1,4 +1,4 @@
-import type { ChangeEvent } from "react";
+import { memo, useEffect, useState, type ChangeEvent } from "react";
 import {
   FiPlus,
   FiTrash2,
@@ -6,24 +6,66 @@ import {
   FiEye,
   FiEyeOff,
 } from "react-icons/fi";
-import { TrashButton } from "@/components";
+import { CustomSelect, TrashButton } from "@/components";
 import type { VariantSectionProps as Props } from "./types";
-
-import { memo } from "react";
 
 export default memo(function VariantSection(props: Props) {
   const {
     variants,
+    variantSchema,
     uploadingVariantKeys,
     variantFileInputRefs,
     addVariant,
+    generateVariantCombinations,
     removeVariant,
     updateVariant,
+    updateVariantSelection,
+    regenerateVariantSku,
     getVariantUiKey,
     handleVariantFilesSelected,
     removeVariantPendingFile,
     deleteVariantImage,
   } = props;
+
+  const [showBulkGenerate, setShowBulkGenerate] = useState(false);
+  const [bulkSelections, setBulkSelections] = useState<Record<string, string[]>>({});
+
+  useEffect(() => {
+    setBulkSelections((prev) =>
+      Object.fromEntries(
+        variantSchema.map((attribute) => {
+          const activeOptionIds = attribute.options
+            .filter((option) => option.active !== false)
+            .map((option) => option.id);
+          const hadPreviousSelection = Object.prototype.hasOwnProperty.call(
+            prev,
+            attribute.id,
+          );
+
+          if (!hadPreviousSelection) {
+            return [attribute.id, activeOptionIds];
+          }
+
+          const preservedSelection = (prev[attribute.id] || []).filter((id) =>
+            activeOptionIds.includes(id),
+          );
+          return [attribute.id, preservedSelection];
+        }),
+      ),
+    );
+  }, [variantSchema]);
+
+  const toggleBulkOption = (attributeId: string, optionId: string) => {
+    setBulkSelections((prev) => {
+      const current = new Set(prev[attributeId] || []);
+      if (current.has(optionId)) {
+        current.delete(optionId);
+      } else {
+        current.add(optionId);
+      }
+      return { ...prev, [attributeId]: Array.from(current) };
+    });
+  };
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5">
@@ -34,13 +76,105 @@ export default memo(function VariantSection(props: Props) {
             {variants.length} phân loại
           </span>
         </div>
-        <button
-          onClick={addVariant}
-          className="text-md font-semibold text-white bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all"
-        >
-          <FiPlus /> Thêm phân loại
-        </button>
+        <div className="flex items-center gap-2">
+          {variantSchema.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowBulkGenerate((prev) => !prev)}
+              className="text-md font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40 px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors"
+              title="Chọn nhanh option theo từng thuộc tính để sinh hàng loạt phân loại"
+            >
+              Sinh tổ hợp
+            </button>
+          )}
+          <button
+            onClick={addVariant}
+            className="text-md font-semibold text-white bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all"
+          >
+            <FiPlus /> Thêm phân loại
+          </button>
+        </div>
       </div>
+
+      {showBulkGenerate && variantSchema.length > 0 && (
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-3 bg-slate-50/80 dark:bg-slate-800/30">
+          <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+            Chọn option theo từng thuộc tính để sinh tổ hợp (hệ thống tự bỏ qua tổ hợp đã tồn tại).
+          </p>
+          <div className="space-y-3">
+            {variantSchema.map((attribute) => (
+              <div key={`bulk-${attribute.id}`}>
+                <p className="text-sm font-medium mb-1.5">{attribute.name}</p>
+                <div className="flex flex-wrap gap-2">
+                  {attribute.options
+                    .filter((option) => option.active !== false)
+                    .map((option) => {
+                      const checked = (bulkSelections[attribute.id] || []).includes(option.id);
+                      return (
+                        <label
+                          key={`bulk-${attribute.id}-${option.id}`}
+                          className={`px-3 py-1.5 rounded-lg border text-sm cursor-pointer transition-colors ${
+                            checked
+                              ? "border-purple-400 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300"
+                              : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleBulkOption(attribute.id, option.id)}
+                            className="mr-1.5 align-middle"
+                          />
+                          {option.label}
+                        </label>
+                      );
+                    })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() =>
+                setBulkSelections(
+                  Object.fromEntries(
+                    variantSchema.map((attribute) => [attribute.id, [] as string[]]),
+                  ),
+                )
+              }
+              className="h-9 px-3 rounded-lg text-sm font-medium border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300"
+            >
+              Bỏ chọn tất cả
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                setBulkSelections(
+                  Object.fromEntries(
+                    variantSchema.map((attribute) => [
+                      attribute.id,
+                      attribute.options
+                        .filter((option) => option.active !== false)
+                        .map((option) => option.id),
+                    ]),
+                  ),
+                )
+              }
+              className="h-9 px-3 rounded-lg text-sm font-medium border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300"
+            >
+              Chọn tất cả
+            </button>
+            <button
+              type="button"
+              onClick={() => generateVariantCombinations(bulkSelections)}
+              className="h-9 px-3 rounded-lg text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700"
+            >
+              Sinh tổ hợp
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4">
         {variants.map((variant, index) => {
@@ -84,33 +218,36 @@ export default memo(function VariantSection(props: Props) {
                     <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       SKU
                     </label>
-                    <input
-                      type="text"
-                      value={variant.sku}
-                      onChange={(e) =>
-                        updateVariant(index, "sku", e.target.value)
-                      }
-                      placeholder="VD: SP-001-BK"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
-                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={variant.sku}
+                        onChange={(e) =>
+                          updateVariant(index, "sku", e.target.value)
+                        }
+                        placeholder="VD: IP15P-BLK-256"
+                        className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => regenerateVariantSku(index)}
+                        className="h-10 px-3 rounded-lg text-md font-medium bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-600 text-slate-700 dark:text-slate-200 transition-colors"
+                        title="Sinh lại SKU theo tổ hợp thuộc tính"
+                      >
+                        Regen
+                      </button>
+                    </div>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {variant.skuMode === "manual" ? "Manual" : "Suggested"}
+                    </p>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      Tên phân loại
+                      Tên phân loại (tự dựng)
                     </label>
-                    <input
-                      type="text"
-                      value={variant.variantName}
-                      onChange={(e) =>
-                        updateVariant(
-                          index,
-                          "variantName",
-                          e.target.value,
-                        )
-                      }
-                      placeholder="VD: Đen - 256GB"
-                      className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-md transition-colors"
-                    />
+                    <div className="w-full h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md transition-colors flex items-center text-slate-700 dark:text-slate-200">
+                      {variant.variantName || "Mặc định"}
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -178,6 +315,39 @@ export default memo(function VariantSection(props: Props) {
                   </div>
                 </div>
 
+                {variantSchema.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {variantSchema.map((attribute) => (
+                      <div key={`${variantUiKey}-${attribute.id}`}>
+                        <label className="block text-sm font-semibold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          {attribute.name}
+                        </label>
+                        <CustomSelect
+                          value={
+                            variant.selections?.[attribute.id] ||
+                            attribute.options.find((option) => option.active !== false)?.id ||
+                            ""
+                          }
+                          onChange={(optionId) =>
+                            updateVariantSelection(index, attribute.id, optionId)
+                          }
+                          options={attribute.options
+                            .filter((option) => option.active !== false)
+                            .map((option) => ({
+                              value: option.id,
+                              label: option.label,
+                            }))}
+                          className="w-full h-10"
+                          disabled={
+                            attribute.options.filter((option) => option.active !== false)
+                              .length === 0
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {/* Variant images */}
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-3 bg-slate-50/70 dark:bg-slate-800/40">
                   <div className="flex items-center justify-between gap-3">
@@ -234,7 +404,7 @@ export default memo(function VariantSection(props: Props) {
                             alt={`Pending ${fileIndex + 1}`}
                             className="w-full h-full object-cover"
                           />
-                          <span className="absolute left-1.5 bottom-1.5 text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded">
+                          <span className="absolute left-1.5 bottom-1.5 text-10 font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded">
                             Chờ lưu
                           </span>
                           <button
@@ -268,7 +438,7 @@ export default memo(function VariantSection(props: Props) {
                             className="w-full h-full object-cover"
                           />
                           {img.isPrimary && (
-                            <span className="absolute left-1.5 top-1.5 text-[10px] font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-1.5 py-0.5 rounded">
+                            <span className="absolute left-1.5 top-1.5 text-10 font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-1.5 py-0.5 rounded">
                               Chính
                             </span>
                           )}

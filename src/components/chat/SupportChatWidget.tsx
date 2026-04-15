@@ -189,7 +189,7 @@ export default function SupportChatWidget() {
       >
         <FiMessageSquare className="text-xl sm:text-2xl" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-11 font-bold flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -207,7 +207,7 @@ export default function SupportChatWidget() {
             <div className="h-14 px-3 sm:px-4 flex items-center justify-between text-white bg-gradient-to-r from-purple-600 to-blue-600">
               <div>
                 <h3 className="font-bold text-md">Hỗ trợ trực tiếp</h3>
-                <p className="text-[11px] text-white/80">Realtime với admin</p>
+                <p className="text-11 text-white/80">Realtime với admin</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
@@ -243,7 +243,7 @@ export default function SupportChatWidget() {
               {selectedTicket ? (
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-sm text-slate-500 truncate">{selectedTicket.ticketNumber}</p>
-                  <StatusBadge status={selectedTicket.status} className="text-[10px]" />
+                  <StatusBadge status={selectedTicket.status} className="text-10" />
                 </div>
               ) : (
                 <p className="text-sm text-slate-400">Phiên chat mới</p>
@@ -265,7 +265,7 @@ export default function SupportChatWidget() {
                       }`}
                     >
                       <p className="leading-relaxed break-words">{msg.content}</p>
-                      <p className={`text-[10px] mt-1 ${msg.senderType === 'USER' ? 'text-white/70' : 'text-slate-400'}`}>
+                      <p className={`text-10 mt-1 ${msg.senderType === 'USER' ? 'text-white/70' : 'text-slate-400'}`}>
                         {formatDate(msg.createdAt)}
                       </p>
                     </div>

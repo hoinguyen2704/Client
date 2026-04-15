@@ -233,7 +233,7 @@ export default function Profile() {
               {uploadingAvatar && (
                 <div className="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center text-white z-10">
                   <FiLoader className="text-3xl animate-spin mb-1" />
-                  <span className="text-[10px] font-medium">Đang tải...</span>
+                  <span className="text-10 font-medium">Đang tải...</span>
                 </div>
               )}
               <button

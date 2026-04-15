@@ -75,7 +75,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   <div>
                     <p className="font-bold text-md">{user?.name || 'Admin'}</p>
                     <p className="text-sm text-slate-500 dark:text-slate-400">{user?.email || ''}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-bold rounded-md">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</span>
+                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-10 font-bold rounded-md">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</span>
                   </div>
                 </div>
               </div>

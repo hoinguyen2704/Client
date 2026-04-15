@@ -37,14 +37,14 @@ export default function DashboardStats({ stats, onOpenModal }: DashboardStatsPro
           <div key={card.key} onClick={() => onOpenModal(card.key)}
             className={`bg-white dark:bg-slate-900 rounded-2xl p-2.5 sm:p-3 shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer sm:hover:scale-[1.02] transition-all duration-300 h-full flex flex-col justify-between ${c.border}`}>
             <div className="flex justify-between items-start gap-1 mb-1.5 sm:mb-2">
-              <p className="text-slate-500 text-[10px] sm:text-sm font-medium leading-tight line-clamp-2">{card.label}</p>
+              <p className="text-slate-500 text-10 sm:text-sm font-medium leading-tight line-clamp-2">{card.label}</p>
               <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg ${c.bg} ${c.text} flex items-center justify-center shrink-0`}>
                 <Icon className="text-sm sm:text-md" />
               </div>
             </div>
             <div>
               <h3 className="text-md sm:text-base xl:text-lg font-bold mb-0.5 sm:mb-1 leading-tight break-words">{card.value}</h3>
-              {card.sub && <div className="text-[10px] sm:text-sm text-slate-500 hidden sm:block">{card.sub}</div>}
+              {card.sub && <div className="text-10 sm:text-sm text-slate-500 hidden sm:block">{card.sub}</div>}
             </div>
           </div>
         );

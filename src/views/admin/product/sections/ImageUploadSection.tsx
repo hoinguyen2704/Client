@@ -100,7 +100,7 @@ export default memo(function ImageUploadSection(props: Props) {
                 alt={`Pending ${idx + 1}`}
                 className="w-full h-full object-cover"
               />
-              <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-md shadow">
+              <span className="absolute bottom-2 left-2 text-10 font-bold bg-amber-500 text-white px-2 py-0.5 rounded-md shadow">
                 Chưa lưu
               </span>
               <button
@@ -132,7 +132,7 @@ export default memo(function ImageUploadSection(props: Props) {
                 className="w-full h-full object-cover"
               />
               {idx === 0 && pendingFiles.length === 0 && (
-                <span className="absolute top-2 left-2 text-[10px] font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-2 py-0.5 rounded-md shadow">
+                <span className="absolute top-2 left-2 text-10 font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-2 py-0.5 rounded-md shadow">
                   Ảnh chính
                 </span>
               )}

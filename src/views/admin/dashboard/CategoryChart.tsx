@@ -25,8 +25,8 @@ export default function CategoryChart({ stats }: DashboardChildProps) {
             <div className="w-4 h-3 bg-blue-500 rounded-sm" />
             <span className="text-md text-slate-500">Số lượng bán</span>
           </div>
-          <div className="h-72 sm:h-96">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-72 sm:h-96 min-w-0">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
               <BarChart data={chartData} margin={{ top: 30, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} dy={8} />

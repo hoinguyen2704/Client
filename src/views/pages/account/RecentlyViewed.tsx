@@ -41,7 +41,7 @@ export default function RecentlyViewed() {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-300"><FiClock className="text-4xl" /></div>
                     )}
-                    <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-md text-white text-[10px] sm:text-sm px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg flex items-center gap-1">
+                    <div className="absolute top-2 left-2 z-10 bg-black/50 backdrop-blur-md text-white text-10 sm:text-sm px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg flex items-center gap-1">
                       <FiClock /> {formatDate(product.viewedAt)}
                     </div>
                   </div>

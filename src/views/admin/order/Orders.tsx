@@ -74,6 +74,7 @@ export default function AdminOrders() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4 print:hidden">
         <div className="flex-1">
           <AdminSearch
+            boxed={false}
             placeholder="Tìm kiếm theo mã đơn, tên khách hàng..."
             value={searchQuery}
             onChange={(val) => { setSearchQuery(val); setPage(1); }}

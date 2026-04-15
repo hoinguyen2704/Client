@@ -168,7 +168,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
         </div>
 
         {/* Navigation Menu */}
-        <nav className="hidden md:flex items-center gap-8 h-12 text-[15px] font-semibold text-slate-600 dark:text-slate-300">
+        <nav className="hidden md:flex items-center gap-8 h-12 text-15 font-semibold text-slate-600 dark:text-slate-300">
           {navItems.map((item) => (
             <NavLink
               key={item.path}

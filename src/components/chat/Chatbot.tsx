@@ -356,7 +356,7 @@ export default function Chatbot() {
                   <FiSend />
                 </button>
               </div>
-              <p className="text-[10px] text-slate-400 dark:text-slate-600 mt-1.5 text-center">
+              <p className="text-10 text-slate-400 dark:text-slate-600 mt-1.5 text-center">
                 Powered by {botName} + AI
               </p>
             </div>

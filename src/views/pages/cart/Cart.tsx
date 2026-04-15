@@ -140,7 +140,7 @@ export default function Cart() {
                     </Link>
                     <Link to={`/product/${item.productSlug}`} className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-0.5 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group cursor-pointer" title="Nhấn để đổi cấu hình khác">
                       <p className="text-sm sm:text-md font-medium text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 line-clamp-1">{item.variantName}</p>
-                      <span className="text-[10px] font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">Thay đổi</span>
+                      <span className="text-10 font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">Thay đổi</span>
                     </Link>
                     <p className="text-purple-600 font-bold mt-1 text-md sm:text-base">{formatPrice(item.price)}</p>
                     {item.available === false && (
@@ -167,7 +167,7 @@ export default function Cart() {
           {/* Summary */}
           <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-100 dark:border-slate-800 h-fit sticky top-24 sm:top-28 space-y-4 sm:space-y-6 shadow-sm">
             <h2 className="text-lg sm:text-xl font-bold border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">Tóm tắt đơn hàng</h2>
-            <div className="space-y-3 sm:space-y-4 text-md sm:text-[15px]">
+            <div className="space-y-3 sm:space-y-4 text-md sm:text-15">
               <div className="flex justify-between"><span className="text-slate-500">Sản phẩm đã chọn</span><span className="font-medium">{selectedItems.length}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Tạm tính</span><span className="font-medium">{formatPrice(total)}</span></div>
               <hr className="border-slate-100 dark:border-slate-800" />

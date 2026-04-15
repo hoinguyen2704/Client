@@ -231,7 +231,7 @@ export default function Support() {
                     >
                       <p className="leading-relaxed break-words">{msg.content}</p>
                       <p
-                        className={`text-[11px] mt-2 ${
+                        className={`text-11 mt-2 ${
                           msg.senderType === 'USER' ? 'text-white/70' : 'text-slate-400'
                         }`}
                       >

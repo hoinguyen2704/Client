@@ -112,7 +112,7 @@ export default function Wishlist() {
                     className="block relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800"
                   >
                     {discount > 0 && (
-                      <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-10 px-2 sm:px-3 py-0.5 sm:py-1 bg-red-500 text-white text-[10px] sm:text-sm font-black rounded-lg sm:rounded-xl shadow-lg shadow-red-500/30">
+                      <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-10 px-2 sm:px-3 py-0.5 sm:py-1 bg-red-500 text-white text-10 sm:text-sm font-black rounded-lg sm:rounded-xl shadow-lg shadow-red-500/30">
                         -{discount}%
                       </div>
                     )}

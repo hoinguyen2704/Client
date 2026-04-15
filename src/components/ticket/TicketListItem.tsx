@@ -31,7 +31,7 @@ function TicketListItemRaw({ ticket, isSelected, onClick, showUserName }: Ticket
           <p className="text-sm text-slate-400 mt-1">{ticket.messages?.length || 0} tin nhắn</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <StatusBadge status={ticket.status} className="text-[10px]" />
+          <StatusBadge status={ticket.status} className="text-10" />
           <FiChevronRight className="text-slate-400" />
         </div>
       </div>

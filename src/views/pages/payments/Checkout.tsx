@@ -368,7 +368,7 @@ export default function Checkout() {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono font-bold">{voucher.code}</span>
-              <span className={`px-2 py-1 rounded-md text-[10px] font-bold tracking-wide uppercase ${voucherType === 'FREESHIP'
+              <span className={`px-2 py-1 rounded-md text-10 font-bold tracking-wide uppercase ${voucherType === 'FREESHIP'
                 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                 : 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300'
                 }`}>
@@ -490,7 +490,7 @@ export default function Checkout() {
                           <span className="font-bold text-md sm:text-base text-slate-800 dark:text-white">{addr.fullName}</span>
                           <span className="text-slate-300 dark:text-slate-600">|</span> 
                           <span className="font-medium text-md sm:text-base text-slate-600 dark:text-slate-400">{addr.phoneNumber}</span>
-                          {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50 uppercase tracking-wide">Mặc định</span>}
+                          {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-11 font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50 uppercase tracking-wide">Mặc định</span>}
                         </div>
                         <IconButton
                           onClick={() => handleEditAddress(addr)}
@@ -653,7 +653,7 @@ export default function Checkout() {
               )}
             </div>
           )}
-          <div className="space-y-3 sm:space-y-4 text-md sm:text-[15px]">
+          <div className="space-y-3 sm:space-y-4 text-md sm:text-15">
             <div className="flex justify-between"><span className="text-slate-500">Tạm tính</span><span className="font-medium">{formatPrice(subtotal)}</span></div>
             <div className="flex justify-between"><span className="text-slate-500">Phí vận chuyển</span><span className="font-medium">{shippingFee === 0 ? <span className="text-emerald-500 font-bold tracking-wide uppercase text-sm">Miễn phí</span> : formatPrice(shippingFee)}</span></div>
             {productDiscount > 0 && <div className="flex justify-between"><span className="text-slate-500">Giảm giá sản phẩm</span><span className="text-emerald-500 font-bold tracking-wide uppercase text-sm">-{formatPrice(productDiscount)}</span></div>}
@@ -734,7 +734,7 @@ export default function Checkout() {
               <div className="flex items-center gap-2">
                 <FiGift className="text-purple-600" />
                 <h3 className="text-md font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300">Kho voucher</h3>
-                <span className="px-2 py-0.5 text-[11px] rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                <span className="px-2 py-0.5 text-11 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
                   {publicVouchers.length}
                 </span>
               </div>
@@ -764,7 +764,7 @@ export default function Checkout() {
               <div className="flex items-center gap-2">
                 <FiBookmark className="text-purple-600" />
                 <h3 className="text-md font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300">Mã đã lưu</h3>
-                <span className="px-2 py-0.5 text-[11px] rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                <span className="px-2 py-0.5 text-11 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                   {savedVouchers.length}
                 </span>
               </div>

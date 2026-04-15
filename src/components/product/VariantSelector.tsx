@@ -1,42 +1,172 @@
-import { memo } from 'react';
-import { formatPrice } from '@/utils/format';
+import { memo, useMemo } from 'react';
 import type { VariantSelectorProps } from '@/types';
 
-/**
- * Reusable variant-selector chip group.
- * Dynamically splits variants into two groups if both color and storageCapacity exist.
- * Automatically hidden when there is only one variant.
- */
+type AttributeGroup = {
+  id: string;
+  name: string;
+  options: Array<{ id: string; label: string }>;
+};
+
 function VariantSelector({
   variants,
-  pricingMap,
+  variantSchema,
   selectedIndex,
   onSelect,
+  selectedOptions,
+  onSelectOption,
   label = 'Phiên bản',
   className = '',
 }: VariantSelectorProps) {
   if (variants.length <= 1) return null;
-
   const activeVariant = variants[selectedIndex];
   if (!activeVariant) return null;
 
-  // Extract unique colors and capacities using Set to maintain order
-  const uniqueColors = Array.from(new Set(variants.map(v => v.color).filter(Boolean))) as string[];
-  const uniqueCapacities = Array.from(new Set(variants.map(v => v.storageCapacity).filter(Boolean))) as string[];
+  const groups = useMemo<AttributeGroup[]>(() => {
+    type MutableGroup = {
+      id: string;
+      name: string;
+      sortOrder: number;
+      options: Map<string, { label: string; sortOrder: number }>;
+    };
 
-  // If the data doesn't have structured color and capacity, fallback to classic flat list
-  if (uniqueColors.length === 0 && uniqueCapacities.length === 0) {
+    const groupMap = new Map<string, MutableGroup>();
+
+    const ensureGroup = (id: string, name: string, sortOrder: number): MutableGroup => {
+      let group = groupMap.get(id);
+      if (!group) {
+        group = {
+          id,
+          name,
+          sortOrder,
+          options: new Map(),
+        };
+        groupMap.set(id, group);
+      }
+      return group;
+    };
+
+    variants.forEach((variant) => {
+      (variant.selections || variant.attributes || []).forEach((attr, index) => {
+        const group = ensureGroup(
+          attr.variantAttributeId,
+          attr.attributeName || attr.variantAttributeName || `Thuộc tính ${index + 1}`,
+          index,
+        );
+
+        const optionLabel = attr.optionLabel || attr.optionCode || attr.optionId;
+        if (!optionLabel) return;
+
+        if (!group.options.has(attr.optionId)) {
+          group.options.set(attr.optionId, {
+            label: optionLabel,
+            sortOrder: Number.MAX_SAFE_INTEGER,
+          });
+        }
+      });
+    });
+
+    (variantSchema || []).forEach((attribute, index) => {
+      const group = ensureGroup(
+        attribute.id,
+        attribute.name || `Thuộc tính ${index + 1}`,
+        attribute.sortOrder ?? index,
+      );
+
+      group.name = attribute.name || group.name;
+      group.sortOrder = attribute.sortOrder ?? group.sortOrder;
+      const hasVariantOptions = group.options.size > 0;
+
+      (attribute.options || [])
+        .filter((option) => option.active !== false)
+        .forEach((option, optionIndex) => {
+          const existing = group.options.get(option.id);
+          if (existing) {
+            group.options.set(option.id, {
+              label: option.label || existing.label,
+              sortOrder: option.sortOrder ?? existing.sortOrder,
+            });
+            return;
+          }
+
+          if (!hasVariantOptions) {
+            group.options.set(option.id, {
+              label: option.label,
+              sortOrder: option.sortOrder ?? optionIndex,
+            });
+          }
+        });
+    });
+
+    return Array.from(groupMap.values())
+      .sort((a, b) => {
+        if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+        return a.name.localeCompare(b.name);
+      })
+      .map((group) => ({
+        id: group.id,
+        name: group.name,
+        options: Array.from(group.options.entries())
+          .map(([id, option]) => ({
+            id,
+            label: option.label,
+            sortOrder: option.sortOrder,
+          }))
+          .sort((a, b) => {
+            if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+            return a.label.localeCompare(b.label);
+          })
+          .map(({ id, label }) => ({ id, label })),
+      }))
+      .filter((group) => group.options.length > 0);
+  }, [variantSchema, variants]);
+
+  const variantOptionMap = useMemo(() => {
+    const map = new Map<string, Map<string, string>>();
+    variants.forEach((variant) => {
+      map.set(
+        variant.id,
+        new Map(
+          (variant.selections || variant.attributes || []).map((attr) => [
+            attr.variantAttributeId,
+            attr.optionId,
+          ]),
+        ),
+      );
+    });
+    return map;
+  }, [variants]);
+
+  const resolveVariantIndexBySelection = (
+    nextSelection: Record<string, string>,
+  ): number => {
+    const selectedAttrIds = groups
+      .map((group) => group.id)
+      .filter((groupId) => Boolean(nextSelection[groupId]));
+
+    if (selectedAttrIds.length === 0) {
+      return -1;
+    }
+
+    return variants.findIndex((variant) => {
+      const attrs = variantOptionMap.get(variant.id);
+      if (!attrs) return false;
+      return selectedAttrIds.every(
+        (attributeId) => attrs.get(attributeId) === nextSelection[attributeId],
+      );
+    });
+  };
+
+  // Fallback to flat list when schema is not present
+  if (groups.length === 0) {
     return (
       <div className={className}>
         <h3 className="font-bold mb-3">{label}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {variants.map((v, idx) => {
-            const pricing = pricingMap[v.id];
-            const isActive = selectedIndex === idx;
-
+          {variants.map((variant, idx) => {
+            const isActive = idx === selectedIndex;
             return (
               <button
-                key={v.id}
+                key={variant.id}
                 onClick={() => onSelect(idx)}
                 className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-center ${
                   isActive
@@ -44,15 +174,7 @@ function VariantSelector({
                     : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'
                 }`}
               >
-                {v.variantName || v.sku}
-                <span className="block text-sm mt-0.5">
-                  {formatPrice(pricing.salePrice)}
-                </span>
-                {pricing.originPrice > pricing.salePrice && (
-                  <span className="block text-[11px] mt-0.5 text-slate-400 line-through">
-                    {formatPrice(pricing.originPrice)}
-                  </span>
-                )}
+                {variant.displayName || variant.variantName || variant.sku}
               </button>
             );
           })}
@@ -61,108 +183,46 @@ function VariantSelector({
     );
   }
 
-  // Handle cross-dimension selection
-  const handleDimensionChange = (newColor?: string, newCapacity?: string) => {
-    const targetColor = newColor ?? activeVariant.color;
-    const targetCapacity = newCapacity ?? activeVariant.storageCapacity;
-
-    // Try to find the exact match
-    let newIdx = variants.findIndex(v => v.color === targetColor && v.storageCapacity === targetCapacity);
-    
-    if (newIdx === -1) {
-      // Fallback if exact combination doesn't exist: prioritize the dimension that just changed
-      if (newColor) {
-        newIdx = variants.findIndex(v => v.color === newColor);
-      } else if (newCapacity) {
-        newIdx = variants.findIndex(v => v.storageCapacity === newCapacity);
-      }
-    }
-    
-    if (newIdx !== -1) {
-      onSelect(newIdx);
-    }
-  };
-
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Capacity Selector */}
-      {uniqueCapacities.length > 0 && (
-        <div>
-          <h3 className="font-bold mb-3">{uniqueCapacities.length > 1 || uniqueColors.length === 0 ? 'Tuỳ chọn cấu hình / Bộ nhớ' : ''}</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {uniqueCapacities.map(capacity => {
-              const isActive = activeVariant.storageCapacity === capacity;
-              const matchingVariants = variants.filter(v => v.storageCapacity === capacity && v.color === activeVariant.color);
-              const fallbackVariants = variants.filter(v => v.storageCapacity === capacity);
-              const targetVariants = matchingVariants.length > 0 ? matchingVariants : fallbackVariants;
-              
-              const minPricePricing = targetVariants.reduce((min, curr) => {
-                const currPricing = pricingMap[curr.id];
-                return currPricing.salePrice < min.salePrice ? currPricing : min;
-              }, pricingMap[targetVariants[0].id]);
-
-              return (
-                <button
-                  key={capacity}
-                  onClick={() => handleDimensionChange(undefined, capacity)}
-                  className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-center ${
-                    isActive
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'
-                  }`}
-                >
-                  <span className="block font-bold">{capacity}</span>
-                  {minPricePricing && (
-                    <>
-                      <span className="block text-sm mt-0.5">
-                        {formatPrice(minPricePricing.salePrice)}
-                      </span>
-                    </>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Color Selector */}
-      {uniqueColors.length > 0 && (
-        <div>
-          <h3 className="font-bold mb-3">Màu sắc</h3>
+    <div className={`space-y-5 ${className}`}>
+      {groups.map((group) => (
+        <div key={group.id}>
+          <h3 className="font-bold mb-3">{group.name}</h3>
           <div className="flex flex-wrap gap-3">
-            {uniqueColors.map(color => {
-              const isActive = activeVariant.color === color;
-              
-              // If there's no capacity to choose from, show price under color
-              let displayPrice = null;
-              if (uniqueCapacities.length === 0) {
-                 const matchingVariant = variants.find(v => v.color === color);
-                 if (matchingVariant) displayPrice = pricingMap[matchingVariant.id];
-              }
+            {group.options.map((option) => {
+              const isActive = selectedOptions[group.id] === option.id;
+              const nextSelection = {
+                ...selectedOptions,
+                [group.id]: option.id,
+              };
+              const targetVariantIdx = resolveVariantIndexBySelection(nextSelection);
+              const isDisabled = targetVariantIdx === -1;
 
               return (
                 <button
-                  key={color}
-                  onClick={() => handleDimensionChange(color, undefined)}
-                  className={`px-5 py-2.5 rounded-xl border-2 font-medium transition-all text-center min-w-[100px] ${
-                    isActive
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'
+                  key={`${group.id}-${option.id}`}
+                  onClick={() => {
+                    if (targetVariantIdx !== -1) {
+                      onSelectOption(group.id, option.id);
+                      onSelect(targetVariantIdx);
+                    }
+                  }}
+                  disabled={isDisabled}
+                  className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-center min-w-[110px] ${
+                    isDisabled
+                      ? 'border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/30'
+                      : isActive
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400'
+                        : 'border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-600 dark:text-slate-300'
                   }`}
                 >
-                  <span className="block">{color}</span>
-                  {displayPrice && (
-                    <span className="block text-sm mt-0.5">
-                      {formatPrice(displayPrice.salePrice)}
-                    </span>
-                  )}
+                  <span className="block">{option.label}</span>
                 </button>
               );
             })}
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 }

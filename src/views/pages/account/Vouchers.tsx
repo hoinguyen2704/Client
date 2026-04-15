@@ -142,7 +142,7 @@ const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, on
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="font-mono font-bold text-lg tracking-wider">{v.code}</span>
             <button className="p-1 text-slate-400 hover:text-purple-500 transition-colors"><FiCopy className="text-lg" /></button>
-            <span className={`px-2 py-1 rounded-md text-[10px] font-bold tracking-wide uppercase ${getVoucherType(v) === 'FREESHIP'
+            <span className={`px-2 py-1 rounded-md text-10 font-bold tracking-wide uppercase ${getVoucherType(v) === 'FREESHIP'
               ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
               : 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300'
               }`}>
@@ -167,12 +167,12 @@ const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, on
         )}
         {v.applyType === 'SPECIFIC_PRODUCTS' && (
           <span className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 px-2 py-1 rounded-lg">
-            <FiPackage className="text-[10px]" /> {v.applicableProducts?.length || 0} SP
+            <FiPackage className="text-10" /> {v.applicableProducts?.length || 0} SP
           </span>
         )}
         {v.endDate && (
           <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
-            <FiClock className="text-[10px]" />
+            <FiClock className="text-10" />
             {daysLeft(v.endDate) <= 3 ? (
               <span className="text-red-500 font-bold">Còn {daysLeft(v.endDate)} ngày</span>
             ) : (

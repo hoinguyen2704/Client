@@ -22,9 +22,9 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
   const reviews = totalFeedbacks;
 
   // Parse specs
-  let specs: Record<string, string> = {};
-  try { specs = product.specsJson ? JSON.parse(product.specsJson) : {}; } catch { /* ignore */ }
-  const specEntries = Object.entries(specs);
+  const specEntries = useMemo(() => {
+    return (product.specs || []).map((spec) => [spec.name, spec.value] as [string, string]);
+  }, [product.specs]);
 
   // Fetch reviews khi chuyển sang tab đánh giá
   useEffect(() => {
@@ -175,7 +175,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                               <div>
                                 <div className="flex items-center gap-2">
                                   <h4 className="font-bold text-md sm:text-base">{mainFb.userName}</h4>
-                                  {group.length > 1 && <span className="px-1.5 py-0.5 text-[10px] font-medium bg-slate-100 dark:bg-slate-700 text-slate-500 rounded">Lần 1</span>}
+                                  {group.length > 1 && <span className="px-1.5 py-0.5 text-10 font-medium bg-slate-100 dark:bg-slate-700 text-slate-500 rounded">Lần 1</span>}
                                 </div>
                                 <div className="flex items-center gap-2 text-sm sm:text-md text-slate-400 mt-0.5">
                                    <span>{formatDate(mainFb.createdAt)}</span>

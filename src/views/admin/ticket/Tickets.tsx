@@ -173,7 +173,7 @@ export default function Tickets() {
                       msg.senderType === 'ADMIN' ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                     }`}>
                       <p>{msg.content}</p>
-                      <p className={`text-[10px] mt-1 ${msg.senderType === 'ADMIN' ? 'text-purple-200' : 'text-slate-400'}`}>{formatDate(msg.createdAt)}</p>
+                      <p className={`text-10 mt-1 ${msg.senderType === 'ADMIN' ? 'text-purple-200' : 'text-slate-400'}`}>{formatDate(msg.createdAt)}</p>
                     </div>
                   </div>
                 ))}

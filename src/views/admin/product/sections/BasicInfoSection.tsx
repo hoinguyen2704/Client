@@ -1,6 +1,5 @@
 import {
   FiPlus,
-  FiTrash2,
   FiCheckSquare,
   FiSquare,
   FiChevronDown,
@@ -8,7 +7,7 @@ import {
   FiSearch,
   FiLoader,
 } from "react-icons/fi";
-import { ExpandToggle, TrashButton } from "@/components";
+import { ExpandToggle } from "@/components";
 import type { BasicInfoSectionProps } from "./types";
 import { memo, useEffect, useMemo, useState } from "react";
 
@@ -25,8 +24,10 @@ export default memo(function BasicInfoSection(props: Props) {
     description, setDescription,
     categoryId, setCategoryId,
     brandId, setBrandId,
+    productCode, setProductCode,
+    isEditMode,
     specs, setSpecs,
-    categories, setCategories,
+    categories,
     brands,
     showCategoryDropdown, setShowCategoryDropdown,
     showBrandDropdown, setShowBrandDropdown,
@@ -44,6 +45,7 @@ export default memo(function BasicInfoSection(props: Props) {
     savingBrand,
     getTemplateKeys,
     getHintForSpec,
+    getSpecAttributeIdByKey,
     handleCreateCategory,
     handleCreateBrand,
     showBasicInfo = true,
@@ -81,6 +83,23 @@ export default memo(function BasicInfoSection(props: Props) {
             placeholder="Nhập tên sản phẩm..."
             className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
+        </div>
+
+        <div>
+          <label className="block font-medium mb-2">Mã sản phẩm (productCode)</label>
+          <input
+            type="text"
+            value={productCode}
+            onChange={(e) => setProductCode(e.target.value)}
+            placeholder="Để trống để hệ thống tự sinh"
+            readOnly={isEditMode}
+            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-70"
+          />
+          <p className="mt-1 text-sm text-slate-500">
+            {isEditMode
+              ? "ProductCode đã khóa sau khi tạo, muốn đổi cần action riêng."
+              : "Dùng làm prefix ổn định cho SKU, tối đa 12 ký tự."}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -242,7 +261,7 @@ export default memo(function BasicInfoSection(props: Props) {
           </div>
           {/* Brand Dropdown */}
           <div>
-            <label className="block font-medium mb-2">Thương hiệu</label>
+            <label className="block font-medium mb-2">Thương hiệu *</label>
             <div className="relative" ref={brandDropdownRef}>
               <button
                 type="button"
@@ -406,7 +425,7 @@ export default memo(function BasicInfoSection(props: Props) {
         </div>
       )}
 
-      {/* Specs JSON Builder */}
+      {/* Specs Builder */}
       {showSpecs && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
         <div className="flex items-center justify-between mb-4">
@@ -436,111 +455,55 @@ export default memo(function BasicInfoSection(props: Props) {
                           (s) => s.key === templateKey,
                         );
                         return (
-                          <div
+                          <button
                             key={templateKey}
-                            className="flex items-center group"
-                          >
-                            <button
-                              onClick={() => {
-                                if (alreadyAdded) {
-                                  setSpecs(
-                                    specs.filter(
-                                      (s) => s.key !== templateKey,
-                                    ),
-                                  );
-                                } else {
-                                  setSpecs([
-                                    ...specs,
-                                    { key: templateKey, value: "" },
-                                  ]);
-                                }
-                              }}
-                              className={`flex-1 flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
-                                alreadyAdded
-                                  ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
-                                  : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
-                              }`}
-                            >
-                              {alreadyAdded ? (
-                                <FiCheckSquare className="text-purple-500 flex-shrink-0" />
-                              ) : (
-                                <FiSquare className="text-slate-400 flex-shrink-0" />
-                              )}
-                              {templateKey}
-                            </button>
-                            <button
-                              onClick={() => {
-                                setCategories((prev) =>
-                                  prev.map((c) => {
-                                    if (c.id !== categoryId) return c;
-                                    return {
-                                      ...c,
-                                      specTemplates: (
-                                        c.specTemplates || []
-                                      ).filter(
-                                        (t) => t.specKey !== templateKey,
-                                      ),
-                                    };
-                                  }),
+                            onClick={() => {
+                              if (alreadyAdded) {
+                                setSpecs(
+                                  specs.filter(
+                                    (s) => s.key !== templateKey,
+                                  ),
                                 );
-                              }}
-                              className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-red-500 rounded transition-all"
-                              title="Xóa khỏi gợi ý"
-                            >
-                              <FiTrash2 className="text-sm" />
-                            </button>
-                          </div>
+                              } else {
+                                setSpecs([
+                                  ...specs,
+                                  {
+                                    specAttributeId:
+                                      getSpecAttributeIdByKey(templateKey),
+                                    key: templateKey,
+                                    value: "",
+                                  },
+                                ]);
+                              }
+                            }}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
+                              alreadyAdded
+                                ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
+                                : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                            }`}
+                          >
+                            {alreadyAdded ? (
+                              <FiCheckSquare className="text-purple-500 flex-shrink-0" />
+                            ) : (
+                              <FiSquare className="text-slate-400 flex-shrink-0" />
+                            )}
+                            {templateKey}
+                          </button>
                         );
                       })}
                     </div>
-                    {/* Add custom template key */}
-                    <div className="border-t border-slate-100 dark:border-slate-700 pt-2 mt-2 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          placeholder="Thêm thông số gợi ý..."
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              const val = (
-                                e.target as HTMLInputElement
-                              ).value.trim();
-                              if (!val || !categoryId) return;
-                              setCategories((prev) =>
-                                prev.map((c) => {
-                                  if (c.id !== categoryId) return c;
-                                  const existing = c.specTemplates || [];
-                                  if (
-                                    existing.some((t) => t.specKey === val)
-                                  )
-                                    return c;
-                                  return {
-                                    ...c,
-                                    specTemplates: [
-                                      ...existing,
-                                      {
-                                        id: "",
-                                        specKey: val,
-                                        hint: "",
-                                        sortOrder: existing.length,
-                                      },
-                                    ],
-                                  };
-                                }),
-                              );
-                              (e.target as HTMLInputElement).value = "";
-                            }
-                          }}
-                        />
-                      </div>
+                    <div className="border-t border-slate-100 dark:border-slate-700 pt-2 mt-2">
                       <div className="flex justify-between">
                         <button
                           onClick={() => {
                             const newSpecs = [...specs];
                             getTemplateKeys().forEach((k) => {
                               if (!newSpecs.some((s) => s.key === k))
-                                newSpecs.push({ key: k, value: "" });
+                                newSpecs.push({
+                                  specAttributeId: getSpecAttributeIdByKey(k),
+                                  key: k,
+                                  value: "",
+                                });
                             });
                             setSpecs(newSpecs);
                           }}
@@ -569,13 +532,8 @@ export default memo(function BasicInfoSection(props: Props) {
               <input
                 type="text"
                 value={spec.key}
-                onChange={(e) => {
-                  const newSpecs = [...specs];
-                  newSpecs[index].key = e.target.value;
-                  setSpecs(newSpecs);
-                }}
-                placeholder="Tên thông số (VD: Màn hình)"
-                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-md"
+                readOnly
+                className="flex-1 h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-700 border-none outline-none text-md text-slate-600 dark:text-slate-300"
               />
               <input
                 type="text"
@@ -587,14 +545,6 @@ export default memo(function BasicInfoSection(props: Props) {
                 }}
                 placeholder={getHintForSpec(spec.key)}
                 className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-md"
-              />
-              <TrashButton
-                onClick={() => {
-                  const newSpecs = [...specs];
-                  newSpecs.splice(index, 1);
-                  setSpecs(newSpecs);
-                }}
-                title="Xóa thông số này"
               />
             </div>
           ))}
@@ -616,12 +566,6 @@ export default memo(function BasicInfoSection(props: Props) {
           />
         )}
 
-        <button
-          onClick={() => setSpecs([...specs, { key: "", value: "" }])}
-          className="text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 mt-2"
-        >
-          <FiPlus /> Thêm thông số mới
-        </button>
         </div>
       )}
     </div>

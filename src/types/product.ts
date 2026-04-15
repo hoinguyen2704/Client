@@ -1,4 +1,4 @@
-//  Product
+// Product
 export interface ProductResponse {
   id: string;
   name: string;
@@ -8,18 +8,23 @@ export interface ProductResponse {
   brandId?: string;
   brandName?: string;
   category?: CategoryResponse;
+  productCode?: string;
   originPrice: number;
   lowestPrice?: number;
   averageRating?: number;
   totalReviews?: number;
   status: string;
   isFeatured?: boolean;
-  specsJson?: string;
+  specSchema?: ProductSpecSchemaResponse[];
+  specs?: ProductSpecValueResponse[];
+
   outOfStock?: boolean;
   totalSold?: number;
   images?: ProductImageResponse[];
+  variantSchema?: VariantAttributeSchemaResponse[];
   variants: ProductVariantResponse[];
   createdAt: string;
+
   // Optional fields used by ProductCard for varied API shapes (flash sale, search, etc.)
   image?: string;
   price?: number;
@@ -34,17 +39,63 @@ export interface ProductResponse {
   stockQuantity?: number;
 }
 
+export interface ProductSpecValueResponse {
+  specAttributeId: string;
+  name: string;
+  code?: string;
+  specCode?: string;
+  value: string;
+  sortOrder?: number;
+}
+
+export interface ProductSpecSchemaResponse {
+  id: string;
+  name: string;
+  code: string;
+  hint?: string;
+  sortOrder?: number;
+}
+
 export interface ProductVariantResponse {
   id: string;
   sku: string;
+  displayName?: string;
   variantName?: string;
-  color?: string;
-  storageCapacity?: string;
+  variantSignature?: string;
   price: number;
   compareAtPrice?: number;
   stockQuantity: number;
   active?: boolean;
+  selections?: ProductVariantAttributeValueResponse[];
+  attributes?: ProductVariantAttributeValueResponse[];
   images?: ProductImageResponse[];
+}
+
+export interface ProductVariantAttributeValueResponse {
+  variantAttributeId: string;
+  attributeName?: string;
+  attributeCode?: string;
+  variantAttributeName: string;
+  variantAttributeCode: string;
+  optionId: string;
+  optionLabel: string;
+  optionCode: string;
+}
+
+export interface VariantAttributeSchemaResponse {
+  id: string;
+  name: string;
+  code: string;
+  sortOrder?: number;
+  options: VariantOptionResponse[];
+}
+
+export interface VariantOptionResponse {
+  id: string;
+  label: string;
+  code: string;
+  sortOrder?: number;
+  active?: boolean;
 }
 
 export interface ProductImageResponse {
@@ -59,37 +110,41 @@ export interface ProductImageResponse {
 export interface ProductRequest {
   name: string;
   description?: string;
-  brandId?: string;
-  categoryId?: string;
+  brandId: string;
+  categoryId: string;
   originPrice: number;
-  specsJson?: string;
+  productCode?: string;
   status?: string;
   isFeatured?: boolean;
   variants?: ProductVariantRequest[];
+  specs?: ProductSpecRequest[];
   images?: ProductImageRequest[];
+}
+
+export interface ProductSpecRequest {
+  specAttributeId: string;
+  value: string;
 }
 
 export interface ProductVariantRequest {
   id?: string;
-  sku: string;
-  variantName: string;
+  sku?: string;
   price: number;
   compareAtPrice?: number;
   stock?: number;
   active?: boolean;
+  selections: ProductVariantSelectionRequest[];
   images?: ProductImageRequest[];
+}
+
+export interface ProductVariantSelectionRequest {
+  variantAttributeId: string;
+  optionId: string;
 }
 
 export interface ProductImageRequest {
   imageUrl: string;
   isPrimary?: boolean;
-}
-
-export interface SpecTemplateResponse {
-  id: string;
-  specKey: string;
-  hint?: string;
-  sortOrder?: number;
 }
 
 export interface CategoryResponse {
@@ -102,7 +157,18 @@ export interface CategoryResponse {
   productCount?: number;
   createdAt?: string;
   children?: CategoryResponse[];
-  specTemplates?: SpecTemplateResponse[];
+
+  // New schema
+  variantAttributes?: VariantAttributeSchemaResponse[];
+  specAttributes?: CategorySpecAttributeResponse[];
+}
+
+export interface CategorySpecAttributeResponse {
+  id: string;
+  name: string;
+  code: string;
+  hint?: string;
+  sortOrder?: number;
 }
 
 export interface CategoryRequest {
@@ -110,10 +176,36 @@ export interface CategoryRequest {
   parentId?: string;
   description?: string;
   imageUrl?: string;
-  specTemplates?: { specKey: string; hint?: string; sortOrder?: number }[];
+  active?: boolean;
+  variantAttributes?: CategoryVariantAttributeRequest[];
+  specAttributes?: CategorySpecAttributeRequest[];
 }
 
-//  Brand
+export interface CategoryVariantAttributeRequest {
+  attributeId?: string;
+  name: string;
+  code?: string;
+  sortOrder?: number;
+  options: CategoryVariantOptionRequest[];
+}
+
+export interface CategoryVariantOptionRequest {
+  id?: string;
+  label: string;
+  code?: string;
+  sortOrder?: number;
+  active?: boolean;
+}
+
+export interface CategorySpecAttributeRequest {
+  attributeId?: string;
+  name: string;
+  code?: string;
+  hint?: string;
+  sortOrder?: number;
+}
+
+// Brand
 export interface BrandResponse {
   id: string;
   name: string;

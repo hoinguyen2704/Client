@@ -277,7 +277,7 @@ export default function ProductPicker() {
               type="text"
               placeholder="Tìm kiếm theo tên sản phẩm..."
               autoFocus
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-15 font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
@@ -361,7 +361,7 @@ export default function ProductPicker() {
             </div>
           ) : (
             <div className="divide-y divide-slate-200 dark:divide-slate-700">
-              <div className="hidden md:grid grid-cols-[minmax(0,1fr)_140px_140px_170px] gap-0 bg-slate-100 dark:bg-slate-800/60 text-[13px] font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700">
+              <div className="hidden md:grid grid-cols-[minmax(0,1fr)_140px_140px_170px] gap-0 bg-slate-100 dark:bg-slate-800/60 text-13 font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700">
                 <div className="px-4 py-3.5">Sản phẩm</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Đã bán</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Tồn kho</div>

@@ -1,4 +1,9 @@
-import type { ProductResponse, ProductImageResponse, ProductVariantResponse } from './product';
+import type {
+  ProductResponse,
+  ProductImageResponse,
+  ProductVariantResponse,
+  VariantAttributeSchemaResponse,
+} from './product';
 import type { BannerResponse } from './cms';
 import type { ResolvedVariantPricing } from '@/utils/pricing';
 
@@ -23,7 +28,10 @@ export interface VariantFormData {
   uiKey?: string;
   displayOrder?: number;
   sku: string;
+  skuMode?: 'suggested' | 'manual';
   variantName: string;
+  variantSignature?: string;
+  selections: Record<string, string>;
   price: number | "";
   compareAtPrice: number | "";
   stock: number | "";
@@ -33,8 +41,15 @@ export interface VariantFormData {
 }
 
 export interface SpecRow {
+  specAttributeId?: string;
   key: string;
   value: string;
+}
+
+export interface VariantSchemaSelectionProps {
+  variantSchema: VariantAttributeSchemaResponse[];
+  selections: Record<string, string>;
+  onChange: (attributeId: string, optionId: string) => void;
 }
 
 //  Category admin form (from Categories.tsx)
@@ -63,12 +78,18 @@ export interface CompareProduct {
 export interface VariantSelectorProps {
   /** List of product variants to display */
   variants: ProductVariantResponse[];
+  /** Schema returned by product detail for ordered multi-attribute rendering */
+  variantSchema?: VariantAttributeSchemaResponse[];
   /** Pre-computed pricing for each variant, keyed by variant id */
   pricingMap: Record<string, ResolvedVariantPricing>;
-  /** Currently selected variant index */
+  /** Currently selected variant index (fallback sync for gallery and legacy mode) */
   selectedIndex: number;
-  /** Callback fired when a variant is selected */
+  /** Callback fired when a concrete variant is selected */
   onSelect: (index: number) => void;
+  /** Selection state map (attributeId -> optionId) */
+  selectedOptions: Record<string, string>;
+  /** Callback fired when user chooses an option inside an attribute group */
+  onSelectOption: (attributeId: string, optionId: string) => void;
   /** Section label (default: "Phiên bản") */
   label?: string;
   /** Additional class name for the root wrapper */

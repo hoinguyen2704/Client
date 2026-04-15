@@ -21,6 +21,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number | null>(null);
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   const selectedOption = options.find(o => o.value === value) || options[0];
@@ -42,6 +43,14 @@ export default function CustomSelect({ value, options, onChange, className = '',
     setDropdownStyle(style);
   }, [dropdownAlign]);
 
+  const scheduleUpdatePosition = useCallback(() => {
+    if (rafIdRef.current !== null) return;
+    rafIdRef.current = window.requestAnimationFrame(() => {
+      rafIdRef.current = null;
+      updatePosition();
+    });
+  }, [updatePosition]);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -53,12 +62,36 @@ export default function CustomSelect({ value, options, onChange, className = '',
     };
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      updatePosition();
+      scheduleUpdatePosition();
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen, updatePosition]);
+  }, [isOpen, scheduleUpdatePosition]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleViewportChange = () => {
+      scheduleUpdatePosition();
+    };
+
+    window.addEventListener('scroll', handleViewportChange, true);
+    window.addEventListener('resize', handleViewportChange);
+    window.visualViewport?.addEventListener('scroll', handleViewportChange);
+    window.visualViewport?.addEventListener('resize', handleViewportChange);
+
+    return () => {
+      window.removeEventListener('scroll', handleViewportChange, true);
+      window.removeEventListener('resize', handleViewportChange);
+      window.visualViewport?.removeEventListener('scroll', handleViewportChange);
+      window.visualViewport?.removeEventListener('resize', handleViewportChange);
+      if (rafIdRef.current !== null) {
+        window.cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+    };
+  }, [isOpen, scheduleUpdatePosition]);
 
   useEffect(() => {
     if (disabled) {

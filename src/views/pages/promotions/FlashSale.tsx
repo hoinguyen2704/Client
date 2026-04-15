@@ -99,21 +99,21 @@ export default function FlashSale() {
                         </div>
                       )}
                       {discount > 0 && (
-                        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-red-500 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
+                        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-red-500 text-white text-10 sm:text-sm font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
                           -{discount}%
                         </div>
                       )}
                     </div>
                     <div className="p-2.5 sm:p-4">
-                      <h3 className="font-bold line-clamp-2 text-[12px] sm:text-md group-hover:text-red-500 transition-colors h-[34px] sm:h-[40px] mb-1.5 sm:mb-2 leading-snug">
+                      <h3 className="font-bold line-clamp-2 text-12 sm:text-md group-hover:text-red-500 transition-colors h-[34px] sm:h-[40px] mb-1.5 sm:mb-2 leading-snug">
                         {item.productName}
                       </h3>
-                      <div className="text-[10px] sm:text-sm text-slate-500 mb-1.5 sm:mb-2 h-[28px] sm:h-[32px] line-clamp-2">
+                      <div className="text-10 sm:text-sm text-slate-500 mb-1.5 sm:mb-2 h-[28px] sm:h-[32px] line-clamp-2">
                         {item.variantName || ''}
                       </div>
                       <div className="flex items-center gap-1.5 sm:gap-2 mb-2.5 sm:mb-3">
-                        <span className="text-[15px] sm:text-lg font-bold text-red-600">{formatPrice(item.flashPrice)}</span>
-                        <span className="text-[11px] sm:text-md text-slate-400 line-through">{formatPrice(item.originalPrice)}</span>
+                        <span className="text-15 sm:text-lg font-bold text-red-600">{formatPrice(item.flashPrice)}</span>
+                        <span className="text-11 sm:text-md text-slate-400 line-through">{formatPrice(item.originalPrice)}</span>
                       </div>
                       <div className="relative h-1.5 sm:h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-1">
                         <div
@@ -121,7 +121,7 @@ export default function FlashSale() {
                           style={{ width: `${soldPercent}%` }}
                         />
                       </div>
-                      <p className="text-[10px] sm:text-sm text-slate-500">
+                      <p className="text-10 sm:text-sm text-slate-500">
                         {item.remainingStock > 0 ? `Còn ${item.remainingStock} sản phẩm` : 'Đã hết'}
                       </p>
                     </div>
@@ -155,7 +155,7 @@ function SaleCountdown({ endTime }: { endTime: string }) {
       ].map((t, i) => (
         <div key={i} className="bg-white/20 backdrop-blur rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[44px] sm:min-w-[56px]">
           <div className="text-lg sm:text-2xl font-black leading-none">{String(t.val).padStart(2, '0')}</div>
-          <div className="text-[10px] sm:text-sm text-white/70">{t.label}</div>
+          <div className="text-10 sm:text-sm text-white/70">{t.label}</div>
         </div>
       ))}
     </div>

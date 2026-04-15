@@ -13,6 +13,8 @@ export default function ProductForm() {
     description: form.description, setDescription: form.setDescription,
     categoryId: form.categoryId, setCategoryId: form.setCategoryId,
     brandId: form.brandId, setBrandId: form.setBrandId,
+    productCode: form.productCode, setProductCode: form.setProductCode,
+    isEditMode: form.isEditMode,
     specs: form.specs, setSpecs: form.setSpecs,
     categories: form.categories, setCategories: form.setCategories,
     brands: form.brands,
@@ -32,6 +34,7 @@ export default function ProductForm() {
     savingBrand: form.savingBrand,
     getTemplateKeys: form.getTemplateKeys,
     getHintForSpec: form.getHintForSpec,
+    getSpecAttributeIdByKey: form.getSpecAttributeIdByKey,
     handleCreateCategory: form.handleCreateCategory,
     handleCreateBrand: form.handleCreateBrand,
   };
@@ -94,11 +97,15 @@ export default function ProductForm() {
 
           <VariantSection
             variants={form.variants}
+            variantSchema={form.variantSchema}
             uploadingVariantKeys={form.uploadingVariantKeys}
             variantFileInputRefs={form.variantFileInputRefs}
             addVariant={form.addVariant}
+            generateVariantCombinations={form.generateVariantCombinations}
             removeVariant={form.removeVariant}
             updateVariant={form.updateVariant}
+            updateVariantSelection={form.updateVariantSelection}
+            regenerateVariantSku={form.regenerateVariantSku}
             getVariantUiKey={form.getVariantUiKey}
             handleVariantFilesSelected={form.handleVariantFilesSelected}
             removeVariantPendingFile={form.removeVariantPendingFile}

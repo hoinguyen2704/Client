@@ -10,7 +10,11 @@ import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import adminBrandService from "@/apis/services/adminBrandService";
-import type { BrandResponse, CategoryResponse, SpecTemplateRow } from "@/types";
+import type {
+  BrandResponse,
+  CategoryResponse,
+  SpecTemplateRow,
+} from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import useAdminList from "@/hooks/useAdminList";
 import {
@@ -30,6 +34,13 @@ import {
 
 
 export default function Categories() {
+  type VariantAttributeRow = {
+    name: string;
+    code: string;
+    optionsText: string;
+    sortOrder: number;
+  };
+
   const [brandFilter, setBrandFilter] = useState("");
   const [brands, setBrands] = useState<BrandResponse[]>([]);
   const extraParams = useMemo(
@@ -59,6 +70,7 @@ export default function Categories() {
     parentId: "",
   });
   const [specTemplates, setSpecTemplates] = useState<SpecTemplateRow[]>([]);
+  const [variantAttributes, setVariantAttributes] = useState<VariantAttributeRow[]>([]);
   const [saving, setSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
@@ -87,6 +99,7 @@ export default function Categories() {
     setEditId(null);
     setFormData({ name: "", description: "", imageUrl: "", parentId: "" });
     setSpecTemplates([]);
+    setVariantAttributes([]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -95,12 +108,30 @@ export default function Categories() {
     try {
       const payload = {
         ...formData,
-        specTemplates: specTemplates
+        specAttributes: specTemplates
           .filter((t) => t.specKey.trim())
           .map((t, i) => ({
-            specKey: t.specKey.trim(),
+            name: t.specKey.trim(),
+            code: t.specKey.trim(),
             hint: t.hint.trim() || undefined,
             sortOrder: i,
+          })),
+        variantAttributes: variantAttributes
+          .filter((attr) => attr.name.trim())
+          .map((attr, index) => ({
+            name: attr.name.trim(),
+            code: attr.code.trim() || attr.name.trim(),
+            sortOrder: attr.sortOrder ?? index,
+            options: attr.optionsText
+              .split(",")
+              .map((opt, optIndex) => opt.trim())
+              .filter(Boolean)
+              .map((label, optIndex) => ({
+                label,
+                code: label,
+                sortOrder: optIndex,
+                active: true,
+              })),
           })),
       };
       if (editId) {
@@ -129,10 +160,18 @@ export default function Categories() {
       parentId: "",
     });
     setSpecTemplates(
-      (cat.specTemplates || []).map((t, i) => ({
-        specKey: t.specKey,
+      (cat.specAttributes || []).map((t, i) => ({
+        specKey: t.name,
         hint: t.hint || "",
         sortOrder: t.sortOrder ?? i,
+      })),
+    );
+    setVariantAttributes(
+      (cat.variantAttributes || []).map((attr, index) => ({
+        name: attr.name,
+        code: attr.code || "",
+        optionsText: (attr.options || []).map((option) => option.label).join(", "),
+        sortOrder: attr.sortOrder ?? index,
       })),
     );
     setShowForm(true);
@@ -183,6 +222,27 @@ export default function Categories() {
     );
   };
 
+  const addVariantAttributeRow = () => {
+    setVariantAttributes((prev) => [
+      ...prev,
+      { name: "", code: "", optionsText: "", sortOrder: prev.length },
+    ]);
+  };
+
+  const removeVariantAttributeRow = (index: number) => {
+    setVariantAttributes((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateVariantAttributeRow = (
+    index: number,
+    field: keyof VariantAttributeRow,
+    value: string | number,
+  ) => {
+    setVariantAttributes((prev) =>
+      prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)),
+    );
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -201,7 +261,7 @@ export default function Categories() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4 sm:space-y-5">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border-2 border-slate-200 dark:border-slate-700 space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold">
               {editId ? "Sửa danh mục" : "Thêm danh mục mới"}
@@ -229,7 +289,7 @@ export default function Categories() {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 text-md"
                 />
               </div>
               <div>
@@ -243,14 +303,14 @@ export default function Categories() {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
+                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 text-md"
                 />
               </div>
             </div>
 
             {/* Spec Templates Section */}
-            <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
-              <div className="bg-slate-50 dark:bg-slate-800/50 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200 dark:border-slate-700">
+            <div className="border-2 border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <div className="bg-slate-50 dark:bg-slate-800/50 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b-2 border-slate-200 dark:border-slate-700">
                 <div className="flex items-center gap-2 min-w-0">
                   <FiList className="text-purple-500" />
                   <span className="font-medium text-md">
@@ -288,9 +348,9 @@ export default function Categories() {
                   </Button>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                <div className="divide-y-2 divide-slate-200 dark:divide-slate-700">
                   {/* Header */}
-                  <div className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-slate-50/50 dark:bg-slate-800/30">
+                  <div className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-slate-50/50 dark:bg-slate-800/30 border-b-2 border-slate-200 dark:border-slate-700">
                     <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                       Tên thông số
                     </span>
@@ -311,7 +371,7 @@ export default function Categories() {
                           updateSpecRow(index, "specKey", e.target.value)
                         }
                         placeholder="VD: Màn hình, RAM..."
-                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                       />
                       <input
                         type="text"
@@ -320,11 +380,79 @@ export default function Categories() {
                           updateSpecRow(index, "hint", e.target.value)
                         }
                         placeholder="VD: 6.7 inch OLED, 120Hz"
-                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                       />
                       <div className="flex items-center justify-center">
                         <TrashButton onClick={() => removeSpecRow(index)} />
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Variant Schema Section */}
+            <div className="border-2 border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+              <div className="bg-slate-50 dark:bg-slate-800/50 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b-2 border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-2 min-w-0">
+                  <FiList className="text-indigo-500" />
+                  <span className="font-medium text-md">
+                    Thuộc tính biến thể
+                  </span>
+                  <span className="text-sm text-slate-400">
+                    ({variantAttributes.length} thuộc tính)
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  onClick={addVariantAttributeRow}
+                  variant="ghost"
+                  size="sm"
+                  icon={<FiPlus />}
+                  className="text-indigo-600 w-full sm:w-auto"
+                >
+                  Thêm
+                </Button>
+              </div>
+              {variantAttributes.length === 0 ? (
+                <div className="p-6 text-center text-md text-slate-400">
+                  Chưa có thuộc tính biến thể nào
+                </div>
+              ) : (
+                <div className="divide-y-2 divide-slate-200 dark:divide-slate-700">
+                  {variantAttributes.map((row, index) => (
+                    <div
+                      key={`variant-attr-${index}`}
+                      className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_48px] gap-3 px-4 py-3 items-center"
+                    >
+                      <input
+                        type="text"
+                        value={row.name}
+                        onChange={(e) =>
+                          updateVariantAttributeRow(index, "name", e.target.value)
+                        }
+                        placeholder="Tên thuộc tính (VD: Màu)"
+                        className="h-11 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={row.code}
+                        onChange={(e) =>
+                          updateVariantAttributeRow(index, "code", e.target.value)
+                        }
+                        placeholder="Code (VD: COLOR)"
+                        className="h-11 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={row.optionsText}
+                        onChange={(e) =>
+                          updateVariantAttributeRow(index, "optionsText", e.target.value)
+                        }
+                        placeholder="Options, ngăn cách dấu phẩy (VD: Đen, Trắng, Xanh)"
+                        className="h-11 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none"
+                      />
+                      <TrashButton onClick={() => removeVariantAttributeRow(index)} />
                     </div>
                   ))}
                 </div>
@@ -357,9 +485,10 @@ export default function Categories() {
       )}
 
       {/* Search + Filter */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border-2 border-slate-200 dark:border-slate-700 flex flex-col md:flex-row gap-3 sm:gap-4">
         <div className="flex-1">
           <AdminSearch
+            boxed={false}
             placeholder="Tìm kiếm danh mục..."
             value={searchQuery}
             onChange={setSearchQuery}
@@ -377,11 +506,11 @@ export default function Categories() {
       </div>
 
       {/* Categories Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-2 border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[980px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x-2 divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium">Danh mục</th>
                 <th className="p-3 sm:p-4 font-medium">Slug</th>
                 <th className="p-3 sm:p-4 font-medium text-center">Thông số</th>
@@ -395,7 +524,7 @@ export default function Categories() {
                 <TableRowSkeleton rows={5} cols={6} />
               ) : categories.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                  <td colSpan={6} className="p-12 text-center text-slate-400 border-b-2 border-slate-200 dark:border-slate-700">
                     Không có danh mục nào
                   </td>
                 </tr>
@@ -403,7 +532,7 @@ export default function Categories() {
                 categories.map((cat) => (
                   <tr
                     key={cat.id}
-                    className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x divide-slate-200 dark:divide-slate-700"
+                    className="border-b-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x-2 divide-slate-200 dark:divide-slate-700"
                   >
                     <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-3">
@@ -428,10 +557,10 @@ export default function Categories() {
                       {cat.slug}
                     </td>
                     <td className="p-3 sm:p-4 text-center">
-                      {(cat.specTemplates?.length || 0) > 0 ? (
+                      {(cat.specAttributes?.length || 0) > 0 ? (
                         <span className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-full text-md font-bold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 mx-auto">
-                          <FiList className="text-[9px]" />{" "}
-                          {cat.specTemplates!.length}
+                          <FiList className="text-9" />{" "}
+                          {cat.specAttributes!.length}
                         </span>
                       ) : (
                         <span className="text-sm text-slate-300">—</span>

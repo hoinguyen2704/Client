@@ -205,18 +205,18 @@ export default function AdminVouchers() {
                     <td className="p-3 sm:p-4 text-center">
                       {v.isPublic ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                          <FiGlobe className="text-[10px]" /> Công khai
+                          <FiGlobe className="text-10" /> Công khai
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                          <FiLock className="text-[10px]" /> Riêng tư
+                          <FiLock className="text-10" /> Riêng tư
                         </span>
                       )}
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       {v.applyType === "SPECIFIC_PRODUCTS" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                          <FiPackage className="text-[10px]" />{" "}
+                          <FiPackage className="text-10" />{" "}
                           {v.applicableProducts?.length || 0} SP
                         </span>
                       ) : (

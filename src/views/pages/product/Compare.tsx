@@ -18,6 +18,17 @@ import { toast } from "sonner";
 import { Modal } from "@/components";
 import type { CompareProduct } from "@/types";
 
+const toCompareSpecs = (
+  specs: Array<{ name: string; value: string }> | undefined,
+): Record<string, string> => {
+  if (!specs || specs.length === 0) return {};
+  return Object.fromEntries(
+    specs
+      .filter((spec) => spec?.name)
+      .map((spec) => [spec.name, spec.value ?? ""]),
+  );
+};
+
 
 
 export default function Compare() {
@@ -62,17 +73,7 @@ export default function Compare() {
           price: p.variants?.[0]?.price || p.originPrice || 0,
           brand: p.brandName,
           rating: p.averageRating,
-          specs: p.specsJson
-            ? typeof p.specsJson === "string"
-              ? (() => {
-                  try {
-                    return JSON.parse(p.specsJson);
-                  } catch {
-                    return {};
-                  }
-                })()
-              : p.specsJson
-            : {},
+          specs: toCompareSpecs(p.specs),
           categoryId: p.category?.id,
           categoryName: p.category?.name,
           categorySlug: p.category?.slug,
@@ -318,7 +319,7 @@ export default function Compare() {
                             {formatPrice(item.price)}
                           </span>
                           {best && (
-                            <div className="text-[10px] text-green-500 font-bold mt-0.5">
+                            <div className="text-10 text-green-500 font-bold mt-0.5">
                               ✓ Giá tốt nhất
                             </div>
                           )}
@@ -353,7 +354,7 @@ export default function Compare() {
                                 <FiStar className="text-amber-400 fill-amber-400 text-md" />
                               </div>
                               {best && (
-                                <div className="text-[10px] text-amber-500 font-bold mt-0.5">
+                                <div className="text-10 text-amber-500 font-bold mt-0.5">
                                   ✓ Cao nhất
                                 </div>
                               )}
@@ -522,13 +523,13 @@ export default function Compare() {
                         {formatPrice(product.price)}
                       </span>
                       {product.categoryName && (
-                        <span className="text-[11px] text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
+                        <span className="text-11 text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
                           {product.categoryName}
                         </span>
                       )}
                     </div>
                     {isDiffCat && (
-                      <span className="text-[11px] text-red-400">
+                      <span className="text-11 text-red-400">
                         Khác danh mục
                       </span>
                     )}
