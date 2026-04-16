@@ -39,6 +39,7 @@ export interface TopVariantItem {
   productName: string;
   variantName: string;
   totalSold: number;
+  grossSoldQty?: number;
   returnedQty?: number;
   netSoldQty?: number;
   revenue: number;

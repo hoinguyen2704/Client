@@ -8,6 +8,7 @@ import {
   FiTrendingUp,
 } from "react-icons/fi";
 import { CustomSelect, TrashButton } from "@/components";
+import { resolveVariantSalesMetrics } from "@/utils/variantSales";
 import type { VariantSectionProps as Props } from "./types";
 
 export default memo(function VariantSection(props: Props) {
@@ -191,6 +192,7 @@ export default memo(function VariantSection(props: Props) {
         {variants.map((variant, index) => {
           const variantUiKey = getVariantUiKey(variant, index);
           const variantOrder = variant.displayOrder ?? index + 1;
+          const sales = resolveVariantSalesMetrics(variant);
           const isVariantUploading = Boolean(
             uploadingVariantKeys[variantUiKey],
           );
@@ -329,7 +331,7 @@ export default memo(function VariantSection(props: Props) {
                       Gross / Return / Net
                     </p>
                     <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
-                      {(variant.grossSoldQty ?? 0).toLocaleString("vi-VN")} / {(variant.returnedQty ?? 0).toLocaleString("vi-VN")} / {(variant.netSoldQty ?? 0).toLocaleString("vi-VN")}
+                      {sales.gross.toLocaleString("vi-VN")} / {sales.returned.toLocaleString("vi-VN")} / {sales.net.toLocaleString("vi-VN")}
                     </p>
                   </div>
                 </div>

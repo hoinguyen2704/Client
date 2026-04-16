@@ -2,6 +2,7 @@
 export { default as Card } from "./ui/Card";
 export { default as CustomSelect } from "./input/CustomSelect";
 export { default as EmptyState } from "./ui/EmptyState";
+export { default as SectionCard } from "./ui/SectionCard";
 export { default as StatusBadge } from "./ui/StatusBadge";
 export { default as ProductCard } from "./product/ProductCard";
 export { default as VariantSelector } from "./product/VariantSelector";

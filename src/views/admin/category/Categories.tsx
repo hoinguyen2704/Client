@@ -27,20 +27,16 @@ import {
   Pagination,
   ActionButtons,
   ConfirmDialog,
+  FormInput,
+  SectionCard,
   StatusBadge,
   TableRowSkeleton,
 } from "@/components";
-
-
+import CategorySpecTemplatesSection from "./components/CategorySpecTemplatesSection";
+import CategoryVariantAttributesSection from "./components/CategoryVariantAttributesSection";
+import type { VariantAttributeRow } from "./types";
 
 export default function Categories() {
-  type VariantAttributeRow = {
-    name: string;
-    code: string;
-    optionsText: string;
-    sortOrder: number;
-  };
-
   const [brandFilter, setBrandFilter] = useState("");
   const [brands, setBrands] = useState<BrandResponse[]>([]);
   const extraParams = useMemo(
@@ -261,203 +257,53 @@ export default function Categories() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border-2 border-slate-200 dark:border-slate-700 space-y-4 sm:space-y-5">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold">
-              {editId ? "Sửa danh mục" : "Thêm danh mục mới"}
-            </h2>
+        <SectionCard
+          title={editId ? "Sửa danh mục" : "Thêm danh mục mới"}
+          className="border-2 border-slate-200 dark:border-slate-700"
+          action={
             <IconButton
               onClick={resetForm}
               icon={<FiX />}
               variant="neutral"
               title="Đóng"
             />
-          </div>
-
+          }
+        >
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* Basic info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
-                  Tên danh mục *
-                </label>
-                <input
-                  type="text"
-                  placeholder="VD: Điện thoại, Laptop..."
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 text-md"
-                />
-              </div>
-              <div>
-                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
-                  Mô tả
-                </label>
-                <input
-                  type="text"
-                  placeholder="Mô tả ngắn về danh mục..."
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 text-md"
-                />
-              </div>
+              <FormInput
+                label="Tên danh mục *"
+                type="text"
+                placeholder="VD: Điện thoại, Laptop..."
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+                inputClassName="h-11 border-2 border-slate-200 dark:border-slate-700"
+              />
+              <FormInput
+                label="Mô tả"
+                type="text"
+                placeholder="Mô tả ngắn về danh mục..."
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                inputClassName="h-11 border-2 border-slate-200 dark:border-slate-700"
+              />
             </div>
 
-            {/* Spec Templates Section */}
-            <div className="border-2 border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
-              <div className="bg-slate-50 dark:bg-slate-800/50 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b-2 border-slate-200 dark:border-slate-700">
-                <div className="flex items-center gap-2 min-w-0">
-                  <FiList className="text-purple-500" />
-                  <span className="font-medium text-md">
-                    Gợi ý thông số kỹ thuật
-                  </span>
-                  <span className="text-sm text-slate-400">
-                    ({specTemplates.length} thông số)
-                  </span>
-                </div>
-                <Button
-                  type="button"
-                  onClick={addSpecRow}
-                  variant="ghost"
-                  size="sm"
-                  icon={<FiPlus />}
-                  className="text-purple-600 w-full sm:w-auto"
-                >
-                  Thêm
-                </Button>
-              </div>
+            <CategorySpecTemplatesSection
+              rows={specTemplates}
+              onAdd={addSpecRow}
+              onRemove={removeSpecRow}
+              onChange={updateSpecRow}
+            />
 
-              {specTemplates.length === 0 ? (
-                <div className="p-6 text-center">
-                  <p className="text-md text-slate-400 mb-3">
-                    Chưa có thông số gợi ý nào
-                  </p>
-                  <Button
-                    type="button"
-                    onClick={addSpecRow}
-                    variant="ghost"
-                    size="md"
-                    className="text-purple-600"
-                  >
-                    + Thêm thông số đầu tiên
-                  </Button>
-                </div>
-              ) : (
-                <div className="divide-y-2 divide-slate-200 dark:divide-slate-700">
-                  {/* Header */}
-                  <div className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-slate-50/50 dark:bg-slate-800/30 border-b-2 border-slate-200 dark:border-slate-700">
-                    <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-                      Tên thông số
-                    </span>
-                    <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-                      Gợi ý (placeholder)
-                    </span>
-                    <span></span>
-                  </div>
-                  {specTemplates.map((row, index) => (
-                    <div
-                      key={index}
-                      className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 items-center group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
-                    >
-                      <input
-                        type="text"
-                        value={row.specKey}
-                        onChange={(e) =>
-                          updateSpecRow(index, "specKey", e.target.value)
-                        }
-                        placeholder="VD: Màn hình, RAM..."
-                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
-                      />
-                      <input
-                        type="text"
-                        value={row.hint}
-                        onChange={(e) =>
-                          updateSpecRow(index, "hint", e.target.value)
-                        }
-                        placeholder="VD: 6.7 inch OLED, 120Hz"
-                        className="h-13 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
-                      />
-                      <div className="flex items-center justify-center">
-                        <TrashButton onClick={() => removeSpecRow(index)} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Variant Schema Section */}
-            <div className="border-2 border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
-              <div className="bg-slate-50 dark:bg-slate-800/50 px-3 sm:px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b-2 border-slate-200 dark:border-slate-700">
-                <div className="flex items-center gap-2 min-w-0">
-                  <FiList className="text-indigo-500" />
-                  <span className="font-medium text-md">
-                    Thuộc tính biến thể
-                  </span>
-                  <span className="text-sm text-slate-400">
-                    ({variantAttributes.length} thuộc tính)
-                  </span>
-                </div>
-                <Button
-                  type="button"
-                  onClick={addVariantAttributeRow}
-                  variant="ghost"
-                  size="sm"
-                  icon={<FiPlus />}
-                  className="text-indigo-600 w-full sm:w-auto"
-                >
-                  Thêm
-                </Button>
-              </div>
-              {variantAttributes.length === 0 ? (
-                <div className="p-6 text-center text-md text-slate-400">
-                  Chưa có thuộc tính biến thể nào
-                </div>
-              ) : (
-                <div className="divide-y-2 divide-slate-200 dark:divide-slate-700">
-                  {variantAttributes.map((row, index) => (
-                    <div
-                      key={`variant-attr-${index}`}
-                      className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr_48px] gap-3 px-4 py-3 items-center"
-                    >
-                      <input
-                        type="text"
-                        value={row.name}
-                        onChange={(e) =>
-                          updateVariantAttributeRow(index, "name", e.target.value)
-                        }
-                        placeholder="Tên thuộc tính (VD: Màu)"
-                        className="h-11 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none"
-                      />
-                      <input
-                        type="text"
-                        value={row.code}
-                        onChange={(e) =>
-                          updateVariantAttributeRow(index, "code", e.target.value)
-                        }
-                        placeholder="Code (VD: COLOR)"
-                        className="h-11 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none"
-                      />
-                      <input
-                        type="text"
-                        value={row.optionsText}
-                        onChange={(e) =>
-                          updateVariantAttributeRow(index, "optionsText", e.target.value)
-                        }
-                        placeholder="Options, ngăn cách dấu phẩy (VD: Đen, Trắng, Xanh)"
-                        className="h-11 px-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none"
-                      />
-                      <TrashButton onClick={() => removeVariantAttributeRow(index)} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <CategoryVariantAttributesSection
+              rows={variantAttributes}
+              onAdd={addVariantAttributeRow}
+              onRemove={removeVariantAttributeRow}
+              onChange={updateVariantAttributeRow}
+            />
 
             {/* Actions */}
             <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 justify-end">
@@ -481,7 +327,7 @@ export default function Categories() {
               </Button>
             </div>
           </form>
-        </div>
+        </SectionCard>
       )}
 
       {/* Search + Filter */}

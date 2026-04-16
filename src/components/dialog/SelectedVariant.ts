@@ -5,4 +5,8 @@ export interface SelectedVariant {
   variantName: string;
   originalPrice: number;
   imageUrl: string;
+  grossSoldQty?: number;
+  returnedQty?: number;
+  netSoldQty?: number;
+  stockQuantity?: number;
 }

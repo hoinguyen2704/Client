@@ -18,9 +18,10 @@ import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import chatbotService from "@/apis/services/chatbotService";
 import type { ChatbotConfig } from "@/apis/services/chatbotService";
+import { ConfirmDialog, CustomSelect, FormInput, FormTextarea, SectionCard } from "@/components";
+import ChatbotOverviewStatCard from "./components/ChatbotOverviewStatCard";
 
 type EditableSection = "shopInfo" | "bot" | "ai";
-import { CustomSelect, ConfirmDialog } from "@/components";
 
 /*  Model options cho dropdown  */
 const MODEL_OPTIONS = [
@@ -220,102 +221,55 @@ export default function Chatbot() {
           {/*  Cột trái: 2/3  */}
           <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             {/* Card: Thông tin cửa hàng */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold mb-1">🏪 Thông tin cửa hàng</h2>
-              <p className="text-sm text-slate-500 mb-5">
-                Thông tin này được nhúng vào System Prompt để bot giới thiệu cho
-                khách.
-              </p>
-
+            <SectionCard
+              title="🏪 Thông tin cửa hàng"
+              description="Thông tin này được nhúng vào System Prompt để bot giới thiệu cho khách."
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-md font-medium mb-1.5">
-                    Tên cửa hàng
-                  </label>
-                  <input
-                    type="text"
-                    value={config.shopInfo?.name || ""}
-                    onChange={(e) =>
-                      updateField("shopInfo", "name", e.target.value)
-                    }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
-                  />
-                </div>
-                <div>
-                  <label className="block text-md font-medium mb-1.5">
-                    Slogan
-                  </label>
-                  <input
-                    type="text"
-                    value={config.shopInfo?.slogan || ""}
-                    onChange={(e) =>
-                      updateField("shopInfo", "slogan", e.target.value)
-                    }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
-                  />
-                </div>
-                <div>
-                  <label className="block text-md font-medium mb-1.5">
-                    Địa chỉ
-                  </label>
-                  <input
-                    type="text"
-                    value={config.shopInfo?.address || ""}
-                    onChange={(e) =>
-                      updateField("shopInfo", "address", e.target.value)
-                    }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
-                  />
-                </div>
-                <div>
-                  <label className="block text-md font-medium mb-1.5">
-                    Hotline
-                  </label>
-                  <input
-                    type="text"
-                    value={config.shopInfo?.hotline || ""}
-                    onChange={(e) =>
-                      updateField("shopInfo", "hotline", e.target.value)
-                    }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
-                  />
-                </div>
-                <div>
-                  <label className="block text-md font-medium mb-1.5">
-                    Email hỗ trợ
-                  </label>
-                  <input
-                    type="text"
-                    value={config.shopInfo?.email || ""}
-                    onChange={(e) =>
-                      updateField("shopInfo", "email", e.target.value)
-                    }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
-                  />
-                </div>
-                <div>
-                  <label className="block text-md font-medium mb-1.5">
-                    Website
-                  </label>
-                  <input
-                    type="text"
-                    value={config.shopInfo?.website || ""}
-                    onChange={(e) =>
-                      updateField("shopInfo", "website", e.target.value)
-                    }
-                    className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
-                  />
-                </div>
+                <FormInput
+                  label="Tên cửa hàng"
+                  value={config.shopInfo?.name || ""}
+                  onChange={(e) => updateField("shopInfo", "name", e.target.value)}
+                  inputClassName="h-11"
+                />
+                <FormInput
+                  label="Slogan"
+                  value={config.shopInfo?.slogan || ""}
+                  onChange={(e) => updateField("shopInfo", "slogan", e.target.value)}
+                  inputClassName="h-11"
+                />
+                <FormInput
+                  label="Địa chỉ"
+                  value={config.shopInfo?.address || ""}
+                  onChange={(e) => updateField("shopInfo", "address", e.target.value)}
+                  inputClassName="h-11"
+                />
+                <FormInput
+                  label="Hotline"
+                  value={config.shopInfo?.hotline || ""}
+                  onChange={(e) => updateField("shopInfo", "hotline", e.target.value)}
+                  inputClassName="h-11"
+                />
+                <FormInput
+                  label="Email hỗ trợ"
+                  value={config.shopInfo?.email || ""}
+                  onChange={(e) => updateField("shopInfo", "email", e.target.value)}
+                  inputClassName="h-11"
+                />
+                <FormInput
+                  label="Website"
+                  value={config.shopInfo?.website || ""}
+                  onChange={(e) => updateField("shopInfo", "website", e.target.value)}
+                  inputClassName="h-11"
+                />
               </div>
-            </div>
+            </SectionCard>
 
             {/* Card: Cấu hình AI */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold mb-1">🧠 Cấu hình AI</h2>
-              <p className="text-sm text-slate-500 mb-5">
-                Điều chỉnh model, nhiệt độ sáng tạo, và quy tắc hành vi bot.
-              </p>
-
+            <SectionCard
+              title="🧠 Cấu hình AI"
+              description="Điều chỉnh model, nhiệt độ sáng tạo, và quy tắc hành vi bot."
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-md font-medium mb-1.5">
@@ -358,16 +312,14 @@ export default function Chatbot() {
               </div>
 
               <div>
-                <label className="block text-md font-medium mb-1.5">
-                  System Prompt (Quy tắc hành vi)
-                </label>
-                <textarea
+                <FormTextarea
+                  label="System Prompt (Quy tắc hành vi)"
                   value={config.ai?.systemRules || ""}
                   onChange={(e) =>
                     updateField("ai", "systemRules", e.target.value)
                   }
                   rows={8}
-                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md resize-y font-mono leading-relaxed"
+                  inputClassName="resize-y font-mono leading-relaxed"
                   placeholder="Nhập các quy tắc cho chatbot..."
                 />
                 <p className="text-sm text-slate-500 mt-1.5">
@@ -383,10 +335,8 @@ export default function Chatbot() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-md font-medium mb-1.5">
-                      Số sản phẩm tối đa / lần trả lời
-                    </label>
-                    <input
+                    <FormInput
+                      label="Số sản phẩm tối đa / lần trả lời"
                       type="number"
                       min={1}
                       max={20}
@@ -401,7 +351,7 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                      inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 3. Giới hạn sản phẩm hiển thị trong mỗi câu trả
@@ -409,10 +359,8 @@ export default function Chatbot() {
                     </p>
                   </div>
                   <div>
-                    <label className="block text-md font-medium mb-1.5">
-                      Số lần retry khi AI lỗi
-                    </label>
-                    <input
+                    <FormInput
+                      label="Số lần retry khi AI lỗi"
                       type="number"
                       min={0}
                       max={5}
@@ -427,17 +375,15 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                      inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 1. Số lần thử lại khi Gemini API timeout/lỗi.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-md font-medium mb-1.5">
-                      Timeout AI phân tích (ms)
-                    </label>
-                    <input
+                    <FormInput
+                      label="Timeout AI phân tích (ms)"
                       type="number"
                       min={5000}
                       max={60000}
@@ -453,17 +399,15 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                      inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 25000ms. Thời gian chờ AI phân tích câu hỏi.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-md font-medium mb-1.5">
-                      Timeout truy vấn DB (ms)
-                    </label>
-                    <input
+                    <FormInput
+                      label="Timeout truy vấn DB (ms)"
                       type="number"
                       min={1000}
                       max={30000}
@@ -479,7 +423,7 @@ export default function Chatbot() {
                           ),
                         )
                       }
-                      className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                      inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
                       Mặc định: 6000ms. Thời gian chờ truy vấn database.
@@ -487,16 +431,15 @@ export default function Chatbot() {
                   </div>
                 </div>
               </div>
-            </div>
+            </SectionCard>
           </div>
 
           {/*  Cột phải: 1/3  */}
           <div className="space-y-4 sm:space-y-6">
             {/* Card: Bật/Tắt chatbot */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+            <SectionCard title="Trạng thái Chatbot">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold">Trạng thái Chatbot</h2>
                   <p className="text-sm text-slate-500 mt-1">
                     {config.isEnabled
                       ? "Chatbot đang hoạt động trên trang khách hàng"
@@ -511,35 +454,27 @@ export default function Chatbot() {
                   {config.isEnabled ? <FiToggleRight /> : <FiToggleLeft />}
                 </button>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Card: Giao diện Widget */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
-              <h2 className="text-lg font-bold">🎨 Giao diện Widget</h2>
-
+            <SectionCard title="🎨 Giao diện Widget" contentClassName="space-y-4">
               <div>
-                <label className="block text-md font-medium mb-1.5">
-                  Tên Bot
-                </label>
-                <input
-                  type="text"
+                <FormInput
+                  label="Tên Bot"
                   value={config.bot?.name || ""}
                   onChange={(e) => updateField("bot", "name", e.target.value)}
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                  inputClassName="h-11"
                 />
               </div>
 
               <div>
-                <label className="block text-md font-medium mb-1.5">
-                  Subtitle
-                </label>
-                <input
-                  type="text"
+                <FormInput
+                  label="Subtitle"
                   value={config.bot?.subtitle || ""}
                   onChange={(e) =>
                     updateField("bot", "subtitle", e.target.value)
                   }
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                  inputClassName="h-11"
                 />
               </div>
 
@@ -594,34 +529,30 @@ export default function Chatbot() {
                   />
                 </div>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Card: Tin nhắn chào mừng */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
-              <h2 className="text-lg font-bold">💬 Tin nhắn chào mừng</h2>
-              <textarea
+            <SectionCard title="💬 Tin nhắn chào mừng" contentClassName="space-y-4">
+              <FormTextarea
                 value={config.bot?.welcomeMessage || ""}
                 onChange={(e) =>
                   updateField("bot", "welcomeMessage", e.target.value)
                 }
                 rows={5}
-                className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md resize-y"
+                inputClassName="resize-y"
                 placeholder="Tin nhắn chào khách khi mở chatbot..."
               />
               <p className="text-sm text-slate-500">
                 Hỗ trợ Markdown: **bold**, *italic*, - danh sách
               </p>
-            </div>
+            </SectionCard>
 
             {/* Card: Gợi ý nhanh */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
-              <h2 className="text-lg font-bold">
-                ⚡ Gợi ý nhanh (Quick Suggestions)
-              </h2>
-              <p className="text-sm text-slate-500">
-                Các chip gợi ý hiển thị dưới tin nhắn chào.
-              </p>
-
+            <SectionCard
+              title="⚡ Gợi ý nhanh (Quick Suggestions)"
+              description="Các chip gợi ý hiển thị dưới tin nhắn chào."
+              contentClassName="space-y-3"
+            >
               <div className="space-y-2">
                 {config.suggestions?.map((s, idx) => (
                   <div key={idx} className="flex items-center gap-2">
@@ -662,7 +593,7 @@ export default function Chatbot() {
                   <FiPlus /> Thêm
                 </button>
               </div>
-            </div>
+            </SectionCard>
           </div>
         </div>
       )}
@@ -670,97 +601,50 @@ export default function Chatbot() {
       {/*  TAB: TỔNG QUAN  */}
       {activeTab === "overview" && (
         <div className="space-y-4 sm:space-y-6">
-          {/* Stats Cards - placeholder */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-slate-500 text-md font-medium mb-1">
-                    Trạng thái
-                  </p>
-                  <h3 className="text-xl font-bold">
-                    {config.isEnabled ? (
-                      <span className="text-green-500 flex items-center gap-2">
-                        <FiCheckCircle /> Đang hoạt động
-                      </span>
-                    ) : (
-                      <span className="text-red-500">Đã tắt</span>
-                    )}
-                  </h3>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
-                  <FiMessageCircle />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-slate-500 text-md font-medium mb-1">
-                    Model AI
-                  </p>
-                  <h3 className="text-lg font-bold">
-                    {config.ai?.model || "N/A"}
-                  </h3>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
-                  <FiCpu />
-                </div>
-              </div>
-              <div className="text-md text-slate-500">
-                Temperature: {config.ai?.temperature ?? "N/A"}
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-slate-500 text-md font-medium mb-1">
-                    Cửa hàng
-                  </p>
-                  <h3 className="text-lg font-bold">
-                    {config.shopInfo?.name || "N/A"}
-                  </h3>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl">
-                  <FiCheckCircle />
-                </div>
-              </div>
-              <div className="text-md text-slate-500">
-                Hotline: {config.shopInfo?.hotline || "N/A"}
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-slate-500 text-md font-medium mb-1">
-                    Gợi ý nhanh
-                  </p>
-                  <h3 className="text-2xl font-bold">
-                    {config.suggestions?.length ?? 0}
-                  </h3>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
-                  <FiClock />
-                </div>
-              </div>
-              <div className="text-md text-slate-500">
-                suggestions đang hoạt động
-              </div>
-            </div>
+            <ChatbotOverviewStatCard
+              label="Trạng thái"
+              value={
+                config.isEnabled ? (
+                  <span className="flex items-center gap-2 text-green-500">
+                    <FiCheckCircle /> Đang hoạt động
+                  </span>
+                ) : (
+                  <span className="text-red-500">Đã tắt</span>
+                )
+              }
+              icon={<FiMessageCircle />}
+              iconClassName="bg-blue-100 text-blue-600"
+            />
+            <ChatbotOverviewStatCard
+              label="Model AI"
+              value={config.ai?.model || "N/A"}
+              description={`Temperature: ${config.ai?.temperature ?? "N/A"}`}
+              icon={<FiCpu />}
+              iconClassName="bg-purple-100 text-purple-600"
+            />
+            <ChatbotOverviewStatCard
+              label="Cửa hàng"
+              value={config.shopInfo?.name || "N/A"}
+              description={`Hotline: ${config.shopInfo?.hotline || "N/A"}`}
+              icon={<FiCheckCircle />}
+              iconClassName="bg-green-100 text-green-600"
+            />
+            <ChatbotOverviewStatCard
+              label="Gợi ý nhanh"
+              value={<span className="text-2xl font-bold">{config.suggestions?.length ?? 0}</span>}
+              description="suggestions đang hoạt động"
+              icon={<FiClock />}
+              iconClassName="bg-orange-100 text-orange-600"
+            />
           </div>
 
           {/* Current config summary */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">
-              📋 Cấu hình hiện tại (JSON)
-            </h2>
+          <SectionCard title="📋 Cấu hình hiện tại (JSON)">
             <pre className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-sm font-mono overflow-x-auto max-h-96 overflow-y-auto">
               {JSON.stringify(config, null, 2)}
             </pre>
-          </div>
+          </SectionCard>
         </div>
       )}
       <ConfirmDialog

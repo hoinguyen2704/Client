@@ -24,6 +24,7 @@ import type {
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
+import { resolveVariantSalesMetrics } from "@/utils/variantSales";
 
 const createVariantUiKey = () =>
   `variant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -482,6 +483,7 @@ export default function useProductForm() {
           const selections = Object.fromEntries(
             getVariantSelectionRows(variant).map((attr) => [attr.variantAttributeId, attr.optionId]),
           );
+          const sales = resolveVariantSalesMetrics(variant);
 
           return {
             id: variant.id,
@@ -496,9 +498,9 @@ export default function useProductForm() {
             price: variant.price ?? "",
             compareAtPrice: variant.compareAtPrice ?? "",
             stock: variant.stockQuantity ?? "",
-            grossSoldQty: variant.grossSoldQty ?? 0,
-            returnedQty: variant.returnedQty ?? 0,
-            netSoldQty: variant.netSoldQty ?? Math.max((variant.grossSoldQty ?? 0) - (variant.returnedQty ?? 0), 0),
+            grossSoldQty: sales.gross,
+            returnedQty: sales.returned,
+            netSoldQty: sales.net,
             active: variant.active ?? true,
             images: (variant.images || []).map((img: ProductImageResponse) => ({
               id: img.id,
@@ -650,8 +652,8 @@ export default function useProductForm() {
     setVariants((prev) =>
       [...prev]
         .sort((a, b) => {
-          const aScore = a.netSoldQty ?? a.grossSoldQty ?? 0;
-          const bScore = b.netSoldQty ?? b.grossSoldQty ?? 0;
+          const aScore = resolveVariantSalesMetrics(a).net;
+          const bScore = resolveVariantSalesMetrics(b).net;
           return bScore - aScore;
         })
         .map((variant, index) => ({

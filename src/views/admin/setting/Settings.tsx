@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiCheck, FiLoader } from 'react-icons/fi';
-import { Button, CustomSelect, Modal, ModalCancelButton, FormInput, SwitchToggle } from '@/components';
+import { Button, CustomSelect, FormInput, Modal, ModalCancelButton, SectionCard, SwitchToggle } from '@/components';
 import { toast } from 'sonner';
 import adminSettingService from '@/apis/services/adminSettingService';
 import type { SettingResponse } from '@/types';
@@ -122,14 +122,15 @@ export default function Settings() {
         {/* Cột Trái */}
         <div className="space-y-4 sm:space-y-6">
           {/* General Config */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
+          <SectionCard
+            title="Cấu hình chung"
+            icon={
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-xl text-blue-600">
                 <FiSettings />
               </div>
-              <h2 className="text-lg font-bold">Cấu hình chung</h2>
-            </div>
-
+            }
+            headerSeparated
+          >
             <div className="space-y-4">
               <FormInput label="Tên cửa hàng" type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -183,17 +184,17 @@ export default function Settings() {
               <FormInput label="Hotline" type="text" value={val('HOTLINE')} onChange={(e) => set('HOTLINE', e.target.value)} />
               <FormInput label="Địa chỉ" type="text" value={val('SHOP_ADDRESS')} onChange={(e) => set('SHOP_ADDRESS', e.target.value)} />
             </div>
-          </div>
+          </SectionCard>
 
           {/* AI Dashboard */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
-                  <FiCpu />
-                </div>
-                <h2 className="text-lg font-bold">AI Dashboard (ML Ops)</h2>
+          <SectionCard
+            title="AI Dashboard (ML Ops)"
+            icon={
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-xl text-indigo-600">
+                <FiCpu />
               </div>
+            }
+            action={
               <Button
                 onClick={() => {
                   if (!AI_FEATURES_UNDER_DEVELOPMENT) setIsAiModalOpen(true);
@@ -205,8 +206,9 @@ export default function Settings() {
               >
                 {AI_FEATURES_UNDER_DEVELOPMENT ? 'Đang phát triển' : 'Cấu hình thuật toán'}
               </Button>
-            </div>
-
+            }
+            headerSeparated
+          >
             <div className="relative">
               {/* The Overlay */}
               {AI_FEATURES_UNDER_DEVELOPMENT && (
@@ -253,20 +255,21 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-          </div>
+          </SectionCard>
         </div>
 
         {/* Cột Phải */}
         <div className="space-y-4 sm:space-y-6">
           {/* Payment Config */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-              <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
+          <SectionCard
+            title="Cấu hình Thanh toán"
+            icon={
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-xl text-purple-600">
                 <FiCreditCard />
               </div>
-              <h2 className="text-lg font-bold">Cấu hình Thanh toán</h2>
-            </div>
-
+            }
+            headerSeparated
+          >
             <div className="space-y-4">
               {[
                 { key: 'COD_ENABLED', title: 'Thanh toán khi nhận hàng (COD)', desc: 'Cho phép khách hàng thanh toán tiền mặt' },
@@ -283,17 +286,18 @@ export default function Settings() {
                 </div>
               ))}
             </div>
-          </div>
+          </SectionCard>
 
           {/* Shipping Config */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
-            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">
-              <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
+          <SectionCard
+            title="Cấu hình Vận chuyển"
+            icon={
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 text-xl text-orange-600">
                 <FiTruck />
               </div>
-              <h2 className="text-lg font-bold">Cấu hình Vận chuyển</h2>
-            </div>
-
+            }
+            headerSeparated
+          >
             <div className="space-y-4">
               <FormInput label="Phí ship mặc định (VNĐ)" type="number" value={val('DEFAULT_SHIPPING_FEE', '30000')} onChange={(e) => set('DEFAULT_SHIPPING_FEE', e.target.value)} />
               <div className="space-y-2">
@@ -301,7 +305,7 @@ export default function Settings() {
                 <p className="text-sm text-slate-500">Đơn hàng có giá trị lớn hơn hoặc bằng ngưỡng này sẽ được miễn phí vận chuyển.</p>
               </div>
             </div>
-          </div>
+          </SectionCard>
         </div>
       </div>
 

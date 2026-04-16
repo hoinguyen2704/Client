@@ -23,6 +23,10 @@ export interface FlashSaleItemResponse {
   flashStock: number;
   soldCount: number;
   remainingStock: number;
+  grossSoldQty?: number;
+  returnedQty?: number;
+  netSoldQty?: number;
+  stockQuantity?: number;
 }
 
 //  FlashSale Request (from adminFlashSaleService.ts)
@@ -47,4 +51,8 @@ export interface FlashSaleItemForm extends FlashSaleItemRequest {
   variantName: string;
   originalPrice: number;
   imageUrl: string;
+  grossSoldQty?: number;
+  returnedQty?: number;
+  netSoldQty?: number;
+  stockQuantity?: number;
 }

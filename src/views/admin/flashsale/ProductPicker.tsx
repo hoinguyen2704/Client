@@ -1,15 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FiSearch, FiCheck, FiChevronRight, FiChevronDown, FiArrowLeft, FiPackage, FiFilter } from 'react-icons/fi';
+import { FiCheck, FiArrowLeft, FiPackage, FiFilter } from 'react-icons/fi';
 import adminProductService from '@/apis/services/adminProductService';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import adminBrandService from '@/apis/services/adminBrandService';
 import type { ProductResponse, ProductVariantResponse, CategoryResponse, BrandResponse } from '@/types';
-import { PrimaryButton, Button, CustomSelect, Pagination } from '@/components';
+import { PrimaryButton, Button, CustomSelect, Pagination, AdminSearch } from '@/components';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { formatPrice } from '@/utils/format';
 import { useDebounce } from '@/hooks/useDebounce';
 import type { SelectedVariant } from '@/components/dialog/SelectedVariant';
+import { resolveVariantSalesMetrics } from '@/utils/variantSales';
+import ProductPickerProductRow from './components/ProductPickerProductRow';
 
 // Key used to pass selected variants back through location.state
 export const PICKER_RESULT_KEY = 'pickerSelectedVariants';
@@ -38,10 +39,31 @@ export default function ProductPicker() {
   const [selectedMap, setSelectedMap] = useState<Record<string, SelectedVariant>>({});
   const [expandedProducts, setExpandedProducts] = useState<Record<string, boolean>>({});
   const [currentPage, setCurrentPage] = useState(1);
+  const initialSelectedIdSet = useMemo(() => new Set(initialSelectedIds), [initialSelectedIds]);
 
   const getTotalStock = useCallback((product: ProductResponse) => {
     return (product.variants || []).reduce((sum, variant) => sum + (variant.stockQuantity || 0), 0);
   }, []);
+
+  const createSelectedVariant = useCallback(
+    (product: ProductResponse, variant: ProductVariantResponse): SelectedVariant => {
+      const sales = resolveVariantSalesMetrics(variant);
+
+      return {
+        variantId: variant.id,
+        productId: product.id,
+        productName: product.name,
+        variantName: variant.variantName || 'Mặc định',
+        originalPrice: variant.price,
+        imageUrl: variant.images?.[0]?.imageUrl || product.mainImageUrl || '',
+        grossSoldQty: sales.gross,
+        returnedQty: sales.returned,
+        netSoldQty: sales.net,
+        stockQuantity: variant.stockQuantity ?? 0,
+      };
+    },
+    [],
+  );
 
   const fetchProducts = useCallback(async (search: string, selectedCategoryId: string, selectedBrandId: string) => {
     setLoading(true);
@@ -177,14 +199,7 @@ export default function ProductPicker() {
       if (next[variant.id]) {
         delete next[variant.id];
       } else {
-        next[variant.id] = {
-          variantId: variant.id,
-          productId: product.id,
-          productName: product.name,
-          variantName: variant.variantName || 'Mặc định',
-          originalPrice: variant.price,
-          imageUrl: variant.images?.[0]?.imageUrl || product.mainImageUrl || '',
-        };
+        next[variant.id] = createSelectedVariant(product, variant);
       }
       return next;
     });
@@ -192,29 +207,22 @@ export default function ProductPicker() {
 
   const handleSelectAllVariants = (product: ProductResponse) => {
     const variants = product.variants || [];
-    const allNewSelected = variants.every(v => selectedMap[v.id] || initialSelectedIds.includes(v.id));
+    const allNewSelected = variants.every(v => selectedMap[v.id] || initialSelectedIdSet.has(v.id));
 
     setSelectedMap(prev => {
       const next = { ...prev };
       if (allNewSelected) {
         // Deselect all non-initial variants
         variants.forEach(v => {
-          if (!initialSelectedIds.includes(v.id)) {
+          if (!initialSelectedIdSet.has(v.id)) {
             delete next[v.id];
           }
         });
       } else {
         // Select all non-initial variants
         variants.forEach(v => {
-          if (!initialSelectedIds.includes(v.id) && !next[v.id]) {
-            next[v.id] = {
-              variantId: v.id,
-              productId: product.id,
-              productName: product.name,
-              variantName: v.variantName || 'Mặc định',
-              originalPrice: v.price,
-              imageUrl: v.images?.[0]?.imageUrl || product.mainImageUrl || '',
-            };
+          if (!initialSelectedIdSet.has(v.id) && !next[v.id]) {
+            next[v.id] = createSelectedVariant(product, v);
           }
         });
       }
@@ -271,24 +279,16 @@ export default function ProductPicker() {
 
         {/* Search + Filters */}
         <div className="mt-4 space-y-3">
-          <div className="relative max-w-2xl">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input
-              type="text"
+          <div className="max-w-2xl">
+            <AdminSearch
+              boxed={false}
               placeholder="Tìm kiếm theo tên sản phẩm..."
-              autoFocus
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-15 font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={setKeyword}
+              autoFocus
+              clearable
+              inputClassName="border border-slate-300 dark:border-slate-700 text-15 font-medium focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
             />
-            {keyword && (
-              <button
-                onClick={() => setKeyword('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm"
-              >
-                Xóa
-              </button>
-            )}
           </div>
           <div className="flex flex-col lg:flex-row gap-2 lg:items-center">
             <div className="inline-flex items-center gap-2 text-sm text-slate-500 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
@@ -363,196 +363,28 @@ export default function ProductPicker() {
             <div className="divide-y divide-slate-200 dark:divide-slate-700">
               <div className="hidden md:grid grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 bg-slate-100 dark:bg-slate-800/60 text-13 font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700">
                 <div className="px-4 py-3.5">Sản phẩm</div>
-                <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Đã bán (Net)</div>
+                <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Đã bán (Gross)</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Tồn kho</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">Thao tác</div>
               </div>
-              {paginatedProducts.map(product => {
-                const isExpanded = expandedProducts[product.id];
-                const variants = product.variants || [];
-                const someSelected = variants.some(v => selectedMap[v.id] || initialSelectedIds.includes(v.id));
-                const allSelected = variants.length > 0 && variants.every(v => selectedMap[v.id] || initialSelectedIds.includes(v.id));
-                const totalSold = product.totalSold || 0;
-                const totalStock = getTotalStock(product);
-
-                return (
-                  <div
-                    key={product.id}
-                    className={`flex flex-col transition-all ${
-                      someSelected
-                        ? 'ring-1 ring-inset ring-purple-200 dark:ring-purple-500/30 bg-purple-50/25 dark:bg-purple-500/5'
-                        : ''
-                    }`}
-                  >
-                    {/* Product Row */}
-                    <div
-                      className={`px-0 py-0 transition-colors
-                        ${someSelected
-                          ? 'bg-purple-50/45 dark:bg-purple-500/10 hover:bg-purple-50/70'
-                          : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                        }`}
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 items-stretch">
-                        <button
-                          type="button"
-                          onClick={() => handleToggleProduct(product.id)}
-                          className="flex items-center gap-3 text-left w-full px-4 py-4"
-                        >
-                          <div className={`transition-transform duration-200 ${isExpanded ? 'rotate-0' : '-rotate-0'} text-slate-400`}>
-                            {isExpanded ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
-                          </div>
-                          <img
-                            src={product.mainImageUrl || '/placeholder.png'}
-                            alt={product.name}
-                            className="w-11 h-11 object-cover rounded-lg border border-slate-200 dark:border-slate-700 flex-shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <div className="font-medium text-slate-800 dark:text-slate-200 truncate">{product.name}</div>
-                            <div className="text-sm text-slate-500 flex flex-wrap items-center gap-1.5">
-                              <span>{variants.length} phân loại</span>
-                              {product.category?.name && <span>• {product.category.name}</span>}
-                              {product.brandName && <span>• {product.brandName}</span>}
-                            </div>
-                          </div>
-                        </button>
-
-                        <div className="hidden md:flex items-center justify-end text-right text-base font-bold text-slate-700 dark:text-slate-200 px-4 py-4 border-l border-slate-200 dark:border-slate-700">
-                          {totalSold.toLocaleString('vi-VN')}
-                        </div>
-                        <div className="hidden md:flex items-center justify-end text-right px-4 py-4 border-l border-slate-200 dark:border-slate-700">
-                          <span className={`inline-flex items-center justify-end min-w-[72px] px-2 py-1 rounded-md text-sm font-semibold ${
-                            totalStock <= 0
-                              ? 'bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
-                              : totalStock < 10
-                                ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
-                                : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                          }`}>
-                            {totalStock.toLocaleString('vi-VN')}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center justify-start md:justify-end gap-2 px-4 py-4 border-l border-slate-200 dark:border-slate-700">
-                          {/* Select all toggle */}
-                          {variants.length > 0 && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectAllVariants(product);
-                              }}
-                              className={`text-xs px-3 py-1.5 rounded-lg border transition-all font-medium flex-shrink-0
-                                ${allSelected
-                                  ? 'bg-purple-100 dark:bg-purple-500/20 border-purple-300 dark:border-purple-500/30 text-purple-700 dark:text-purple-300'
-                                  : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-purple-300 hover:text-purple-600'
-                                }`}
-                            >
-                              {allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
-                            </button>
-                          )}
-
-                          {someSelected && (
-                            <div className="w-2 h-2 rounded-full bg-purple-500 flex-shrink-0" />
-                          )}
-                        </div>
-                      </div>
-                      <div className="md:hidden mt-2 pl-14 text-sm text-slate-500 flex flex-wrap gap-x-4 gap-y-1">
-                        <span>Đã bán: <strong className="text-slate-700 dark:text-slate-200">{totalSold.toLocaleString('vi-VN')}</strong></span>
-                        <span>Tồn: <strong className="text-slate-700 dark:text-slate-200">{totalStock.toLocaleString('vi-VN')}</strong></span>
-                      </div>
-                    </div>
-
-                    {/* Variants - expandable */}
-                    {isExpanded && (
-                      <div className="bg-slate-50/70 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800">
-                        <div className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                          {variants.map(variant => {
-                            const isAlreadyInSale = initialSelectedIds.includes(variant.id);
-                            const isChecked = !!selectedMap[variant.id] || isAlreadyInSale;
-                            const isNewlySelected = !!selectedMap[variant.id];
-
-                            return (
-                              <div
-                                key={variant.id}
-                                className={`grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 items-stretch transition-colors
-                                  ${isAlreadyInSale
-                                    ? 'opacity-50 cursor-not-allowed bg-amber-50/40 dark:bg-amber-500/5'
-                                    : isNewlySelected
-                                      ? 'cursor-pointer bg-purple-100/80 dark:bg-purple-500/25 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] border-y border-purple-200/90 dark:border-purple-400/30 hover:bg-purple-100 dark:hover:bg-purple-500/30'
-                                      : 'cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30'
-                                  }`}
-                                onClick={() => !isAlreadyInSale && handleToggleVariant(product, variant)}
-                              >
-                                <div className="flex items-center gap-3 pl-14 pr-4 py-3 min-w-0">
-                                  {/* Checkbox */}
-                                  <div className="flex-shrink-0">
-                                    <div className={`w-[22px] h-[22px] rounded-md border-2 flex items-center justify-center transition-all duration-150
-                                      ${isAlreadyInSale
-                                        ? 'bg-slate-200 dark:bg-slate-600 border-slate-300 dark:border-slate-500'
-                                        : isChecked
-                                          ? 'bg-purple-600 border-purple-600 shadow-[0_0_0_2px_rgba(147,51,234,0.15)]'
-                                          : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-purple-400'}
-                                    `}>
-                                      {isChecked && <FiCheck className="text-white" strokeWidth={3} size={14} />}
-                                    </div>
-                                  </div>
-
-                                  {/* Variant info */}
-                                  <div className="flex-1 min-w-0">
-                                    <div className={`text-md font-semibold ${isNewlySelected ? 'text-purple-800 dark:text-purple-200' : 'text-slate-700 dark:text-slate-200'}`}>
-                                      {variant.variantName || 'Mặc định'}
-                                    </div>
-                                    <div className="text-sm text-slate-500">
-                                      Mã: {variant.sku}
-                                      {isAlreadyInSale && <span className="ml-2 text-amber-500 font-medium">• Đã tham gia</span>}
-                                    </div>
-                                  </div>
-
-                                  {/* Price */}
-                                  <div className="font-semibold text-md text-slate-700 dark:text-slate-200 flex-shrink-0">
-                                    {formatPrice(variant.price)}
-                                  </div>
-                                </div>
-
-                                <div className="hidden md:flex flex-col items-end justify-center px-4 py-3 border-l border-slate-200 dark:border-slate-700 text-sm">
-                                  <span className="font-semibold text-slate-700 dark:text-slate-200">
-                                    {(variant.netSoldQty ?? Math.max((variant.grossSoldQty ?? 0) - (variant.returnedQty ?? 0), 0)).toLocaleString('vi-VN')}
-                                  </span>
-                                  <span className="text-xs text-slate-500">
-                                    G {(variant.grossSoldQty ?? 0).toLocaleString('vi-VN')} / R {(variant.returnedQty ?? 0).toLocaleString('vi-VN')}
-                                  </span>
-                                </div>
-
-                                <div className="hidden md:flex items-center justify-end px-4 py-3 border-l border-slate-200 dark:border-slate-700">
-                                  <span className={`inline-flex items-center justify-end min-w-[72px] px-2 py-1 rounded-md text-sm font-semibold ${
-                                    (variant.stockQuantity || 0) <= 0
-                                      ? 'bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
-                                      : (variant.stockQuantity || 0) < 10
-                                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
-                                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                  }`}>
-                                    {(variant.stockQuantity || 0).toLocaleString('vi-VN')}
-                                  </span>
-                                </div>
-
-                                <div className={`hidden md:flex items-center justify-end px-4 py-3 border-l border-slate-200 dark:border-slate-700 text-sm ${
-                                  isNewlySelected ? 'text-purple-700 dark:text-purple-200 font-bold' : 'text-slate-500'
-                                }`}>
-                                  {isNewlySelected ? 'Đã chọn' : 'Nhấn để chọn'}
-                                </div>
-
-                                <div className="md:hidden px-14 pb-3 text-sm text-slate-500 flex items-center gap-4">
-                                  <span>Net: <strong className="text-slate-700 dark:text-slate-200">{(variant.netSoldQty ?? Math.max((variant.grossSoldQty ?? 0) - (variant.returnedQty ?? 0), 0)).toLocaleString('vi-VN')}</strong></span>
-                                  <span>G/R: <strong className="text-slate-600 dark:text-slate-300">{(variant.grossSoldQty ?? 0).toLocaleString('vi-VN')}/{(variant.returnedQty ?? 0).toLocaleString('vi-VN')}</strong></span>
-                                  <span>Tồn: <strong className="text-slate-700 dark:text-slate-200">{(variant.stockQuantity || 0).toLocaleString('vi-VN')}</strong></span>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+              {paginatedProducts.map(product => (
+                <ProductPickerProductRow
+                  key={product.id}
+                  product={product}
+                  initialSelectedIdSet={initialSelectedIdSet}
+                  selectedMap={selectedMap}
+                  getTotalStock={getTotalStock}
+                  isExpanded={!!expandedProducts[product.id]}
+                  onToggleProduct={() => handleToggleProduct(product.id)}
+                  onToggleSelectAll={() => handleSelectAllVariants(product)}
+                  onToggleVariant={(variantId) => {
+                    const targetVariant = (product.variants || []).find((variant) => variant.id === variantId);
+                    if (targetVariant) {
+                      handleToggleVariant(product, targetVariant);
+                    }
+                  }}
+                />
+              ))}
             </div>
           )}
         </div>

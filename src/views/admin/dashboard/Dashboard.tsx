@@ -3,6 +3,7 @@ import { FiDownload } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { Button, StatusBadge, Modal, UserAvatar } from '@/components';
 import { formatPrice, formatDate } from '@/utils/format';
+import { resolveVariantSalesMetrics } from '@/utils/variantSales';
 import adminDashboardService from '@/apis/services/adminDashboardService';
 import type { DashboardStatsResponse, RecentOrderItem, RevenueChartItem, TopCustomerItem, TopProductItem, TopVariantItem } from '@/types';
 import { downloadBlob } from '@/utils/download';
@@ -368,21 +369,25 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(topVariantsLoaded ? topVariants : (stats.topVariants || [])).map((v: TopVariantItem, index: number) => (
-                      <tr key={v.variantId} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="py-2.5 sm:py-4 pr-4 text-center text-md font-bold text-slate-400 whitespace-nowrap">#{index + 1}</td>
-                        <td className="py-2.5 sm:py-4 pr-4">
-                          <div className="font-bold text-md line-clamp-1">{v.productName}</div>
-                        </td>
-                        <td className="py-2.5 sm:py-4 pr-4">
-                          <span className="text-md text-slate-600 dark:text-slate-300">{v.variantName || 'Mặc định'}</span>
-                        </td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">{v.totalSold.toLocaleString('vi-VN')}</td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{(v.returnedQty ?? 0).toLocaleString('vi-VN')}</td>
-                        <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">{(v.netSoldQty ?? v.totalSold).toLocaleString('vi-VN')}</td>
-                        <td className="py-2.5 sm:py-4 text-md text-right font-bold text-emerald-600 whitespace-nowrap">{formatPrice(v.revenue)}</td>
-                      </tr>
-                    ))}
+                    {(topVariantsLoaded ? topVariants : (stats.topVariants || [])).map((v: TopVariantItem, index: number) => {
+                      const sales = resolveVariantSalesMetrics(v);
+
+                      return (
+                        <tr key={v.variantId} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="py-2.5 sm:py-4 pr-4 text-center text-md font-bold text-slate-400 whitespace-nowrap">#{index + 1}</td>
+                          <td className="py-2.5 sm:py-4 pr-4">
+                            <div className="font-bold text-md line-clamp-1">{v.productName}</div>
+                          </td>
+                          <td className="py-2.5 sm:py-4 pr-4">
+                            <span className="text-md text-slate-600 dark:text-slate-300">{v.variantName || 'Mặc định'}</span>
+                          </td>
+                          <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">{sales.gross.toLocaleString('vi-VN')}</td>
+                          <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{sales.returned.toLocaleString('vi-VN')}</td>
+                          <td className="py-2.5 sm:py-4 pr-4 text-md text-center font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">{sales.net.toLocaleString('vi-VN')}</td>
+                          <td className="py-2.5 sm:py-4 text-md text-right font-bold text-emerald-600 whitespace-nowrap">{formatPrice(v.revenue)}</td>
+                        </tr>
+                      );
+                    })}
                     {loadingTopVariants && topVariants.length === 0 && (
                       <tr>
                         <td className="py-4 text-center text-slate-500" colSpan={7}>Đang tải dữ liệu phân loại...</td>

@@ -8,10 +8,22 @@ export default function AdminSearch({
   onChange,
   filters,
   boxed = true,
+  autoFocus = false,
+  clearable = false,
+  onClear,
+  inputClassName = '',
 }: AdminSearchProps) {
   const containerClass = boxed
     ? "bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4"
     : "flex flex-col md:flex-row gap-4";
+
+  const handleClear = () => {
+    if (onClear) {
+      onClear();
+      return;
+    }
+    onChange('');
+  };
 
   return (
     <div className={containerClass}>
@@ -21,9 +33,19 @@ export default function AdminSearch({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+          autoFocus={autoFocus}
+          className={`w-full h-12 pl-12 ${clearable && value ? 'pr-16' : 'pr-4'} rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 ${inputClassName}`.trim()}
         />
         <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+        {clearable && value && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm transition-colors"
+          >
+            Xóa
+          </button>
+        )}
       </div>
       {filters && <div className="flex gap-2">{filters}</div>}
     </div>

@@ -9,6 +9,7 @@ import { PrimaryButton, Button, TrashButton, FormInput, FormTextarea, Pagination
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import type { SelectedVariant } from '@/components';
 import { formatDateTime, formatPrice } from '@/utils/format';
+import { resolveVariantSalesMetrics } from '@/utils/variantSales';
 import { PICKER_RESULT_KEY } from './ProductPicker';
 
 const ITEMS_PER_PAGE = PAGE_SIZE.LARGE;
@@ -58,6 +59,10 @@ export default function FlashSaleForm() {
               imageUrl: i.imageUrl || '',
               flashPrice: i.flashPrice,
               flashStock: i.flashStock,
+              grossSoldQty: i.grossSoldQty,
+              returnedQty: i.returnedQty,
+              netSoldQty: i.netSoldQty,
+              stockQuantity: i.stockQuantity,
             })) || [],
           });
         }
@@ -94,6 +99,10 @@ export default function FlashSaleForm() {
         imageUrl: v.imageUrl,
         flashPrice: v.originalPrice,
         flashStock: 0,
+        grossSoldQty: v.grossSoldQty,
+        returnedQty: v.returnedQty,
+        netSoldQty: v.netSoldQty,
+        stockQuantity: v.stockQuantity,
       }));
 
       return { ...prev, items: [...prev.items, ...newItems] };
@@ -323,7 +332,7 @@ export default function FlashSaleForm() {
                       <th className="p-3 font-medium text-slate-600 dark:text-slate-400">Sản phẩm</th>
                       <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-32">Giá gốc</th>
                       <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-36">Giá Flash Sale</th>
-                      <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-32">SL Bán</th>
+                      <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-40">SL Flash Sale</th>
                       <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-16 text-center">Xóa</th>
                     </tr>
                   </thead>
@@ -346,6 +355,7 @@ export default function FlashSaleForm() {
                     ) : (
                       visibleItems.map((item, idx) => {
                         const actualIndex = startIndex + idx;
+                        const sales = resolveVariantSalesMetrics(item);
                         return (
                         <tr key={`${item.variantId}-${actualIndex}`} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
                           <td className="p-3">
@@ -374,13 +384,29 @@ export default function FlashSaleForm() {
                             />
                           </td>
                           <td className="p-3">
-                            <input
-                              type="number"
-                              min="0"
-                              className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
-                              value={item.flashStock}
-                              onChange={(e) => handleChangeItem(actualIndex, 'flashStock', Number(e.target.value))}
-                            />
+                            <div className="space-y-1.5">
+                              <input
+                                type="number"
+                                min="0"
+                                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
+                                value={item.flashStock}
+                                onChange={(e) => handleChangeItem(actualIndex, 'flashStock', Number(e.target.value))}
+                              />
+                              <div className="text-xs text-slate-500 leading-tight">
+                                {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
+                                  <div>Chưa có dữ liệu lịch sử cho phân loại này.</div>
+                                ) : (
+                                  <>
+                                    <div>
+                                      Lịch sử: G {sales.gross.toLocaleString('vi-VN')} / R {sales.returned.toLocaleString('vi-VN')} / N {sales.net.toLocaleString('vi-VN')}
+                                    </div>
+                                    <div>
+                                      Tồn hiện tại: {(item.stockQuantity ?? 0).toLocaleString('vi-VN')}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
                           </td>
                           <td className="p-3 text-center">
                             <TrashButton onClick={() => handleRemoveItem(actualIndex)} />

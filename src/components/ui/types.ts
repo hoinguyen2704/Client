@@ -154,6 +154,14 @@ export interface AdminSearchProps {
   filters?: ReactNode;
   /** Render as standalone boxed search card (default true). Set false when placed inside another boxed filter container. */
   boxed?: boolean;
+  /** Autofocus the input on mount. */
+  autoFocus?: boolean;
+  /** Show clear button when value is not empty. */
+  clearable?: boolean;
+  /** Optional custom clear callback. Defaults to setting empty string via onChange. */
+  onClear?: () => void;
+  /** Optional className override for the input element. */
+  inputClassName?: string;
 }
 
 //  ActionButtons
