@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiRotateCcw, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings, FiChevronDown } from 'react-icons/fi';
 import { cn } from '../../utils/cn';
 import useAuthStore from '@/stores/useAuthStore';
@@ -23,9 +23,9 @@ const menuItems = [
 export default function UserLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
   const unreadCount = useNotificationStore((s) => s.unreadCount);
   useClickOutside(mobileMenuRef, useCallback(() => setIsMobileMenuOpen(false), []));
 
@@ -40,9 +40,7 @@ export default function UserLayout() {
   const ActiveMenuIcon = activeMenuItem.icon;
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
-    window.location.reload(); // Force reload to update MainLayout state
+    logout();
   };
 
   return (
