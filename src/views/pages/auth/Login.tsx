@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiTruck, FiHeadphones, FiAlertCircle, FiLoader } from 'react-icons/fi';
+import { FiUser, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiTruck, FiHeadphones, FiAlertCircle, FiLoader } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import { motion } from 'motion/react';
@@ -34,7 +34,7 @@ function resolveFromPath(state: unknown): string {
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -81,10 +81,10 @@ function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await authService.login({ email, password });
+      const res = await authService.login({ identifier, password });
       completeLogin(res.data);
     } catch (err: unknown) {
-      setError(getApiErrorMessage(err, 'Email hoặc mật khẩu không đúng'));
+      setError(getApiErrorMessage(err, 'Thông tin đăng nhập hoặc mật khẩu không đúng'));
     } finally {
       setLoading(false);
     }
@@ -126,14 +126,14 @@ function LoginForm() {
       <form className="space-y-6 sm:space-y-8" onSubmit={handleLogin}>
         <div className="space-y-5 sm:space-y-6">
           <div>
-            <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">Email / Số điện thoại</label>
+            <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">Email / Tên đăng nhập / Số điện thoại</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                <FiMail className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
+                <FiUser className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
               </div>
-              <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}
+              <input type="text" required value={identifier} onChange={(e) => setIdentifier(e.target.value)}
                 className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
-                placeholder="Nhập email hoặc SĐT" />
+                placeholder="Nhập email, tên đăng nhập hoặc SĐT" />
             </div>
           </div>
 
