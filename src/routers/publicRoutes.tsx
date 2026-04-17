@@ -19,6 +19,7 @@ const Cart = lazy(() => import('@/views/pages/cart/Cart'));
 const Checkout = lazy(() => import('@/views/pages/payments/Checkout'));
 const VnpayReturn = lazy(() => import('@/views/pages/payments/VnpayReturn'));
 const Login = lazy(() => import('@/views/pages/auth/Login'));
+const GoogleCallback = lazy(() => import('@/views/pages/auth/GoogleCallback'));
 const Register = lazy(() => import('@/views/pages/auth/Register'));
 const ForgotPassword = lazy(() => import('@/views/pages/auth/ForgotPassword'));
 const Forbidden = lazy(() => import('@/views/pages/forbidden/Forbidden'));
@@ -42,6 +43,7 @@ export const publicRoutes = (
     <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
     <Route path="payment/vnpay-return" element={<VnpayReturn />} />
     <Route path="login" element={<Login />} />
+    <Route path="auth/google/callback" element={<GoogleCallback />} />
     <Route path="register" element={<Register />} />
     <Route path="forgot-password" element={<ForgotPassword />} />
     <Route path="403" element={<Forbidden />} />

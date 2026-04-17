@@ -44,6 +44,14 @@ function getGoogleClientId(): string {
   return clientId;
 }
 
+function getBackendApiBaseUrl(): string {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim();
+  if (!backendUrl) {
+    throw new Error('Thiếu cấu hình VITE_BACKEND_URL cho đăng nhập Google.');
+  }
+  return backendUrl.replace(/\/+$/, '');
+}
+
 function loadGoogleIdentityScript(): Promise<void> {
   if (window.google?.accounts?.id) {
     return Promise.resolve();
@@ -72,6 +80,17 @@ function loadGoogleIdentityScript(): Promise<void> {
   });
 
   return googleScriptPromise;
+}
+
+export function startGoogleLoginRedirect(returnTo = '/'): void {
+  const normalizedReturnTo =
+    returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')
+      ? returnTo
+      : '/';
+
+  const googleStartUrl = new URL(`${getBackendApiBaseUrl()}/auth/google/start`);
+  googleStartUrl.searchParams.set('from', normalizedReturnTo);
+  window.location.assign(googleStartUrl.toString());
 }
 
 export async function requestGoogleIdToken(): Promise<string> {

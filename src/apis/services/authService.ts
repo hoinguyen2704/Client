@@ -2,6 +2,8 @@ import axios from '../axios';
 import type {
   ApiResponse,
   AuthResponse,
+  GoogleLoginExchangeResponse,
+  GoogleTicketExchangeRequest,
   LoginRequest,
   RegisterRequest,
   ForgotPasswordRequest,
@@ -33,6 +35,9 @@ const authService = {
 
   socialLogin: (data: SocialLoginRequest): Promise<ApiResponse<AuthResponse>> =>
     axios.post(`${AUTH_URL}/social-login`, data),
+
+  exchangeGoogleTicket: (data: GoogleTicketExchangeRequest): Promise<ApiResponse<GoogleLoginExchangeResponse>> =>
+    axios.post(`${AUTH_URL}/google/exchange-ticket`, data),
 
   logout: (): Promise<ApiResponse<void>> =>
     axios.post(`${AUTH_URL}/logout`),

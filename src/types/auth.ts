@@ -32,11 +32,19 @@ export interface SocialLoginRequest {
   token: string;
 }
 
+export interface GoogleTicketExchangeRequest {
+  ticket: string;
+}
+
 //  Auth Response
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
   user: UserSummary;
+}
+
+export interface GoogleLoginExchangeResponse extends AuthResponse {
+  redirectTo: string;
 }
 
 export interface UserSummary {

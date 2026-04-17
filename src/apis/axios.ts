@@ -19,6 +19,7 @@ const AUTH_ENDPOINT_BYPASS = [
   "/auth/verify-otp",
   "/auth/reset-password",
   "/auth/social-login",
+  "/auth/google/exchange-ticket",
 ];
 
 const onRefreshed = (accessToken: string) => {

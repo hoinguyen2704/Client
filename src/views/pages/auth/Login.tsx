@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { FiUser, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiTruck, FiHeadphones, FiAlertCircle, FiLoader } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
@@ -8,7 +8,7 @@ import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
 import { SHOP } from '@/constants/shopConstants';
 import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
-import { requestGoogleIdToken } from '@/utils/googleAuth';
+import { startGoogleLoginRedirect } from '@/utils/googleAuth';
 import AuthLayout from './AuthLayout';
 
 const features = [
@@ -42,6 +42,7 @@ function LoginForm() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const login = useAuthStore((s) => s.login);
 
   const from = resolveFromPath(location.state);
@@ -75,6 +76,21 @@ function LoginForm() {
     return getApiErrorMessage(err, 'Đăng nhập Google thất bại.');
   };
 
+  useEffect(() => {
+    const code = searchParams.get('google_error_code');
+    const message = searchParams.get('google_error_message');
+    if (!code && !message) return;
+
+    setError(resolveSocialErrorMessage({
+      response: {
+        data: {
+          errorCode: code || undefined,
+          message: message || 'Đăng nhập Google thất bại.',
+        },
+      },
+    }));
+  }, [searchParams]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -94,12 +110,9 @@ function LoginForm() {
     setError('');
     setSocialLoadingProvider('GOOGLE');
     try {
-      const token = await requestGoogleIdToken();
-      const res = await authService.socialLogin({ provider: 'GOOGLE', token });
-      completeLogin(res.data);
+      startGoogleLoginRedirect(from);
     } catch (err: unknown) {
       setError(resolveSocialErrorMessage(err));
-    } finally {
       setSocialLoadingProvider(null);
     }
   };
