@@ -16,7 +16,6 @@
     "toggleDarkMode": "Bật tắt chế độ tối",
     "togglePromotions": "Bật tắt thông báo khuyến mãi",
     "toggleEmail": "Bật tắt thông báo email",
-    "toggleSms": "Bật tắt thông báo SMS",
     "toggleApp": "Bật tắt thông báo ứng dụng",
     "toggleOrders": "Bật tắt thông báo đơn hàng",
     "toggleTwoFactor": "Bật tắt xác thực 2 lớp"
@@ -26,8 +25,6 @@
     "channels": "Kênh nhận thông báo",
     "emailTitle": "Email",
     "emailDesc": "Nhận thông báo qua email",
-    "smsTitle": "SMS",
-    "smsDesc": "Nhận tin nhắn văn bản",
     "appTitle": "Thông báo đẩy (App)",
     "appDesc": "Nhận thông báo trên ứng dụng",
     "types": "Loại thông báo",
@@ -50,6 +47,8 @@
     "twoFactor": {
       "title": "Xác thực 2 bước (2FA)",
       "desc": "Tăng cường bảo mật tài khoản",
+      "comingSoon": "2FA đang được phát triển",
+      "comingSoonDescription": "Tính năng này sẽ sớm được mở. Hiện tại bạn chưa thể bật xác thực 2 bước.",
       "setupDescription": "Quét mã QR này bằng ứng dụng Google Authenticator hoặc Authy để thiết lập 2FA.",
       "otpPlaceholder": "Nhập mã 6 số...",
       "confirm": "Xác nhận"

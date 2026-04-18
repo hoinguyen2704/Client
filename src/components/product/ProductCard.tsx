@@ -1,6 +1,7 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiHeart, FiStar, FiClock } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { formatPrice } from '@/utils/format';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
@@ -10,10 +11,12 @@ import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 import type { TimeLeft, ProductResponse } from '@/types';
 import { TYPOGRAPHY_TEXT_SIZE } from '@/constants/typographyConstants';
+import { getApiErrorMessage } from '@/utils/error';
 
 const INITIAL_FLASH_TIME: TimeLeft = { hours: 2, minutes: 45, seconds: 12 };
 
 function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
+  const { t } = useTranslation('catalog');
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(INITIAL_FLASH_TIME);
 
   useEffect(() => {
@@ -35,7 +38,7 @@ function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
         <span className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-slate-900 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg shadow-sm">
           <FiClock className="animate-pulse" /> {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
         </span>
-        <span>Đã bán {totalSold}%</span>
+        <span>{t('productCard.flashSaleSold', { percent: totalSold })}</span>
       </div>
       <div className="w-full bg-white dark:bg-slate-900 rounded-full h-1.5 sm:h-2 overflow-hidden shadow-inner">
         <div
@@ -48,6 +51,7 @@ function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
 }
 
 function ProductCardComponent({ product }: { product: ProductResponse }) {
+  const { t } = useTranslation(['catalog', 'common']);
   const navigate = useNavigate();
   const [addingToCart, setAddingToCart] = useState(false);
   const productId: string = product.id || '';
@@ -57,6 +61,8 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
     useCallback((s) => s.items.some((item) => item.productId === productId), [productId]),
   );
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const translate = (key: string, options?: Record<string, unknown>) =>
+    String(t(key, options as never));
   const firstVariantId: string = product.variants?.[0]?.id || '';
   const name: string = product.name || '';
   const slug: string = product.slug || '';
@@ -77,6 +83,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   const isNew: boolean = product.isNew ?? (product.createdAt ? (Date.now() - new Date(product.createdAt).getTime()) < 30 * 86400000 : false);
   const isFlashSale: boolean = product.isFlashSale || false;
   const totalSold: number = product.totalSold || product.sold || 0;
+  const soldLabel = totalSold > 999 ? `${(totalSold / 1000).toFixed(1)}k` : totalSold;
 
   // --- Tính trạng thái kho hàng ---
   const isOutOfStock = product.outOfStock === true || product.status === 'OUT_OF_STOCK';
@@ -85,28 +92,28 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   
   const stock: number = isOutOfStock ? 0 : (product.stockQuantity ?? (product.variants?.reduce((acc: number, v) => acc + (v.stockQuantity || 0), 0)) ?? 10);
 
-  let statusText = 'CÒN HÀNG';
+  let statusText = t('productCard.status.available', { ns: 'catalog' }).toUpperCase();
   let statusBg = 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30';
   let statusTextColor = 'text-emerald-600 dark:text-emerald-400';
   let canAddToCart = stock > 0 && salePrice > 0;
 
   if (isInactive) {
-    statusText = 'NGỪNG BÁN';
+    statusText = t('productCard.status.inactive', { ns: 'catalog' }).toUpperCase();
     statusBg = 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700';
     statusTextColor = 'text-slate-600 dark:text-slate-400';
     canAddToCart = false;
   } else if (isComingSoon) {
-    statusText = 'SẮP VỀ';
+    statusText = t('productCard.status.comingSoon', { ns: 'catalog' }).toUpperCase();
     statusBg = 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30';
     statusTextColor = 'text-blue-600 dark:text-blue-400';
     canAddToCart = false;
   } else if (salePrice <= 0) {
-    statusText = 'LIÊN HỆ';
+    statusText = t('productCard.status.contact', { ns: 'catalog' }).toUpperCase();
     statusBg = 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-800/30';
     statusTextColor = 'text-orange-600 dark:text-orange-400';
     canAddToCart = false;
   } else if (isOutOfStock || stock <= 0) {
-    statusText = 'HẾT HÀNG';
+    statusText = t('productCard.status.outOfStock', { ns: 'catalog' }).toUpperCase();
     statusBg = 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30';
     statusTextColor = 'text-red-600 dark:text-red-400';
     canAddToCart = false;
@@ -122,12 +129,12 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
       <div className="absolute top-2 sm:top-5 left-2 sm:left-5 z-10 flex flex-col gap-1 sm:gap-2">
         {isNew && (
           <span className={`bg-gradient-to-r from-blue-500 to-cyan-400 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
-            MỚI
+            {t('productCard.badges.new', { ns: 'catalog' }).toUpperCase()}
           </span>
         )}
         {discount > 0 && (
           <span className={`bg-gradient-to-r from-red-500 to-pink-500 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
-            GIẢM {discount}%
+            {t('productCard.badges.discount', { ns: 'catalog', percent: discount }).toUpperCase()}
           </span>
         )}
       </div>
@@ -159,17 +166,26 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
             {name}
           </h3>
           
-          {rating > 0 && (
-            <div className="flex items-center gap-1 mt-1 sm:mt-2">
-              <FiStar className="text-yellow-500 fill-yellow-500 text-10 sm:text-sm" />
-              <span className="text-10 sm:text-sm font-bold text-slate-700 dark:text-slate-300">{rating.toFixed(1)}</span>
-              {reviews > 0 && <span className="text-9 sm:text-10 font-medium text-slate-400">({reviews})</span>}
+          {(rating > 0 || totalSold > 0) && (
+            <div className="mt-1.5 sm:mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+              {rating > 0 && (
+                <div className="inline-flex items-center gap-1.5 text-11 sm:text-sm font-semibold text-slate-600 dark:text-slate-300">
+                  <FiStar className="shrink-0 text-11 sm:text-base text-yellow-500 fill-yellow-500" />
+                  <span className="font-black text-slate-800 dark:text-slate-100">{rating.toFixed(1)}</span>
+                  {reviews > 0 && (
+                    <span className="text-10 sm:text-xs font-semibold text-slate-400">({reviews})</span>
+                  )}
+                </div>
+              )}
+              {totalSold > 0 && (
+                <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 px-2.5 sm:px-3 py-1 sm:py-1.5 text-11 sm:text-sm font-semibold text-slate-500 dark:text-slate-300">
+                  {t('productCard.sold', {
+                    ns: 'catalog',
+                    count: soldLabel,
+                  })}
+                </span>
+              )}
             </div>
-          )}
-          {totalSold > 0 && (
-            <span className={`text-9 sm:text-10 font-medium text-slate-400 ${rating > 0 ? 'ml-0.5' : 'mt-1 sm:mt-2 block'}`}>
-              {rating > 0 && '· '}Đã bán {totalSold > 999 ? `${(totalSold / 1000).toFixed(1)}k` : totalSold}
-            </span>
           )}
         </Link>
         
@@ -179,7 +195,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
             <>
               {/* Giá gốc */}
               <div className="flex items-center flex-wrap gap-x-1.5 gap-y-0.5 mb-1">
-                <span className={`${TYPOGRAPHY_TEXT_SIZE.md} uppercase font-bold tracking-wider text-slate-400`}>Giá gốc</span>
+                <span className={`${TYPOGRAPHY_TEXT_SIZE.md} uppercase font-bold tracking-wider text-slate-400`}>{t('productCard.originalPrice', { ns: 'catalog' })}</span>
                 <span className={`text-10 sm:text-sm font-medium ${hasDiscount ? 'text-slate-400 line-through' : 'text-slate-500'}`}>
                   {formatPrice(originPrice)}
                 </span>
@@ -219,7 +235,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
              onClick={async (e) => {
                e.preventDefault();
                if (!isAuthenticated) {
-                 toast.error('Vui lòng đăng nhập để thêm vào danh sách yêu thích!');
+                 toast.error(t('productCard.actions.loginWishlist', { ns: 'catalog' }));
                  navigate('/login');
                  return;
                }
@@ -231,7 +247,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
                  : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
              }`}
-             title="Yêu thích"
+             title={t('productCard.actions.wishlist', { ns: 'catalog' })}
            >
              <FiHeart className={`text-base sm:text-xl group-hover/heart:scale-110 transition-transform ${liked ? 'fill-red-500 text-red-500' : ''}`} />
            </button>
@@ -241,7 +257,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
              onClick={async (e) => {
                e.preventDefault();
                if (!isAuthenticated) {
-                 toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng!');
+                 toast.error(t('productCard.actions.loginCart', { ns: 'catalog' }));
                  navigate('/login');
                  return;
                }
@@ -254,16 +270,18 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                try {
                   await cartService.addToCart({ variantId: firstVariantId, quantity: 1 });
                   await syncFromServer();
-                  toast.success(`Đã thêm ${name} vào giỏ hàng!`);
-                } catch {
-                  toast.error('Thêm giỏ hàng thất bại! Vui lòng đăng nhập.');
+                  toast.success(t('productCard.actions.addedToCart', { ns: 'catalog', name }));
+                } catch (error) {
+                  toast.error(getApiErrorMessage(error, translate, 'catalog:productCard.actions.addToCartFailed'));
                } finally { setAddingToCart(false); }
              }}
              className="flex-1 h-9 sm:h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg sm:rounded-2xl font-bold text-11 sm:text-md flex justify-center items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-purple-500/25 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed group/cart"
            >
              <FiShoppingCart className="text-md sm:text-lg group-hover/cart:-rotate-12 transition-transform" />
              <span className="truncate">
-               {addingToCart ? 'Đang thêm...' : (canAddToCart ? 'Thêm Giỏ Hàng' : statusText)}
+               {addingToCart
+                 ? t('productCard.actions.adding', { ns: 'catalog' })
+                 : (canAddToCart ? t('productCard.actions.addToCart', { ns: 'catalog' }) : statusText)}
              </span>
            </button>
         </div>

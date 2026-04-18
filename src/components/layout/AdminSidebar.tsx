@@ -62,8 +62,8 @@ export default function AdminSidebar() {
             onClick={toggleSidebar}
             className={SIDEBAR_COLLAPSE_BUTTON_CLASS}
             title={sidebarCollapsed
-              ? t('actions.expand', { ns: 'common', defaultValue: 'Mở rộng' })
-              : t('actions.collapse', { ns: 'common', defaultValue: 'Thu gọn' })}
+              ? t('actions.expand', { ns: 'common' })
+              : t('actions.collapse', { ns: 'common' })}
           >
             <FiChevronLeft className={cn('text-lg transition-transform', sidebarCollapsed && 'rotate-180')} />
           </button>
@@ -81,10 +81,10 @@ export default function AdminSidebar() {
                     ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20'
                     : SIDEBAR_IDLE_ITEM_CLASS
                 )}
-                title={sidebarCollapsed ? t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey }) : undefined}
+                title={sidebarCollapsed ? t(item.labelKey, { ns: 'layout' }) : undefined}
               >
                 <item.icon className="text-base sm:text-lg shrink-0" />
-                {!sidebarCollapsed && t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}
+                {!sidebarCollapsed && t(item.labelKey, { ns: 'layout' })}
               </NavLink>
             ))}
           </nav>

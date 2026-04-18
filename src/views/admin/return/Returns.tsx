@@ -23,6 +23,8 @@ export default function AdminReturns() {
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<ReturnRequestResponse> | null>(null);
   const [reviewingKey, setReviewingKey] = useState<string | null>(null);
+  const translate = (key: string, options?: Record<string, unknown>) =>
+    String(t(key, options as never));
 
   const fetchReturns = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
@@ -58,7 +60,7 @@ export default function AdminReturns() {
       toast.success(approved ? 'Đã duyệt yêu cầu trả hàng' : 'Đã từ chối yêu cầu trả hàng');
       fetchReturns({ silent: true });
     } catch (err) {
-      toast.error(getApiErrorMessage(err, 'Cập nhật duyệt trả hàng thất bại'));
+      toast.error(getApiErrorMessage(err, translate, 'common:errors.reviewReturnFailed'));
     } finally {
       setReviewingKey(null);
     }
@@ -169,7 +171,7 @@ export default function AdminReturns() {
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         {/* Desktop Header */}
-        <div className="hidden lg:grid grid-cols-[84px_minmax(100px,1fr)_minmax(120px,1fr)_minmax(150px,1fr)_120px_160px_100px_320px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
+        <div className="hidden lg:grid grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
           <div className="px-4 py-4">STT</div>
           <div className="px-4 py-4 text-left">Mã yêu cầu</div>
           <div className="px-4 py-4 text-left">Mã đơn</div>
@@ -185,7 +187,7 @@ export default function AdminReturns() {
             Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="flex flex-col lg:grid lg:grid-cols-[84px_minmax(100px,1fr)_minmax(120px,1fr)_minmax(150px,1fr)_120px_160px_100px_320px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse"
+                className="flex flex-col lg:grid lg:grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse"
               >
                 <div className="hidden lg:flex px-4 py-4 w-full justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full"><div className="h-4 w-28 bg-slate-200 dark:bg-slate-700 rounded" /></div>
@@ -211,7 +213,7 @@ export default function AdminReturns() {
               return (
                 <div
                   key={item.id}
-                  className="group relative flex flex-col lg:grid lg:grid-cols-[84px_minmax(100px,1fr)_minmax(120px,1fr)_minmax(150px,1fr)_120px_160px_100px_320px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300"
+                  className="group relative flex flex-col lg:grid lg:grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300"
                 >
                   <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-slate-400">
                     {rowNumber}

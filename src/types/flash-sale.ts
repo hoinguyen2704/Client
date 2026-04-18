@@ -1,3 +1,5 @@
+export type FlashSaleStatus = 'SCHEDULED' | 'ACTIVE' | 'ENDED';
+
 //  FlashSale Response
 export interface FlashSaleResponse {
   id: string;
@@ -5,7 +7,7 @@ export interface FlashSaleResponse {
   description?: string;
   startTime: string;
   endTime: string;
-  status: string;
+  status: FlashSaleStatus;
   items: FlashSaleItemResponse[];
   createdAt?: string;
 }

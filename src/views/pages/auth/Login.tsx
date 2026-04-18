@@ -66,10 +66,7 @@ function LoginForm() {
   const resolveSocialErrorMessage = (err: unknown): string => {
     const code = getApiErrorCode(err);
     if (code === 'SOCIAL_NOT_LINKED') {
-      return t('login.errors.socialNotLinked', {
-        ns: 'auth',
-        defaultValue: 'Tài khoản Google chưa liên kết. Hãy đăng nhập bằng mật khẩu rồi liên kết trong Cài đặt tài khoản.',
-      });
+      return t('login.errors.socialNotLinked', { ns: 'auth' });
     }
     return getApiErrorMessage(err, translate, 'auth:login.errors.googleFailed');
   };
@@ -83,7 +80,7 @@ function LoginForm() {
       response: {
         data: {
           errorCode: code || undefined,
-          message: message || t('login.errors.googleFailed', { ns: 'auth', defaultValue: 'Đăng nhập Google thất bại.' }),
+          message: message || t('login.errors.googleFailed', { ns: 'auth' }),
         },
       },
     }));
@@ -116,24 +113,17 @@ function LoginForm() {
   };
 
   const handleFacebookLogin = () => {
-    setError(t('login.errors.facebookUnsupported', {
-      ns: 'auth',
-      defaultValue: 'Đăng nhập Facebook chưa được hỗ trợ ở phiên bản này.',
-    }));
+    setError(t('login.errors.facebookUnsupported', { ns: 'auth' }));
   };
 
   return (
     <>
       <div className="text-center lg:text-left">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
-          {t('login.title', { ns: 'auth', defaultValue: 'Đăng nhập' })}
+          {t('login.title', { ns: 'auth' })}
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg">
-          {t('login.subtitle', {
-            ns: 'auth',
-            shop: SHOP.name,
-            defaultValue: `Chào mừng bạn quay trở lại ${SHOP.name}`,
-          })}
+          {t('login.subtitle', { ns: 'auth', shop: SHOP.name })}
         </p>
       </div>
 
@@ -149,7 +139,7 @@ function LoginForm() {
         <div className="space-y-5 sm:space-y-6">
           <div>
             <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-              {t('login.identifierLabel', { ns: 'auth', defaultValue: 'Email / Tên đăng nhập / Số điện thoại' })}
+              {t('login.identifierLabel', { ns: 'auth' })}
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -157,13 +147,13 @@ function LoginForm() {
               </div>
               <input type="text" required value={identifier} onChange={(e) => setIdentifier(e.target.value)}
                 className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
-                placeholder={t('login.identifierPlaceholder', { ns: 'auth', defaultValue: 'Nhập email, tên đăng nhập hoặc SĐT' })} />
+                placeholder={t('login.identifierPlaceholder', { ns: 'auth' })} />
             </div>
           </div>
 
           <div>
             <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-              {t('login.passwordLabel', { ns: 'auth', defaultValue: 'Mật khẩu' })}
+              {t('login.passwordLabel', { ns: 'auth' })}
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -171,7 +161,7 @@ function LoginForm() {
               </div>
               <input type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)}
                 className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
-                placeholder={t('login.passwordPlaceholder', { ns: 'auth', defaultValue: 'Nhập mật khẩu' })} />
+                placeholder={t('login.passwordPlaceholder', { ns: 'auth' })} />
               <button type="button" onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
                 {showPassword ? <FiEyeOff className="text-xl sm:text-2xl" /> : <FiEye className="text-xl sm:text-2xl" />}
@@ -190,11 +180,11 @@ function LoginForm() {
               className="h-5 w-5"
             />
             <label htmlFor="remember-me" className="ml-3 block text-base sm:text-lg text-slate-600 dark:text-slate-400 cursor-pointer select-none">
-              {t('login.rememberMe', { ns: 'auth', defaultValue: 'Ghi nhớ đăng nhập' })}
+              {t('login.rememberMe', { ns: 'auth' })}
             </label>
           </div>
           <Link to="/forgot-password" className="text-base sm:text-lg font-medium text-purple-600 hover:text-purple-500 transition-colors">
-            {t('login.forgotPassword', { ns: 'auth', defaultValue: 'Quên mật khẩu?' })}
+            {t('login.forgotPassword', { ns: 'auth' })}
           </Link>
         </div>
 
@@ -203,7 +193,7 @@ function LoginForm() {
           {loading ? (
             <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
-            <>{t('login.submit', { ns: 'auth', defaultValue: 'Đăng nhập' })} <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" /></>
+            <>{t('login.submit', { ns: 'auth' })} <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" /></>
           )}
         </motion.button>
       </form>
@@ -216,7 +206,7 @@ function LoginForm() {
           </div>
           <div className="relative flex justify-center text-lg">
             <span className="px-5 bg-white dark:bg-slate-800 text-slate-500 rounded-full">
-              {t('login.divider', { ns: 'auth', defaultValue: 'Hoặc đăng nhập với' })}
+              {t('login.divider', { ns: 'auth' })}
             </span>
           </div>
         </div>
@@ -227,7 +217,7 @@ function LoginForm() {
             className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
             {socialLoadingProvider === 'GOOGLE' ? <FiLoader className="text-2xl animate-spin" /> : <FcGoogle className="text-3xl" />}
             {socialLoadingProvider === 'GOOGLE'
-              ? t('login.googleLoading', { ns: 'auth', defaultValue: 'Đang xử lý...' })
+              ? t('login.googleLoading', { ns: 'auth' })
               : 'Google'}
           </motion.button>
           <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
@@ -241,9 +231,9 @@ function LoginForm() {
 
       <div className="text-center pt-4">
         <p className="text-lg text-slate-600 dark:text-slate-400">
-          {t('login.registerPrompt', { ns: 'auth', defaultValue: 'Chưa có tài khoản?' })}{' '}
+          {t('login.registerPrompt', { ns: 'auth' })}{' '}
           <Link to="/register" className="font-semibold text-purple-600 hover:text-purple-500 transition-colors">
-            {t('login.registerLink', { ns: 'auth', defaultValue: 'Đăng ký ngay' })}
+            {t('login.registerLink', { ns: 'auth' })}
           </Link>
         </p>
       </div>
@@ -254,9 +244,9 @@ function LoginForm() {
 export default function Login() {
   const { t } = useTranslation('auth');
   const features = [
-    { icon: FiShield, title: t('features.security.title', { defaultValue: 'Bảo mật tuyệt đối' }), desc: t('features.security.desc', { defaultValue: 'Mã hóa SSL 256-bit bảo vệ mọi giao dịch' }) },
-    { icon: FiTruck, title: t('features.shipping.title', { defaultValue: 'Giao hàng siêu tốc' }), desc: t('features.shipping.desc', { defaultValue: 'Miễn phí giao hàng cho đơn từ 500K' }) },
-    { icon: FiHeadphones, title: t('features.support.title', { defaultValue: 'Hỗ trợ 24/7' }), desc: t('features.support.desc', { defaultValue: 'Đội ngũ CSKH luôn sẵn sàng hỗ trợ bạn' }) },
+    { icon: FiShield, title: t('features.security.title'), desc: t('features.security.desc') },
+    { icon: FiTruck, title: t('features.shipping.title'), desc: t('features.shipping.desc') },
+    { icon: FiHeadphones, title: t('features.support.title'), desc: t('features.support.desc') },
   ];
 
   return (
@@ -268,15 +258,12 @@ export default function Login() {
           ns="auth"
           i18nKey="login.heroTitle"
           values={{ shop: SHOP.name }}
-          defaults={`Chào mừng bạn đến với <highlight>${SHOP.name}</highlight>`}
           components={{
             highlight: <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300" />,
           }}
         />
       )}
-      heroSubtitle={t('login.heroSubtitle', {
-        defaultValue: 'Nền tảng mua sắm công nghệ hàng đầu Việt Nam với hàng ngàn sản phẩm chính hãng.',
-      })}
+      heroSubtitle={t('login.heroSubtitle')}
       features={features}
       mobileLogoGradient="from-purple-600 to-blue-600"
       mobileLogoShadow="shadow-purple-500/30"

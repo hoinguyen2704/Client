@@ -66,12 +66,12 @@ export default function UserLayout() {
               </div>
               <div className="min-w-0">
                 <h3 className="font-bold text-base sm:text-lg truncate">
-                  {user?.name || t('roles.member', { ns: 'common', defaultValue: 'Thành viên' })}
+                  {user?.name || t('roles.member', { ns: 'common' })}
                 </h3>
                 <p className="text-sm sm:text-md text-muted truncate">
                   {user?.role === 'ADMIN'
-                    ? t('roles.admin', { ns: 'common', defaultValue: 'Quản trị viên' })
-                    : t('roles.customer', { ns: 'common', defaultValue: 'Khách hàng' })}
+                    ? t('roles.admin', { ns: 'common' })
+                    : t('roles.customer', { ns: 'common' })}
                 </p>
               </div>
             </div>
@@ -83,7 +83,7 @@ export default function UserLayout() {
               >
                 <span className="flex items-center gap-2 min-w-0">
                   <ActiveMenuIcon className="text-base shrink-0" />
-                  <span className="truncate">{t(activeMenuItem.labelKey, { ns: 'layout', defaultValue: activeMenuItem.labelKey })}</span>
+                  <span className="truncate">{t(activeMenuItem.labelKey, { ns: 'layout' })}</span>
                 </span>
                 <FiChevronDown className={cn('text-base text-slate-400 transition-transform', isMobileMenuOpen && 'rotate-180')} />
               </button>
@@ -104,7 +104,7 @@ export default function UserLayout() {
                         )}
                       >
                         <item.icon className="text-base" />
-                        <span className="flex-1">{t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}</span>
+                        <span className="flex-1">{t(item.labelKey, { ns: 'layout' })}</span>
                         {item.path === '/user/notifications' && unreadCount > 0 && (
                           <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-10 font-bold flex items-center justify-center rounded-full">
                             {unreadCount > 99 ? '99+' : unreadCount}
@@ -122,7 +122,7 @@ export default function UserLayout() {
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-md text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                       >
                         <FiLogOut className="text-base" />
-                        {t('userLayout.menu.logout', { ns: 'layout', defaultValue: 'Đăng xuất' })}
+                        {t('userLayout.menu.logout', { ns: 'layout' })}
                       </button>
                     </div>
                   </nav>
@@ -144,7 +144,7 @@ export default function UserLayout() {
                     )}
                   >
                     <item.icon className="text-lg" />
-                    <span className="flex-1">{t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}</span>
+                    <span className="flex-1">{t(item.labelKey, { ns: 'layout' })}</span>
                     {item.path === '/user/notifications' && unreadCount > 0 && (
                       <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-10 font-bold flex items-center justify-center rounded-full">
                         {unreadCount > 99 ? '99+' : unreadCount}
@@ -159,7 +159,7 @@ export default function UserLayout() {
                   className="w-full flex items-center justify-start gap-2.5 px-4 py-3 rounded-xl transition-all font-medium text-base text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <FiLogOut className="text-lg" />
-                  {t('userLayout.menu.logout', { ns: 'layout', defaultValue: 'Đăng xuất' })}
+                  {t('userLayout.menu.logout', { ns: 'layout' })}
                 </button>
               </div>
             </nav>

@@ -39,5 +39,92 @@
       "minutes": "minutes",
       "seconds": "seconds"
     }
+  },
+  "productDetail": {
+    "variantFallback": "Option",
+    "toasts": {
+      "loadFailed": "Unable to load product details.",
+      "loginAddToCart": "Please log in to add this item to your cart.",
+      "loginBuyNow": "Please log in to buy this item.",
+      "loginWishlist": "Please log in to add this item to your wishlist.",
+      "selectVariant": "Please select a variant before continuing.",
+      "addedToCart": "Added {{count}} item(s) to your cart!"
+    },
+    "notFound": {
+      "title": "Product not found",
+      "back": "Back to products"
+    },
+    "relatedTitle": "Related products",
+    "meta": {
+      "reviewsCount": "{{count}} reviews",
+      "sold": "Sold {{count}}",
+      "selectedVariantSold": "Selected variant sold {{count}}",
+      "brand": "Brand",
+      "stockRemaining": "{{count}} items left",
+      "available": "Available",
+      "discount": "Save {{percent}}%"
+    },
+    "pricing": {
+      "chooseVariantToSeePrice": "Please select all required options to view the price.",
+      "discountOff": "{{percent}}% off",
+      "flashSale": "Flash Sale",
+      "flashSaleRemaining": "{{count}} deal slots left"
+    },
+    "quantity": {
+      "title": "Quantity",
+      "clearSelection": "Clear selection",
+      "overMaxWarning": "Only {{count}} items available!",
+      "chooseMore": "Select: {{attributes}}",
+      "availableCount": "{{count}} items available",
+      "outOfStock": "Out of stock",
+      "soldCount": "Sold: {{count}}"
+    },
+    "actions": {
+      "wishlist": "Add to wishlist",
+      "addToCart": "Add to cart",
+      "buyNow": "Buy now"
+    },
+    "tabs": {
+      "specs": "Technical specifications",
+      "description": "Product description",
+      "reviews": "Reviews ({{count}})",
+      "noSpecs": "No technical specifications are available for this product yet.",
+      "noDescription": "No description is available for this product yet.",
+      "reviewsCount": "{{count}} reviews",
+      "verifiedOnly": "Only customers who purchased and successfully received this item can review it.",
+      "round": "Round {{count}}",
+      "variant": "Variant: {{value}}",
+      "shopReply": "Reply from shop",
+      "updatedReview": "Updated review ({{afterText}})",
+      "new": "New",
+      "sameDay": "same day",
+      "afterDays": "after {{count}} days",
+      "emptyReviews": "There are no reviews for this product yet."
+    }
+  },
+  "productCard": {
+    "flashSaleSold": "Sold {{percent}}%",
+    "badges": {
+      "new": "New",
+      "discount": "Save {{percent}}%"
+    },
+    "status": {
+      "available": "In stock",
+      "inactive": "Inactive",
+      "comingSoon": "Coming soon",
+      "contact": "Contact us",
+      "outOfStock": "Out of stock"
+    },
+    "sold": "Sold {{count}}",
+    "originalPrice": "Original price",
+    "actions": {
+      "wishlist": "Add to wishlist",
+      "loginWishlist": "Please log in to add this item to your wishlist.",
+      "loginCart": "Please log in to add this item to your cart.",
+      "addToCart": "Add to cart",
+      "adding": "Adding...",
+      "addedToCart": "Added {{name}} to your cart!",
+      "addToCartFailed": "Unable to add this item to your cart."
+    }
   }
 }

@@ -37,7 +37,7 @@ export default function Pagination({
   className = '',
 }: PaginationProps) {
   const { t } = useTranslation('common');
-  const resolvedLabel = label || t('pagination.items', { defaultValue: 'mục' });
+  const resolvedLabel = label || t('pagination.items');
 
   if (totalPages <= 1) return null;
 
@@ -75,11 +75,11 @@ export default function Pagination({
       {/* Info text — admin only */}
       {showInfo && (
         <div className="text-md text-muted">
-          {t('pagination.showing', { defaultValue: 'Hiển thị' })}{' '}
+          {t('pagination.showing')}{' '}
           <span className="font-semibold text-slate-700 dark:text-slate-200">
             {start}-{end}
           </span>{' '}
-          {t('pagination.of', { defaultValue: 'của' })}{' '}
+          {t('pagination.of')}{' '}
           <span className="font-semibold text-slate-700 dark:text-slate-200">
             {totalItems!.toLocaleString()}
           </span>{' '}
@@ -94,7 +94,7 @@ export default function Pagination({
           className={`${BTN_BASE} ${currentPage === 1 ? BTN_DISABLED : BTN_IDLE}`}
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
-          aria-label={t('actions.previousPage', { defaultValue: 'Trang trước' })}
+          aria-label={t('actions.previousPage')}
         >
           <FiChevronLeft className="text-base" />
         </button>
@@ -124,7 +124,7 @@ export default function Pagination({
           className={`${BTN_BASE} ${currentPage === totalPages ? BTN_DISABLED : BTN_IDLE}`}
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          aria-label={t('actions.nextPage', { defaultValue: 'Trang sau' })}
+          aria-label={t('actions.nextPage')}
         >
           <FiChevronRight className="text-base" />
         </button>

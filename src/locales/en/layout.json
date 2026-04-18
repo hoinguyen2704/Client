@@ -15,6 +15,17 @@
     "orders": "My orders",
     "logout": "Log out"
   },
+  "languageSwitcher": {
+    "switchTo": "Switch language to {{language}}",
+    "short": {
+      "vi": "VI",
+      "en": "EN"
+    },
+    "name": {
+      "vi": "Vietnamese",
+      "en": "English"
+    }
+  },
   "mobileMenu": {
     "closeMenu": "Close menu",
     "searchPlaceholder": "Search...",
@@ -27,6 +38,7 @@
   },
   "adminHeader": {
     "searchPlaceholder": "Search in admin...",
+    "toggleTheme": "Toggle theme",
     "profile": "Profile",
     "settings": "System settings",
     "accessControl": "Access control",

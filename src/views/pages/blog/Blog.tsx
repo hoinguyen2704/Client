@@ -24,7 +24,7 @@ export default function Blog() {
     finally { setLoading(false); }
   };
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+    <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-8 sm:py-10 md:py-12 space-y-8">
       <div className="text-center">
         <h1 className="text-3xl font-black mb-2">Blog & Tin tức</h1>
         <p className="text-slate-500">Cập nhật tin tức công nghệ mới nhất</p>

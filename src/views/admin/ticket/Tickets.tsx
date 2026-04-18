@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { FiCalendar, FiCheck, FiChevronDown, FiCopy, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import adminTicketService from '@/apis/services/adminTicketService';
 import { Button, CustomSelect, Pagination } from '@/components';
 import TicketListItem from '@/components/ticket/TicketListItem';
-import { TICKET_STATUS_OPTIONS, TICKET_FILTER_OPTIONS } from '@/constants/ticketConstants';
+import { getTicketFilterOptions, getTicketStatusOptions } from '@/constants/ticketConstants';
 import type { SupportRealtimePayload, TicketResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDateShort as formatDate } from '@/utils/format';
@@ -115,6 +116,7 @@ function buildTicketSections(tickets: TicketResponse[], groupMode: TicketGroupMo
 }
 
 export default function Tickets() {
+  const { t } = useTranslation('common');
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -278,7 +280,7 @@ export default function Tickets() {
             className="w-full sm:w-44 z-20"
           />
           <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
-            options={TICKET_FILTER_OPTIONS} className="w-full sm:w-48 z-20" />
+            options={getTicketFilterOptions(t)} className="w-full sm:w-48 z-20" />
         </div>
       </div>
 
@@ -390,7 +392,7 @@ export default function Tickets() {
                     </div>
                   </div>
                   <CustomSelect value={selectedTicket.status} onChange={(val) => handleStatusChange(selectedTicket.id, val)}
-                    options={TICKET_STATUS_OPTIONS} className="w-full sm:w-36 z-10" />
+                    options={getTicketStatusOptions(t)} className="w-full sm:w-36 z-10" />
                 </div>
               </div>
               <div className="flex-1 p-3 sm:p-6 overflow-y-auto space-y-3 sm:space-y-4 min-h-0">

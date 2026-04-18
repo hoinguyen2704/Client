@@ -35,6 +35,19 @@ const DEFAULT_CONFIG: WidgetConfig = {
   isEnabled: true,
 };
 
+const HISTORY_LIMITS = {
+  maxMessages: 6,
+  maxCharsPerMessage: 280,
+  maxTotalChars: 1400,
+};
+
+function clipHistoryContent(input: string, maxChars: number): string {
+  const normalized = input.replace(/\s+/g, " ").trim();
+  if (!normalized) return "";
+  if (normalized.length <= maxChars) return normalized;
+  return `${normalized.slice(0, Math.max(0, maxChars - 1)).trimEnd()}…`;
+}
+
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [widgetConfig, setWidgetConfig] =
@@ -97,12 +110,33 @@ export default function Chatbot() {
    * Chatbot server expect role = 'bot' cho assistant messages.
    */
   const buildHistory = useCallback((): ChatbotMessage[] => {
-    return messages
+    const normalized = messages
       .filter((m) => m.id !== "welcome")
+      .slice(-HISTORY_LIMITS.maxMessages)
       .map((m) => ({
         role: m.role === "user" ? ("user" as const) : ("bot" as const),
-        content: m.text,
-      }));
+        content: clipHistoryContent(
+          m.text,
+          HISTORY_LIMITS.maxCharsPerMessage,
+        ),
+      }))
+      .filter((m) => m.content);
+
+    let remaining = HISTORY_LIMITS.maxTotalChars;
+    const trimmed: ChatbotMessage[] = [];
+
+    for (let index = normalized.length - 1; index >= 0 && remaining > 0; index -= 1) {
+      const message = normalized[index];
+      const content = clipHistoryContent(
+        message.content,
+        Math.min(message.content.length, remaining),
+      );
+      if (!content) continue;
+      trimmed.unshift({ ...message, content });
+      remaining -= content.length;
+    }
+
+    return trimmed;
   }, [messages]);
 
   const sendMessage = useCallback(async (text: string) => {

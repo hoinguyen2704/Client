@@ -39,5 +39,92 @@
       "minutes": "phút",
       "seconds": "giây"
     }
+  },
+  "productDetail": {
+    "variantFallback": "Phân loại",
+    "toasts": {
+      "loadFailed": "Không thể tải thông tin sản phẩm!",
+      "loginAddToCart": "Vui lòng đăng nhập để thêm vào giỏ hàng!",
+      "loginBuyNow": "Vui lòng đăng nhập để mua hàng!",
+      "loginWishlist": "Vui lòng đăng nhập để thêm vào danh sách yêu thích!",
+      "selectVariant": "Vui lòng chọn phiên bản trước khi tiếp tục.",
+      "addedToCart": "Đã thêm {{count}} sản phẩm vào giỏ hàng!"
+    },
+    "notFound": {
+      "title": "Không tìm thấy sản phẩm",
+      "back": "Quay lại danh sách"
+    },
+    "relatedTitle": "Sản phẩm liên quan",
+    "meta": {
+      "reviewsCount": "{{count}} đánh giá",
+      "sold": "Đã bán {{count}}",
+      "selectedVariantSold": "Phân loại đã chọn bán {{count}}",
+      "brand": "Thương hiệu",
+      "stockRemaining": "Còn {{count}} sản phẩm",
+      "available": "Sẵn hàng",
+      "discount": "Giảm {{percent}}%"
+    },
+    "pricing": {
+      "chooseVariantToSeePrice": "Vui lòng chọn đầy đủ phân loại để xem giá.",
+      "discountOff": "{{percent}}% giảm",
+      "flashSale": "Flash Sale",
+      "flashSaleRemaining": "Còn {{count}} suất giá sốc"
+    },
+    "quantity": {
+      "title": "Số lượng",
+      "clearSelection": "Xóa lựa chọn",
+      "overMaxWarning": "Chỉ còn {{count}} sản phẩm có sẵn!",
+      "chooseMore": "Chọn thêm: {{attributes}}",
+      "availableCount": "{{count}} sản phẩm có sẵn",
+      "outOfStock": "Hết hàng",
+      "soldCount": "Đã bán: {{count}}"
+    },
+    "actions": {
+      "wishlist": "Yêu thích",
+      "addToCart": "Thêm vào giỏ",
+      "buyNow": "Mua ngay"
+    },
+    "tabs": {
+      "specs": "Thông số kỹ thuật",
+      "description": "Mô tả sản phẩm",
+      "reviews": "Đánh giá ({{count}})",
+      "noSpecs": "Chưa có thông số kỹ thuật cho sản phẩm này.",
+      "noDescription": "Chưa có mô tả cho sản phẩm này.",
+      "reviewsCount": "{{count}} đánh giá",
+      "verifiedOnly": "Chỉ khách hàng đã mua và nhận hàng thành công mới có thể đánh giá.",
+      "round": "Lần {{count}}",
+      "variant": "Phân loại: {{value}}",
+      "shopReply": "Phản hồi từ shop",
+      "updatedReview": "Đánh giá lại ({{afterText}})",
+      "new": "Mới",
+      "sameDay": "trong ngày",
+      "afterDays": "sau {{count}} ngày",
+      "emptyReviews": "Chưa có đánh giá nào cho sản phẩm này."
+    }
+  },
+  "productCard": {
+    "flashSaleSold": "Đã bán {{percent}}%",
+    "badges": {
+      "new": "Mới",
+      "discount": "Giảm {{percent}}%"
+    },
+    "status": {
+      "available": "Còn hàng",
+      "inactive": "Ngừng bán",
+      "comingSoon": "Sắp về",
+      "contact": "Liên hệ",
+      "outOfStock": "Hết hàng"
+    },
+    "sold": "Đã bán {{count}}",
+    "originalPrice": "Giá gốc",
+    "actions": {
+      "wishlist": "Yêu thích",
+      "loginWishlist": "Vui lòng đăng nhập để thêm vào danh sách yêu thích!",
+      "loginCart": "Vui lòng đăng nhập để thêm vào giỏ hàng!",
+      "addToCart": "Thêm giỏ hàng",
+      "adding": "Đang thêm...",
+      "addedToCart": "Đã thêm {{name}} vào giỏ hàng!",
+      "addToCartFailed": "Thêm giỏ hàng thất bại! Vui lòng đăng nhập."
+    }
   }
 }

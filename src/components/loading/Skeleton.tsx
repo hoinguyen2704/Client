@@ -46,7 +46,7 @@ export function LoadingScreen() {
           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-600 animate-spin" />
         </div>
         <p className="text-md text-slate-500 dark:text-slate-400 font-medium">
-          {t('loading.default', { defaultValue: 'Đang tải...' })}
+          {t('loading.default')}
         </p>
       </div>
     </div>

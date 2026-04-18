@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FiBell, FiLock, FiSmartphone, FiMail, FiShield, FiKey, FiAlertTriangle, FiSun, FiGlobe, FiLoader } from 'react-icons/fi';
+import { FiBell, FiLock, FiMail, FiShield, FiKey, FiAlertTriangle, FiSun, FiGlobe, FiLoader } from 'react-icons/fi';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Button, SwitchToggle, CustomSelect, Modal, ModalCancelButton, ModalSubmitButton } from '@/components';
 import useUIStore from '@/stores/useUIStore';
-import useAuthStore from '@/stores/useAuthStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
@@ -16,13 +15,11 @@ import type { SupportedLanguage } from '@/locales/config';
 export default function Settings() {
   const [notifications, setNotifications] = useState({
     email: true,
-    sms: false,
     app: true,
     promotions: true,
     orders: true
   });
 
-  const [twoFactor, setTwoFactor] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -34,7 +31,6 @@ export default function Settings() {
   const [unlinkGoogleModalOpen, setUnlinkGoogleModalOpen] = useState(false);
   const [unlinkPassword, setUnlinkPassword] = useState('');
   const [unlinkingGoogle, setUnlinkingGoogle] = useState(false);
-  const user = useAuthStore(s => s.user);
   const { darkMode, toggleDarkMode, language, setLanguage } = useUIStore();
   const { t } = useTranslation(['settings', 'common']);
 
@@ -249,24 +245,6 @@ export default function Settings() {
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
-                      <FiSmartphone />
-                    </div>
-                    <div>
-                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:notifications.smsTitle')}</p>
-                      <p className="text-md text-slate-500">{t('settings:notifications.smsDesc')}</p>
-                    </div>
-                  </div>
-                  <SwitchToggle
-                    checked={notifications.sms}
-                    onChange={() => handleNotificationChange('sms')}
-                    tone="blue"
-                    ariaLabel={t('settings:aria.toggleSms')}
-                  />
-                </label>
-
-                <label className="flex items-center justify-between cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
                       <FiBell />
                     </div>
                     <div>
@@ -371,43 +349,54 @@ export default function Settings() {
               </div>
 
               {/* 2FA */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                    <FiLock />
-                  </div>
-                  <div>
-                    <p className="font-medium text-slate-900 dark:text-white">{t('settings:security.twoFactor.title')}</p>
-                    <p className="text-md text-slate-500">{t('settings:security.twoFactor.desc')}</p>
+              <div className="relative pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/70 p-4 backdrop-blur-[2px] dark:bg-slate-900/70">
+                  <div className="max-w-sm rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-center shadow-lg shadow-amber-100/60 dark:border-amber-900/60 dark:bg-amber-950/70 dark:shadow-none">
+                    <p className="text-md font-semibold text-amber-800 dark:text-amber-200">
+                      {t('settings:security.twoFactor.comingSoon')}
+                    </p>
+                    <p className="mt-1 text-sm text-amber-700/90 dark:text-amber-300/90">
+                      {t('settings:security.twoFactor.comingSoonDescription')}
+                    </p>
                   </div>
                 </div>
-                <SwitchToggle
-                  checked={twoFactor}
-                  onChange={setTwoFactor}
-                  tone="success"
-                  ariaLabel={t('settings:aria.toggleTwoFactor')}
-                />
-              </div>
 
-              <AnimatePresence>
-                {twoFactor && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center text-center mt-4">
-                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=otpauth://totp/Hozitech:${user?.email}?secret=JBSWY3DPEHPK3PXP&issuer=Hozitech`} alt="QR Code" className="w-32 h-32 mb-4 rounded-lg bg-white p-2" />
-                      <p className="text-md text-muted-strong mb-4">{t('settings:security.twoFactor.setupDescription')}</p>
-                      <div className="flex gap-2 w-full">
-                        <input type="text" placeholder={t('settings:security.twoFactor.otpPlaceholder')} className="flex-1 h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 text-center tracking-widest font-mono" maxLength={6} />
-                        <Button variant="success" size="sm" className="px-4 bg-blue-600 hover:bg-blue-700 text-white border-0">{t('settings:security.twoFactor.confirm')}</Button>
+                <div className="pointer-events-none select-none space-y-4 opacity-60">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                        <FiLock />
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-900 dark:text-white">{t('settings:security.twoFactor.title')}</p>
+                        <p className="text-md text-slate-500">{t('settings:security.twoFactor.desc')}</p>
                       </div>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    <SwitchToggle
+                      checked={false}
+                      onChange={() => {}}
+                      tone="success"
+                      ariaLabel={t('settings:aria.toggleTwoFactor')}
+                    />
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+                    <p className="text-md text-muted-strong mb-4">{t('settings:security.twoFactor.setupDescription')}</p>
+                    <div className="flex gap-2 w-full">
+                      <input
+                        type="text"
+                        placeholder={t('settings:security.twoFactor.otpPlaceholder')}
+                        className="flex-1 h-10 rounded-lg border border-slate-200 bg-white px-3 text-center font-mono tracking-widest focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900"
+                        maxLength={6}
+                        readOnly
+                      />
+                      <Button variant="success" size="sm" className="px-4 bg-blue-600 hover:bg-blue-700 text-white border-0">
+                        {t('settings:security.twoFactor.confirm')}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

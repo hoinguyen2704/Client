@@ -38,11 +38,11 @@ export default function Register() {
     if (password.length === 0) {
       setPasswordStrength({ score: 0, label: '', color: 'bg-slate-200 dark:bg-slate-700' });
     } else if (score < 3) {
-      setPasswordStrength({ score: 1, label: t('register.passwordStrength.weak', { ns: 'auth', defaultValue: 'Yếu' }), color: 'bg-red-500' });
+      setPasswordStrength({ score: 1, label: t('register.passwordStrength.weak', { ns: 'auth' }), color: 'bg-red-500' });
     } else if (score < 5) {
-      setPasswordStrength({ score: 2, label: t('register.passwordStrength.medium', { ns: 'auth', defaultValue: 'Trung bình' }), color: 'bg-yellow-500' });
+      setPasswordStrength({ score: 2, label: t('register.passwordStrength.medium', { ns: 'auth' }), color: 'bg-yellow-500' });
     } else {
-      setPasswordStrength({ score: 3, label: t('register.passwordStrength.strong', { ns: 'auth', defaultValue: 'Mạnh' }), color: 'bg-emerald-500' });
+      setPasswordStrength({ score: 3, label: t('register.passwordStrength.strong', { ns: 'auth' }), color: 'bg-emerald-500' });
     }
   }, [password, t]);
 
@@ -51,12 +51,12 @@ export default function Register() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError(t('register.errors.confirmMismatch', { ns: 'auth', defaultValue: 'Mật khẩu xác nhận không khớp' }));
+      setError(t('register.errors.confirmMismatch', { ns: 'auth' }));
       return;
     }
 
     if (password.length < 6) {
-      setError(t('register.errors.passwordMin', { ns: 'auth', defaultValue: 'Mật khẩu phải có ít nhất 6 ký tự' }));
+      setError(t('register.errors.passwordMin', { ns: 'auth' }));
       return;
     }
 
@@ -89,9 +89,9 @@ export default function Register() {
   };
 
   const features = [
-    { icon: FiShield, title: t('features.security.title', { ns: 'auth', defaultValue: 'Bảo mật tuyệt đối' }), desc: t('features.security.desc', { ns: 'auth', defaultValue: 'Mã hóa SSL 256-bit bảo vệ mọi giao dịch' }) },
-    { icon: FiTruck, title: t('features.shipping.title', { ns: 'auth', defaultValue: 'Giao hàng siêu tốc' }), desc: t('features.shipping.desc', { ns: 'auth', defaultValue: 'Miễn phí giao hàng cho đơn từ 500K' }) },
-    { icon: FiHeadphones, title: t('features.support.title', { ns: 'auth', defaultValue: 'Hỗ trợ 24/7' }), desc: t('features.support.desc', { ns: 'auth', defaultValue: 'Đội ngũ CSKH luôn sẵn sàng hỗ trợ bạn' }) },
+    { icon: FiShield, title: t('features.security.title', { ns: 'auth' }), desc: t('features.security.desc', { ns: 'auth' }) },
+    { icon: FiTruck, title: t('features.shipping.title', { ns: 'auth' }), desc: t('features.shipping.desc', { ns: 'auth' }) },
+    { icon: FiHeadphones, title: t('features.support.title', { ns: 'auth' }), desc: t('features.support.desc', { ns: 'auth' }) },
   ];
 
   return (
@@ -102,26 +102,22 @@ export default function Register() {
         <Trans
           ns="auth"
           i18nKey="register.heroTitle"
-          defaults="Tham gia cộng đồng <highlight>công nghệ</highlight>"
           components={{
             highlight: <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300" />,
           }}
         />
       )}
-      heroSubtitle={t('register.heroSubtitle', {
-        ns: 'auth',
-        defaultValue: 'Đăng ký ngay để nhận ưu đãi độc quyền và trải nghiệm mua sắm tuyệt vời nhất.',
-      })}
+      heroSubtitle={t('register.heroSubtitle', { ns: 'auth' })}
       features={features}
       mobileLogoGradient="from-blue-600 to-purple-600"
       mobileLogoShadow="shadow-blue-500/30"
     >
       <div className="text-center lg:text-left">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
-          {t('register.title', { ns: 'auth', defaultValue: 'Đăng ký tài khoản' })}
+          {t('register.title', { ns: 'auth' })}
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg">
-          {t('register.subtitle', { ns: 'auth', defaultValue: 'Tạo tài khoản để trải nghiệm mua sắm tốt nhất' })}
+          {t('register.subtitle', { ns: 'auth' })}
         </p>
       </div>
 
@@ -134,60 +130,60 @@ export default function Register() {
       {success && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-3 p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-2xl text-md sm:text-lg">
-          <FiCheckCircle className="text-xl shrink-0" /><span>{t('register.success', { ns: 'auth', defaultValue: 'Đăng ký thành công! Đang chuyển hướng...' })}</span>
+          <FiCheckCircle className="text-xl shrink-0" /><span>{t('register.success', { ns: 'auth' })}</span>
         </motion.div>
       )}
 
       <form className="space-y-6 sm:space-y-8" onSubmit={handleRegister}>
         <div>
           <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-            {t('register.fullNameLabel', { ns: 'auth', defaultValue: 'Họ và tên' })}
+            {t('register.fullNameLabel', { ns: 'auth' })}
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
               <FiUser className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
             </div>
             <input type="text" required value={fullName} onChange={(e) => setFullName(e.target.value)}
-              className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.fullNamePlaceholder', { ns: 'auth', defaultValue: 'Nhập họ và tên' })} />
+              className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.fullNamePlaceholder', { ns: 'auth' })} />
           </div>
         </div>
 
         <div>
           <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-            {t('register.emailLabel', { ns: 'auth', defaultValue: 'Email' })}
+            {t('register.emailLabel', { ns: 'auth' })}
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
               <FiMail className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
             </div>
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-              className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.emailPlaceholder', { ns: 'auth', defaultValue: 'Nhập địa chỉ email' })} />
+              className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.emailPlaceholder', { ns: 'auth' })} />
           </div>
         </div>
 
         <div>
           <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-            {t('register.phoneLabel', { ns: 'auth', defaultValue: 'Số điện thoại' })}
+            {t('register.phoneLabel', { ns: 'auth' })}
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
               <FiPhone className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
             </div>
             <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
-              className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.phonePlaceholder', { ns: 'auth', defaultValue: 'Nhập số điện thoại (không bắt buộc)' })} />
+              className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.phonePlaceholder', { ns: 'auth' })} />
           </div>
         </div>
 
         <div>
           <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-            {t('register.passwordLabel', { ns: 'auth', defaultValue: 'Mật khẩu' })}
+            {t('register.passwordLabel', { ns: 'auth' })}
           </label>
           <div className="relative group mb-4">
             <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
               <FiLock className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
             </div>
             <input type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)}
-              className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.passwordPlaceholder', { ns: 'auth', defaultValue: 'Tạo mật khẩu' })} />
+              className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.passwordPlaceholder', { ns: 'auth' })} />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-purple-600 transition-colors">
               {showPassword ? <FiEyeOff className="text-xl sm:text-2xl" /> : <FiEye className="text-xl sm:text-2xl" />}
             </button>
@@ -208,14 +204,14 @@ export default function Register() {
 
         <div>
           <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-            {t('register.confirmPasswordLabel', { ns: 'auth', defaultValue: 'Xác nhận mật khẩu' })}
+            {t('register.confirmPasswordLabel', { ns: 'auth' })}
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
               <FiLock className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
             </div>
             <input type={showConfirmPassword ? 'text' : 'password'} required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-              className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.confirmPasswordPlaceholder', { ns: 'auth', defaultValue: 'Nhập lại mật khẩu' })} />
+              className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm" placeholder={t('register.confirmPasswordPlaceholder', { ns: 'auth' })} />
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-purple-600 transition-colors">
               {showConfirmPassword ? <FiEyeOff className="text-xl sm:text-2xl" /> : <FiEye className="text-xl sm:text-2xl" />}
             </button>
@@ -230,7 +226,6 @@ export default function Register() {
             <Trans
               ns="auth"
               i18nKey="register.terms"
-              defaults="Tôi đồng ý với <termsLink>Điều khoản dịch vụ</termsLink> và <privacyLink>Chính sách bảo mật</privacyLink>"
               components={{
                 termsLink: <Link to="/terms" className="text-purple-600 hover:text-purple-500 font-semibold" />,
                 privacyLink: <Link to="/privacy" className="text-purple-600 hover:text-purple-500 font-semibold" />,
@@ -244,16 +239,16 @@ export default function Register() {
           {loading ? (
             <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
-            <>{t('register.submit', { ns: 'auth', defaultValue: 'Đăng ký' })} <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" /></>
+            <>{t('register.submit', { ns: 'auth' })} <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" /></>
           )}
         </motion.button>
       </form>
 
       <div className="text-center pt-4">
         <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
-          {t('register.loginPrompt', { ns: 'auth', defaultValue: 'Đã có tài khoản?' })}{' '}
+          {t('register.loginPrompt', { ns: 'auth' })}{' '}
           <Link to="/login" className="font-semibold text-purple-600 hover:text-purple-500 transition-colors">
-            {t('register.loginLink', { ns: 'auth', defaultValue: 'Đăng nhập ngay' })}
+            {t('register.loginLink', { ns: 'auth' })}
           </Link>
         </p>
       </div>

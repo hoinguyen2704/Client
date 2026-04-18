@@ -96,10 +96,10 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
             {/* Header */}
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-md">{t('notifications.title', { ns: 'layout', defaultValue: 'Thông báo' })}</h3>
+                <h3 className="font-bold text-md">{t('notifications.title', { ns: 'layout' })}</h3>
                 {unreadCount > 0 && (
                   <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-11 font-bold rounded-full">
-                    {t('notifications.newCount', { ns: 'layout', count: unreadCount, defaultValue: `${unreadCount} mới` })}
+                    {t('notifications.newCount', { ns: 'layout', count: unreadCount })}
                   </span>
                 )}
               </div>
@@ -109,7 +109,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                   className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors"
                 >
                   <FiCheckCircle className="text-sm" />
-                  {t('notifications.markAllRead', { ns: 'layout', defaultValue: 'Đọc tất cả' })}
+                  {t('notifications.markAllRead', { ns: 'layout' })}
                 </button>
               )}
             </div>
@@ -132,7 +132,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
               ) : localNotifications.length === 0 ? (
                 <div className="py-10 text-center">
                   <FiBell className="text-3xl text-disabled mx-auto mb-3" />
-                  <p className="text-sm text-slate-400">{t('notifications.empty', { ns: 'layout', defaultValue: 'Không có thông báo' })}</p>
+                  <p className="text-sm text-slate-400">{t('notifications.empty', { ns: 'layout' })}</p>
                 </div>
               ) : (
                 localNotifications.map(n => (
@@ -158,7 +158,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                       <button
                         onClick={(e) => { e.stopPropagation(); handleMarkRead(n.id); }}
                         className="p-1 text-slate-400 hover:text-green-600 shrink-0 mt-0.5"
-                        title={t('notifications.markRead', { ns: 'layout', defaultValue: 'Đánh dấu đã đọc' })}
+                        title={t('notifications.markRead', { ns: 'layout' })}
                       >
                         <FiCheck className="text-sm" />
                       </button>
@@ -175,7 +175,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                 onClick={() => setIsOpen(false)}
                 className="flex items-center justify-center gap-2 text-sm font-semibold text-purple-600 hover:text-purple-700 transition-colors"
               >
-                {t('notifications.viewAll', { ns: 'layout', defaultValue: 'Xem tất cả thông báo' })}
+                {t('notifications.viewAll', { ns: 'layout' })}
                 <FiExternalLink className="text-xs" />
               </Link>
             </div>

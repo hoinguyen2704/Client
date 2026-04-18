@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { FiStar, FiUser, FiMessageSquare } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import type { ProductResponse, FeedbackResponse } from '@/types';
 import { StarRating, ExpandToggle } from '@/components';
 import feedbackService from '@/apis/services/feedbackService';
@@ -8,6 +9,7 @@ import feedbackService from '@/apis/services/feedbackService';
 const COLLAPSED_HEIGHT = 320; // px
 
 export default function ProductTabs({ product, images }: { product: ProductResponse; images: string[] }) {
+  const { t, i18n } = useTranslation('catalog');
   const [activeTab, setActiveTab] = useState('specs');
   const [feedbacks, setFeedbacks] = useState<FeedbackResponse[]>([]);
   const [feedbackPage, setFeedbackPage] = useState(1);
@@ -53,7 +55,11 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
 
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric', year: 'numeric' });
+      return new Date(dateStr).toLocaleDateString(i18n.resolvedLanguage === 'vi' ? 'vi-VN' : 'en-US', {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+      });
     } catch { return dateStr; }
   };
 
@@ -74,9 +80,9 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
     <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-8 sm:mb-12 overflow-hidden">
       <div className="flex border-b border-slate-200 dark:border-slate-800">
         {[
-          { id: 'specs', label: 'Thông số kỹ thuật' },
-          { id: 'description', label: 'Mô tả sản phẩm' },
-          { id: 'reviews', label: `Đánh giá (${reviews})` },
+          { id: 'specs', label: t('productDetail.tabs.specs') },
+          { id: 'description', label: t('productDetail.tabs.description') },
+          { id: 'reviews', label: t('productDetail.tabs.reviews', { count: reviews }) },
         ].map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
             className={`flex-1 py-3 sm:py-4 px-2 text-center font-bold text-sm sm:text-md lg:text-lg transition-colors relative ${activeTab === tab.id ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}>
@@ -109,7 +115,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                     </table>
                   </div>
                 ) : (
-                  <p className="text-slate-500 text-md sm:text-base text-center py-8">Chưa có thông số kỹ thuật cho sản phẩm này.</p>
+                  <p className="text-slate-500 text-md sm:text-base text-center py-8">{t('productDetail.tabs.noSpecs')}</p>
                 )}
               </motion.div>
             )}
@@ -119,7 +125,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                 {product.description ? (
                   <div dangerouslySetInnerHTML={{ __html: product.description.replace(/style="[^"]*max-height[^"]*"/g, '') }} />
                 ) : (
-                  <p className="text-slate-500 text-md sm:text-base">Chưa có mô tả cho sản phẩm này.</p>
+                  <p className="text-slate-500 text-md sm:text-base">{t('productDetail.tabs.noDescription')}</p>
                 )}
               </motion.div>
             )}
@@ -132,7 +138,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                     <div className="flex justify-center gap-1 text-yellow-400 text-base sm:text-xl mb-1 sm:mb-2">
                       <StarRating value={Math.round(rating)} onChange={() => {}} readOnly size="sm" />
                     </div>
-                    <div className="text-slate-500 text-md sm:text-base">{reviews} đánh giá</div>
+                    <div className="text-slate-500 text-md sm:text-base">{t('productDetail.tabs.reviewsCount', { count: reviews })}</div>
                   </div>
                   <div className="flex-1 w-full space-y-2">
                     {[5, 4, 3, 2, 1].map(star => (
@@ -146,7 +152,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                     ))}
                   </div>
                   <div className="md:w-1/4 flex flex-col items-center justify-center w-full">
-                    <p className="text-md sm:text-base text-slate-500 text-center">Chỉ khách hàng đã mua và nhận hàng thành công mới có thể đánh giá.</p>
+                    <p className="text-md sm:text-base text-slate-500 text-center">{t('productDetail.tabs.verifiedOnly')}</p>
                   </div>
                 </div>
 
@@ -172,17 +178,17 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                                   {mainFb.userName?.charAt(0)?.toUpperCase() || <FiUser />}
                                 </div>
                               )}
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-bold text-md sm:text-base">{mainFb.userName}</h4>
-                                  {group.length > 1 && <span className="px-1.5 py-0.5 text-10 font-medium bg-slate-100 dark:bg-slate-700 text-slate-500 rounded">Lần 1</span>}
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <h4 className="font-bold text-md sm:text-base">{mainFb.userName}</h4>
+                                  {group.length > 1 && <span className="px-1.5 py-0.5 text-10 font-medium bg-slate-100 dark:bg-slate-700 text-slate-500 rounded">{t('productDetail.tabs.round', { count: 1 })}</span>}
                                 </div>
                                 <div className="flex items-center gap-2 text-sm sm:text-md text-slate-400 mt-0.5">
                                    <span>{formatDate(mainFb.createdAt)}</span>
                                    {mainFb.variantName && (
                                       <>
                                          <span className="w-1 h-1 bg-slate-300 dark:bg-slate-600 rounded-full"></span>
-                                         <span>Phân loại: {mainFb.variantName}</span>
+                                         <span>{t('productDetail.tabs.variant', { value: mainFb.variantName })}</span>
                                       </>
                                    )}
                                 </div>
@@ -193,7 +199,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                           {mainFb.content && <p className="mt-3 text-md sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">{mainFb.content}</p>}
                           {mainFb.adminReply && (
                             <div className="mt-3 p-2.5 sm:p-4 bg-blue-50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-800/30">
-                              <p className="text-md font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> Phản hồi từ shop</p>
+                              <p className="text-md font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> {t('productDetail.tabs.shopReply')}</p>
                               <p className="text-md sm:text-base text-slate-700 dark:text-slate-300">{mainFb.adminReply}</p>
                             </div>
                           )}
@@ -201,13 +207,15 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                           {group.length > 1 && (() => {
                             const diffTime = new Date(group[1].createdAt).getTime() - new Date(group[0].createdAt).getTime();
                             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                            const afterText = diffDays === 0 ? 'trong ngày' : `sau ${diffDays} ngày`;
+                            const afterText = diffDays === 0
+                              ? t('productDetail.tabs.sameDay')
+                              : t('productDetail.tabs.afterDays', { count: diffDays });
                             return (
                             <div className="mt-5 pt-5 border-t border-slate-200 dark:border-slate-700">
                               <div className="flex items-center justify-between mb-2">
                                  <p className="text-md sm:text-base font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                                   Đánh giá lại ({afterText})
-                                   <span className="px-1.5 py-0.5 text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded">Mới</span>
+                                   {t('productDetail.tabs.updatedReview', { afterText })}
+                                   <span className="px-1.5 py-0.5 text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded">{t('productDetail.tabs.new')}</span>
                                  </p>
                                  <div className="flex items-center gap-2 text-md text-slate-400">
                                     <span>{formatDate(group[1].createdAt)}</span>
@@ -217,7 +225,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                               {group[1].content && <p className="text-md sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">{group[1].content}</p>}
                               {group[1].adminReply && (
                                 <div className="mt-3 p-2.5 sm:p-4 bg-blue-50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-800/30">
-                                  <p className="text-md font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> Phản hồi từ shop</p>
+                                  <p className="text-md font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1"><FiMessageSquare /> {t('productDetail.tabs.shopReply')}</p>
                                   <p className="text-md sm:text-base text-slate-700 dark:text-slate-300">{group[1].adminReply}</p>
                                 </div>
                               )}
@@ -230,7 +238,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                   </div>
                 ) : (
                   <div className="text-center py-8 text-md text-slate-500">
-                    <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                    <p>{t('productDetail.tabs.emptyReviews')}</p>
                   </div>
                 )}
               </motion.div>

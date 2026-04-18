@@ -10,6 +10,7 @@ import {
   FiRotateCw,
   FiXCircle,
 } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { BackButton, Button, CustomSelect } from '@/components';
 import returnService from '@/apis/services/returnService';
@@ -35,6 +36,7 @@ const createIdempotencyKey = () => {
 };
 
 export default function ReturnDetail() {
+  const { t } = useTranslation('common');
   const { id } = useParams<{ id: string }>();
   const [returnRequest, setReturnRequest] = useState<ReturnRequestResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,8 @@ export default function ReturnDetail() {
   const [currency, setCurrency] = useState('VND');
   const [rawPayload, setRawPayload] = useState('');
   const [isRefunding, setIsRefunding] = useState(false);
+  const translate = (key: string, options?: Record<string, unknown>) =>
+    String(t(key, options as never));
 
   useEffect(() => {
     if (!id) return;
@@ -75,7 +79,7 @@ export default function ReturnDetail() {
     const transitions = RETURN_STATUS_TRANSITIONS[currentStatus] || [];
     const uniqueStatuses = [currentStatus, ...transitions];
     return uniqueStatuses.map((status) => {
-      const meta = getReturnStatusMeta(status);
+      const meta = getReturnStatusMeta(status, t);
       return {
         value: status,
         label: meta.label,
@@ -132,7 +136,7 @@ export default function ReturnDetail() {
       setApprovedAmount('');
       toast.success(approved ? 'Đã duyệt yêu cầu trả hàng' : 'Đã từ chối yêu cầu trả hàng');
     } catch (err) {
-      toast.error(getApiErrorMessage(err, 'Thao tác duyệt trả hàng thất bại'));
+      toast.error(getApiErrorMessage(err, translate, 'common:errors.reviewReturnFailed'));
     } finally {
       setIsReviewing(false);
     }
@@ -155,7 +159,7 @@ export default function ReturnDetail() {
       setStatusNote('');
       toast.success('Đã cập nhật trạng thái yêu cầu');
     } catch (err) {
-      toast.error(getApiErrorMessage(err, 'Cập nhật trạng thái thất bại'));
+      toast.error(getApiErrorMessage(err, translate, 'common:errors.updateStatusFailed'));
     } finally {
       setIsUpdatingStatus(false);
     }
@@ -211,7 +215,7 @@ export default function ReturnDetail() {
       setRawPayload('');
       toast.success('Đã xử lý hoàn tiền thành công');
     } catch (err) {
-      toast.error(getApiErrorMessage(err, 'Xử lý hoàn tiền thất bại'));
+      toast.error(getApiErrorMessage(err, translate, 'common:errors.processRefundFailed'));
     } finally {
       setIsRefunding(false);
     }

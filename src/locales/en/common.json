@@ -67,7 +67,14 @@
   "errors": {
     "unknown": "Something went wrong",
     "timeout": "The request timed out. Please try again.",
-    "network": "Unable to connect to the server. Please check your network and try again."
+    "network": "Unable to connect to the server. Please check your network and try again.",
+    "contactSubmitFailed": "Unable to send your message. Please try again.",
+    "addToCartFailed": "Unable to add this item to cart.",
+    "reviewReturnFailed": "Unable to review the return request.",
+    "updateStatusFailed": "Unable to update the status.",
+    "processRefundFailed": "Unable to process the refund.",
+    "updatePhoneFailed": "Unable to update the phone number.",
+    "saveFlashSaleFailed": "Unable to save Flash Sale."
   },
   "roles": {
     "admin": "Administrator",

@@ -47,7 +47,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            aria-label={t('mobileMenu.closeMenu', { ns: 'layout', defaultValue: 'Đóng menu' })}
+            aria-label={t('mobileMenu.closeMenu', { ns: 'layout' })}
             className="md:hidden fixed inset-0 z-[70] bg-transparent"
           />
 
@@ -63,7 +63,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
             <div className="relative">
               <input
                 type="text"
-                placeholder={t('mobileMenu.searchPlaceholder', { ns: 'layout', defaultValue: 'Tìm kiếm...' })}
+                placeholder={t('mobileMenu.searchPlaceholder', { ns: 'layout' })}
                 onKeyDown={handleSearch}
                 className="w-full h-10 pl-4 pr-10 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
               />
@@ -85,7 +85,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                     }`
                   }
                 >
-                  {t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}
+                  {t(item.labelKey, { ns: 'layout' })}
                 </NavLink>
               ))}
               
@@ -98,24 +98,24 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                     <p className="font-bold text-md truncate">{user.email}</p>
                     <p className="text-sm text-slate-500 capitalize mt-0.5">
                       {user.role?.toLowerCase() === 'admin'
-                        ? t('roles.admin', { ns: 'common', defaultValue: user.role })
-                        : t('roles.customer', { ns: 'common', defaultValue: user.role })}
+                        ? t('roles.admin', { ns: 'common' })
+                        : t('roles.customer', { ns: 'common' })}
                     </p>
                   </div>
                   {user.role === 'admin' ? (
                     <Link to="/admin" onClick={onClose} className={MOBILE_MENU_LINK_CLASS}>
-                      <FiSettings className="text-lg" /> {t('mobileMenu.adminPanel', { ns: 'layout', defaultValue: 'Quản trị viên' })}
+                      <FiSettings className="text-lg" /> {t('mobileMenu.adminPanel', { ns: 'layout' })}
                     </Link>
                   ) : (
                     <>
                       <Link to="/user/profile" onClick={onClose} className={MOBILE_MENU_LINK_CLASS}>
-                        <FiUser className="text-lg" /> {t('mobileMenu.myAccount', { ns: 'layout', defaultValue: 'Tài khoản của tôi' })}
+                        <FiUser className="text-lg" /> {t('mobileMenu.myAccount', { ns: 'layout' })}
                       </Link>
                       <Link to="/user/orders" onClick={onClose} className={MOBILE_MENU_LINK_CLASS}>
-                        <FiBox className="text-lg" /> {t('mobileMenu.orders', { ns: 'layout', defaultValue: 'Đơn mua' })}
+                        <FiBox className="text-lg" /> {t('mobileMenu.orders', { ns: 'layout' })}
                       </Link>
                       <Link to="/user/returns" onClick={onClose} className={MOBILE_MENU_LINK_CLASS}>
-                        <FiRotateCcw className="text-lg" /> {t('mobileMenu.returns', { ns: 'layout', defaultValue: 'Trả hàng / Hoàn tiền' })}
+                        <FiRotateCcw className="text-lg" /> {t('mobileMenu.returns', { ns: 'layout' })}
                       </Link>
                     </>
                   )}
@@ -126,7 +126,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                     }}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
-                    <FiLogOut className="text-lg" /> {t('mobileMenu.logout', { ns: 'layout', defaultValue: 'Đăng xuất' })}
+                    <FiLogOut className="text-lg" /> {t('mobileMenu.logout', { ns: 'layout' })}
                   </button>
                 </>
               ) : (
@@ -135,7 +135,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                   onClick={onClose}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400"
                 >
-                  <FiUser className="text-lg" /> {t('mobileMenu.loginRegister', { ns: 'layout', defaultValue: 'Đăng nhập / Đăng ký' })}
+                  <FiUser className="text-lg" /> {t('mobileMenu.loginRegister', { ns: 'layout' })}
                 </Link>
               )}
             </nav>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiMail, FiPhone, FiCalendar, FiLock, FiUnlock } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { formatDate } from '@/utils/format';
 import { getApiErrorMessage } from '@/utils/error';
 import { toast } from 'sonner';
@@ -10,12 +11,15 @@ import { Button, StatusBadge, UserAvatar, BackButton } from '@/components';
 import type { UserResponse } from '@/types';
 
 export default function CustomerDetail() {
+  const { t } = useTranslation('common');
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneReason, setPhoneReason] = useState('');
   const [updatingPhone, setUpdatingPhone] = useState(false);
+  const translate = (key: string, options?: Record<string, unknown>) =>
+    String(t(key, options as never));
 
   useEffect(() => {
     if (!id) return;
@@ -63,7 +67,7 @@ export default function CustomerDetail() {
       setPhoneReason('');
       toast.success('Cập nhật số điện thoại thành công!');
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Cập nhật số điện thoại thất bại.'));
+      toast.error(getApiErrorMessage(err, translate, 'common:errors.updatePhoneFailed'));
     } finally {
       setUpdatingPhone(false);
     }

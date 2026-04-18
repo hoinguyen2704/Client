@@ -13,7 +13,7 @@ interface TrashButtonProps {
 
 export default function TrashButton({ onClick, className = '', title, children, iconOnly = true, disabled = false }: TrashButtonProps) {
   const { t } = useTranslation('common');
-  const resolvedTitle = title || t('actions.delete', { defaultValue: 'Xóa' });
+  const resolvedTitle = title || t('actions.delete');
 
   return (
     <button

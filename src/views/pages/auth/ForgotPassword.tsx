@@ -11,9 +11,9 @@ export default function ForgotPassword() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const tips = [
-    { icon: FiShield, title: t('forgotPassword.tips.spam.title', { defaultValue: 'Kiểm tra email spam' }), desc: t('forgotPassword.tips.spam.desc', { defaultValue: 'Đôi khi email khôi phục có thể rơi vào thư mục spam' }) },
-    { icon: FiLock, title: t('forgotPassword.tips.strongPassword.title', { defaultValue: 'Tạo mật khẩu mạnh' }), desc: t('forgotPassword.tips.strongPassword.desc', { defaultValue: 'Kết hợp chữ hoa, số và ký tự đặc biệt' }) },
-    { icon: FiKey, title: t('forgotPassword.tips.privatePassword.title', { defaultValue: 'Không chia sẻ mật khẩu' }), desc: t('forgotPassword.tips.privatePassword.desc', { defaultValue: 'Giữ thông tin đăng nhập an toàn và riêng tư' }) },
+    { icon: FiShield, title: t('forgotPassword.tips.spam.title'), desc: t('forgotPassword.tips.spam.desc') },
+    { icon: FiLock, title: t('forgotPassword.tips.strongPassword.title'), desc: t('forgotPassword.tips.strongPassword.desc') },
+    { icon: FiKey, title: t('forgotPassword.tips.privatePassword.title'), desc: t('forgotPassword.tips.privatePassword.desc') },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,27 +31,22 @@ export default function ForgotPassword() {
         <Trans
           ns="auth"
           i18nKey="forgotPassword.heroTitle"
-          defaults="Khôi phục <highlight>tài khoản</highlight>"
           components={{
             highlight: <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-emerald-300" />,
           }}
         />
       )}
-      heroSubtitle={t('forgotPassword.heroSubtitle', {
-        defaultValue: 'Chúng tôi sẽ giúp bạn lấy lại quyền truy cập vào tài khoản một cách nhanh chóng và an toàn.',
-      })}
+      heroSubtitle={t('forgotPassword.heroSubtitle')}
       features={tips}
       mobileLogoGradient="from-emerald-600 to-teal-600"
       mobileLogoShadow="shadow-emerald-500/30"
     >
       <div className="text-center lg:text-left">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
-          {t('forgotPassword.title', { defaultValue: 'Quên mật khẩu?' })}
+          {t('forgotPassword.title')}
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg">
-          {t('forgotPassword.subtitle', {
-            defaultValue: 'Đừng lo lắng, hãy nhập email hoặc số điện thoại của bạn và chúng tôi sẽ gửi hướng dẫn khôi phục mật khẩu.',
-          })}
+          {t('forgotPassword.subtitle')}
         </p>
       </div>
 
@@ -59,7 +54,7 @@ export default function ForgotPassword() {
         <form className="space-y-6 sm:space-y-8" onSubmit={handleSubmit}>
           <div>
             <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-              {t('forgotPassword.identifierLabel', { defaultValue: 'Email / Số điện thoại' })}
+              {t('forgotPassword.identifierLabel')}
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -67,14 +62,14 @@ export default function ForgotPassword() {
               </div>
               <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}
                 className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
-                placeholder={t('forgotPassword.identifierPlaceholder', { defaultValue: 'Nhập email hoặc SĐT' })} />
+                placeholder={t('forgotPassword.identifierPlaceholder')} />
             </div>
           </div>
 
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit"
             className="group relative w-full flex justify-center items-center py-4 sm:py-5 px-6 sm:px-8 text-lg sm:text-xl font-bold rounded-2xl text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 mt-6"
           >
-            {t('forgotPassword.submit', { defaultValue: 'Gửi mã xác nhận' })} <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" />
+            {t('forgotPassword.submit')} <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </form>
       ) : (
@@ -83,28 +78,27 @@ export default function ForgotPassword() {
             <FiCheckCircle className="h-14 w-14 text-emerald-600 dark:text-emerald-400" />
           </div>
           <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
-            {t('forgotPassword.successTitle', { defaultValue: 'Đã gửi mã xác nhận!' })}
+            {t('forgotPassword.successTitle')}
           </h3>
           <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg mb-10">
             <Trans
               ns="auth"
               i18nKey="forgotPassword.successDescription"
               values={{ email }}
-              defaults={`Chúng tôi đã gửi liên kết khôi phục mật khẩu đến <highlight>${email}</highlight>. Vui lòng kiểm tra hộp thư.`}
               components={{
                 highlight: <span className="font-semibold text-slate-700 dark:text-slate-300" />,
               }}
             />
           </p>
           <button onClick={() => setIsSubmitted(false)} className="text-base sm:text-lg font-semibold text-purple-600 hover:text-purple-500 transition-colors">
-            {t('forgotPassword.retry', { defaultValue: 'Thử lại với tài khoản khác' })}
+            {t('forgotPassword.retry')}
           </button>
         </motion.div>
       )}
 
       <div className="text-center pt-4">
         <Link to="/login" className="inline-flex items-center text-base sm:text-lg font-semibold text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-          <FiArrowLeft className="mr-3 h-5 w-5 sm:h-6 sm:w-6" /> {t('forgotPassword.backToLogin', { defaultValue: 'Quay lại trang đăng nhập' })}
+          <FiArrowLeft className="mr-3 h-5 w-5 sm:h-6 sm:w-6" /> {t('forgotPassword.backToLogin')}
         </Link>
       </div>
     </AuthLayout>

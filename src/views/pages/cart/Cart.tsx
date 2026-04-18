@@ -37,8 +37,12 @@ export default function Cart() {
       return;
     }
     try {
-      await cartService.updateQuantity(itemId, qty);
-      setItems(prev => prev.map(i => i.id === itemId ? { ...i, quantity: qty, subtotal: i.price * qty } : i));
+      const res = await cartService.updateQuantity(itemId, qty);
+      setItems(prev => prev.map(i => i.id === itemId ? {
+        ...i,
+        ...res.data,
+        selected: res.data.available === false ? false : i.selected,
+      } : i));
       syncFromServer();
     } catch { toast.error('Cập nhật số lượng thất bại!'); }
   };

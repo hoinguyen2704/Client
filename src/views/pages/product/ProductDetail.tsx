@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { productService } from '@/apis';
 import flashSaleService from '@/apis/services/flashSaleService';
@@ -38,6 +39,7 @@ const keepActiveVariants = (product: ProductResponse | null): ProductResponse | 
 };
 
 export default function ProductDetail() {
+  const { t } = useTranslation(['catalog', 'layout']);
   const { slug } = useParams();
   const [product, setProduct] = useState<ProductResponse | null>(null);
   const [related, setRelated] = useState<ProductResponse[]>([]);
@@ -71,14 +73,14 @@ export default function ProductDetail() {
         }
       } catch (err) {
         console.error('Lỗi load sản phẩm:', err);
-        toast.error('Không thể tải thông tin sản phẩm!');
+        toast.error(t('productDetail.toasts.loadFailed', { ns: 'catalog' }));
         setActiveFlashSales([]);
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [slug]);
+  }, [slug, t]);
 
   useEffect(() => {
     setActiveImage(0);
@@ -132,8 +134,8 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <div className="mx-auto w-full px-4 md:px-8 lg:px-12 py-20 text-center">
-        <h2 className="text-2xl font-bold mb-4">Không tìm thấy sản phẩm</h2>
-        <Button href="/products">Quay lại danh sách</Button>
+        <h2 className="text-2xl font-bold mb-4">{t('productDetail.notFound.title', { ns: 'catalog' })}</h2>
+        <Button href="/products">{t('productDetail.notFound.back', { ns: 'catalog' })}</Button>
       </div>
     );
   }
@@ -150,9 +152,9 @@ export default function ProductDetail() {
       {/* Breadcrumb */}
       <nav className="flex text-sm md:text-md text-slate-500 mb-6">
         <ol className="flex items-center space-x-2">
-          <li><Link to="/" className="hover:text-purple-600">Trang chủ</Link></li>
+          <li><Link to="/" className="hover:text-purple-600">{t('navigation.home', { ns: 'layout' })}</Link></li>
           <li><FiChevronRight /></li>
-          <li><Link to="/products" className="hover:text-purple-600">{product.category?.name || 'Sản phẩm'}</Link></li>
+          <li><Link to="/products" className="hover:text-purple-600">{product.category?.name || t('navigation.products', { ns: 'layout' })}</Link></li>
           <li><FiChevronRight /></li>
           <li><span className="text-slate-900 dark:text-slate-100 font-medium line-clamp-1">{product.name}</span></li>
         </ol>
@@ -181,7 +183,7 @@ export default function ProductDetail() {
       {/* Related Products */}
       {related.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold mb-8">Sản phẩm liên quan</h2>
+          <h2 className="text-2xl font-bold mb-8">{t('productDetail.relatedTitle', { ns: 'catalog' })}</h2>
           <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x custom-scrollbar">
             {related.map(p => (
               <div key={p.id} className="w-[240px] md:w-[280px] snap-start shrink-0 flex-none">

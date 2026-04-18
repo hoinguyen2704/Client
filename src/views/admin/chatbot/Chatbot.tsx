@@ -354,8 +354,8 @@ export default function Chatbot() {
                       inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
-                      Mặc định: 3. Giới hạn sản phẩm hiển thị trong mỗi câu trả
-                      lời.
+                      Mặc định: 3. Số này càng cao thì câu trả lời càng dài và
+                      tốn token hơn; chỉ tăng khi thực sự cần nhiều kết quả.
                     </p>
                   </div>
                   <div>

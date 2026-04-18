@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { Button, FormInput, FormTextarea } from '@/components';
 import { toast } from 'sonner';
 import ticketService from '@/apis/services/ticketService';
 import { getApiErrorMessage } from '@/utils/error';
 
 export default function Contact() {
+  const { t } = useTranslation('common');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,6 +18,8 @@ export default function Contact() {
   });
 
   const [loading, setLoading] = useState(false);
+  const translate = (key: string, options?: Record<string, unknown>) =>
+    String(t(key, options as never));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +29,7 @@ export default function Contact() {
       toast.success('Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Gửi tin nhắn thất bại. Vui lòng thử lại.'));
+      toast.error(getApiErrorMessage(err, translate, 'common:errors.contactSubmitFailed'));
     } finally {
       setLoading(false);
     }
@@ -36,8 +40,8 @@ export default function Contact() {
   };
 
   return (
-    <div className="w-full px-4 md:px-8 lg:px-12 py-12">
-      <div className="max-w-7xl mx-auto">
+    <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-8 sm:py-10 md:py-12">
+      <div className="w-full">
         {/* Header */}
         <div className="text-center mb-16">
           <motion.h1 

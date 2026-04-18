@@ -1,5 +1,11 @@
 import { adminAxios } from '../axios';
-import type { ApiResponse, PageResponse, FlashSaleResponse, FlashSaleRequest } from '@/types';
+import type {
+  ApiResponse,
+  PageResponse,
+  FlashSaleResponse,
+  FlashSaleRequest,
+  FlashSaleStatus,
+} from '@/types';
 
 const URL = '/flash-sales';
 
@@ -22,7 +28,7 @@ const adminFlashSaleService = {
   delete: (id: string): Promise<ApiResponse<void>> =>
     adminAxios.delete(`${URL}/${id}`),
 
-  updateStatus: (id: string, status: string): Promise<ApiResponse<FlashSaleResponse>> =>
+  updateStatus: (id: string, status: FlashSaleStatus): Promise<ApiResponse<FlashSaleResponse>> =>
     adminAxios.patch(`${URL}/${id}/status`, null, { params: { status } }),
 };
 

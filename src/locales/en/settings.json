@@ -16,7 +16,6 @@
     "toggleDarkMode": "Toggle dark mode",
     "togglePromotions": "Toggle promotional notifications",
     "toggleEmail": "Toggle email notifications",
-    "toggleSms": "Toggle SMS notifications",
     "toggleApp": "Toggle app notifications",
     "toggleOrders": "Toggle order notifications",
     "toggleTwoFactor": "Toggle two-factor authentication"
@@ -26,8 +25,6 @@
     "channels": "Notification Channels",
     "emailTitle": "Email",
     "emailDesc": "Receive notifications via email",
-    "smsTitle": "SMS",
-    "smsDesc": "Receive text messages",
     "appTitle": "Push Notifications (App)",
     "appDesc": "Receive notifications on the app",
     "types": "Notification Types",
@@ -50,6 +47,8 @@
     "twoFactor": {
       "title": "Two-Factor Authentication (2FA)",
       "desc": "Enhance account security",
+      "comingSoon": "2FA is under development",
+      "comingSoonDescription": "This feature will be available soon. Two-factor authentication cannot be enabled yet.",
       "setupDescription": "Scan this QR code with Google Authenticator or Authy to set up 2FA.",
       "otpPlaceholder": "Enter the 6-digit code...",
       "confirm": "Confirm"

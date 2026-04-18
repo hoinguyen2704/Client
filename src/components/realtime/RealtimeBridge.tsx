@@ -30,8 +30,8 @@ function handleUserToast(
     const payload = (event.data || {}) as SupportRealtimePayload;
     if (payload.senderType === 'ADMIN') {
       toast.info(payload.ticketNumber
-        ? t('realtime.adminRepliedTicket', { ns: 'account', ticketNumber: payload.ticketNumber, defaultValue: `Admin đã phản hồi ${payload.ticketNumber}` })
-        : t('realtime.adminReplied', { ns: 'account', defaultValue: 'Admin vừa phản hồi hỗ trợ' }));
+        ? t('realtime.adminRepliedTicket', { ns: 'account', ticketNumber: payload.ticketNumber })
+        : t('realtime.adminReplied', { ns: 'account' }));
     }
     return;
   }
@@ -39,8 +39,8 @@ function handleUserToast(
   if (event.type === REALTIME_EVENT_TYPES.SUPPORT_STATUS_UPDATED) {
     const payload = (event.data || {}) as SupportRealtimePayload;
     toast.info(payload.ticketNumber
-      ? t('realtime.ticketStatusUpdated', { ns: 'account', ticketNumber: payload.ticketNumber, defaultValue: `Trạng thái ${payload.ticketNumber} đã cập nhật` })
-      : t('realtime.supportStatusUpdated', { ns: 'account', defaultValue: 'Yêu cầu hỗ trợ đã cập nhật trạng thái' }));
+      ? t('realtime.ticketStatusUpdated', { ns: 'account', ticketNumber: payload.ticketNumber })
+      : t('realtime.supportStatusUpdated', { ns: 'account' }));
     return;
   }
 
@@ -51,7 +51,7 @@ function handleUserToast(
       store.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse)
     );
     if (payload.type === 'SUPPORT') return;
-    toast.info(payload.title || t('realtime.newNotification', { ns: 'account', defaultValue: 'Thông báo mới' }), {
+    toast.info(payload.title || t('realtime.newNotification', { ns: 'account' }), {
       description: payload.content || '',
     });
   }
@@ -64,8 +64,8 @@ function handleAdminToast(
   if (event.type === REALTIME_EVENT_TYPES.SUPPORT_TICKET_CREATED) {
     const payload = (event.data || {}) as SupportRealtimePayload;
     toast.info(payload.userName
-      ? t('realtime.newSupportRequestByUser', { ns: 'adminSupport', userName: payload.userName, defaultValue: `${payload.userName} vừa tạo yêu cầu hỗ trợ` })
-      : t('realtime.newSupportRequest', { ns: 'adminSupport', defaultValue: 'Có yêu cầu hỗ trợ mới từ người dùng' }));
+      ? t('realtime.newSupportRequestByUser', { ns: 'adminSupport', userName: payload.userName })
+      : t('realtime.newSupportRequest', { ns: 'adminSupport' }));
     return;
   }
 
@@ -73,8 +73,8 @@ function handleAdminToast(
     const payload = (event.data || {}) as SupportRealtimePayload;
     if (payload.senderType === 'USER') {
       toast.info(payload.ticketNumber
-        ? t('realtime.customerReplyTicket', { ns: 'adminSupport', ticketNumber: payload.ticketNumber, defaultValue: `${payload.ticketNumber} có phản hồi mới từ khách hàng` })
-        : t('realtime.customerReply', { ns: 'adminSupport', defaultValue: 'Khách hàng vừa gửi phản hồi mới' }));
+        ? t('realtime.customerReplyTicket', { ns: 'adminSupport', ticketNumber: payload.ticketNumber })
+        : t('realtime.customerReply', { ns: 'adminSupport' }));
     }
   }
 

@@ -1,14 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
 import { Button, CustomSelect, Pagination, StarRating, UserAvatar } from '@/components';
-import { FEEDBACK_STATUS_OPTIONS, FEEDBACK_FILTER_OPTIONS } from '@/constants/feedbackConstants';
+import { getFeedbackFilterOptions, getFeedbackStatusOptions } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';
 
 export default function Feedbacks() {
+  const { t } = useTranslation('common');
   const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -51,7 +53,7 @@ export default function Feedbacks() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">Quản lý đánh giá</h1>
         <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
-          options={FEEDBACK_FILTER_OPTIONS} className="w-full sm:w-48 z-20 shrink-0" />
+          options={getFeedbackFilterOptions(t)} className="w-full sm:w-48 z-20 shrink-0" />
       </div>
 
       <div className="space-y-3 sm:space-y-4">
@@ -89,7 +91,7 @@ export default function Feedbacks() {
 
                   <div className="mt-3 flex items-center gap-2 flex-wrap">
                     <CustomSelect value={review.status} onChange={(val) => handleStatusChange(review.id, val)}
-                      options={FEEDBACK_STATUS_OPTIONS} className="w-full sm:w-36 z-10" />
+                      options={getFeedbackStatusOptions(t)} className="w-full sm:w-36 z-10" />
                     {!review.adminReply && (
                       <Button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
                         variant="ghost" size="sm" icon={<FiMessageCircle />}

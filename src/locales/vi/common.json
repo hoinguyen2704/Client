@@ -67,7 +67,14 @@
   "errors": {
     "unknown": "Đã có lỗi xảy ra",
     "timeout": "Yêu cầu quá thời gian chờ. Vui lòng thử lại.",
-    "network": "Không thể kết nối tới máy chủ. Vui lòng kiểm tra mạng và thử lại."
+    "network": "Không thể kết nối tới máy chủ. Vui lòng kiểm tra mạng và thử lại.",
+    "contactSubmitFailed": "Gửi tin nhắn thất bại. Vui lòng thử lại.",
+    "addToCartFailed": "Thêm giỏ hàng thất bại!",
+    "reviewReturnFailed": "Thao tác duyệt trả hàng thất bại",
+    "updateStatusFailed": "Cập nhật trạng thái thất bại",
+    "processRefundFailed": "Xử lý hoàn tiền thất bại",
+    "updatePhoneFailed": "Cập nhật số điện thoại thất bại.",
+    "saveFlashSaleFailed": "Lưu Flash Sale thất bại!"
   },
   "roles": {
     "admin": "Quản trị viên",

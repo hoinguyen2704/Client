@@ -2,8 +2,9 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiPackage, FiXCircle, FiAlertTriangle } from 'react-icons/fi';
 import { formatDateFull as formatDateTime, formatPrice } from '@/utils/format';
+import orderService from '@/apis/services/orderService';
 import returnService from '@/apis/services/returnService';
-import type { ReturnRequestResponse } from '@/types';
+import type { OrderResponse, ReturnRequestResponse } from '@/types';
 import { BackButton, Button, ConfirmDialog } from '@/components';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
@@ -20,6 +21,7 @@ export default function ReturnDetail() {
   const { t } = useTranslation('account');
   const { returnNumber } = useParams<{ returnNumber: string }>();
   const [data, setData] = useState<ReturnRequestResponse | null>(null);
+  const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
@@ -37,6 +39,31 @@ export default function ReturnDetail() {
   };
 
   useEffect(() => { fetchDetail(); }, [returnNumber]);
+
+  useEffect(() => {
+    setOrder(null);
+
+    if (!data?.orderNumber) return;
+
+    let cancelled = false;
+
+    orderService
+      .getByNumber(data.orderNumber)
+      .then((res) => {
+        if (!cancelled) {
+          setOrder(res.data);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setOrder(null);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [data?.orderNumber]);
 
   const handleCancel = async () => {
     if (!data) return;
@@ -79,6 +106,18 @@ export default function ReturnDetail() {
 
     return map;
   }, [data]);
+
+  const orderItemImageMap = useMemo(() => {
+    const map: Record<string, string> = {};
+
+    order?.items.forEach((item) => {
+      if (item.id && item.imageUrl) {
+        map[item.id] = item.imageUrl;
+      }
+    });
+
+    return map;
+  }, [order]);
 
   // Only show steps up to (and including) the current step
   const visibleSteps = useMemo(() => {
@@ -206,34 +245,38 @@ export default function ReturnDetail() {
           <div className="space-y-4">
             <h3 className="text-lg font-bold">{t('returnDetail.itemsTitle')}</h3>
             <div className="space-y-3">
-              {data.items.map(line => (
-                <div key={line.id} className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5 transition-colors">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                    {line.imageUrl ? (
-                      <img src={line.imageUrl} alt={line.productName} className="w-full h-full object-cover" />
-                    ) : (
-                      <FiPackage className="text-slate-400 text-3xl" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate" title={line.productName}>
-                      {line.productName}
-                    </h4>
-                    <p className="text-md text-slate-500 mt-0.5">
-                      {line.variantName ? `${line.variantName} | ` : ''} 
-                      {formatPrice(Number(line.unitPrice || 0))} x {line.requestedQuantity}
-                    </p>
-                  </div>
-                  <div className="text-right flex-shrink-0 space-y-0.5">
-                    <p className="font-bold text-purple-600 text-lg">{formatPrice(Number(line.lineAmount || 0))}</p>
-                    {line.approvedQuantity != null && (
-                      <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full inline-block">
-                        {t('returnDetail.approvedQuantity', { count: line.approvedQuantity })}
+              {data.items.map(line => {
+                const imageUrl = line.imageUrl || (line.orderItemId ? orderItemImageMap[line.orderItemId] : undefined);
+
+                return (
+                  <div key={line.id} className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5 transition-colors">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                      {imageUrl ? (
+                        <img src={imageUrl} alt={line.productName} className="w-full h-full object-cover" />
+                      ) : (
+                        <FiPackage className="text-slate-400 text-3xl" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate" title={line.productName}>
+                        {line.productName}
+                      </h4>
+                      <p className="text-md text-slate-500 mt-0.5">
+                        {line.variantName ? `${line.variantName} | ` : ''} 
+                        {formatPrice(Number(line.unitPrice || 0))} x {line.requestedQuantity}
                       </p>
-                    )}
+                    </div>
+                    <div className="text-right flex-shrink-0 space-y-0.5">
+                      <p className="font-bold text-purple-600 text-lg">{formatPrice(Number(line.lineAmount || 0))}</p>
+                      {line.approvedQuantity != null && (
+                        <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full inline-block">
+                          {t('returnDetail.approvedQuantity', { count: line.approvedQuantity })}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

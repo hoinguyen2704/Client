@@ -15,6 +15,17 @@
     "orders": "Đơn mua",
     "logout": "Đăng xuất"
   },
+  "languageSwitcher": {
+    "switchTo": "Chuyển ngôn ngữ sang {{language}}",
+    "short": {
+      "vi": "VI",
+      "en": "EN"
+    },
+    "name": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh"
+    }
+  },
   "mobileMenu": {
     "closeMenu": "Đóng menu",
     "searchPlaceholder": "Tìm kiếm...",
@@ -27,6 +38,7 @@
   },
   "adminHeader": {
     "searchPlaceholder": "Tìm kiếm trong admin...",
+    "toggleTheme": "Chuyển chế độ giao diện",
     "profile": "Hồ sơ cá nhân",
     "settings": "Cài đặt hệ thống",
     "accessControl": "Phân quyền",

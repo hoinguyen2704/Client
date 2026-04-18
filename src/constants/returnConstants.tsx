@@ -50,67 +50,67 @@ function translateLabel(t: TFunction | undefined, key: string, fallback: string)
 
 export const RETURN_STATUS_META: Record<ReturnStatus, StatusMeta> = {
   REQUESTED: {
-    label: 'Yêu cầu mới',
+    label: 'New request',
     labelKey: 'common:status.return.requested',
     className:
       'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
   },
   APPROVED: {
-    label: 'Đã duyệt',
+    label: 'Approved',
     labelKey: 'common:status.return.approved',
     className:
       'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/30',
   },
   REJECTED: {
-    label: 'Từ chối',
+    label: 'Rejected',
     labelKey: 'common:status.return.rejected',
     className:
       'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30',
   },
   IN_TRANSIT: {
-    label: 'Đang gửi trả',
+    label: 'In transit',
     labelKey: 'common:status.return.inTransit',
     className:
       'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-500/30',
   },
   RECEIVED: {
-    label: 'Đã nhận hàng hoàn',
+    label: 'Returned items received',
     labelKey: 'common:status.return.received',
     className:
       'bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/30',
   },
   QC_PASSED: {
-    label: 'QC đạt',
+    label: 'QC passed',
     labelKey: 'common:status.return.qcPassed',
     className:
       'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30',
   },
   QC_FAILED: {
-    label: 'QC không đạt',
+    label: 'QC failed',
     labelKey: 'common:status.return.qcFailed',
     className:
       'bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30',
   },
   REFUND_PENDING: {
-    label: 'Chờ hoàn tiền',
+    label: 'Refund pending',
     labelKey: 'common:status.return.refundPending',
     className:
       'bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-500/10 dark:text-violet-300 dark:border-violet-500/30',
   },
   REFUNDED: {
-    label: 'Đã hoàn tiền',
+    label: 'Refunded',
     labelKey: 'common:status.return.refunded',
     className:
       'bg-green-50 text-green-700 border border-green-200 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/30',
   },
   CANCELLED: {
-    label: 'Đã hủy',
+    label: 'Cancelled',
     labelKey: 'common:status.return.cancelled',
     className:
       'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30',
   },
   CLOSED: {
-    label: 'Đã đóng',
+    label: 'Closed',
     labelKey: 'common:status.return.closed',
     className:
       'bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-500/20 dark:text-slate-200 dark:border-slate-500/40',
@@ -119,31 +119,31 @@ export const RETURN_STATUS_META: Record<ReturnStatus, StatusMeta> = {
 
 export const REFUND_STATUS_META: Record<RefundStatus, StatusMeta> = {
   PENDING: {
-    label: 'Chờ hoàn',
+    label: 'Refund pending',
     labelKey: 'common:status.refund.pending',
     className:
       'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30',
   },
   PROCESSING: {
-    label: 'Đang xử lý',
+    label: 'Processing',
     labelKey: 'common:status.refund.processing',
     className:
       'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/30',
   },
   SUCCESS: {
-    label: 'Thành công',
+    label: 'Success',
     labelKey: 'common:status.refund.success',
     className:
       'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30',
   },
   FAILED: {
-    label: 'Thất bại',
+    label: 'Failed',
     labelKey: 'common:status.refund.failed',
     className:
       'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30',
   },
   REVERSED: {
-    label: 'Đảo ngược',
+    label: 'Reversed',
     labelKey: 'common:status.refund.reversed',
     className:
       'bg-orange-50 text-orange-700 border border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/30',
@@ -151,7 +151,7 @@ export const REFUND_STATUS_META: Record<RefundStatus, StatusMeta> = {
 };
 
 const FALLBACK_STATUS_META: StatusMeta = {
-  label: 'Không xác định',
+  label: 'Unknown',
   labelKey: 'common:status.return.unknown',
   className:
     'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30',
@@ -209,7 +209,7 @@ export function getReturnFilterOptions(t?: TFunction) {
   return [
     {
       value: '',
-      label: translateLabel(t, 'common:filters.allStatuses', 'Tất cả trạng thái'),
+      label: translateLabel(t, 'common:filters.allStatuses', 'All statuses'),
     },
     ...ADMIN_RETURN_STATUS_OPTIONS.map((option) => ({
       ...option,
@@ -219,14 +219,14 @@ export function getReturnFilterOptions(t?: TFunction) {
 }
 
 export const USER_RETURN_TABS: ReturnTab[] = [
-  { id: 'all', label: 'Tất cả', labelKey: 'common:filters.all' },
-  { id: 'REQUESTED', label: 'Yêu cầu mới', labelKey: RETURN_STATUS_META.REQUESTED.labelKey },
-  { id: 'APPROVED', label: 'Đã duyệt', labelKey: RETURN_STATUS_META.APPROVED.labelKey },
-  { id: 'REFUND_PENDING', label: 'Chờ hoàn', labelKey: REFUND_STATUS_META.PENDING.labelKey },
-  { id: 'REFUNDED', label: 'Đã hoàn tiền', labelKey: RETURN_STATUS_META.REFUNDED.labelKey },
-  { id: 'REJECTED', label: 'Từ chối', labelKey: RETURN_STATUS_META.REJECTED.labelKey },
-  { id: 'CANCELLED', label: 'Đã hủy', labelKey: RETURN_STATUS_META.CANCELLED.labelKey },
-  { id: 'CLOSED', label: 'Đã đóng', labelKey: RETURN_STATUS_META.CLOSED.labelKey },
+  { id: 'all', label: 'All', labelKey: 'common:filters.all' },
+  { id: 'REQUESTED', label: 'New request', labelKey: RETURN_STATUS_META.REQUESTED.labelKey },
+  { id: 'APPROVED', label: 'Approved', labelKey: RETURN_STATUS_META.APPROVED.labelKey },
+  { id: 'REFUND_PENDING', label: 'Refund pending', labelKey: REFUND_STATUS_META.PENDING.labelKey },
+  { id: 'REFUNDED', label: 'Refunded', labelKey: RETURN_STATUS_META.REFUNDED.labelKey },
+  { id: 'REJECTED', label: 'Rejected', labelKey: RETURN_STATUS_META.REJECTED.labelKey },
+  { id: 'CANCELLED', label: 'Cancelled', labelKey: RETURN_STATUS_META.CANCELLED.labelKey },
+  { id: 'CLOSED', label: 'Closed', labelKey: RETURN_STATUS_META.CLOSED.labelKey },
 ];
 
 export function getUserReturnTabs(t?: TFunction) {

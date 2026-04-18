@@ -4,7 +4,7 @@ import { FiZap, FiPlus } from "react-icons/fi";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import { adminFlashSaleService } from "@/apis";
-import type { FlashSaleResponse } from "@/types";
+import type { FlashSaleResponse, FlashSaleStatus } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import {
   Pagination,
@@ -42,7 +42,7 @@ export default function FlashSales() {
     }
   };
 
-  const handleUpdateStatus = async (id: string, status: string) => {
+  const handleUpdateStatus = async (id: string, status: FlashSaleStatus) => {
     try {
       await adminFlashSaleService.updateStatus(id, status);
       toast.success("Cập nhật trạng thái thành công!");
@@ -143,15 +143,9 @@ export default function FlashSales() {
                             colorClass:
                               "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-100",
                           },
-                          {
-                            label: "Đã hủy",
-                            value: "CANCELLED",
-                            colorClass:
-                              "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20 hover:bg-rose-100",
-                          },
                         ]}
                         onChange={(val) =>
-                          handleUpdateStatus(sale.id, val.toString())
+                          handleUpdateStatus(sale.id, val as FlashSaleStatus)
                         }
                         className="w-44 text-md"
                       />

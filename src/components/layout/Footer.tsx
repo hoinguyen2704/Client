@@ -33,26 +33,23 @@ export default function Footer() {
             </span>
           </Link>
           <p className="text-muted text-md leading-relaxed">
-            {t('footer.brandDescription', {
-              shopName: shop.shopName,
-              defaultValue: `${shop.shopName} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm công nghệ chính hãng, uy tín và chất lượng hàng đầu Việt Nam.`,
-            })}
+            {t('footer.brandDescription', { shopName: shop.shopName })}
           </p>
           <div className="space-y-2 text-md">
             <p>
               <strong className="text-slate-800 dark:text-white">
-                {t('footer.address', { defaultValue: 'Địa chỉ' })}:
+                {t('footer.address')}:
               </strong>{" "}
               {shop.address}
             </p>
             <p>
               <strong className="text-slate-800 dark:text-white">
-                {t('footer.phone', { defaultValue: 'Điện thoại' })}:
+                {t('footer.phone')}:
               </strong>{" "}
               {shop.hotline}
             </p>
             <p>
-              <strong className="text-slate-800 dark:text-white">{t('footer.email', { defaultValue: 'Email' })}:</strong>{" "}
+              <strong className="text-slate-800 dark:text-white">{t('footer.email')}:</strong>{" "}
               {shop.supportEmail}
             </p>
           </div>
@@ -61,7 +58,7 @@ export default function Footer() {
         {/* Col 2: Về chúng tôi */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
-            {t('footer.aboutTitle', { shopName: shop.shopName, defaultValue: `Về ${shop.shopName}` })}
+            {t('footer.aboutTitle', { shopName: shop.shopName })}
           </h3>
           <ul className="space-y-3 text-md">
             <li>
@@ -69,7 +66,7 @@ export default function Footer() {
                 to="/about"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.company', { defaultValue: 'Giới thiệu công ty' })}
+                {t('footer.company')}
               </Link>
             </li>
             <li>
@@ -77,7 +74,7 @@ export default function Footer() {
                 to="/careers"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.careers', { defaultValue: 'Tuyển dụng' })}
+                {t('footer.careers')}
               </Link>
             </li>
             <li>
@@ -85,7 +82,7 @@ export default function Footer() {
                 to="/terms"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.terms', { defaultValue: 'Điều khoản sử dụng' })}
+                {t('footer.terms')}
               </Link>
             </li>
             <li>
@@ -93,7 +90,7 @@ export default function Footer() {
                 to="/privacy"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.privacy', { defaultValue: 'Chính sách bảo mật' })}
+                {t('footer.privacy')}
               </Link>
             </li>
             <li>
@@ -101,7 +98,7 @@ export default function Footer() {
                 to="/contact"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.partnership', { defaultValue: 'Liên hệ hợp tác' })}
+                {t('footer.partnership')}
               </Link>
             </li>
           </ul>
@@ -110,7 +107,7 @@ export default function Footer() {
         {/* Col 3: Hỗ trợ khách hàng */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
-            {t('footer.supportTitle', { defaultValue: 'Hỗ trợ khách hàng' })}
+            {t('footer.supportTitle')}
           </h3>
           <ul className="space-y-3 text-md">
             <li>
@@ -118,7 +115,7 @@ export default function Footer() {
                 to="/support/shopping"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.shoppingGuide', { defaultValue: 'Hướng dẫn mua hàng' })}
+                {t('footer.shoppingGuide')}
               </Link>
             </li>
             <li>
@@ -126,7 +123,7 @@ export default function Footer() {
                 to="/support/payment"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.paymentGuide', { defaultValue: 'Hướng dẫn thanh toán' })}
+                {t('footer.paymentGuide')}
               </Link>
             </li>
             <li>
@@ -134,7 +131,7 @@ export default function Footer() {
                 to="/support/shipping"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.shippingPolicy', { defaultValue: 'Chính sách giao hàng' })}
+                {t('footer.shippingPolicy')}
               </Link>
             </li>
             <li>
@@ -142,7 +139,7 @@ export default function Footer() {
                 to="/support/warranty"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.warrantyPolicy', { defaultValue: 'Chính sách bảo hành' })}
+                {t('footer.warrantyPolicy')}
               </Link>
             </li>
             <li>
@@ -150,7 +147,7 @@ export default function Footer() {
                 to="/support/returns"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                {t('footer.returnPolicy', { defaultValue: 'Chính sách đổi trả' })}
+                {t('footer.returnPolicy')}
               </Link>
             </li>
           </ul>
@@ -159,7 +156,7 @@ export default function Footer() {
         {/* Col 4: Kết nối & Thanh toán */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
-            {t('footer.connectTitle', { defaultValue: 'Kết nối với chúng tôi' })}
+            {t('footer.connectTitle')}
           </h3>
           <div className="flex gap-4 mb-8">
             <a
@@ -189,7 +186,7 @@ export default function Footer() {
           </div>
 
           <h3 className="text-slate-900 dark:text-white font-bold mb-4 uppercase tracking-wider text-md">
-            {t('footer.paymentTitle', { defaultValue: 'Phương thức thanh toán' })}
+            {t('footer.paymentTitle')}
           </h3>
           <div className="flex gap-3 text-3xl text-subtle">
             <FaCcVisa className="hover:text-blue-600 dark:hover:text-white transition-colors" />
@@ -200,8 +197,8 @@ export default function Footer() {
       </div>
 
       <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-md text-slate-500">
-        <p>{t('footer.rightsReserved', { year: new Date().getFullYear(), shopName: shop.shopName, defaultValue: `© ${new Date().getFullYear()} ${shop.shopName}. All rights reserved.` })}</p>
-        <p>{t('footer.builtBy', { defaultValue: 'Thiết kế và phát triển bởi Hội Nguyễn' })}</p>
+        <p>{t('footer.rightsReserved', { year: new Date().getFullYear(), shopName: shop.shopName })}</p>
+        <p>{t('footer.builtBy')}</p>
       </div>
     </footer>
   );

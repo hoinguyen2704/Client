@@ -15,8 +15,8 @@ function ExpandToggle({
   const { t } = useTranslation('common');
   const Icon = expanded ? FiChevronUp : FiChevronDown;
   const label = expanded
-    ? (collapseLabel || t('actions.collapse', { defaultValue: 'Thu gọn' }))
-    : (expandLabel || t('actions.expand', { defaultValue: 'Xem thêm' }));
+    ? (collapseLabel || t('actions.collapse'))
+    : (expandLabel || t('actions.expand'));
 
   return (
     <Button

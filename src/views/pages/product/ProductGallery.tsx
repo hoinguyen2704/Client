@@ -17,12 +17,12 @@ export default function ProductGallery({ images, activeImage, onImageChange, pro
         )}
       </div>
 
-      <div className="flex gap-2.5 overflow-x-auto pb-1 snap-x">
+      <div className="flex flex-wrap content-start gap-2.5 pb-1">
         {images.map((img, idx) => (
           <button
             key={idx}
             onClick={() => onImageChange(idx)}
-            className={`relative w-[72px] h-[72px] sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 snap-start border transition-all bg-white dark:bg-slate-900 ${activeImage === idx ? 'border-purple-500 shadow-md shadow-purple-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-purple-300'}`}
+            className={`relative h-[72px] w-[72px] rounded-xl overflow-hidden border bg-white transition-all dark:bg-slate-900 sm:h-20 sm:w-20 ${activeImage === idx ? 'border-purple-500 shadow-md shadow-purple-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-purple-300'}`}
           >
             <img
               src={img}

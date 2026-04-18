@@ -13,9 +13,7 @@ export default function ActionButtons({ actions }: ActionButtonsProps) {
         .map((action, i) => {
           const cls = `p-2 rounded-lg transition-colors ${ACTION_STYLES[action.type]}`;
           const icon = action.icon || ACTION_ICONS[action.type];
-          const title = action.title || t(action.titleKey || ACTION_TITLES[action.type], {
-            defaultValue: action.titleKey || ACTION_TITLES[action.type],
-          });
+          const title = action.title || t(action.titleKey || ACTION_TITLES[action.type]);
 
           if (action.href) {
             return (

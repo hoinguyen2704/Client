@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { FiZap, FiArrowLeft, FiPlus, FiCheck, FiSave, FiClock, FiTrendingDown, FiAlertTriangle } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { adminFlashSaleService } from '@/apis';
@@ -15,6 +16,7 @@ import { PICKER_RESULT_KEY } from './ProductPicker';
 const ITEMS_PER_PAGE = PAGE_SIZE.LARGE;
 
 export default function FlashSaleForm() {
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
@@ -31,6 +33,8 @@ export default function FlashSaleForm() {
     endTime: string;
     items: FlashSaleItemForm[];
   }>({ name: '', startTime: '', endTime: '', items: [] });
+  const translate = (key: string, options?: Record<string, unknown>) =>
+    String(t(key, options as never));
 
   // Load existing flash sale data when editing
   useEffect(() => {
@@ -172,7 +176,7 @@ export default function FlashSaleForm() {
       navigate('/admin/flash-sales');
     } catch (err: unknown) {
       console.error(err);
-      toast.error(getApiErrorMessage(err, 'Lưu Flash Sale thất bại!'));
+      toast.error(getApiErrorMessage(err, translate, 'common:errors.saveFlashSaleFailed'));
     } finally {
       setSubmitting(false);
     }

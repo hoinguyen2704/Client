@@ -4,6 +4,7 @@ import { FiSearch, FiShoppingCart, FiHeart, FiUser, FiMenu, FiLogOut, FiSettings
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import LogoIcon from '../ui/LogoIcon';
+import LanguageToggle from './LanguageToggle';
 import useCartStore from '@/stores/useCartStore';
 import useWishlistStore from '@/stores/useWishlistStore';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
@@ -24,6 +25,8 @@ export { navItems };
 
 const ICON_BUTTON_CLASS =
   'p-2 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors';
+const HEADER_PILL_BUTTON_CLASS =
+  'border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700';
 const USER_MENU_LINK_CLASS =
   'flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-body-soft hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors';
 
@@ -71,7 +74,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
           <div className="flex-1 max-w-2xl hidden md:flex relative group">
             <input
               type="text"
-              placeholder={t('header.searchPlaceholder', { ns: 'layout', defaultValue: 'Tìm kiếm sản phẩm công nghệ...' })}
+              placeholder={t('header.searchPlaceholder', { ns: 'layout' })}
               onKeyDown={handleSearch}
               className="w-full h-12 pl-4 pr-12 rounded-2xl bg-slate-50 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 transition-all"
             />
@@ -83,10 +86,11 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             <button 
               onClick={toggleTheme}
               className={ICON_BUTTON_CLASS}
-              aria-label={t('header.toggleTheme', { ns: 'layout', defaultValue: 'Chuyển chế độ giao diện' })}
+              aria-label={t('header.toggleTheme', { ns: 'layout' })}
             >
               {theme === 'light' ? <FiMoon className="text-xl" /> : <FiSun className="text-xl" />}
             </button>
+            <LanguageToggle className={HEADER_PILL_BUTTON_CLASS} />
             {user && (
               <NotificationDropdown iconSize="text-xl" />
             )}
@@ -129,22 +133,22 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                         <p className="font-bold text-md truncate">{user.email}</p>
                         <p className="text-sm text-slate-500 capitalize mt-0.5">
                           {user.role?.toLowerCase() === 'admin'
-                            ? t('roles.admin', { ns: 'common', defaultValue: user.role })
-                            : t('roles.customer', { ns: 'common', defaultValue: user.role })}
+                            ? t('roles.admin', { ns: 'common' })
+                            : t('roles.customer', { ns: 'common' })}
                         </p>
                       </div>
                       <div className="p-2">
                         {user.role?.toLowerCase() === 'admin' ? (
                           <Link to="/admin" onClick={() => setIsUserMenuOpen(false)} className={USER_MENU_LINK_CLASS}>
-                            <FiSettings className="text-lg" /> {t('header.adminPanel', { ns: 'layout', defaultValue: 'Quản trị viên' })}
+                            <FiSettings className="text-lg" /> {t('header.adminPanel', { ns: 'layout' })}
                           </Link>
                         ) : (
                           <>
                             <Link to="/user/profile" onClick={() => setIsUserMenuOpen(false)} className={USER_MENU_LINK_CLASS}>
-                              <FiUser className="text-lg" /> {t('header.myAccount', { ns: 'layout', defaultValue: 'Tài khoản của tôi' })}
+                              <FiUser className="text-lg" /> {t('header.myAccount', { ns: 'layout' })}
                             </Link>
                             <Link to="/user/orders" onClick={() => setIsUserMenuOpen(false)} className={USER_MENU_LINK_CLASS}>
-                              <FiBox className="text-lg" /> {t('header.orders', { ns: 'layout', defaultValue: 'Đơn mua' })}
+                              <FiBox className="text-lg" /> {t('header.orders', { ns: 'layout' })}
                             </Link>
                           </>
                         )}
@@ -156,7 +160,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                           }}
                           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                         >
-                          <FiLogOut className="text-lg" /> {t('header.logout', { ns: 'layout', defaultValue: 'Đăng xuất' })}
+                          <FiLogOut className="text-lg" /> {t('header.logout', { ns: 'layout' })}
                         </button>
                       </div>
                     </motion.div>
@@ -192,7 +196,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             >
               {({ isActive }) => (
                 <>
-                  {t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}
+                  {t(item.labelKey, { ns: 'layout' })}
                   {isActive && (
                     <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#2539e6] dark:bg-blue-400 rounded-t-md"></span>
                   )}

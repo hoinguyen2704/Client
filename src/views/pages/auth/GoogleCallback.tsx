@@ -1,27 +1,38 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FiLoader, FiAlertCircle } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { authService } from '@/apis';
 import useAuthStore from '@/stores/useAuthStore';
 import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
 
-function resolveGoogleRedirectError(code?: string | null, message?: string | null): string {
+function resolveGoogleRedirectError(
+  code: string | null | undefined,
+  message: string | null | undefined,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): string {
   if (code === 'SOCIAL_NOT_LINKED') {
-    return 'Tài khoản Google chưa liên kết. Hãy đăng nhập bằng mật khẩu rồi liên kết trong Cài đặt tài khoản.';
+    return t('googleCallback.errors.socialNotLinked');
   }
-  return message?.trim() || 'Đăng nhập Google thất bại.';
+  return message?.trim() || t('googleCallback.errors.failed');
 }
 
 export default function GoogleCallback() {
+  const { t } = useTranslation(['auth', 'common']);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
   const [error, setError] = useState('');
+  const translate = (key: string, options?: Record<string, unknown>) =>
+    String(t(key, options as never));
 
   useEffect(() => {
     const ticket = searchParams.get('ticket');
     if (!ticket) {
-      navigate('/login?google_error_code=GOOGLE_TICKET_MISSING&google_error_message=Khong%20nhan%20duoc%20ve%20dang%20nhap%20Google.', { replace: true });
+      navigate(
+        `/login?google_error_code=GOOGLE_TICKET_MISSING&google_error_message=${encodeURIComponent(t('googleCallback.errors.ticketMissing', { ns: 'auth' }))}`,
+        { replace: true },
+      );
       return;
     }
 
@@ -56,7 +67,11 @@ export default function GoogleCallback() {
         if (!active) return;
 
         const code = getApiErrorCode(err);
-        const message = resolveGoogleRedirectError(code, getApiErrorMessage(err, 'Đăng nhập Google thất bại.'));
+        const message = resolveGoogleRedirectError(
+          code,
+          getApiErrorMessage(err, translate, 'auth:googleCallback.errors.failed'),
+          (key, options) => translate(`auth:${key}`, options),
+        );
         setError(message);
         navigate(
           `/login?google_error_code=${encodeURIComponent(code || 'GOOGLE_TICKET_EXCHANGE_FAILED')}&google_error_message=${encodeURIComponent(message)}`,
@@ -70,7 +85,7 @@ export default function GoogleCallback() {
     return () => {
       active = false;
     };
-  }, [login, navigate, searchParams]);
+  }, [login, navigate, searchParams, t]);
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-6">
@@ -78,15 +93,15 @@ export default function GoogleCallback() {
         {error ? (
           <>
             <FiAlertCircle className="mx-auto text-5xl text-red-500" />
-            <h1 className="text-2xl font-bold">Đăng nhập Google thất bại</h1>
+            <h1 className="text-2xl font-bold">{t('googleCallback.errorTitle', { ns: 'auth' })}</h1>
             <p className="text-slate-500 dark:text-slate-400">{error}</p>
           </>
         ) : (
           <>
             <FiLoader className="mx-auto text-5xl text-purple-500 animate-spin" />
-            <h1 className="text-2xl font-bold">Đang hoàn tất đăng nhập</h1>
+            <h1 className="text-2xl font-bold">{t('googleCallback.loadingTitle', { ns: 'auth' })}</h1>
             <p className="text-slate-500 dark:text-slate-400">
-              Hệ thống đang xác thực tài khoản Google và đăng nhập vào Hozitech.
+              {t('googleCallback.loadingDescription', { ns: 'auth' })}
             </p>
           </>
         )}
