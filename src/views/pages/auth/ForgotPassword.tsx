@@ -2,17 +2,19 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMail, FiArrowLeft, FiArrowRight, FiCheckCircle, FiShield, FiLock, FiKey } from 'react-icons/fi';
 import { motion } from 'motion/react';
+import { Trans, useTranslation } from 'react-i18next';
 import AuthLayout from './AuthLayout';
 
-const tips = [
-  { icon: FiShield, title: 'Kiểm tra email spam', desc: 'Đôi khi email khôi phục có thể rơi vào thư mục spam' },
-  { icon: FiLock, title: 'Tạo mật khẩu mạnh', desc: 'Kết hợp chữ hoa, số và ký tự đặc biệt' },
-  { icon: FiKey, title: 'Không chia sẻ mật khẩu', desc: 'Giữ thông tin đăng nhập an toàn và riêng tư' },
-];
-
 export default function ForgotPassword() {
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const tips = [
+    { icon: FiShield, title: t('forgotPassword.tips.spam.title', { defaultValue: 'Kiểm tra email spam' }), desc: t('forgotPassword.tips.spam.desc', { defaultValue: 'Đôi khi email khôi phục có thể rơi vào thư mục spam' }) },
+    { icon: FiLock, title: t('forgotPassword.tips.strongPassword.title', { defaultValue: 'Tạo mật khẩu mạnh' }), desc: t('forgotPassword.tips.strongPassword.desc', { defaultValue: 'Kết hợp chữ hoa, số và ký tự đặc biệt' }) },
+    { icon: FiKey, title: t('forgotPassword.tips.privatePassword.title', { defaultValue: 'Không chia sẻ mật khẩu' }), desc: t('forgotPassword.tips.privatePassword.desc', { defaultValue: 'Giữ thông tin đăng nhập an toàn và riêng tư' }) },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,16 +27,31 @@ export default function ForgotPassword() {
     <AuthLayout
       heroGradient="from-emerald-700 via-teal-600 to-blue-600 dark:from-emerald-950 dark:via-slate-900 dark:to-blue-950"
       accentBlobClass="bg-teal-400/10"
-      heroTitle={<>Khôi phục{' '}<span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-emerald-300">tài khoản</span></>}
-      heroSubtitle="Chúng tôi sẽ giúp bạn lấy lại quyền truy cập vào tài khoản một cách nhanh chóng và an toàn."
+      heroTitle={(
+        <Trans
+          ns="auth"
+          i18nKey="forgotPassword.heroTitle"
+          defaults="Khôi phục <highlight>tài khoản</highlight>"
+          components={{
+            highlight: <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-emerald-300" />,
+          }}
+        />
+      )}
+      heroSubtitle={t('forgotPassword.heroSubtitle', {
+        defaultValue: 'Chúng tôi sẽ giúp bạn lấy lại quyền truy cập vào tài khoản một cách nhanh chóng và an toàn.',
+      })}
       features={tips}
       mobileLogoGradient="from-emerald-600 to-teal-600"
       mobileLogoShadow="shadow-emerald-500/30"
     >
       <div className="text-center lg:text-left">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4 tracking-tight">Quên mật khẩu?</h2>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
+          {t('forgotPassword.title', { defaultValue: 'Quên mật khẩu?' })}
+        </h2>
         <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg">
-          Đừng lo lắng, hãy nhập email hoặc số điện thoại của bạn và chúng tôi sẽ gửi hướng dẫn khôi phục mật khẩu.
+          {t('forgotPassword.subtitle', {
+            defaultValue: 'Đừng lo lắng, hãy nhập email hoặc số điện thoại của bạn và chúng tôi sẽ gửi hướng dẫn khôi phục mật khẩu.',
+          })}
         </p>
       </div>
 
@@ -42,7 +59,7 @@ export default function ForgotPassword() {
         <form className="space-y-6 sm:space-y-8" onSubmit={handleSubmit}>
           <div>
             <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
-              Email / Số điện thoại
+              {t('forgotPassword.identifierLabel', { defaultValue: 'Email / Số điện thoại' })}
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -50,14 +67,14 @@ export default function ForgotPassword() {
               </div>
               <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}
                 className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
-                placeholder="Nhập email hoặc SĐT" />
+                placeholder={t('forgotPassword.identifierPlaceholder', { defaultValue: 'Nhập email hoặc SĐT' })} />
             </div>
           </div>
 
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit"
             className="group relative w-full flex justify-center items-center py-4 sm:py-5 px-6 sm:px-8 text-lg sm:text-xl font-bold rounded-2xl text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 mt-6"
           >
-            Gửi mã xác nhận <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" />
+            {t('forgotPassword.submit', { defaultValue: 'Gửi mã xác nhận' })} <FiArrowRight className="ml-3 h-6 w-6 sm:h-7 sm:w-7 group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </form>
       ) : (
@@ -65,19 +82,29 @@ export default function ForgotPassword() {
           <div className="mx-auto flex items-center justify-center h-28 w-28 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-8">
             <FiCheckCircle className="h-14 w-14 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">Đã gửi mã xác nhận!</h3>
+          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            {t('forgotPassword.successTitle', { defaultValue: 'Đã gửi mã xác nhận!' })}
+          </h3>
           <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg mb-10">
-            Chúng tôi đã gửi liên kết khôi phục mật khẩu đến <span className="font-semibold text-slate-700 dark:text-slate-300">{email}</span>. Vui lòng kiểm tra hộp thư.
+            <Trans
+              ns="auth"
+              i18nKey="forgotPassword.successDescription"
+              values={{ email }}
+              defaults={`Chúng tôi đã gửi liên kết khôi phục mật khẩu đến <highlight>${email}</highlight>. Vui lòng kiểm tra hộp thư.`}
+              components={{
+                highlight: <span className="font-semibold text-slate-700 dark:text-slate-300" />,
+              }}
+            />
           </p>
           <button onClick={() => setIsSubmitted(false)} className="text-base sm:text-lg font-semibold text-purple-600 hover:text-purple-500 transition-colors">
-            Thử lại với tài khoản khác
+            {t('forgotPassword.retry', { defaultValue: 'Thử lại với tài khoản khác' })}
           </button>
         </motion.div>
       )}
 
       <div className="text-center pt-4">
         <Link to="/login" className="inline-flex items-center text-base sm:text-lg font-semibold text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-          <FiArrowLeft className="mr-3 h-5 w-5 sm:h-6 sm:w-6" /> Quay lại trang đăng nhập
+          <FiArrowLeft className="mr-3 h-5 w-5 sm:h-6 sm:w-6" /> {t('forgotPassword.backToLogin', { defaultValue: 'Quay lại trang đăng nhập' })}
         </Link>
       </div>
     </AuthLayout>

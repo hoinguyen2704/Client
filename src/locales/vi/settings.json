@@ -5,8 +5,21 @@
     "darkMode": "Chế độ tối (Dark Mode)",
     "darkModeDesc": "Chuyển giao diện để bảo vệ mắt",
     "language": "Ngôn ngữ",
+    "languageOptions": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh"
+    },
     "promotions": "Nhận thông báo khuyến mãi",
     "promotionsDesc": "Mã giảm giá, chương trình sale"
+  },
+  "aria": {
+    "toggleDarkMode": "Bật tắt chế độ tối",
+    "togglePromotions": "Bật tắt thông báo khuyến mãi",
+    "toggleEmail": "Bật tắt thông báo email",
+    "toggleSms": "Bật tắt thông báo SMS",
+    "toggleApp": "Bật tắt thông báo ứng dụng",
+    "toggleOrders": "Bật tắt thông báo đơn hàng",
+    "toggleTwoFactor": "Bật tắt xác thực 2 lớp"
   },
   "notifications": {
     "title": "Cài đặt thông báo",
@@ -31,23 +44,55 @@
       "current": "Mật khẩu hiện tại",
       "new": "Mật khẩu mới",
       "confirm": "Xác nhận mật khẩu mới",
-      "save": "Lưu mật khẩu mới"
+      "save": "Lưu mật khẩu mới",
+      "saving": "Đang cập nhật..."
     },
     "twoFactor": {
       "title": "Xác thực 2 bước (2FA)",
-      "desc": "Tăng cường bảo mật tài khoản"
+      "desc": "Tăng cường bảo mật tài khoản",
+      "setupDescription": "Quét mã QR này bằng ứng dụng Google Authenticator hoặc Authy để thiết lập 2FA.",
+      "otpPlaceholder": "Nhập mã 6 số...",
+      "confirm": "Xác nhận"
     }
   },
   "socialAccounts": {
     "title": "Liên kết tài khoản",
     "linked": "Đã liên kết",
+    "linkedWithEmail": "Đã liên kết ({{email}})",
     "notLinked": "Chưa liên kết",
     "unlink": "Hủy liên kết",
-    "linkNow": "Liên kết ngay"
+    "linkNow": "Liên kết ngay",
+    "linking": "Đang liên kết...",
+    "loading": "Đang tải trạng thái...",
+    "googleMismatch": "Email tài khoản Google phải trùng với email tài khoản hiện tại.",
+    "googleAlreadyLinked": "Tài khoản Google này đã được liên kết ở nơi khác.",
+    "facebookComingSoon": "Sẽ hỗ trợ trong phiên bản sau",
+    "unsupported": "Chưa hỗ trợ"
   },
   "deleteAccount": {
     "title": "Xóa tài khoản",
     "warning": "Khi xóa tài khoản, tất cả dữ liệu cá nhân, lịch sử đơn hàng và điểm tích lũy sẽ bị xóa vĩnh viễn và không thể khôi phục.",
     "button": "Yêu cầu xóa tài khoản"
+  },
+  "unlinkGoogleModal": {
+    "title": "Xác minh để hủy liên kết Google",
+    "description": "Để bảo mật, vui lòng nhập mật khẩu hiện tại trước khi hủy liên kết Google.",
+    "currentPassword": "Mật khẩu hiện tại",
+    "confirm": "Hủy liên kết",
+    "submitting": "Đang hủy liên kết..."
+  },
+  "toasts": {
+    "socialLoadFailed": "Không thể tải trạng thái liên kết tài khoản.",
+    "passwordRequired": "Vui lòng nhập đầy đủ mật khẩu.",
+    "passwordTooShort": "Mật khẩu mới phải ít nhất 6 ký tự.",
+    "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+    "passwordUpdated": "Đổi mật khẩu thành công!",
+    "passwordUpdateFailed": "Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu hiện tại.",
+    "googleLinked": "Liên kết Google thành công!",
+    "googleLinkFailed": "Liên kết Google thất bại.",
+    "unlinkPasswordRequired": "Vui lòng nhập mật khẩu để xác minh.",
+    "googleUnlinked": "Hủy liên kết Google thành công.",
+    "unlinkLastLoginMethod": "Không thể hủy liên kết phương thức đăng nhập cuối cùng.",
+    "googleUnlinkFailed": "Hủy liên kết Google thất bại."
   }
 }

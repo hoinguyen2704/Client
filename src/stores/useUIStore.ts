@@ -1,17 +1,18 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n from '@/i18n';
+import { DEFAULT_LANGUAGE, type SupportedLanguage } from '@/locales/config';
 
 interface UIState {
   darkMode: boolean;
   sidebarCollapsed: boolean;
   mobileMenuOpen: boolean;
-  language: 'vi' | 'en';
+  language: SupportedLanguage;
 
   toggleDarkMode: () => void;
   toggleSidebar: () => void;
   setMobileMenu: (open: boolean) => void;
-  setLanguage: (lang: 'vi' | 'en') => void;
+  setLanguage: (lang: SupportedLanguage) => void;
 }
 
 const useUIStore = create<UIState>()(
@@ -20,7 +21,7 @@ const useUIStore = create<UIState>()(
       darkMode: false,
       sidebarCollapsed: false,
       mobileMenuOpen: false,
-      language: 'vi',
+      language: DEFAULT_LANGUAGE,
 
       toggleDarkMode: () =>
         set((state) => {

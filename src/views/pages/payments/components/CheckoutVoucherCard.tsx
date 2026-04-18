@@ -1,6 +1,8 @@
 import { PrimaryButton, TrashButton } from "@/components";
+import { useTranslation } from "react-i18next";
 import type { CouponResponse } from "@/types";
 import { formatPrice } from "@/utils/format";
+import { cn } from "@/utils/cn";
 
 interface CheckoutVoucherCardProps {
   voucher: CouponResponse;
@@ -14,6 +16,23 @@ interface CheckoutVoucherCardProps {
   onUnsave: (voucherId: string) => void;
 }
 
+const VOUCHER_STYLES = {
+  shipping: {
+    containerClassName:
+      "border-blue-100 bg-gradient-to-br from-blue-50/90 via-white to-cyan-50/70 dark:border-blue-900/60 dark:from-blue-950/30 dark:via-slate-900 dark:to-cyan-950/20",
+    glowClassName: "from-blue-400/10 via-cyan-300/5 to-transparent",
+    badgeClassName:
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  },
+  product: {
+    containerClassName:
+      "border-violet-100 bg-gradient-to-br from-violet-50/90 via-white to-fuchsia-50/70 dark:border-violet-900/60 dark:from-violet-950/25 dark:via-slate-900 dark:to-fuchsia-950/20",
+    glowClassName: "from-violet-400/10 via-fuchsia-300/5 to-transparent",
+    badgeClassName:
+      "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
+  },
+} as const;
+
 export default function CheckoutVoucherCard({
   voucher,
   userLoggedIn,
@@ -25,32 +44,45 @@ export default function CheckoutVoucherCard({
   onSave,
   onUnsave,
 }: CheckoutVoucherCardProps) {
+  const { t } = useTranslation("checkout");
   const isFreeShip = voucher.couponCategory === "SHIPPING";
+  const style = isFreeShip ? VOUCHER_STYLES.shipping : VOUCHER_STYLES.product;
 
   return (
-    <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
-      <div className="flex items-start justify-between gap-3">
-        <div>
+    <div
+      className={cn(
+        "relative overflow-hidden space-y-3 rounded-xl border p-4",
+        style.containerClassName,
+      )}
+    >
+      <div
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute inset-0 bg-gradient-to-r opacity-80",
+          style.glowClassName,
+        )}
+      />
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono font-bold">{voucher.code}</span>
             <span
-              className={`rounded-md px-2 py-1 text-10 font-bold uppercase tracking-wide ${
-                isFreeShip
-                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                  : "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
-              }`}
+              className={cn(
+                "rounded-md px-2 py-1 text-10 font-bold uppercase tracking-wide",
+                style.badgeClassName,
+              )}
             >
-              {isFreeShip ? "Freeship" : "Giảm giá SP"}
+              {isFreeShip ? t("voucherCard.shippingTag") : t("voucherCard.productTag")}
             </span>
           </div>
           <p className="mt-1 text-md font-bold text-slate-800 dark:text-slate-100">
             {voucher.discountType === "PERCENTAGE"
-              ? `Giảm ${voucher.discountValue}%`
-              : `Giảm ${formatPrice(voucher.discountValue)}`}
+              ? t("voucherCard.discountPercent", { value: voucher.discountValue })
+              : t("voucherCard.discountAmount", { value: formatPrice(voucher.discountValue) })}
           </p>
           {voucher.minOrderValue ? (
             <p className="mt-1 text-sm text-slate-500">
-              Đơn tối thiểu {formatPrice(voucher.minOrderValue)}
+              {t("voucherCard.minOrderValue", { value: formatPrice(voucher.minOrderValue) })}
             </p>
           ) : null}
         </div>
@@ -61,27 +93,27 @@ export default function CheckoutVoucherCard({
             variant="outline"
             className="h-8 shrink-0 px-3 text-sm shadow-none"
           >
-            Bỏ áp dụng
+            {t("voucherCard.remove")}
           </PrimaryButton>
         ) : (
           <PrimaryButton
             onClick={() => onApply(voucher)}
             className="h-8 shrink-0 px-3 text-sm shadow-none hover:translate-y-0"
           >
-            Áp dụng
+            {t("voucherCard.apply")}
           </PrimaryButton>
         )}
       </div>
 
-      <div className="flex justify-end">
+      <div className="relative flex justify-end">
         {userLoggedIn ? (
           isSaved ? (
             <div className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
-              Đã lưu
+              {t("voucherCard.saved")}
               <TrashButton
                 onClick={() => onUnsave(voucher.id)}
                 disabled={isSaving}
-                title="Bỏ lưu mã"
+                title={t("voucherCard.removeSaved")}
                 className="h-7 w-7 rounded-lg"
               />
             </div>
@@ -92,11 +124,11 @@ export default function CheckoutVoucherCard({
               variant="outline"
               className="h-8 px-3 text-sm shadow-none"
             >
-              {isSaving ? "Đang lưu..." : "Lưu vào ví"}
+              {isSaving ? t("voucherCard.saving") : t("voucherCard.saveToWallet")}
             </PrimaryButton>
           )
         ) : (
-          <span className="text-sm text-slate-400">Đăng nhập để lưu mã</span>
+          <span className="text-sm text-slate-400">{t("voucherCard.loginToSave")}</span>
         )}
       </div>
     </div>

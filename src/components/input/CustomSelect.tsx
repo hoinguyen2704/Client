@@ -25,6 +25,10 @@ export default function CustomSelect({ value, options, onChange, className = '',
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   const selectedOption = options.find(o => o.value === value) || options[0];
+  const triggerFallbackClass =
+    'bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white hover:bg-white dark:hover:bg-slate-700';
+  const idleOptionClass =
+    'text-body hover:bg-slate-100 dark:hover:bg-slate-700/70 hover:text-slate-900 dark:hover:text-white';
 
   const updatePosition = useCallback(() => {
     if (!containerRef.current) return;
@@ -111,7 +115,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
         onClick={toggleDropdown}
         disabled={disabled}
         className={`w-full h-full flex items-center justify-between gap-2 px-3 py-2 text-md font-semibold rounded-xl border outline-none whitespace-nowrap focus:ring-2 focus:ring-purple-500/50 shadow-sm transition-all duration-200 ${
-          selectedOption?.colorClass || 'bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white hover:bg-white dark:hover:bg-slate-700'
+          selectedOption?.colorClass || triggerFallbackClass
         } ${isOpen ? 'ring-2 ring-purple-500/50 scale-[0.98]' : ''} ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
         <span>{selectedOption?.label}</span>
@@ -139,7 +143,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
                 className={`w-full flex items-center justify-between px-3 py-2.5 text-md font-medium rounded-lg transition-colors duration-150 ${
                   isSelected
                     ? (option.colorClass || 'bg-purple-50 dark:bg-purple-500/15 text-purple-700 dark:text-purple-400 font-bold')
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/70 hover:text-slate-900 dark:hover:text-white'
+                    : idleOptionClass
                 } ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
               >
                 <div className="flex items-center gap-2">

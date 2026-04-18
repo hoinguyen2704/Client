@@ -1,0 +1,479 @@
+{
+  "realtime": {
+    "adminRepliedTicket": "Admin replied to {{ticketNumber}}",
+    "adminReplied": "Admin sent a support reply",
+    "ticketStatusUpdated": "Status for {{ticketNumber}} was updated",
+    "supportStatusUpdated": "Your support request status was updated",
+    "newNotification": "New notification"
+  },
+  "orders": {
+    "title": "Order management",
+    "searchPlaceholder": "Search by order number...",
+    "placedAt": "Placed on",
+    "updatedAt": "Updated",
+    "quantity": "Quantity",
+    "review": "Review",
+    "total": "Total",
+    "cancelOrder": "Cancel order",
+    "viewDetails": "View details",
+    "empty": {
+      "title": "No orders found",
+      "description": "You do not have any orders in this status.",
+      "action": "Continue shopping"
+    },
+    "reviewModal": {
+      "title": "Review product",
+      "back": "Back",
+      "submit": "Submit review",
+      "maxReviewed": "Maximum reviews reached",
+      "variant": "Variant",
+      "quality": "Product quality",
+      "additionalReview": "Additional review (Round 2)",
+      "reviewNumber": "Review round {{count}}",
+      "placeholder": "Share your thoughts about this product..."
+    },
+    "cancelDialog": {
+      "title": "Cancel order",
+      "message": "Are you sure you want to cancel this order? This action cannot be undone.",
+      "confirm": "Cancel order"
+    },
+    "toasts": {
+      "cancelPendingOnly": "You can only cancel orders that are still pending",
+      "cancelFailed": "Failed to cancel order!",
+      "reviewSuccess": "Thanks for reviewing this product!",
+      "reviewFailed": "Failed to submit review!"
+    },
+    "tabs": {
+      "all": "All",
+      "pending": "Awaiting confirmation",
+      "confirmed": "Confirmed",
+      "processing": "Seller is preparing the package",
+      "shipping": "Shipping",
+      "shipped": "Delivered",
+      "cancelled": "Cancelled",
+      "returned": "Returned"
+    },
+    "badges": {
+      "pending": "Awaiting confirmation",
+      "confirmed": "Confirmed",
+      "processing": "Seller is preparing the package",
+      "shipping": "Shipping",
+      "shipped": "Delivered",
+      "cancelled": "Cancelled",
+      "returned": "Returned"
+    }
+  },
+  "returns": {
+    "title": "Returns / Refunds",
+    "goToOrdersToReturn": "Go to orders to return items",
+    "searchPlaceholder": "Search by request number / order number...",
+    "requestedAmount": "Requested refund",
+    "approvedAmount": "Approved",
+    "orderNumber": "Order",
+    "createdAt": "Created at",
+    "reason": "Reason",
+    "viewDetails": "View details",
+    "cancelRequest": "Cancel request",
+    "empty": {
+      "title": "You do not have any return requests",
+      "description": "You can create a request from the order details page after the order has been delivered.",
+      "action": "Go to orders"
+    },
+    "cancelDialog": {
+      "title": "Cancel return request",
+      "message": "Are you sure you want to cancel {{returnNumber}}?",
+      "fallbackTarget": "this request",
+      "confirm": "Cancel request"
+    },
+    "toasts": {
+      "cancelSuccess": "Return request cancelled",
+      "cancelFailed": "Failed to cancel return request"
+    }
+  },
+  "paymentMethods": {
+    "title": "Payment methods",
+    "addCard": "Add new card",
+    "empty": {
+      "title": "No payment cards yet",
+      "description": "Add a new card for faster checkout."
+    },
+    "default": "Default",
+    "cardholderName": "Cardholder name",
+    "expiry": "Expiry",
+    "setAsDefault": "Set as default",
+    "setDefault": "Set default",
+    "deleteCard": "Delete card",
+    "delete": "Delete",
+    "modal": {
+      "title": "Add payment card",
+      "cardNumber": "Card number",
+      "cardholderInput": "Name on card",
+      "expiryDate": "Expiry date",
+      "securityCode": "CVV/CVC",
+      "setDefaultCard": "Set as default card",
+      "saveCard": "Save card"
+    }
+  },
+  "orderTracking": {
+    "notFound": {
+      "title": "Order not found",
+      "back": "Back to orders"
+    },
+    "title": "Order details #{{orderNumber}}",
+    "actions": {
+      "requestReturn": "Request return"
+    },
+    "returnBanner": {
+      "title": "This order already has a return request",
+      "description": "The return workflow is in progress. Please review the details.",
+      "button": "View details"
+    },
+    "returnForm": {
+      "title": "Create return request",
+      "cancel": "Cancel",
+      "selectItems": "Choose items and quantities to return:",
+      "purchased": "Purchased",
+      "quantity": "Quantity",
+      "reasonLabel": "Return reason",
+      "reasonPlaceholder": "Or enter your detailed reason...",
+      "noteLabel": "Additional notes / image links (optional)",
+      "notePlaceholder": "Provide more details or storage links for evidence...",
+      "submit": "Submit return request",
+      "quickReasons": {
+        "defective": "Product is defective / damaged",
+        "wrongItem": "Wrong product delivered",
+        "notAsDescribed": "Product does not match the description",
+        "noNeed": "No longer needed",
+        "missingParts": "Missing accessories / parts"
+      }
+    },
+    "shipping": {
+      "title": "Shipping information",
+      "trackingCode": "Tracking code"
+    },
+    "timeline": {
+      "deliveredTitle": "Delivery completed",
+      "deliveredDescription": "The order was delivered successfully"
+    },
+    "cancelled": {
+      "cancelled": "The order has been cancelled",
+      "returned": "The order has been returned"
+    },
+    "steps": {
+      "pending": "Awaiting confirmation",
+      "confirmed": "Confirmed",
+      "processing": "Seller is preparing the package",
+      "shipping": "Shipping",
+      "shipped": "Delivered"
+    },
+    "items": {
+      "title": "Items",
+      "quantity": "Quantity"
+    },
+    "summary": {
+      "title": "Order summary",
+      "placedAt": "Placed on",
+      "updatedAt": "Last updated",
+      "payment": "Payment",
+      "subtotal": "Subtotal",
+      "shippingFee": "Shipping fee",
+      "productDiscount": "Product discount",
+      "shippingDiscount": "Shipping discount",
+      "vat": "VAT ({{percent}}%{{suffix}})",
+      "vatIncluded": ", included",
+      "total": "Total"
+    },
+    "address": {
+      "title": "Shipping address"
+    },
+    "note": {
+      "title": "Notes"
+    },
+    "toasts": {
+      "reasonRequired": "Please enter a return reason",
+      "selectItemsRequired": "Please choose at least one item to return",
+      "createSuccess": "Return request submitted successfully",
+      "createFailed": "Failed to create return request"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "loading": {
+      "profile": "Loading profile...",
+      "avatar": "Uploading..."
+    },
+    "phoneHint": {
+      "title": "This account does not have a phone number yet",
+      "description": "Google sign-in often does not include a phone number. You can add it now to make delivery and contact easier.",
+      "minimizeAria": "Minimize phone number suggestion",
+      "pill": "Add phone number"
+    },
+    "avatar": {
+      "change": "Change avatar",
+      "alt": "Avatar"
+    },
+    "fields": {
+      "fullName": "Full name",
+      "emailReadonly": "Email (read-only)",
+      "phoneNumber": "Phone number",
+      "phonePlaceholder": "Enter a phone number for deliveries",
+      "phoneReadonlyHint": "A phone number is already set. If you need to change it, contact support or an administrator.",
+      "phoneFormatHint": "Supported formats: `0xxxxxxxxx`, `84xxxxxxxxx`, or `+84xxxxxxxxx`.",
+      "dateOfBirth": "Date of birth",
+      "gender": "Gender"
+    },
+    "genderOptions": {
+      "unset": "Not selected",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "emailOtp": {
+      "title": "Change email with OTP",
+      "description": "Enter your new email and current password to receive a verification OTP. After successful verification, you will need to sign in again.",
+      "newEmail": "New email",
+      "currentPassword": "Current password",
+      "sendOtp": "Send email change OTP",
+      "sendingOtp": "Sending OTP...",
+      "otpSentTo": "OTP sent to:",
+      "otpCode": "OTP code",
+      "otpPlaceholder": "Enter the 6-digit code",
+      "verifyOtp": "Verify OTP",
+      "verifyingOtp": "Verifying...",
+      "resendOtp": "Resend OTP",
+      "resendingOtp": "Sending..."
+    },
+    "passwordSection": {
+      "title": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Update password",
+      "submitting": "Updating..."
+    },
+    "actions": {
+      "saveChanges": "Save changes",
+      "savingChanges": "Saving..."
+    },
+    "toasts": {
+      "loadFailed": "Unable to load profile information.",
+      "fullNameRequired": "Full name is required.",
+      "phoneInvalid": "The phone number does not match a valid Vietnamese format.",
+      "profileUpdated": "Profile updated successfully!",
+      "profileUpdateFailed": "Failed to update profile.",
+      "passwordRequired": "Please enter all password fields.",
+      "passwordTooShort": "The new password must be at least 6 characters.",
+      "passwordMismatch": "Password confirmation does not match.",
+      "passwordUpdated": "Password changed successfully!",
+      "passwordUpdateFailed": "Failed to change password. Please check your current password.",
+      "newEmailRequired": "Please enter a new email.",
+      "currentPasswordRequired": "Please enter your current password.",
+      "emailOtpSent": "OTP sent to the new email.",
+      "emailOtpSendFailed": "Unable to send email change OTP.",
+      "emailOtpResent": "OTP resent.",
+      "emailOtpResendFailed": "Unable to resend OTP.",
+      "otpRequired": "Please enter the OTP code.",
+      "emailUpdated": "Email changed successfully. Please sign in again.",
+      "emailVerifyFailed": "OTP verification failed.",
+      "avatarUpdated": "Avatar updated successfully!",
+      "avatarUploadFailed": "Failed to upload avatar."
+    }
+  },
+  "support": {
+    "title": "Support",
+    "createTitle": "Create new request",
+    "subjectPlaceholder": "Support subject",
+    "contentPlaceholder": "Describe your issue...",
+    "createAction": "Send request",
+    "emptyTickets": "You do not have any support requests yet",
+    "closedHint": "This ticket is closed. You can no longer send replies.",
+    "replyPlaceholder": "Type your reply...",
+    "replyAria": "Send reply",
+    "emptyChatTitle": "Choose a request on the left to start chatting with admin",
+    "emptyChatDescription": "Messages will update in realtime.",
+    "toasts": {
+      "loadDetailFailed": "Unable to load request details",
+      "createSuccess": "Support request sent",
+      "createFailed": "Failed to send request",
+      "replyFailed": "Failed to send reply"
+    }
+  },
+  "addressBook": {
+    "title": "Address book",
+    "description": "Manage your delivery addresses",
+    "addNew": "Add new address",
+    "emptyTitle": "No addresses yet",
+    "emptyDescription": "Add a delivery address to make checkout easier and help us deliver faster.",
+    "emptyAction": "Add address now",
+    "default": "Default",
+    "setDefault": "Set default",
+    "setDefaultTitle": "Set as default",
+    "edit": "Edit",
+    "editTitle": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Delete",
+    "modal": {
+      "addTitle": "Add new shipping address",
+      "editTitle": "Edit shipping address",
+      "cancel": "Cancel",
+      "save": "Save address"
+    },
+    "deleteDialog": {
+      "title": "Delete address",
+      "message": "Are you sure you want to delete this address?",
+      "confirm": "Delete"
+    },
+    "toasts": {
+      "saveFailed": "Failed to save address!",
+      "deleteFailed": "Failed to delete address!",
+      "setDefaultFailed": "Failed to set default address!"
+    }
+  },
+  "myReviews": {
+    "title": "My reviews",
+    "tabs": {
+      "toReview": "To review",
+      "reviewed": "Review history"
+    },
+    "item": {
+      "variant": "Variant",
+      "order": "Order",
+      "deliveredAt": "Delivered on",
+      "reviewDate": "Reviewed on",
+      "defaultVariant": "Default",
+      "reviewedCount": "Reviewed {{count}}/{{max}} times",
+      "roundBadge": "Round {{current}}/{{max}}"
+    },
+    "actions": {
+      "writeReview": "Write review",
+      "extraReview": "Additional review",
+      "delete": "Delete",
+      "reviewNow": "Review now",
+      "complete": "Complete",
+      "back": "Back"
+    },
+    "empty": {
+      "allReviewedTitle": "Great!",
+      "allReviewedDescription": "You have reviewed all purchased products.",
+      "noReviewsTitle": "No reviews yet",
+      "noReviewsDescription": "You have not written any reviews for purchased products."
+    },
+    "adminReplyTitle": "Reply from Hozitech",
+    "modal": {
+      "reviewTitle": "Write review",
+      "extraReviewTitle": "Additional review",
+      "previousReviews": "Previous reviews",
+      "roundLabel": "Round {{count}}",
+      "ratingLabel": "Product quality",
+      "contentLabel": "Review content",
+      "contentPlaceholder": "Share your thoughts about this product..."
+    },
+    "deleteDialog": {
+      "title": "Delete review?",
+      "message": "Are you sure you want to delete this review? This action cannot be undone.",
+      "confirm": "Delete now"
+    },
+    "toasts": {
+      "loadFailed": "Unable to load review data",
+      "limitReached": "You have reached the review limit for this product",
+      "submitSuccess": "Review submitted successfully",
+      "submitFailed": "Failed to submit review",
+      "deleteSuccess": "Review deleted",
+      "deleteFailed": "Failed to delete review"
+    }
+  },
+  "vouchers": {
+    "title": "Voucher wallet",
+    "searchTitle": "Enter coupon code",
+    "searchPlaceholder": "Enter coupon code...",
+    "check": "Check",
+    "searchResultTitle": "Coupon check result",
+    "publicTitle": "Voucher wallet",
+    "publicEmptyTitle": "No active vouchers available",
+    "publicEmptyDescription": "Please come back later for new offers.",
+    "savedTitle": "Saved codes",
+    "loginSavedTitle": "Sign in to view saved codes",
+    "loginSavedDescription": "Saved vouchers will appear here.",
+    "savedEmptyTitle": "You have not saved any vouchers",
+    "savedEmptyDescription": "Save vouchers from the voucher wallet to use them quickly at checkout.",
+    "notesTitle": "Notes",
+    "notes": {
+      "item1": "Each coupon can only be applied once per order",
+      "item2": "Vouchers have expiration dates, please check before checkout",
+      "item3": "Save vouchers for faster use on the checkout page",
+      "item4": "Some vouchers only apply to specific products"
+    },
+    "card": {
+      "maxDiscount": "Up to {{value}}",
+      "minOrder": "Minimum order {{value}}",
+      "applicableProducts": "{{count}} products",
+      "remainingDays": "{{count}} days left",
+      "expiry": "Expires: {{date}}",
+      "remainingUses": "{{count}} uses left",
+      "savedInWallet": "Saved in wallet",
+      "save": "Save voucher",
+      "saving": "Saving..."
+    },
+    "toasts": {
+      "loginToSave": "Please sign in to save vouchers",
+      "saveSuccess": "Voucher saved to wallet!",
+      "saveFailed": "Failed to save voucher",
+      "loginToManage": "Please sign in to manage vouchers",
+      "unsaveSuccess": "Voucher removed from wallet",
+      "actionFailed": "Action failed",
+      "copySuccess": "Copied code {{code}}",
+      "searchFailed": "Code does not exist or has been disabled"
+    }
+  },
+  "returnDetail": {
+    "notFound": {
+      "title": "Return request not found",
+      "back": "Back to list"
+    },
+    "header": {
+      "title": "Details {{returnNumber}}",
+      "order": "Order"
+    },
+    "actions": {
+      "cancel": "Cancel request"
+    },
+    "cancelledBanner": {
+      "cancelled": "The request was cancelled",
+      "rejected": "The request was rejected"
+    },
+    "itemsTitle": "Returned items",
+    "approvedQuantity": "Approved: {{count}}",
+    "adminNoteTitle": "Note from admin",
+    "info": {
+      "title": "Request information",
+      "reason": "Reason",
+      "note": "Note",
+      "none": "None",
+      "createdAt": "Created at",
+      "resolvedAt": "Completed at"
+    },
+    "amount": {
+      "title": "Amounts",
+      "requested": "Requested refund",
+      "approved": "Approved amount",
+      "pending": "Pending approval",
+      "actualRefunded": "Actually refunded"
+    },
+    "refunds": {
+      "title": "Refund history",
+      "pending": "Waiting for admin to process the refund.",
+      "empty": "No refund transactions yet.",
+      "provider": "Provider",
+      "transactionId": "Transaction ID"
+    },
+    "cancelDialog": {
+      "title": "Cancel return request",
+      "message": "Are you sure you want to cancel {{returnNumber}}?",
+      "confirm": "Cancel request"
+    },
+    "toasts": {
+      "cancelSuccess": "Return request cancelled",
+      "cancelFailed": "Failed to cancel return request"
+    }
+  }
+}

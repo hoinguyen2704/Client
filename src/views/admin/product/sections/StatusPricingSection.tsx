@@ -4,6 +4,7 @@ import { memo } from "react";
 
 export default memo(function StatusPricingSection(props: Props) {
   const {
+    isEditMode,
     status, setStatus,
     originPrice, setOriginPrice,
     isFeatured, setIsFeatured,
@@ -20,8 +21,12 @@ export default memo(function StatusPricingSection(props: Props) {
         <div className="relative" ref={statusDropdownRef}>
           <button
             type="button"
-            onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+            onClick={() => {
+              if (!isEditMode) return;
+              setShowStatusDropdown(!showStatusDropdown);
+            }}
+            disabled={!isEditMode}
+            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
             <div className="flex items-center gap-2">
               <span
@@ -89,6 +94,11 @@ export default memo(function StatusPricingSection(props: Props) {
             </div>
           )}
         </div>
+        {!isEditMode && (
+          <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
+            Tạo mới bước đầu luôn lưu dưới dạng bản nháp. Có thể đổi trạng thái sau khi cấu hình phân loại.
+          </p>
+        )}
       </div>
 
       <div>

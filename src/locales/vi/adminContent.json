@@ -1,0 +1,97 @@
+{
+  "cms": {
+    "title": "Quản lý nội dung",
+    "tabs": {
+      "banners": "Banner",
+      "articles": "Bài viết"
+    },
+    "actions": {
+      "add": "Thêm mới",
+      "addBanner": "Thêm banner",
+      "addArticle": "Thêm bài viết",
+      "create": "Thêm mới",
+      "update": "Cập nhật"
+    },
+    "banners": {
+      "title": "Quản lý banner",
+      "titleLabel": "Tiêu đề",
+      "imageUrl": "URL ảnh banner",
+      "targetUrl": "URL điều hướng",
+      "sortOrder": "Thứ tự hiển thị",
+      "active": "Đang bật",
+      "uploadImage": "Tải ảnh banner",
+      "uploadingImage": "Đang tải ảnh...",
+      "chooseImage": "Chọn ảnh từ máy",
+      "helperText": "Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.",
+      "previewAlt": "Xem trước banner",
+      "visibilityTitle": "Hiển thị banner",
+      "visibilityDescription": "Tắt nếu muốn ẩn banner khỏi trang chủ",
+      "createTitle": "Tạo banner",
+      "editTitle": "Sửa banner",
+      "createSuccess": "Thêm banner thành công!",
+      "updateSuccess": "Cập nhật banner thành công!",
+      "titlePlaceholder": "VD: Flash Sale cuối tuần",
+      "targetPlaceholder": "/products hoặc https://..."
+    },
+    "articles": {
+      "title": "Quản lý bài viết",
+      "titleLabel": "Tiêu đề",
+      "thumbnailUrl": "URL ảnh đại diện",
+      "published": "Đã xuất bản",
+      "content": "Nội dung",
+      "uploadThumbnail": "Tải ảnh đại diện",
+      "uploadingThumbnail": "Đang tải ảnh...",
+      "chooseThumbnail": "Chọn ảnh từ máy",
+      "helperText": "Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.",
+      "previewAlt": "Xem trước ảnh đại diện",
+      "publishTitle": "Xuất bản ngay",
+      "publishDescription": "Nếu tắt, bài viết sẽ ở trạng thái nháp",
+      "createTitle": "Tạo bài viết",
+      "editTitle": "Sửa bài viết",
+      "createSuccess": "Thêm bài viết thành công!",
+      "updateSuccess": "Cập nhật bài viết thành công!",
+      "titlePlaceholder": "Nhập tiêu đề bài viết",
+      "contentPlaceholder": "Nhập nội dung bài viết"
+    },
+    "table": {
+      "title": "Tiêu đề",
+      "author": "Tác giả",
+      "createdAt": "Ngày tạo",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "emptyBanners": "Chưa có banner nào",
+      "emptyArticles": "Chưa có bài viết nào",
+      "pagination": "bài viết"
+    },
+    "validation": {
+      "bannerImageRequired": "Vui lòng nhập URL ảnh banner",
+      "articleRequired": "Vui lòng nhập tiêu đề và nội dung bài viết"
+    },
+    "upload": {
+      "invalidType": "Chỉ hỗ trợ file ảnh (PNG, JPG, WEBP...)",
+      "maxSize": "Kích thước ảnh tối đa là 5MB"
+    },
+    "toasts": {
+      "loadBannersFailed": "Tải banner thất bại!",
+      "loadArticlesFailed": "Tải bài viết thất bại!",
+      "deleteBannerSuccess": "Xóa banner thành công!",
+      "deleteBannerFailed": "Xóa banner thất bại!",
+      "deleteArticleSuccess": "Xóa bài viết thành công!",
+      "deleteArticleFailed": "Xóa bài viết thất bại!",
+      "uploadBannerSuccess": "Tải ảnh banner thành công!",
+      "uploadBannerFailed": "Tải ảnh banner thất bại!",
+      "uploadThumbnailSuccess": "Tải ảnh thumbnail thành công!",
+      "uploadThumbnailFailed": "Tải ảnh thumbnail thất bại!",
+      "saveBannerSuccess": "Lưu banner thành công!",
+      "saveBannerFailed": "Lưu banner thất bại!",
+      "saveArticleSuccess": "Lưu bài viết thành công!",
+      "saveArticleFailed": "Lưu bài viết thất bại!"
+    },
+    "deleteDialog": {
+      "bannerTitle": "Xóa banner",
+      "bannerMessage": "Bạn có chắc muốn xóa banner này?",
+      "articleTitle": "Xóa bài viết",
+      "articleMessage": "Bạn có chắc muốn xóa bài viết này?"
+    }
+  }
+}

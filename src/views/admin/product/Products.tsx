@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FiPlus, FiTrash2, FiToggleLeft, FiToggleRight, FiInfo, FiChevronUp, FiChevronDown, FiDownload } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { formatPrice } from '@/utils/format';
@@ -12,6 +13,7 @@ import { downloadBlob } from '@/utils/download';
 import { getPaginatedRowNumber } from '@/utils/helpers';
 
 export default function Products() {
+  const { t } = useTranslation(['adminCatalog', 'common']);
   const [products, setProducts] = useState<ProductResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,12 +50,12 @@ export default function Products() {
       setPageData(res.data);
       setProducts(res.data.data || []);
     } catch (err) {
-      toast.error('Lỗi khi tải danh sách sản phẩm');
+      toast.error(getApiErrorMessage(err, t, 'adminCatalog:products.toasts.loadFailed'));
       console.error('Failed to fetch products:', err);
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, statusFilter, categoryFilter, page, sortBy, sortDir]);
+  }, [categoryFilter, page, searchQuery, sortBy, sortDir, statusFilter, t]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
@@ -68,16 +70,19 @@ export default function Products() {
   };
 
   const handleDelete = async (id: string) => {
-    toast('Xác nhận xóa sản phẩm này?', {
+    toast(t('adminCatalog:products.toasts.deleteConfirm'), {
       icon: <FiInfo className="text-red-500" />,
       action: {
-        label: 'Xóa',
+        label: t('common:actions.delete'),
         onClick: async () => {
           try {
             await adminProductService.delete(id);
-            toast.success('Đã xóa sản phẩm thành công!');
+            toast.success(t('adminCatalog:products.toasts.deleteSuccess'));
             fetchProducts({ silent: true });
-          } catch (err) { toast.error('Không thể xóa sản phẩm này!'); console.error('Delete failed:', err); }
+          } catch (err) {
+            toast.error(getApiErrorMessage(err, t, 'adminCatalog:products.toasts.deleteFailed'));
+            console.error('Delete failed:', err);
+          }
         }
       },
     });
@@ -85,14 +90,13 @@ export default function Products() {
 
   const handleToggleStatus = async (id: string) => {
     try {
-      await adminProductService.toggleStatus(id);
-      // Update local state instead of re-fetching to prevent scroll-to-top
+      const res = await adminProductService.toggleStatus(id);
       setProducts(prev => prev.map(p =>
-        p.id === id ? { ...p, status: p.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' } : p
+        p.id === id ? { ...p, status: res.data?.status || p.status } : p
       ));
-      toast.success('Đã cập nhật trạng thái sản phẩm!');
+      toast.success(t('adminCatalog:products.toasts.toggleSuccess'));
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Cập nhật trạng thái thất bại!'));
+      toast.error(getApiErrorMessage(err, t, 'adminCatalog:products.toasts.toggleFailed'));
       console.error('Toggle status failed:', err);
     }
   };
@@ -105,9 +109,9 @@ export default function Products() {
         status: statusFilter || undefined,
       });
       downloadBlob(blob, `products_${new Date().toISOString().slice(0, 10)}.xlsx`);
-      toast.success('Đã xuất báo cáo sản phẩm!');
+      toast.success(t('adminCatalog:products.toasts.exportSuccess'));
     } catch (err) {
-      toast.error('Không thể xuất báo cáo!');
+      toast.error(getApiErrorMessage(err, t, 'adminCatalog:products.toasts.exportFailed'));
       console.error('Export failed:', err);
     }
   };
@@ -126,14 +130,33 @@ export default function Products() {
   const minPrice = (p: ProductResponse) =>
     p.variants?.length ? Math.min(...p.variants.map(v => v.price)) : p.originPrice;
 
+  const getStatusLabel = (status: string) => {
+    if (status === 'ACTIVE') return t('adminCatalog:products.filters.active');
+    if (status === 'DRAFT') return t('adminCatalog:products.filters.draft');
+    if (status === 'INACTIVE') return t('adminCatalog:products.filters.inactive');
+    return status;
+  };
+
+  const getStatusBadgeKey = (status: string) => {
+    if (status === 'ACTIVE') return 'active';
+    if (status === 'DRAFT') return 'draft';
+    if (status === 'INACTIVE') return 'hidden';
+    return status;
+  };
+
+  const getToggleTitle = (status: string) =>
+    status === 'ACTIVE'
+      ? t('adminCatalog:products.statusActions.moveToDraft')
+      : t('adminCatalog:products.statusActions.activate');
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold">Quản lý sản phẩm</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">{t('adminCatalog:products.title')}</h1>
           {selectedItems.length > 0 && (
             <p className="text-md text-slate-500 mt-1">
-              Đã chọn <span className="font-bold text-purple-600">{selectedItems.length}</span> sản phẩm
+              {t('adminCatalog:products.selectedCount', { count: selectedItems.length })}
             </p>
           )}
         </div>
@@ -141,11 +164,11 @@ export default function Products() {
           {selectedItems.length > 0 && (
             <Button
               onClick={() => {
-                toast(`Xác nhận xóa ${selectedItems.length} sản phẩm?`, {
+                toast(t('adminCatalog:products.toasts.deleteManyConfirm', { count: selectedItems.length }), {
                   icon: <FiInfo className="text-red-500" />,
-                  description: 'Thao tác này không thể hoàn tác.',
+                  description: t('adminCatalog:products.toasts.deleteManyDescription'),
                   action: {
-                    label: 'Xóa tất cả',
+                    label: t('adminCatalog:products.actions.deleteAll'),
                     onClick: async () => {
                       const toDelete = [...selectedItems];
                       let successCount = 0;
@@ -158,9 +181,12 @@ export default function Products() {
                       setSelectedItems([]);
                       fetchProducts({ silent: true });
                       if (successCount === toDelete.length) {
-                        toast.success(`Đã xóa ${successCount} sản phẩm thành công!`);
+                        toast.success(t('adminCatalog:products.toasts.deleteManySuccess', { count: successCount }));
                       } else {
-                        toast.warning(`Đã xóa ${successCount}/${toDelete.length} sản phẩm. Một số sản phẩm không thể xóa.`);
+                        toast.warning(t('adminCatalog:products.toasts.deleteManyPartial', {
+                          success: successCount,
+                          total: toDelete.length,
+                        }));
                       }
                     }
                   },
@@ -170,14 +196,14 @@ export default function Products() {
               size="md"
               icon={<FiTrash2 />}
             >
-              Xóa ({selectedItems.length})
+              {t('adminCatalog:products.actions.deleteSelected', { count: selectedItems.length })}
             </Button>
           )}
           <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
-            Xuất Excel
+            {t('adminCatalog:products.actions.exportExcel')}
           </Button>
           <PrimaryButton href="/admin/products/new" icon={<FiPlus className="text-base" />}>
-            Thêm sản phẩm
+            {t('adminCatalog:products.actions.addProduct')}
           </PrimaryButton>
         </div>
       </div>
@@ -187,7 +213,7 @@ export default function Products() {
         <div className="flex-1">
           <AdminSearch
             boxed={false}
-            placeholder="Tìm kiếm theo tên sản phẩm, mã SKU..."
+            placeholder={t('adminCatalog:products.filters.searchPlaceholder')}
             value={searchQuery}
             onChange={(val) => { setSearchQuery(val); setPage(1); }}
           />
@@ -196,7 +222,7 @@ export default function Products() {
           value={categoryFilter}
           onChange={(val) => { setCategoryFilter(val); setPage(1); }}
           options={[
-            { value: '', label: 'Tất cả danh mục' },
+            { value: '', label: t('adminCatalog:products.filters.allCategories') },
             ...categories.map((cat) => ({ value: cat.id, label: cat.name }))
           ]}
           className="w-full md:w-56"
@@ -205,9 +231,10 @@ export default function Products() {
           value={statusFilter}
           onChange={(val) => { setStatusFilter(val); setPage(1); }}
           options={[
-            { value: '', label: 'Tất cả trạng thái' },
-            { value: 'ACTIVE', label: 'Đang bán' },
-            { value: 'INACTIVE', label: 'Đã ẩn' }
+            { value: '', label: t('adminCatalog:products.filters.allStatuses') },
+            { value: 'ACTIVE', label: t('adminCatalog:products.filters.active') },
+            { value: 'DRAFT', label: t('adminCatalog:products.filters.draft') },
+            { value: 'INACTIVE', label: t('adminCatalog:products.filters.inactive') }
           ]}
           className="w-full md:w-48"
         />
@@ -219,7 +246,7 @@ export default function Products() {
           <table className="w-full min-w-[1000px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
-                <th className="p-4 font-medium w-20 text-center">STT</th>
+                <th className="p-4 font-medium w-20 text-center">{t('adminCatalog:products.table.index')}</th>
                 <th className="p-4 font-medium w-10 text-center">
                   <Checkbox
                     checked={selectedItems.length === products.length && products.length > 0}
@@ -227,22 +254,22 @@ export default function Products() {
                   />
                 </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('name')}>
-                  <div className="flex items-center gap-1">Sản phẩm {sortBy === 'name' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                  <div className="flex items-center gap-1">{t('adminCatalog:products.table.product')} {sortBy === 'name' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
-                <th className="p-4 font-medium">Danh mục</th>
+                <th className="p-4 font-medium">{t('adminCatalog:products.table.category')}</th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('originPrice')}>
-                  <div className="flex items-center gap-1">Giá bán {sortBy === 'originPrice' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                  <div className="flex items-center gap-1">{t('adminCatalog:products.table.price')} {sortBy === 'originPrice' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none text-center" onClick={() => handleSort('totalStock')}>
-                  <div className="flex items-center justify-center gap-1">Tồn kho {sortBy === 'totalStock' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                  <div className="flex items-center justify-center gap-1">{t('adminCatalog:products.table.stock')} {sortBy === 'totalStock' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none text-center" onClick={() => handleSort('totalSold')}>
-                  <div className="flex items-center justify-center gap-1">Đã bán {sortBy === 'totalSold' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                  <div className="flex items-center justify-center gap-1">{t('adminCatalog:products.table.sold')} {sortBy === 'totalSold' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
                 <th className="p-4 font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none" onClick={() => handleSort('status')}>
-                  <div className="flex items-center gap-1">Trạng thái {sortBy === 'status' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
+                  <div className="flex items-center gap-1">{t('adminCatalog:products.table.status')} {sortBy === 'status' && (sortDir === 'ASC' ? <FiChevronUp /> : <FiChevronDown />)}</div>
                 </th>
-                <th className="p-4 font-medium text-center">Thao tác</th>
+                <th className="p-4 font-medium text-center">{t('adminCatalog:products.table.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -261,7 +288,7 @@ export default function Products() {
                   </tr>
                 ))
               ) : products.length === 0 ? (
-                <tr><td colSpan={9} className="p-10 sm:p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">Không có sản phẩm nào</td></tr>
+                <tr><td colSpan={9} className="p-10 sm:p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">{t('adminCatalog:products.table.empty')}</td></tr>
               ) : (
                 products.map((product, index) => {
                   const stock = totalStock(product);
@@ -285,7 +312,7 @@ export default function Products() {
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 text-slate-500">{product.category?.name || '—'}</td>
+                      <td className="p-4 text-slate-500">{product.category?.name || t('common:labels.notAvailable')}</td>
                       <td className="p-4 font-bold text-purple-600">{formatPrice(minPrice(product))}</td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
@@ -304,14 +331,17 @@ export default function Products() {
                         </span>
                       </td>
                       <td className="p-4">
-                        <StatusBadge status={product.status === 'ACTIVE' ? 'active' : 'hidden'} label={product.status === 'ACTIVE' ? 'Đang bán' : 'Đã ẩn'} />
+                        <StatusBadge
+                          status={getStatusBadgeKey(product.status)}
+                          label={getStatusLabel(product.status)}
+                        />
                       </td>
                       <td className="p-4 text-right">
                         <ActionButtons
                           actions={[
                             {
                               type: 'more',
-                              title: product.status === 'ACTIVE' ? 'Ẩn sản phẩm' : 'Hiện sản phẩm',
+                              title: getToggleTitle(product.status),
                               icon: product.status === 'ACTIVE' ? <FiToggleRight className="text-[1.5rem] text-green-500" /> : <FiToggleLeft className="text-[1.5rem]" />,
                               onClick: () => handleToggleStatus(product.id)
                             },
@@ -341,7 +371,7 @@ export default function Products() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.LARGE}
-            label="sản phẩm"
+            label={t('adminCatalog:products.labels.pagination')}
             onPageChange={setPage}
           />
         )}

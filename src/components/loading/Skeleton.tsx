@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 interface SkeletonProps {
   className?: string;
   variant?: 'text' | 'circular' | 'rectangular';
@@ -34,6 +36,8 @@ export default function Skeleton({ count = 1, ...props }: SkeletonProps) {
 
 /** Full-page loading spinner for Suspense fallback */
 export function LoadingScreen() {
+  const { t } = useTranslation('common');
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
@@ -41,7 +45,9 @@ export function LoadingScreen() {
           <div className="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-800" />
           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-600 animate-spin" />
         </div>
-        <p className="text-md text-slate-500 dark:text-slate-400 font-medium">Đang tải...</p>
+        <p className="text-md text-slate-500 dark:text-slate-400 font-medium">
+          {t('loading.default', { defaultValue: 'Đang tải...' })}
+        </p>
       </div>
     </div>
   );

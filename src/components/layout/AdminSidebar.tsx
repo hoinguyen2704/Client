@@ -1,28 +1,35 @@
 import { NavLink, Link } from 'react-router-dom';
 import { FiGrid, FiShoppingBag, FiRotateCcw, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap, FiAward } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import LogoIcon from '../ui/LogoIcon';
 import useUIStore from '@/stores/useUIStore';
 import { SHOP } from '@/constants/shopConstants';
 import { cn } from '@/utils/cn';
 
+const SIDEBAR_COLLAPSE_BUTTON_CLASS =
+  'p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors hidden lg:flex';
+const SIDEBAR_IDLE_ITEM_CLASS =
+  'text-muted-strong hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200';
+
 const menuItems = [
-  { path: '/admin/dashboard', icon: FiGrid, label: 'Tổng quan' },
-  { path: '/admin/orders', icon: FiShoppingBag, label: 'Đơn hàng' },
-  { path: '/admin/returns', icon: FiRotateCcw, label: 'Trả hàng / Hoàn tiền' },
-  { path: '/admin/products', icon: FiBox, label: 'Sản phẩm & Kho' },
-  { path: '/admin/categories', icon: FiList, label: 'Danh mục' },
-  { path: '/admin/brands', icon: FiAward, label: 'Thương hiệu' },
-  { path: '/admin/customers', icon: FiUsers, label: 'Khách hàng' },
-  { path: '/admin/vouchers', icon: FiTag, label: 'Voucher' },
-  { path: '/admin/flash-sales', icon: FiZap, label: 'Flash Sale' },
-  { path: '/admin/feedbacks', icon: FiMessageSquare, label: 'Đánh giá' },
-  { path: '/admin/tickets', icon: FiHeadphones, label: 'Hỗ trợ (Tickets)' },
-  { path: '/admin/chatbot', icon: FiCpu, label: 'AI Chatbot' },
-  { path: '/admin/cms', icon: FiFileText, label: 'Nội dung (CMS)' },
-  { path: '/admin/settings', icon: FiSettings, label: 'Cài đặt' },
+  { path: '/admin/dashboard', icon: FiGrid, labelKey: 'adminSidebar.dashboard' },
+  { path: '/admin/orders', icon: FiShoppingBag, labelKey: 'adminSidebar.orders' },
+  { path: '/admin/returns', icon: FiRotateCcw, labelKey: 'adminSidebar.returns' },
+  { path: '/admin/products', icon: FiBox, labelKey: 'adminSidebar.products' },
+  { path: '/admin/categories', icon: FiList, labelKey: 'adminSidebar.categories' },
+  { path: '/admin/brands', icon: FiAward, labelKey: 'adminSidebar.brands' },
+  { path: '/admin/customers', icon: FiUsers, labelKey: 'adminSidebar.customers' },
+  { path: '/admin/vouchers', icon: FiTag, labelKey: 'adminSidebar.vouchers' },
+  { path: '/admin/flash-sales', icon: FiZap, labelKey: 'adminSidebar.flashSale' },
+  { path: '/admin/feedbacks', icon: FiMessageSquare, labelKey: 'adminSidebar.feedbacks' },
+  { path: '/admin/tickets', icon: FiHeadphones, labelKey: 'adminSidebar.tickets' },
+  { path: '/admin/chatbot', icon: FiCpu, labelKey: 'adminSidebar.chatbot' },
+  { path: '/admin/cms', icon: FiFileText, labelKey: 'adminSidebar.content' },
+  { path: '/admin/settings', icon: FiSettings, labelKey: 'adminSidebar.settings' },
 ];
 
 export default function AdminSidebar() {
+  const { t } = useTranslation(['layout', 'common']);
   const { sidebarCollapsed, toggleSidebar } = useUIStore();
 
   return (
@@ -53,8 +60,10 @@ export default function AdminSidebar() {
           </Link>
           <button
             onClick={toggleSidebar}
-            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors hidden lg:flex"
-            title={sidebarCollapsed ? 'Mở rộng' : 'Thu gọn'}
+            className={SIDEBAR_COLLAPSE_BUTTON_CLASS}
+            title={sidebarCollapsed
+              ? t('actions.expand', { ns: 'common', defaultValue: 'Mở rộng' })
+              : t('actions.collapse', { ns: 'common', defaultValue: 'Thu gọn' })}
           >
             <FiChevronLeft className={cn('text-lg transition-transform', sidebarCollapsed && 'rotate-180')} />
           </button>
@@ -70,12 +79,12 @@ export default function AdminSidebar() {
                   sidebarCollapsed && 'justify-center px-3',
                   isActive
                     ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
+                    : SIDEBAR_IDLE_ITEM_CLASS
                 )}
-                title={sidebarCollapsed ? item.label : undefined}
+                title={sidebarCollapsed ? t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey }) : undefined}
               >
                 <item.icon className="text-base sm:text-lg shrink-0" />
-                {!sidebarCollapsed && item.label}
+                {!sidebarCollapsed && t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}
               </NavLink>
             ))}
           </nav>

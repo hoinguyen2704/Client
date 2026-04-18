@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FiMessageSquare, FiStar, FiTrash2 } from 'react-icons/fi';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
@@ -7,6 +7,7 @@ import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog
 import { formatDateShort as formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
+import { useTranslation } from 'react-i18next';
 
 const SHIPPED_ORDER_STATUS = 'SHIPPED';
 const MAX_REVIEW_ATTEMPTS = 2;
@@ -41,6 +42,7 @@ function toReviewableItem(candidate: ReviewCandidate, feedbacks: FeedbackRespons
 }
 
 export default function MyReviews() {
+  const { t } = useTranslation('account');
   const [activeTab, setActiveTab] = useState<ReviewTab>('to-review');
   const [loading, setLoading] = useState(true);
   const [toReviewItems, setToReviewItems] = useState<ReviewableItem[]>([]);
@@ -141,14 +143,14 @@ export default function MyReviews() {
       setReviewedEntries(nextReviewed);
     } catch (error) {
       console.error('Load my reviews failed', error);
-      toast.error('Không thể tải dữ liệu nhận xét');
+      toast.error(t('myReviews.toasts.loadFailed'));
       setItemFeedbackMap({});
       setToReviewItems([]);
       setReviewedEntries([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadReviewData();
@@ -173,7 +175,7 @@ export default function MyReviews() {
     if (!selectedItem || !reviewContent.trim()) return;
 
     if (selectedItem.feedbacks.length >= MAX_REVIEW_ATTEMPTS) {
-      toast.warning('Bạn đã đạt giới hạn đánh giá cho sản phẩm này');
+      toast.warning(t('myReviews.toasts.limitReached'));
       return;
     }
 
@@ -186,12 +188,12 @@ export default function MyReviews() {
         rating,
         content: reviewContent.trim(),
       });
-      toast.success('Gửi đánh giá thành công');
+      toast.success(t('myReviews.toasts.submitSuccess'));
       closeReviewModal();
       setActiveTab('reviewed');
       await loadReviewData();
     } catch (error: unknown) {
-      toast.error(getApiErrorMessage(error, 'Gửi đánh giá thất bại'));
+      toast.error(getApiErrorMessage(error, t, 'myReviews.toasts.submitFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -201,22 +203,22 @@ export default function MyReviews() {
     if (!deleteTarget) return;
     try {
       await feedbackService.delete(deleteTarget.id);
-      toast.success('Đã xóa nhận xét');
+      toast.success(t('myReviews.toasts.deleteSuccess'));
       setDeleteTarget(null);
       await loadReviewData();
     } catch (error: unknown) {
-      toast.error(getApiErrorMessage(error, 'Xóa nhận xét thất bại'));
+      toast.error(getApiErrorMessage(error, t, 'myReviews.toasts.deleteFailed'));
     }
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Nhận xét của tôi</h1>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t('myReviews.title')}</h1>
 
       <SlidingTabs
         tabs={[
-          { id: 'to-review', label: `Cần đánh giá${toReviewItems.length > 0 ? ` (${toReviewItems.length})` : ''}` },
-          { id: 'reviewed', label: `Lịch sử đánh giá${reviewedEntries.length > 0 ? ` (${reviewedEntries.length})` : ''}` },
+          { id: 'to-review', label: `${t('myReviews.tabs.toReview')}${toReviewItems.length > 0 ? ` (${toReviewItems.length})` : ''}` },
+          { id: 'reviewed', label: `${t('myReviews.tabs.reviewed')}${reviewedEntries.length > 0 ? ` (${reviewedEntries.length})` : ''}` },
         ]}
         activeTab={activeTab}
         onChange={(id) => setActiveTab(id as ReviewTab)}
@@ -248,16 +250,16 @@ export default function MyReviews() {
                       />
                       <div className="min-w-0">
                         <h3 className="font-bold line-clamp-2">{item.productName}</h3>
-                        <p className="text-md text-slate-500 mt-1">Phân loại: {item.variantName || 'Mặc định'}</p>
-                        <p className="text-md text-slate-500">Đơn hàng: {item.orderNumber}</p>
-                        <p className="text-md text-slate-500">Ngày giao: {formatDate(item.deliveredAt)}</p>
+                        <p className="text-md text-slate-500 mt-1">{t('myReviews.item.variant')}: {item.variantName || t('myReviews.item.defaultVariant')}</p>
+                        <p className="text-md text-slate-500">{t('myReviews.item.order')}: {item.orderNumber}</p>
+                        <p className="text-md text-slate-500">{t('myReviews.item.deliveredAt')}: {formatDate(item.deliveredAt)}</p>
                         {item.feedbacks.length > 0 && (
-                          <p className="text-sm text-orange-600 mt-1">Đã đánh giá {item.feedbacks.length}/{MAX_REVIEW_ATTEMPTS} lần</p>
+                          <p className="text-sm text-orange-600 mt-1">{t('myReviews.item.reviewedCount', { count: item.feedbacks.length, max: MAX_REVIEW_ATTEMPTS })}</p>
                         )}
                       </div>
                     </div>
                     <Button onClick={() => openReviewModal(item)} size="md" className="w-full sm:w-auto whitespace-nowrap">
-                      {item.feedbacks.length > 0 ? 'Đánh giá bổ sung' : 'Viết đánh giá'}
+                      {item.feedbacks.length > 0 ? t('myReviews.actions.extraReview') : t('myReviews.actions.writeReview')}
                     </Button>
                   </div>
                 ))
@@ -266,8 +268,8 @@ export default function MyReviews() {
                   <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl">
                     <FiStar />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Tuyệt vời!</h3>
-                  <p className="text-slate-500">Bạn đã đánh giá tất cả sản phẩm đã mua.</p>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('myReviews.empty.allReviewedTitle')}</h3>
+                  <p className="text-slate-500">{t('myReviews.empty.allReviewedDescription')}</p>
                 </div>
               )}
             </div>
@@ -296,13 +298,13 @@ export default function MyReviews() {
                             <h3 className="font-bold line-clamp-1">{entry.productName}</h3>
                             {entry.totalRounds > 1 && (
                               <span className="px-2 py-0.5 rounded-full text-sm font-semibold bg-purple-100 text-purple-600">
-                                Lần {entry.round}/{MAX_REVIEW_ATTEMPTS}
+                                {t('myReviews.item.roundBadge', { current: entry.round, max: MAX_REVIEW_ATTEMPTS })}
                               </span>
                             )}
                           </div>
-                          <p className="text-md text-slate-500">Phân loại: {entry.variantName || 'Mặc định'}</p>
-                          <p className="text-md text-slate-500">Đơn hàng: {entry.orderNumber}</p>
-                          <p className="text-md text-slate-500">Ngày đánh giá: {formatDate(entry.review.createdAt)}</p>
+                          <p className="text-md text-slate-500">{t('myReviews.item.variant')}: {entry.variantName || t('myReviews.item.defaultVariant')}</p>
+                          <p className="text-md text-slate-500">{t('myReviews.item.order')}: {entry.orderNumber}</p>
+                          <p className="text-md text-slate-500">{t('myReviews.item.reviewDate')}: {formatDate(entry.review.createdAt)}</p>
                         </div>
                       </div>
 
@@ -313,7 +315,7 @@ export default function MyReviews() {
                         {entry.review.adminReply && (
                           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
                             <div className="flex items-center gap-2 mb-1 text-purple-600 font-bold text-md">
-                              <FiMessageSquare /> Phản hồi từ Hozitech
+                              <FiMessageSquare /> {t('myReviews.adminReplyTitle')}
                             </div>
                             <p className="text-md text-slate-600 dark:text-slate-400">{entry.review.adminReply}</p>
                           </div>
@@ -340,11 +342,11 @@ export default function MyReviews() {
                               })
                             }
                           >
-                            Đánh giá bổ sung
+                            {t('myReviews.actions.extraReview')}
                           </Button>
                         )}
                         <Button variant="ghost" size="sm" className="text-red-600" onClick={() => setDeleteTarget(entry.review)}>
-                          <FiTrash2 /> Xóa
+                          <FiTrash2 /> {t('myReviews.actions.delete')}
                         </Button>
                       </div>
                     </div>
@@ -353,11 +355,11 @@ export default function MyReviews() {
               ) : (
                 <EmptyState
                   icon={<FiStar />}
-                  title="Chưa có đánh giá nào"
-                  description="Bạn chưa viết đánh giá nào cho các sản phẩm đã mua."
+                  title={t('myReviews.empty.noReviewsTitle')}
+                  description={t('myReviews.empty.noReviewsDescription')}
                   action={
                     <Button onClick={() => setActiveTab('to-review')} size="md">
-                      Đánh giá ngay
+                      {t('myReviews.actions.reviewNow')}
                     </Button>
                   }
                 />
@@ -370,13 +372,13 @@ export default function MyReviews() {
       <Modal
         open={isReviewModalOpen && !!selectedItem}
         onClose={closeReviewModal}
-        title={selectedItem?.feedbacks.length ? 'Đánh giá bổ sung' : 'Viết đánh giá'}
+        title={selectedItem?.feedbacks.length ? t('myReviews.modal.extraReviewTitle') : t('myReviews.modal.reviewTitle')}
         scrollable
         footer={
           <>
-            <ModalCancelButton onClick={closeReviewModal}>Trở lại</ModalCancelButton>
+            <ModalCancelButton onClick={closeReviewModal}>{t('myReviews.actions.back')}</ModalCancelButton>
             <Button type="submit" form="review-form" size="md" loading={submitting} disabled={!reviewContent.trim() || !selectedItem}>
-              Hoàn thành
+              {t('myReviews.actions.complete')}
             </Button>
           </>
         }
@@ -391,19 +393,19 @@ export default function MyReviews() {
               />
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white line-clamp-2">{selectedItem.productName}</h4>
-                <p className="text-md text-slate-500">Phân loại: {selectedItem.variantName || 'Mặc định'}</p>
-                <p className="text-md text-slate-500">Đơn hàng: {selectedItem.orderNumber}</p>
+                <p className="text-md text-slate-500">{t('myReviews.item.variant')}: {selectedItem.variantName || t('myReviews.item.defaultVariant')}</p>
+                <p className="text-md text-slate-500">{t('myReviews.item.order')}: {selectedItem.orderNumber}</p>
               </div>
             </div>
 
             <form id="review-form" onSubmit={handleSubmitReview} className="space-y-6">
               {selectedItem.feedbacks.length > 0 && (
                 <div className="space-y-3">
-                  <p className="text-md font-semibold text-slate-700 dark:text-slate-300">Đánh giá trước đó</p>
+                  <p className="text-md font-semibold text-slate-700 dark:text-slate-300">{t('myReviews.modal.previousReviews')}</p>
                   {selectedItem.feedbacks.map((fb, idx) => (
                     <div key={fb.id} className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-md font-semibold">Lần {idx + 1}</p>
+                        <p className="text-md font-semibold">{t('myReviews.modal.roundLabel', { count: idx + 1 })}</p>
                         <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
                       </div>
                       <p className="text-md text-slate-600 dark:text-slate-400">{fb.content}</p>
@@ -413,17 +415,17 @@ export default function MyReviews() {
               )}
 
               <div>
-                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">Chất lượng sản phẩm</label>
+                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">{t('myReviews.modal.ratingLabel')}</label>
                 <StarRating value={rating} onChange={setRating} />
               </div>
 
               <div>
-                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">Nội dung đánh giá</label>
+                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">{t('myReviews.modal.contentLabel')}</label>
                 <textarea
                   required
                   value={reviewContent}
                   onChange={(e) => setReviewContent(e.target.value)}
-                  placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé..."
+                  placeholder={t('myReviews.modal.contentPlaceholder')}
                   className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none h-32"
                 />
               </div>
@@ -434,9 +436,9 @@ export default function MyReviews() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Xóa đánh giá?"
-        message="Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác."
-        confirmLabel="Xóa ngay"
+        title={t('myReviews.deleteDialog.title')}
+        message={t('myReviews.deleteDialog.message')}
+        confirmLabel={t('myReviews.deleteDialog.confirm')}
         variant="danger"
         onConfirm={executeDeleteReview}
         onCancel={() => setDeleteTarget(null)}

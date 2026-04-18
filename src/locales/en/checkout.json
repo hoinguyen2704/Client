@@ -1,0 +1,117 @@
+{
+  "title": "Checkout",
+  "address": {
+    "title": "Shipping address",
+    "addNew": "Add new address",
+    "emptyTitle": "You do not have any shipping addresses yet",
+    "emptyDescription": "Please add an address so we can deliver your order to you.",
+    "emptyAction": "Add address now",
+    "default": "Default",
+    "edit": "Edit address",
+    "saveSuccess": "Shipping address saved!",
+    "saveFailed": "Failed to save address!",
+    "form": {
+      "addTitle": "Add new shipping address",
+      "editTitle": "Edit shipping address",
+      "cancel": "Cancel",
+      "save": "Save address",
+      "fullName": "Recipient full name",
+      "fullNamePlaceholder": "Enter full name",
+      "phoneNumber": "Contact phone number",
+      "phoneNumberPlaceholder": "Enter phone number",
+      "province": "Province / City",
+      "provincePlaceholder": "Example: Hanoi",
+      "district": "District",
+      "districtPlaceholder": "Example: Cau Giay",
+      "ward": "Ward / Commune",
+      "wardPlaceholder": "Example: Dich Vong Hau",
+      "detailAddress": "Detailed address (house number, street)",
+      "detailAddressPlaceholder": "Example: 123 Xuan Thuy",
+      "setDefault": "Set as default address",
+      "setDefaultHint": "We will prioritize this address for your next orders."
+    }
+  },
+  "items": {
+    "title": "Items ({{count}})",
+    "unavailable": "This product is no longer available"
+  },
+  "payment": {
+    "title": "Payment method"
+  },
+  "note": {
+    "title": "Notes",
+    "placeholder": "Notes for your order..."
+  },
+  "summary": {
+    "title": "Order summary",
+    "couponPlaceholder": "Coupon code",
+    "applyCoupon": "Apply coupon",
+    "chooseVoucher": "Choose from voucher wallet",
+    "subtotal": "Subtotal",
+    "shippingFee": "Shipping fee",
+    "freeShipping": "Free",
+    "productDiscount": "Product discount",
+    "shippingDiscount": "Shipping discount",
+    "vat": "VAT ({{percent}}%{{suffix}})",
+    "vatIncluded": ", included",
+    "total": "Total payment",
+    "taxDisabled": "(Tax is currently disabled by store settings)",
+    "taxIncluded": "(Tax is already included in the total payment)",
+    "taxExcluded": "(Tax is added on top according to store settings)",
+    "submit": "Confirm order",
+    "submitting": "Processing..."
+  },
+  "voucherModal": {
+    "title": "Choose voucher",
+    "close": "Close",
+    "manualTitle": "Enter code",
+    "manualPlaceholder": "Enter coupon code",
+    "check": "Check",
+    "appliedProduct": "Product code {{code}} has been applied.",
+    "appliedShipping": "Free shipping code {{code}} has been applied.",
+    "publicTitle": "Voucher wallet",
+    "savedTitle": "Saved codes",
+    "noPublic": "There are no public vouchers right now.",
+    "loginToViewSaved": "Sign in to view saved vouchers.",
+    "noSaved": "You have not saved any vouchers yet."
+  },
+  "voucherCard": {
+    "shippingTag": "Freeship",
+    "productTag": "Product discount",
+    "discountPercent": "Save {{value}}%",
+    "discountAmount": "Save {{value}}",
+    "minOrderValue": "Minimum order {{value}}",
+    "remove": "Remove",
+    "apply": "Apply",
+    "saved": "Saved",
+    "removeSaved": "Remove saved code",
+    "saveToWallet": "Save to wallet",
+    "saving": "Saving...",
+    "loginToSave": "Sign in to save this code"
+  },
+  "appliedVoucher": {
+    "productTitle": "Product voucher",
+    "shippingTitle": "Free shipping voucher",
+    "appliedCode": "Code {{code}} has been applied.",
+    "savedInWallet": "Saved in wallet",
+    "saveToWallet": "Save to wallet",
+    "remove": "Remove",
+    "loginToSave": "Sign in to save this code"
+  },
+  "toasts": {
+    "couponRemoved": "Coupon removed",
+    "couponApplied": "Coupon applied successfully!",
+    "invalidCoupon": "Invalid coupon code!",
+    "loginToSaveVoucher": "Please sign in to save vouchers",
+    "voucherSaved": "Voucher saved to wallet",
+    "voucherSaveFailed": "Unable to save voucher",
+    "loginToManageVoucher": "Please sign in to manage vouchers",
+    "voucherUnsaved": "Voucher removed from saved list",
+    "voucherUnsaveFailed": "Unable to remove saved voucher",
+    "addressRequired": "Please choose a shipping address!",
+    "cartEmpty": "Your cart is empty!",
+    "cartUnavailable": "Some products in your cart are no longer available. Please refresh your cart.",
+    "orderSuccess": "Order placed successfully!",
+    "orderFailed": "Failed to place order!"
+  }
+}

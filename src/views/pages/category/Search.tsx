@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { FiFilter, FiX, FiSearch, FiCheck } from 'react-icons/fi';
+import { FiFilter, FiX, FiSearch } from 'react-icons/fi';
 import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { productService, categoryService, brandService } from '@/apis';
 import type { ProductResponse, CategoryResponse, BrandResponse } from '@/types';
-import { Button, Pagination, ProductCard, CustomSelect } from '@/components';
+import { Button, Checkbox, Pagination, ProductCard, CustomSelect } from '@/components';
 import { toast } from 'sonner';
 
 export default function Search() {
@@ -163,15 +163,11 @@ export default function Search() {
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
                   {brands.map(brand => (
                     <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
-                      <div className="relative flex items-center justify-center">
-                        <input 
-                          type="checkbox" 
+                      <Checkbox
                           checked={selectedBrand === brand.slug}
-                          onChange={() => handleBrandChange(brand.slug)}
-                          className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"
+                          onCheckedChange={() => handleBrandChange(brand.slug)}
+                          className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 dark:checked:border-purple-500 dark:checked:bg-purple-500"
                         />
-                        <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-md" />
-                      </div>
                       <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{brand.name}</span>
                     </label>
                   ))}

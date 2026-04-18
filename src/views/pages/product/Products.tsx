@@ -5,12 +5,11 @@ import {
   FiChevronDown,
   FiX,
   FiSearch,
-  FiCheck,
-  FiLoader,
 } from "react-icons/fi";
 import { AnimatePresence, motion } from "motion/react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Button, Pagination, ProductCard, CustomSelect } from "@/components";
+import { useTranslation } from "react-i18next";
+import { Button, Checkbox, Pagination, ProductCard, CustomSelect } from "@/components";
 import { productService, categoryService, brandService } from "@/apis";
 import type {
   ProductResponse,
@@ -21,6 +20,7 @@ import type {
 import { toast } from "sonner";
 
 export default function Products() {
+  const { t } = useTranslation(["catalog", "layout"]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   //  Filter state (synced with URL query params)
@@ -101,12 +101,12 @@ export default function Products() {
       }
     } catch (err) {
       console.error("[Products] Failed to fetch products:", err);
-      toast.error("Tải sản phẩm thất bại!");
+      toast.error(t("products.toasts.loadFailed"));
       setProducts([]);
     } finally {
       setIsLoading(false);
     }
-  }, [debouncedKeyword, selectedCategorySlug, selectedBrand, page, sortBy, sortDir]);
+  }, [debouncedKeyword, selectedCategorySlug, selectedBrand, page, sortBy, sortDir, t]);
 
   useEffect(() => {
     fetchProducts();
@@ -185,7 +185,7 @@ export default function Products() {
         <ol className="flex items-center space-x-2">
           <li>
             <Link to="/" className="hover:text-purple-600">
-              Trang chủ
+              {t("layout:navigation.home")}
             </Link>
           </li>
           <li>
@@ -193,7 +193,7 @@ export default function Products() {
           </li>
           <li>
             <span className="text-slate-900 dark:text-slate-100 font-medium">
-              Tất cả sản phẩm
+              {t("products.breadcrumbCurrent")}
             </span>
           </li>
         </ol>
@@ -204,14 +204,14 @@ export default function Products() {
         <button
           className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-md font-semibold"
           onClick={() => setIsFilterOpen(true)}>
-          <FiFilter /> Lọc sản phẩm
+          <FiFilter /> {t("products.mobileFilter")}
         </button>
 
         {/*  Sidebar Filters  */}
         <aside className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-0 custom-scrollbar">
             <div className="flex items-center justify-between mb-6 lg:hidden">
-              <h2 className="text-lg font-bold">Bộ lọc</h2>
+              <h2 className="text-lg font-bold">{t("products.filterTitle")}</h2>
               <button
                 onClick={() => setIsFilterOpen(false)}
                 className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full">
@@ -222,7 +222,7 @@ export default function Products() {
             <div className="space-y-8 pb-8">
               {/* Search */}
               <div>
-                <h3 className="font-bold mb-4 text-lg">Tìm kiếm</h3>
+                <h3 className="font-bold mb-4 text-lg">{t("products.searchTitle")}</h3>
                 <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
@@ -232,7 +232,7 @@ export default function Products() {
                       setKeyword(e.target.value);
                       setPage(1);
                     }}
-                    placeholder="Tên sản phẩm..."
+                    placeholder={t("products.searchPlaceholder")}
                     className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-md focus:ring-2 focus:ring-purple-500"/>
                 </div>
               </div>
@@ -242,7 +242,7 @@ export default function Products() {
                 <button
                   onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                   className="flex items-center justify-between w-full mb-4">
-                  <h3 className="font-bold text-lg">Danh mục sản phẩm</h3>
+                  <h3 className="font-bold text-lg">{t("products.categoriesTitle")}</h3>
                   <motion.span animate={{ rotate: isCategoryOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
                     <FiChevronDown className="text-slate-400" />
                   </motion.span>
@@ -263,10 +263,10 @@ export default function Products() {
                           }}
                           className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                             !selectedCategorySlug
-                              ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                              ? "bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
                               : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                           }`}>
-                          Tất cả danh mục
+                          {t("products.allCategories")}
                         </button>
                         {categories.map((cat) => (
                           <button
@@ -274,7 +274,7 @@ export default function Products() {
                             onClick={() => handleCategoryChange(cat.slug)}
                             className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                               selectedCategorySlug === cat.slug
-                                ? "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                                ? "bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
                                 : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                             }`}>
                             {cat.name}
@@ -292,7 +292,7 @@ export default function Products() {
                   <button
                     onClick={() => setIsBrandOpen(!isBrandOpen)}
                     className="flex items-center justify-between w-full mb-4">
-                    <h3 className="font-bold text-lg">Thương hiệu</h3>
+                    <h3 className="font-bold text-lg">{t("products.brandsTitle")}</h3>
                     <motion.span animate={{ rotate: isBrandOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
                       <FiChevronDown className="text-slate-400" />
                     </motion.span>
@@ -313,14 +313,11 @@ export default function Products() {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: i * 0.03, duration: 0.2 }}
                               className="flex items-center gap-3 cursor-pointer group">
-                              <div className="relative flex items-center justify-center">
-                                <input
-                                  type="checkbox"
-                                  checked={selectedBrand === brand.slug}
-                                  onChange={() => handleBrandChange(brand.slug)}
-                                  className="peer appearance-none w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 checked:border-purple-600 checked:bg-purple-600 dark:checked:border-purple-500 dark:checked:bg-purple-500 transition-colors cursor-pointer"/>
-                                <FiCheck className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none text-md" />
-                              </div>
+                              <Checkbox
+                                checked={selectedBrand === brand.slug}
+                                onCheckedChange={() => handleBrandChange(brand.slug)}
+                                className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 dark:checked:border-purple-500 dark:checked:bg-purple-500"
+                              />
                               <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                                 {brand.name}
                                 {brand.productCount > 0 && (
@@ -343,7 +340,7 @@ export default function Products() {
                 <button
                   onClick={handleClearFilters}
                   className="w-full py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors font-medium">
-                  Xóa bộ lọc
+                  {t("products.clearFilters")}
                 </button>
               )}
             </div>
@@ -361,14 +358,14 @@ export default function Products() {
         <main className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
             <h1 className="text-xl sm:text-2xl font-bold">
-              Tất cả sản phẩm{" "}
+              {t("products.pageTitle")}{" "}
               <span className="text-slate-500 text-md sm:text-lg font-normal">
                 ({pageInfo?.total || 0})
               </span>
             </h1>
 
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-sm sm:text-md text-slate-500">Sắp xếp theo:</span>
+              <span className="text-sm sm:text-md text-slate-500">{t("products.sortBy")}</span>
               <div>
                 <CustomSelect
                   value={currentSortValue()}
@@ -376,11 +373,11 @@ export default function Products() {
                   dropdownAlign="right"
                   className="w-44 sm:w-56 h-9 sm:h-10"
                   options={[
-                    { value: "popular", label: "Phổ biến / Bán chạy" },
-                    { value: "newest", label: "Mới nhất" },
-                    { value: "best-rated", label: "Đánh giá cao" },
-                    { value: "price-asc", label: "Giá tăng dần" },
-                    { value: "price-desc", label: "Giá giảm dần" },
+                    { value: "popular", label: t("products.sortOptions.popular") },
+                    { value: "newest", label: t("products.sortOptions.newest") },
+                    { value: "best-rated", label: t("products.sortOptions.bestRated") },
+                    { value: "price-asc", label: t("products.sortOptions.priceAsc") },
+                    { value: "price-desc", label: t("products.sortOptions.priceDesc") },
                   ]}
                 />
               </div>
@@ -422,14 +419,13 @@ export default function Products() {
                 <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold mb-2">
-                Không tìm thấy sản phẩm nào
+                {t("products.empty.title")}
               </h2>
               <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
-                Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với bộ
-                lọc của bạn. Vui lòng thử lại với các tiêu chí khác.
+                {t("products.empty.description")}
               </p>
               <Button onClick={handleClearFilters} size="md">
-                Xóa bộ lọc
+                {t("products.clearFilters")}
               </Button>
             </motion.div>
           )}

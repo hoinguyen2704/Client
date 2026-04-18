@@ -1,0 +1,92 @@
+{
+  "overview": {
+    "title": "Tổng quan",
+    "today": "Hôm nay",
+    "total": "Tổng cộng:",
+    "noEmail": "Không có email",
+    "defaultVariant": "Mặc định",
+    "loadingVariants": "Đang tải dữ liệu phân loại...",
+    "detailsVisible": "Dữ liệu chi tiết đang được hiển thị...",
+    "reviewsSummary": "Từ {{count}} lượt đánh giá tổng hợp",
+    "returns": {
+      "cancelledTitle": "Đơn bị hủy",
+      "cancelledDescription": "Khách hàng hủy hoặc không thanh toán thành công",
+      "requestedTitle": "Yêu cầu hoàn trả",
+      "requestedDescription": "Yêu cầu trả hàng hoàn tiền từ khách hàng"
+    },
+    "periods": {
+      "week": "Tuần",
+      "month": "Tháng",
+      "year": "Năm"
+    },
+    "actions": {
+      "topVariants": "Top phân loại",
+      "exportReport": "Xuất báo cáo",
+      "downloadPdf": "Tải PDF"
+    },
+    "empty": "Không thể tải dữ liệu dashboard"
+  },
+  "modals": {
+    "orders": "Đơn hàng gần đây",
+    "revenue": "Chi tiết doanh thu",
+    "customers": "Khách hàng tiềm năng",
+    "products": "Sản phẩm bán chạy",
+    "variants": "Phân loại bán chạy",
+    "returns": "Thống kê Hoàn / Hủy",
+    "reviews": "Tổng quan đánh giá"
+  },
+  "tables": {
+    "rank": "Top",
+    "orders": {
+      "orderNumber": "Mã đơn",
+      "customer": "Khách hàng",
+      "orderDate": "Ngày đặt",
+      "total": "Tổng tiền",
+      "status": "Trạng thái"
+    },
+    "revenue": {
+      "time": "Thời gian",
+      "orders": "Đơn hàng",
+      "revenue": "Doanh thu",
+      "averageOrderValue": "Giá trị đơn trung bình"
+    },
+    "customers": {
+      "customer": "Khách hàng",
+      "orders": "Số đơn",
+      "spent": "Chi tiêu",
+      "lastOrder": "Đơn gần nhất"
+    },
+    "products": {
+      "product": "Sản phẩm",
+      "sold": "Đã bán",
+      "revenue": "Doanh thu"
+    },
+    "variants": {
+      "variant": "Phân loại",
+      "product": "Sản phẩm",
+      "gross": "Gross",
+      "returned": "Return",
+      "net": "Net",
+      "revenue": "Doanh thu"
+    },
+    "returns": {
+      "requested": "Yêu cầu",
+      "approved": "Đã duyệt",
+      "rejected": "Từ chối",
+      "refunded": "Đã hoàn tiền"
+    },
+    "reviews": {
+      "total": "Tổng đánh giá",
+      "average": "Điểm trung bình",
+      "pending": "Chờ duyệt"
+    }
+  },
+  "toasts": {
+    "loadTopVariantsFailed": "Không thể tải danh sách phân loại bán chạy",
+    "exportSuccess": "Xuất báo cáo thành công!",
+    "exportFailed": "Xuất báo cáo thất bại!",
+    "creatingPdf": "Đang tạo báo cáo PDF...",
+    "pdfSuccess": "Xuất báo cáo PDF thành công!",
+    "pdfFailed": "Xuất báo cáo PDF thất bại!"
+  }
+}

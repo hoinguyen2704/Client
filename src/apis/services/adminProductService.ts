@@ -2,8 +2,10 @@ import BaseService from './baseService';
 import { adminAxios } from '../axios';
 import type {
   ApiResponse,
+  ProductBasicRequest,
   ProductResponse,
   ProductRequest,
+  ProductVariantsUpdateRequest,
 } from '@/types';
 
 class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
@@ -13,6 +15,18 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
 
   async toggleStatus(id: string): Promise<ApiResponse<ProductResponse>> {
     return this.http.patch(`${this.endpoint}/${id}/status`);
+  }
+
+  async createBasic(data: ProductBasicRequest): Promise<ApiResponse<ProductResponse>> {
+    return this.http.post(this.endpoint, data);
+  }
+
+  async updateBasic(id: string, data: ProductBasicRequest): Promise<ApiResponse<ProductResponse>> {
+    return this.http.put(`${this.endpoint}/${id}/basic`, data);
+  }
+
+  async updateVariants(id: string, data: ProductVariantsUpdateRequest): Promise<ApiResponse<ProductResponse>> {
+    return this.http.put(`${this.endpoint}/${id}/variants`, data);
   }
 
   async uploadImages(productId: string, files: File[]): Promise<ApiResponse<{id: string; imageUrl: string}[]>> {

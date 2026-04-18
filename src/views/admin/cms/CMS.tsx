@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiUploadCloud, FiLoader } from 'react-icons/fi';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { FiPlus, FiUploadCloud, FiLoader } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import adminCmsService from '@/apis/services/adminCmsService';
 import type { BannerResponse, ArticleResponse, PageResponse, BannerForm, ArticleForm } from '@/types';
@@ -38,6 +39,7 @@ const EMPTY_ARTICLE_FORM: ArticleForm = {
 };
 
 export default function CMS() {
+  const { t } = useTranslation(['adminContent', 'common']);
   const [tab, setTab] = useState<'banners' | 'articles'>('banners');
   const [banners, setBanners] = useState<BannerResponse[]>([]);
   const [articles, setArticles] = useState<ArticleResponse[]>([]);
@@ -58,40 +60,40 @@ export default function CMS() {
   const bannerFileInputRef = useRef<HTMLInputElement | null>(null);
   const articleFileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const fetchBanners = async () => {
+  const fetchBanners = useCallback(async () => {
     try {
       const res = await adminCmsService.getBanners();
       setBanners(res.data || []);
-    } catch (err) { console.error('Failed to fetch banners:', err); toast.error('Tải banner thất bại!'); }
-  };
+    } catch (err) { console.error('Failed to fetch banners:', err); toast.error(t('adminContent:cms.toasts.loadBannersFailed')); }
+  }, [t]);
 
-  const fetchArticles = async (p = 1) => {
+  const fetchArticles = useCallback(async (p = 1) => {
     try {
       const res = await adminCmsService.getArticles({ page: p, size: PAGE_SIZE.LARGE });
       setArticlePageData(res.data);
       setArticles(res.data.data || []);
-    } catch (err) { console.error('Failed to fetch articles:', err); toast.error('Tải bài viết thất bại!'); }
-  };
+    } catch (err) { console.error('Failed to fetch articles:', err); toast.error(t('adminContent:cms.toasts.loadArticlesFailed')); }
+  }, [t]);
 
   useEffect(() => {
     setLoading(true);
     Promise.all([fetchBanners(), fetchArticles(1)]).finally(() => setLoading(false));
-  }, []);
+  }, [fetchArticles, fetchBanners]);
 
   useEffect(() => {
     if (articlePage === 1) return;
     fetchArticles(articlePage);
-  }, [articlePage]);
+  }, [articlePage, fetchArticles]);
 
   const handleDeleteBanner = async (id: string) => {
     setDeleteTarget(null);
     try {
       await adminCmsService.deleteBanner(id);
       fetchBanners();
-      toast.success('Xóa banner thành công!');
+      toast.success(t('adminContent:cms.toasts.deleteBannerSuccess'));
     } catch (err) {
       console.error('Delete failed:', err);
-      toast.error('Xóa banner thất bại!');
+      toast.error(t('adminContent:cms.toasts.deleteBannerFailed'));
     }
   };
 
@@ -100,10 +102,10 @@ export default function CMS() {
     try {
       await adminCmsService.deleteArticle(id);
       fetchArticles(articlePage);
-      toast.success('Xóa bài viết thành công!');
+      toast.success(t('adminContent:cms.toasts.deleteArticleSuccess'));
     } catch (err) {
       console.error('Delete failed:', err);
-      toast.error('Xóa bài viết thất bại!');
+      toast.error(t('adminContent:cms.toasts.deleteArticleFailed'));
     }
   };
 
@@ -167,7 +169,7 @@ export default function CMS() {
   const handleSaveBanner = async () => {
     const imageUrl = bannerForm.imageUrl.trim();
     if (!imageUrl) {
-      toast.error('Vui lòng nhập URL ảnh banner');
+      toast.error(t('adminContent:cms.validation.bannerImageRequired'));
       return;
     }
 
@@ -184,17 +186,17 @@ export default function CMS() {
 
       if (editingBannerId) {
         await adminCmsService.updateBanner(editingBannerId, payload);
-        toast.success('Cập nhật banner thành công!');
+        toast.success(t('adminContent:cms.banners.updateSuccess'));
       } else {
         await adminCmsService.createBanner(payload);
-        toast.success('Thêm banner thành công!');
+        toast.success(t('adminContent:cms.banners.createSuccess'));
       }
 
       resetBannerModal();
       await fetchBanners();
     } catch (err) {
       console.error('Save banner failed:', err);
-      toast.error('Lưu banner thất bại!');
+      toast.error(t('adminContent:cms.toasts.saveBannerFailed'));
     } finally {
       setSavingBanner(false);
     }
@@ -204,7 +206,7 @@ export default function CMS() {
     const title = articleForm.title.trim();
     const content = articleForm.content.trim();
     if (!title || !content) {
-      toast.error('Vui lòng nhập tiêu đề và nội dung bài viết');
+      toast.error(t('adminContent:cms.validation.articleRequired'));
       return;
     }
 
@@ -219,10 +221,10 @@ export default function CMS() {
 
       if (editingArticleId) {
         await adminCmsService.updateArticle(editingArticleId, payload);
-        toast.success('Cập nhật bài viết thành công!');
+        toast.success(t('adminContent:cms.articles.updateSuccess'));
       } else {
         await adminCmsService.createArticle(payload);
-        toast.success('Thêm bài viết thành công!');
+        toast.success(t('adminContent:cms.articles.createSuccess'));
       }
 
       resetArticleModal();
@@ -232,7 +234,7 @@ export default function CMS() {
       await fetchArticles(1);
     } catch (err) {
       console.error('Save article failed:', err);
-      toast.error('Lưu bài viết thất bại!');
+      toast.error(t('adminContent:cms.toasts.saveArticleFailed'));
     } finally {
       setSavingArticle(false);
     }
@@ -241,11 +243,11 @@ export default function CMS() {
   const validateImageFile = (file: File | undefined) => {
     if (!file) return false;
     if (!file.type.startsWith('image/')) {
-      toast.error('Chỉ hỗ trợ file ảnh (PNG, JPG, WEBP...)');
+      toast.error(t('adminContent:cms.upload.invalidType'));
       return false;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Kích thước ảnh tối đa là 5MB');
+      toast.error(t('adminContent:cms.upload.maxSize'));
       return false;
     }
     return true;
@@ -258,10 +260,10 @@ export default function CMS() {
     try {
       const res = await adminCmsService.uploadBannerImage(file!);
       setBannerForm((prev) => ({ ...prev, imageUrl: res.data.imageUrl }));
-      toast.success('Tải ảnh banner thành công!');
+      toast.success(t('adminContent:cms.toasts.uploadBannerSuccess'));
     } catch (err) {
       console.error('Upload banner image failed:', err);
-      toast.error('Tải ảnh banner thất bại!');
+      toast.error(t('adminContent:cms.toasts.uploadBannerFailed'));
     } finally {
       setUploadingBannerImage(false);
     }
@@ -274,10 +276,10 @@ export default function CMS() {
     try {
       const res = await adminCmsService.uploadArticleThumbnail(file!);
       setArticleForm((prev) => ({ ...prev, thumbnailUrl: res.data.imageUrl }));
-      toast.success('Tải ảnh thumbnail thành công!');
+      toast.success(t('adminContent:cms.toasts.uploadThumbnailSuccess'));
     } catch (err) {
       console.error('Upload article thumbnail failed:', err);
-      toast.error('Tải ảnh thumbnail thất bại!');
+      toast.error(t('adminContent:cms.toasts.uploadThumbnailFailed'));
     } finally {
       setUploadingArticleThumbnail(false);
     }
@@ -286,19 +288,19 @@ export default function CMS() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý nội dung</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('adminContent:cms.title')}</h1>
         <PrimaryButton onClick={openCreateModal} icon={<FiPlus className="text-base" />} className="w-full sm:w-auto">
-          {tab === 'banners' ? 'Thêm banner' : 'Thêm bài viết'}
+          {tab === 'banners' ? t('adminContent:cms.actions.addBanner') : t('adminContent:cms.actions.addArticle')}
         </PrimaryButton>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
         <button onClick={() => setTab('banners')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'banners' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
-          Banners
+          {t('adminContent:cms.tabs.banners')}
         </button>
         <button onClick={() => setTab('articles')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'articles' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
-          Bài viết
+          {t('adminContent:cms.tabs.articles')}
         </button>
       </div>
 
@@ -312,7 +314,7 @@ export default function CMS() {
               </div>
             ))
           ) : banners.length === 0 ? (
-            <div className="sm:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">Chưa có banner nào</div>
+            <div className="sm:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">{t('adminContent:cms.table.emptyBanners')}</div>
           ) : (
             banners.map((banner) => (
               <div key={banner.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
@@ -343,18 +345,18 @@ export default function CMS() {
             <table className="w-full min-w-[860px] text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                  <th className="p-3 sm:p-4 font-medium">Tiêu đề</th>
-                  <th className="p-3 sm:p-4 font-medium">Tác giả</th>
-                  <th className="p-3 sm:p-4 font-medium">Ngày tạo</th>
-                  <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
-                  <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
+                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.title')}</th>
+                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.author')}</th>
+                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.createdAt')}</th>
+                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.status')}</th>
+                  <th className="p-3 sm:p-4 font-medium text-right">{t('adminContent:cms.table.actions')}</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <TableRowSkeleton rows={5} cols={5} />
                 ) : articles.length === 0 ? (
-                  <tr><td colSpan={5} className="p-12 text-center text-slate-400">Chưa có bài viết nào</td></tr>
+                  <tr><td colSpan={5} className="p-12 text-center text-slate-400">{t('adminContent:cms.table.emptyArticles')}</td></tr>
                 ) : (
                   articles.map((a) => (
                     <tr key={a.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
@@ -364,7 +366,7 @@ export default function CMS() {
                           <span className="font-bold line-clamp-1">{a.title}</span>
                         </div>
                       </td>
-                      <td className="p-3 sm:p-4 text-slate-500">{a.authorName || '—'}</td>
+                      <td className="p-3 sm:p-4 text-slate-500">{a.authorName || t('common:labels.notAvailable')}</td>
                       <td className="p-3 sm:p-4 text-slate-500">{formatDate(a.createdAt)}</td>
                       <td className="p-3 sm:p-4">
                         <StatusBadge status={a.isPublished ? 'published' : 'draft'} />
@@ -395,7 +397,7 @@ export default function CMS() {
               totalPages={articlePageData.lastPage}
               totalItems={articlePageData.total}
               perPage={PAGE_SIZE.LARGE}
-              label="bài viết"
+              label={t('adminContent:cms.table.pagination')}
               onPageChange={setArticlePage}
             />
           )}
@@ -405,23 +407,23 @@ export default function CMS() {
       <Modal
         open={bannerModalOpen}
         onClose={closeBannerModal}
-        title={editingBannerId ? 'Sửa banner' : 'Thêm banner mới'}
+        title={editingBannerId ? t('adminContent:cms.banners.editTitle') : t('adminContent:cms.banners.createTitle')}
         footer={(
           <>
-            <ModalCancelButton onClick={closeBannerModal}>Hủy</ModalCancelButton>
+            <ModalCancelButton onClick={closeBannerModal}>{t('common:actions.cancel')}</ModalCancelButton>
             <Button
               onClick={handleSaveBanner}
               loading={savingBanner}
               disabled={!bannerForm.imageUrl.trim() || uploadingBannerImage}
             >
-              {editingBannerId ? 'Cập nhật' : 'Thêm mới'}
+              {editingBannerId ? t('adminContent:cms.actions.update') : t('adminContent:cms.actions.create')}
             </Button>
           </>
         )}
       >
         <div className="space-y-4">
           <div className="space-y-2">
-            <p className="text-md font-semibold">Upload ảnh banner</p>
+            <p className="text-md font-semibold">{t('adminContent:cms.banners.uploadImage')}</p>
             <input
               ref={bannerFileInputRef}
               type="file"
@@ -440,37 +442,37 @@ export default function CMS() {
               disabled={uploadingBannerImage}
               icon={uploadingBannerImage ? <FiLoader className="animate-spin" /> : <FiUploadCloud />}
             >
-              {uploadingBannerImage ? 'Đang tải ảnh...' : 'Chọn ảnh từ máy'}
+              {uploadingBannerImage ? t('adminContent:cms.banners.uploadingImage') : t('adminContent:cms.banners.chooseImage')}
             </Button>
-            <p className="text-sm text-slate-500">Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.</p>
+            <p className="text-sm text-slate-500">{t('adminContent:cms.banners.helperText')}</p>
             {bannerForm.imageUrl && (
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800">
-                <img src={bannerForm.imageUrl} alt="Banner preview" className="w-full h-40 object-cover" />
+                <img src={bannerForm.imageUrl} alt={t('adminContent:cms.banners.previewAlt')} className="w-full h-40 object-cover" />
               </div>
             )}
           </div>
 
           <FormInput
-            label="Tiêu đề"
+            label={t('adminContent:cms.banners.titleLabel')}
             value={bannerForm.title}
             onChange={(e) => setBannerForm((prev) => ({ ...prev, title: e.target.value }))}
-            placeholder="VD: Flash Sale cuối tuần"
+            placeholder={t('adminContent:cms.banners.titlePlaceholder')}
           />
           <FormInput
-            label="URL ảnh banner *"
+            label={`${t('adminContent:cms.banners.imageUrl')} *`}
             value={bannerForm.imageUrl}
             onChange={(e) => setBannerForm((prev) => ({ ...prev, imageUrl: e.target.value }))}
             placeholder="https://..."
             required
           />
           <FormInput
-            label="Link đích"
+            label={t('adminContent:cms.banners.targetUrl')}
             value={bannerForm.targetUrl}
             onChange={(e) => setBannerForm((prev) => ({ ...prev, targetUrl: e.target.value }))}
-            placeholder="/products hoặc https://..."
+            placeholder={t('adminContent:cms.banners.targetPlaceholder')}
           />
           <FormInput
-            label="Thứ tự hiển thị"
+            label={t('adminContent:cms.banners.sortOrder')}
             type="number"
             min={0}
             value={bannerForm.sortOrder}
@@ -478,8 +480,8 @@ export default function CMS() {
           />
           <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-800/50">
             <div>
-              <p className="text-md font-semibold">Hiển thị banner</p>
-              <p className="text-sm text-slate-500 mt-0.5">Tắt nếu muốn ẩn banner khỏi trang chủ</p>
+              <p className="text-md font-semibold">{t('adminContent:cms.banners.visibilityTitle')}</p>
+              <p className="text-sm text-slate-500 mt-0.5">{t('adminContent:cms.banners.visibilityDescription')}</p>
             </div>
             <SwitchToggle
               checked={bannerForm.isActive}
@@ -493,16 +495,16 @@ export default function CMS() {
       <Modal
         open={articleModalOpen}
         onClose={closeArticleModal}
-        title={editingArticleId ? 'Sửa bài viết' : 'Thêm bài viết mới'}
+        title={editingArticleId ? t('adminContent:cms.articles.editTitle') : t('adminContent:cms.articles.createTitle')}
         footer={(
           <>
-            <ModalCancelButton onClick={closeArticleModal}>Hủy</ModalCancelButton>
+            <ModalCancelButton onClick={closeArticleModal}>{t('common:actions.cancel')}</ModalCancelButton>
             <Button
               onClick={handleSaveArticle}
               loading={savingArticle}
               disabled={!articleForm.title.trim() || !articleForm.content.trim() || uploadingArticleThumbnail}
             >
-              {editingArticleId ? 'Cập nhật' : 'Thêm mới'}
+              {editingArticleId ? t('adminContent:cms.actions.update') : t('adminContent:cms.actions.create')}
             </Button>
           </>
         )}
@@ -510,7 +512,7 @@ export default function CMS() {
       >
         <div className="space-y-4">
           <div className="space-y-2">
-            <p className="text-md font-semibold">Upload thumbnail</p>
+            <p className="text-md font-semibold">{t('adminContent:cms.articles.uploadThumbnail')}</p>
             <input
               ref={articleFileInputRef}
               type="file"
@@ -529,41 +531,41 @@ export default function CMS() {
               disabled={uploadingArticleThumbnail}
               icon={uploadingArticleThumbnail ? <FiLoader className="animate-spin" /> : <FiUploadCloud />}
             >
-              {uploadingArticleThumbnail ? 'Đang tải ảnh...' : 'Chọn ảnh từ máy'}
+              {uploadingArticleThumbnail ? t('adminContent:cms.articles.uploadingThumbnail') : t('adminContent:cms.articles.chooseThumbnail')}
             </Button>
-            <p className="text-sm text-slate-500">Hỗ trợ PNG/JPG/WEBP, tối đa 5MB.</p>
+            <p className="text-sm text-slate-500">{t('adminContent:cms.articles.helperText')}</p>
             {articleForm.thumbnailUrl && (
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800">
-                <img src={articleForm.thumbnailUrl} alt="Thumbnail preview" className="w-full h-40 object-cover" />
+                <img src={articleForm.thumbnailUrl} alt={t('adminContent:cms.articles.previewAlt')} className="w-full h-40 object-cover" />
               </div>
             )}
           </div>
 
           <FormInput
-            label="Tiêu đề *"
+            label={`${t('adminContent:cms.articles.titleLabel')} *`}
             value={articleForm.title}
             onChange={(e) => setArticleForm((prev) => ({ ...prev, title: e.target.value }))}
-            placeholder="Nhập tiêu đề bài viết"
+            placeholder={t('adminContent:cms.articles.titlePlaceholder')}
             required
           />
           <FormInput
-            label="URL thumbnail"
+            label={t('adminContent:cms.articles.thumbnailUrl')}
             value={articleForm.thumbnailUrl}
             onChange={(e) => setArticleForm((prev) => ({ ...prev, thumbnailUrl: e.target.value }))}
             placeholder="https://..."
           />
           <FormTextarea
-            label="Nội dung *"
+            label={`${t('adminContent:cms.articles.content')} *`}
             value={articleForm.content}
             onChange={(e) => setArticleForm((prev) => ({ ...prev, content: e.target.value }))}
-            placeholder="Nhập nội dung bài viết"
+            placeholder={t('adminContent:cms.articles.contentPlaceholder')}
             rows={10}
             required
           />
           <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-800/50">
             <div>
-              <p className="text-md font-semibold">Xuất bản ngay</p>
-              <p className="text-sm text-slate-500 mt-0.5">Nếu tắt, bài viết sẽ ở trạng thái nháp</p>
+              <p className="text-md font-semibold">{t('adminContent:cms.articles.publishTitle')}</p>
+              <p className="text-sm text-slate-500 mt-0.5">{t('adminContent:cms.articles.publishDescription')}</p>
             </div>
             <SwitchToggle
               checked={articleForm.isPublished}
@@ -576,9 +578,9 @@ export default function CMS() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title={deleteTarget?.type === 'banner' ? 'Xóa banner' : 'Xóa bài viết'}
-        message={deleteTarget?.type === 'banner' ? 'Bạn có chắc muốn xóa banner này?' : 'Bạn có chắc muốn xóa bài viết này?'}
-        confirmLabel="Xóa"
+        title={deleteTarget?.type === 'banner' ? t('adminContent:cms.deleteDialog.bannerTitle') : t('adminContent:cms.deleteDialog.articleTitle')}
+        message={deleteTarget?.type === 'banner' ? t('adminContent:cms.deleteDialog.bannerMessage') : t('adminContent:cms.deleteDialog.articleMessage')}
+        confirmLabel={t('common:actions.delete')}
         variant="danger"
         onConfirm={() => {
           if (deleteTarget?.type === 'banner') handleDeleteBanner(deleteTarget.id);

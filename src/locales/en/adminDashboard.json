@@ -1,0 +1,92 @@
+{
+  "overview": {
+    "title": "Dashboard overview",
+    "today": "Today",
+    "total": "Total:",
+    "noEmail": "No email",
+    "defaultVariant": "Default",
+    "loadingVariants": "Loading variant data...",
+    "detailsVisible": "Detailed data is being displayed...",
+    "reviewsSummary": "Based on {{count}} aggregated reviews",
+    "returns": {
+      "cancelledTitle": "Cancelled orders",
+      "cancelledDescription": "Customers cancelled or failed to complete payment",
+      "requestedTitle": "Return requests",
+      "requestedDescription": "Return and refund requests submitted by customers"
+    },
+    "periods": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    },
+    "actions": {
+      "topVariants": "Top variants",
+      "exportReport": "Export report",
+      "downloadPdf": "Download PDF"
+    },
+    "empty": "Unable to load dashboard data"
+  },
+  "modals": {
+    "orders": "Recent orders",
+    "revenue": "Revenue details",
+    "customers": "Top customers",
+    "products": "Best-selling products",
+    "variants": "Best-selling variants",
+    "returns": "Return / Cancel summary",
+    "reviews": "Review overview"
+  },
+  "tables": {
+    "rank": "Top",
+    "orders": {
+      "orderNumber": "Order number",
+      "customer": "Customer",
+      "orderDate": "Order date",
+      "total": "Total",
+      "status": "Status"
+    },
+    "revenue": {
+      "time": "Time",
+      "orders": "Order count",
+      "revenue": "Revenue",
+      "averageOrderValue": "Average order value"
+    },
+    "customers": {
+      "customer": "Customer",
+      "orders": "Orders",
+      "spent": "Spend",
+      "lastOrder": "Latest order"
+    },
+    "products": {
+      "product": "Product",
+      "sold": "Sold",
+      "revenue": "Revenue"
+    },
+    "variants": {
+      "variant": "Variant",
+      "product": "Product",
+      "gross": "Gross",
+      "returned": "Return",
+      "net": "Net",
+      "revenue": "Revenue"
+    },
+    "returns": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "refunded": "Refunded"
+    },
+    "reviews": {
+      "total": "Total reviews",
+      "average": "Average rating",
+      "pending": "Pending moderation"
+    }
+  },
+  "toasts": {
+    "loadTopVariantsFailed": "Unable to load best-selling variants",
+    "exportSuccess": "Report exported successfully!",
+    "exportFailed": "Failed to export report!",
+    "creatingPdf": "Generating PDF report...",
+    "pdfSuccess": "PDF report exported successfully!",
+    "pdfFailed": "Failed to export PDF report!"
+  }
+}

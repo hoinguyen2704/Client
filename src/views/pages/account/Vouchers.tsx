@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import { FiTag, FiClock, FiCheck, FiBookmark, FiCopy, FiGift, FiPackage } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDate } from '@/utils/format';
 import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
@@ -13,6 +14,7 @@ import type { CouponResponse } from '@/types';
 import type { VoucherCardProps, VoucherSectionProps } from '@/types/ui';
 
 export default function Vouchers() {
+  const { t } = useTranslation(['account', 'checkout', 'common']);
   const user = useAuthStore((s) => s.user);
   const [publicVouchers, setPublicVouchers] = useState<CouponResponse[]>([]);
   const [savedVouchers, setSavedVouchers] = useState<CouponResponse[]>([]);
@@ -59,7 +61,7 @@ export default function Vouchers() {
 
   const handleSave = useCallback(async (coupon: CouponResponse) => {
     const couponId = coupon.id;
-    if (!user) { toast.error('Vui lòng đăng nhập để lưu voucher'); return; }
+    if (!user) { toast.error(t('account:vouchers.toasts.loginToSave')); return; }
     setSavingId(couponId);
     try {
       await userCouponService.saveCoupon(couponId);
@@ -71,28 +73,28 @@ export default function Vouchers() {
         return [{ ...coupon, saved: true }, ...prev];
       });
       fetchSavedVouchers();
-      toast.success('Đã lưu voucher vào ví!');
-    } catch (err: unknown) { toast.error(getApiErrorMessage(err, 'Lưu voucher thất bại')); }
+      toast.success(t('account:vouchers.toasts.saveSuccess'));
+    } catch (err: unknown) { toast.error(getApiErrorMessage(err, t, 'account:vouchers.toasts.saveFailed')); }
     finally { setSavingId(null); }
-  }, [user, fetchSavedVouchers]);
+  }, [user, fetchSavedVouchers, t]);
 
   const handleUnsave = useCallback(async (couponId: string) => {
-    if (!user) { toast.error('Vui lòng đăng nhập để quản lý voucher'); return; }
+    if (!user) { toast.error(t('account:vouchers.toasts.loginToManage')); return; }
     setSavingId(couponId);
     try {
       await userCouponService.unsaveCoupon(couponId);
       setPublicVouchers(prev => prev.map(v => v.id === couponId ? { ...v, saved: false } : v));
       setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: false } : prev);
       setSavedVouchers(prev => prev.filter(v => v.id !== couponId));
-      toast.success('Đã xóa voucher khỏi ví');
-    } catch (err: unknown) { toast.error(getApiErrorMessage(err, 'Thao tác thất bại')); }
+      toast.success(t('account:vouchers.toasts.unsaveSuccess'));
+    } catch (err: unknown) { toast.error(getApiErrorMessage(err, t, 'account:vouchers.toasts.actionFailed')); }
     finally { setSavingId(null); }
-  }, [user]);
+  }, [user, t]);
 
   const copyCode = useCallback((code: string) => {
     navigator.clipboard.writeText(code);
-    toast.success(`Đã copy mã ${code}`);
-  }, []);
+    toast.success(t('account:vouchers.toasts.copySuccess', { code }));
+  }, [t]);
 
   const handleSearch = async () => {
     if (!couponCode.trim()) return;
@@ -103,7 +105,7 @@ export default function Vouchers() {
       const isSaved = !!coupon?.id && savedVouchers.some(v => v.id === coupon.id);
       setSearchResult(coupon ? { ...coupon, saved: isSaved } : null);
     } catch (err: unknown) {
-      setError(getApiErrorMessage(err, 'Mã không tồn tại hoặc đã bị khóa'));
+      setError(getApiErrorMessage(err, t, 'account:vouchers.toasts.searchFailed'));
     }
   };
 const daysLeft = (endDate: string): number => {
@@ -123,102 +125,108 @@ const getVisibleVouchers = (items: CouponResponse[], expanded: boolean) => (
   expanded ? items : items.slice(0, 2)
 );
 
-const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, onUnsave }: VoucherCardProps) => (
-  <motion.div
-    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-    className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-shadow">
-    {/* Top gradient bar */}
-    <div className={`h-1.5 ${v.discountType === 'PERCENTAGE' ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'}`} />
+const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, onUnsave }: VoucherCardProps) => {
+  const { t } = useTranslation(['account', 'checkout']);
 
-    <div className="p-5">
-      <div className="flex items-start gap-4" onClick={() => onCopy(v.code)}>
-        {/* Left - icon */}
-        <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center ${v.discountType === 'PERCENTAGE'
-          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600'}`}>
-          <FiTag className="text-2xl" />
-        </div>
-        {/* Right - info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="font-mono font-bold text-lg tracking-wider">{v.code}</span>
-            <button className="p-1 text-slate-400 hover:text-purple-500 transition-colors"><FiCopy className="text-lg" /></button>
-            <span className={`px-2 py-1 rounded-md text-10 font-bold tracking-wide uppercase ${getVoucherType(v) === 'FREESHIP'
-              ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-              : 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300'
-              }`}>
-              {getVoucherType(v) === 'FREESHIP' ? 'Freeship' : 'Giảm giá SP'}
-            </span>
-          </div>
-          <div className={`text-xl font-black ${v.discountType === 'PERCENTAGE' ? 'text-purple-600' : 'text-amber-600'}`}>
-            {v.discountType === 'PERCENTAGE' ? `Giảm ${v.discountValue}%` : `Giảm ${formatPrice(v.discountValue)}`}
-          </div>
-          <div className="text-sm text-slate-500 mt-0.5 h-5">
-            {v.maxDiscountAmount ? `Tối đa ${formatPrice(v.maxDiscountAmount)}` : ''}
-          </div>
-        </div>
-      </div>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+      className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-shadow">
+      {/* Top gradient bar */}
+      <div className={`h-1.5 ${v.discountType === 'PERCENTAGE' ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'}`} />
 
-      {/* Details */}
-      <div className="mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-700 flex flex-wrap gap-3 text-sm text-slate-500">
-        {v.minOrderValue && (
-          <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
-            Đơn tối thiểu {formatPrice(v.minOrderValue)}
-          </span>
-        )}
-        {v.applyType === 'SPECIFIC_PRODUCTS' && (
-          <span className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 px-2 py-1 rounded-lg">
-            <FiPackage className="text-10" /> {v.applicableProducts?.length || 0} SP
-          </span>
-        )}
-        {v.endDate && (
-          <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
-            <FiClock className="text-10" />
-            {daysLeft(v.endDate) <= 3 ? (
-              <span className="text-red-500 font-bold">Còn {daysLeft(v.endDate)} ngày</span>
-            ) : (
-              <>HSD: {formatDate(v.endDate)}</>
-            )}
-          </span>
-        )}
-        {v.usageLimit && (
-          <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
-            Còn {v.usageLimit - v.usedCount} lượt
-          </span>
-        )}
-      </div>
-
-      {/* Save button */}
-      {showSaveBtn && (
-        <div className="mt-3">
-          {v.saved ? (
-            <div className="w-full h-10 px-3 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-between">
-              <span className="text-green-600 text-md font-semibold inline-flex items-center gap-2">
-                <FiCheck />
-                Đã lưu trong ví
+      <div className="p-5">
+        <div className="flex items-start gap-4" onClick={() => onCopy(v.code)}>
+          {/* Left - icon */}
+          <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center ${v.discountType === 'PERCENTAGE'
+            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600'}`}>
+            <FiTag className="text-2xl" />
+          </div>
+          {/* Right - info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span className="font-mono font-bold text-lg tracking-wider">{v.code}</span>
+              <button className="p-1 text-slate-400 hover:text-purple-500 transition-colors"><FiCopy className="text-lg" /></button>
+              <span className={`px-2 py-1 rounded-md text-10 font-bold tracking-wide uppercase ${getVoucherType(v) === 'FREESHIP'
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                : 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300'
+                }`}>
+                {getVoucherType(v) === 'FREESHIP' ? t('checkout:voucherCard.shippingTag') : t('checkout:voucherCard.productTag')}
               </span>
-              <TrashButton
-                onClick={() => onUnsave(v.id)}
-                disabled={isSaving}
-                title="Bỏ lưu mã"
-                className="w-10 h-10 !rounded-xl"
-              />
             </div>
-          ) : (
-            <PrimaryButton
-              onClick={() => onSave(v)}
-              disabled={isSaving}
-              icon={<FiBookmark />}
-              className="w-full h-10 text-md"
-              isLoading={isSaving}
-            >
-              {isSaving ? 'Đang lưu...' : 'Lưu voucher'}
-            </PrimaryButton>
+            <div className={`text-xl font-black ${v.discountType === 'PERCENTAGE' ? 'text-purple-600' : 'text-amber-600'}`}>
+              {v.discountType === 'PERCENTAGE'
+                ? t('checkout:voucherCard.discountPercent', { value: v.discountValue })
+                : t('checkout:voucherCard.discountAmount', { value: formatPrice(v.discountValue) })}
+            </div>
+            <div className="text-sm text-slate-500 mt-0.5 h-5">
+              {v.maxDiscountAmount ? t('account:vouchers.card.maxDiscount', { value: formatPrice(v.maxDiscountAmount) }) : ''}
+            </div>
+          </div>
+        </div>
+
+        {/* Details */}
+        <div className="mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-700 flex flex-wrap gap-3 text-sm text-slate-500">
+          {v.minOrderValue && (
+            <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
+              {t('account:vouchers.card.minOrder', { value: formatPrice(v.minOrderValue) })}
+            </span>
+          )}
+          {v.applyType === 'SPECIFIC_PRODUCTS' && (
+            <span className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 px-2 py-1 rounded-lg">
+              <FiPackage className="text-10" /> {t('account:vouchers.card.applicableProducts', { count: v.applicableProducts?.length || 0 })}
+            </span>
+          )}
+          {v.endDate && (
+            <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
+              <FiClock className="text-10" />
+              {daysLeft(v.endDate) <= 3 ? (
+                <span className="text-red-500 font-bold">{t('account:vouchers.card.remainingDays', { count: daysLeft(v.endDate) })}</span>
+              ) : (
+                <>{t('account:vouchers.card.expiry', { date: formatDate(v.endDate) })}</>
+              )}
+            </span>
+          )}
+          {v.usageLimit && (
+            <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
+              {t('account:vouchers.card.remainingUses', { count: v.usageLimit - v.usedCount })}
+            </span>
           )}
         </div>
-      )}
-    </div>
-  </motion.div>
-));
+
+        {/* Save button */}
+        {showSaveBtn && (
+          <div className="mt-3">
+            {v.saved ? (
+              <div className="w-full h-10 px-3 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-between">
+                <span className="text-green-600 text-md font-semibold inline-flex items-center gap-2">
+                  <FiCheck />
+                  {t('account:vouchers.card.savedInWallet')}
+                </span>
+                <TrashButton
+                  onClick={() => onUnsave(v.id)}
+                  disabled={isSaving}
+                  title={t('checkout:voucherCard.removeSaved')}
+                  className="w-10 h-10 !rounded-xl"
+                />
+              </div>
+            ) : (
+              <PrimaryButton
+                onClick={() => onSave(v)}
+                disabled={isSaving}
+                icon={<FiBookmark />}
+                className="w-full h-10 text-md"
+                isLoading={isSaving}
+              >
+                {isSaving ? t('account:vouchers.card.saving') : t('account:vouchers.card.save')}
+              </PrimaryButton>
+            )}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+});
 
 /* ── Memoized section — primitive props only so memo is never defeated ── */
 const SECTION_ICONS = {
@@ -231,6 +239,7 @@ const VoucherSection = memo(({
   loading: sectionLoading = false, minToExpand = 2,
   onCopy, onSave, onUnsave, emptyTitle, emptyDescription,
 }: VoucherSectionProps) => {
+  const { t } = useTranslation('common');
   const visible = expanded ? vouchers : vouchers.slice(0, minToExpand);
 
   return (
@@ -247,8 +256,8 @@ const VoucherSection = memo(({
           <ExpandToggle
             expanded={expanded}
             onToggle={onToggle}
-            expandLabel="Mở rộng"
-            collapseLabel="Thu gọn"
+            expandLabel={t('actions.expand')}
+            collapseLabel={t('actions.collapse')}
             variant="outline"
           />
         )}
@@ -291,19 +300,19 @@ const VoucherSection = memo(({
         <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
           <FiGift className="text-xl" />
         </div>
-        <h1 className="text-2xl font-bold">Ví voucher</h1>
+        <h1 className="text-2xl font-bold">{t('account:vouchers.title')}</h1>
       </div>
 
       {/* Top: Input coupon */}
       <div className="space-y-4">
         <Card className="rounded-2xl p-6">
-          <h2 className="text-lg font-bold mb-4">Nhập mã giảm giá</h2>
+          <h2 className="text-lg font-bold mb-4">{t('account:vouchers.searchTitle')}</h2>
           <div className="flex gap-3">
-            <input type="text" placeholder="Nhập mã giảm giá..." value={couponCode}
+            <input type="text" placeholder={t('account:vouchers.searchPlaceholder')} value={couponCode}
               onChange={(e) => setCouponCode(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 uppercase font-mono text-lg" />
             <PrimaryButton onClick={handleSearch} icon={<FiTag />} className="h-12 px-8 text-lg">
-              Kiểm tra
+              {t('account:vouchers.check')}
             </PrimaryButton>
           </div>
           {error && <p className="text-red-500 text-md mt-3">{error}</p>}
@@ -313,7 +322,7 @@ const VoucherSection = memo(({
           {searchResult && (
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-md font-bold text-slate-600 uppercase tracking-wide">Kết quả kiểm tra mã</h3>
+                <h3 className="text-md font-bold text-slate-600 uppercase tracking-wide">{t('account:vouchers.searchResultTitle')}</h3>
               </div>
               <VoucherCard v={searchResult} showSaveBtn onCopy={copyCode} onSave={handleSave} onUnsave={handleUnsave} isSaving={savingId === searchResult.id} />
             </motion.div>
@@ -324,7 +333,7 @@ const VoucherSection = memo(({
       {/* Middle: Public voucher vault */}
       <VoucherSection
         iconType="gift"
-        title="Kho voucher"
+        title={t('account:vouchers.publicTitle')}
         badgeClass="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
         vouchers={publicVouchers}
         savingId={savingId}
@@ -334,8 +343,8 @@ const VoucherSection = memo(({
         onCopy={copyCode}
         onSave={handleSave}
         onUnsave={handleUnsave}
-        emptyTitle="Chưa có voucher nào đang hoạt động"
-        emptyDescription="Bạn có thể quay lại sau để xem thêm ưu đãi mới."
+        emptyTitle={t('account:vouchers.publicEmptyTitle')}
+        emptyDescription={t('account:vouchers.publicEmptyDescription')}
       />
 
       {/* Bottom: Saved vouchers */}
@@ -343,14 +352,14 @@ const VoucherSection = memo(({
         <Card className="rounded-2xl p-6">
           <EmptyState
             icon={<FiBookmark />}
-            title="Đăng nhập để xem mã đã lưu"
-            description="Các voucher bạn lưu sẽ hiển thị tại đây."
+            title={t('account:vouchers.loginSavedTitle')}
+            description={t('account:vouchers.loginSavedDescription')}
           />
         </Card>
       ) : (
         <VoucherSection
           iconType="bookmark"
-          title="Mã đã lưu"
+          title={t('account:vouchers.savedTitle')}
           badgeClass="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
           vouchers={savedVouchers}
           savingId={savingId}
@@ -359,22 +368,21 @@ const VoucherSection = memo(({
           onCopy={copyCode}
           onSave={handleSave}
           onUnsave={handleUnsave}
-          emptyTitle="Bạn chưa lưu voucher nào"
-          emptyDescription="Hãy lưu voucher từ Kho voucher để dùng nhanh ở Checkout."
+          emptyTitle={t('account:vouchers.savedEmptyTitle')}
+          emptyDescription={t('account:vouchers.savedEmptyDescription')}
         />
       )}
 
       {/* Notes */}
       <Card className="rounded-2xl p-6">
-        <h2 className="text-lg font-bold mb-3">Lưu ý</h2>
+        <h2 className="text-lg font-bold mb-3">{t('account:vouchers.notesTitle')}</h2>
         <ul className="space-y-2 text-md text-slate-500">
-          <li>• Mỗi mã giảm giá chỉ áp dụng 1 lần cho mỗi đơn hàng</li>
-          <li>• Voucher có thời hạn sử dụng, vui lòng kiểm tra trước khi thanh toán</li>
-          <li>• Lưu voucher để sử dụng nhanh chóng tại trang Checkout</li>
-          <li>• Một số voucher chỉ áp dụng cho sản phẩm cụ thể</li>
+          <li>• {t('account:vouchers.notes.item1')}</li>
+          <li>• {t('account:vouchers.notes.item2')}</li>
+          <li>• {t('account:vouchers.notes.item3')}</li>
+          <li>• {t('account:vouchers.notes.item4')}</li>
         </ul>
       </Card>
     </div>
   );
 }
-

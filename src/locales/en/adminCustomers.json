@@ -1,0 +1,48 @@
+{
+  "customers": {
+    "title": "Customer management",
+    "export": "Export list",
+    "searchPlaceholder": "Search by name, email, phone number...",
+    "filters": {
+      "allRoles": "All roles",
+      "customer": "Customer",
+      "admin": "Admin"
+    },
+    "table": {
+      "index": "No.",
+      "user": "User",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "createdAt": "Created at",
+      "status": "Status",
+      "actions": "Actions",
+      "empty": "No users found"
+    },
+    "statuses": {
+      "active": "Active",
+      "locked": "Locked"
+    },
+    "actions": {
+      "lock": "Lock account",
+      "unlock": "Unlock account"
+    },
+    "labels": {
+      "pagination": "users"
+    },
+    "toasts": {
+      "loadFailed": "Failed to load user list!",
+      "toggleSuccess": "User status updated successfully!",
+      "toggleFailed": "Failed to update user status!",
+      "exportSuccess": "User list exported successfully!",
+      "exportFailed": "Failed to export report!"
+    }
+  },
+  "detail": {
+    "title": "Customer details",
+    "profile": "Profile information",
+    "orders": "Orders",
+    "returns": "Returns",
+    "activity": "Recent activity"
+  }
+}

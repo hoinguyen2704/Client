@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./styles/text-tokens.css";
 /* @plugin "@tailwindcss/typography"; -- disabled: v0.5.x incompatible with TW v4 @plugin */
 
 @theme {
@@ -22,8 +23,6 @@
   --text-md--line-height: 1.375rem;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -41,6 +40,16 @@
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #334155;
+}
+
+/* Avoid the browser default blue outline stacking with custom Tailwind focus states */
+input[class*="focus:ring"]:focus,
+textarea[class*="focus:ring"]:focus,
+select[class*="focus:ring"]:focus,
+input[class*="focus:border"]:focus,
+textarea[class*="focus:border"]:focus,
+select[class*="focus:border"]:focus {
+  outline: none;
 }
 
 /* Stronger borders for all admin screens */

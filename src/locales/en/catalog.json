@@ -1,0 +1,43 @@
+{
+  "products": {
+    "breadcrumbCurrent": "All products",
+    "mobileFilter": "Filter products",
+    "filterTitle": "Filters",
+    "searchTitle": "Search",
+    "searchPlaceholder": "Product name...",
+    "categoriesTitle": "Product categories",
+    "allCategories": "All categories",
+    "brandsTitle": "Brands",
+    "clearFilters": "Clear filters",
+    "pageTitle": "All products",
+    "sortBy": "Sort by:",
+    "sortOptions": {
+      "popular": "Popular / Best sellers",
+      "newest": "Newest",
+      "bestRated": "Top rated",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
+    "empty": {
+      "title": "No products found",
+      "description": "We could not find any products matching your filters. Please try different criteria."
+    },
+    "toasts": {
+      "loadFailed": "Failed to load products!"
+    }
+  },
+  "flashSale": {
+    "empty": {
+      "title": "No Flash Sale right now",
+      "description": "Please check back later so you do not miss the best deals."
+    },
+    "endsIn": "Ends in:",
+    "remainingProducts": "{{count}} items left",
+    "soldOut": "Sold out",
+    "countdown": {
+      "hours": "hours",
+      "minutes": "minutes",
+      "seconds": "seconds"
+    }
+  }
+}

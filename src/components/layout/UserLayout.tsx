@@ -1,26 +1,31 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiRotateCcw, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings, FiChevronDown } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 import useAuthStore from '@/stores/useAuthStore';
 import useNotificationStore from '@/stores/useNotificationStore';
 import { useClickOutside } from '@/hooks';
 
+const USER_LAYOUT_IDLE_ITEM_CLASS =
+  "text-muted-strong hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200";
+
 const menuItems = [
-  { path: '/user/profile', icon: FiUser, label: 'Hồ sơ cá nhân' },
-  { path: '/user/address', icon: FiMapPin, label: 'Sổ địa chỉ' },
-  { path: '/user/payment', icon: FiCreditCard, label: 'Thanh toán' },
-  { path: '/user/orders', icon: FiShoppingBag, label: 'Đơn hàng' },
-  { path: '/user/returns', icon: FiRotateCcw, label: 'Trả hàng / Hoàn tiền' },
-  { path: '/user/vouchers', icon: FiTag, label: 'Kho Voucher' },
-  { path: '/user/reviews', icon: FiStar, label: 'Nhận xét của tôi' },
-  { path: '/user/recently-viewed', icon: FiClock, label: 'Đã xem gần đây' },
-  { path: '/user/notifications', icon: FiBell, label: 'Thông báo' },
-  { path: '/user/settings', icon: FiSettings, label: 'Cài đặt' },
-  { path: '/user/support', icon: FiHelpCircle, label: 'Hỗ trợ' },
+  { path: '/user/profile', icon: FiUser, labelKey: 'userLayout.menu.profile' },
+  { path: '/user/address', icon: FiMapPin, labelKey: 'userLayout.menu.address' },
+  { path: '/user/payment', icon: FiCreditCard, labelKey: 'userLayout.menu.payment' },
+  { path: '/user/orders', icon: FiShoppingBag, labelKey: 'userLayout.menu.orders' },
+  { path: '/user/returns', icon: FiRotateCcw, labelKey: 'userLayout.menu.returns' },
+  { path: '/user/vouchers', icon: FiTag, labelKey: 'userLayout.menu.vouchers' },
+  { path: '/user/reviews', icon: FiStar, labelKey: 'userLayout.menu.reviews' },
+  { path: '/user/recently-viewed', icon: FiClock, labelKey: 'userLayout.menu.recentlyViewed' },
+  { path: '/user/notifications', icon: FiBell, labelKey: 'userLayout.menu.notifications' },
+  { path: '/user/settings', icon: FiSettings, labelKey: 'userLayout.menu.settings' },
+  { path: '/user/support', icon: FiHelpCircle, labelKey: 'userLayout.menu.support' },
 ];
 
 export default function UserLayout() {
+  const { t } = useTranslation(['layout', 'common']);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -60,9 +65,13 @@ export default function UserLayout() {
                 )}
               </div>
               <div className="min-w-0">
-                <h3 className="font-bold text-base sm:text-lg truncate">{user?.name || 'Thành viên'}</h3>
-                <p className="text-sm sm:text-md text-slate-500 dark:text-slate-400 truncate">
-                  {user?.role === 'ADMIN' ? 'Quản trị viên' : 'Khách hàng'}
+                <h3 className="font-bold text-base sm:text-lg truncate">
+                  {user?.name || t('roles.member', { ns: 'common', defaultValue: 'Thành viên' })}
+                </h3>
+                <p className="text-sm sm:text-md text-muted truncate">
+                  {user?.role === 'ADMIN'
+                    ? t('roles.admin', { ns: 'common', defaultValue: 'Quản trị viên' })
+                    : t('roles.customer', { ns: 'common', defaultValue: 'Khách hàng' })}
                 </p>
               </div>
             </div>
@@ -74,7 +83,7 @@ export default function UserLayout() {
               >
                 <span className="flex items-center gap-2 min-w-0">
                   <ActiveMenuIcon className="text-base shrink-0" />
-                  <span className="truncate">{activeMenuItem.label}</span>
+                  <span className="truncate">{t(activeMenuItem.labelKey, { ns: 'layout', defaultValue: activeMenuItem.labelKey })}</span>
                 </span>
                 <FiChevronDown className={cn('text-base text-slate-400 transition-transform', isMobileMenuOpen && 'rotate-180')} />
               </button>
@@ -91,11 +100,11 @@ export default function UserLayout() {
                           "flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-md",
                           isActive
                             ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
+                            : USER_LAYOUT_IDLE_ITEM_CLASS
                         )}
                       >
                         <item.icon className="text-base" />
-                        <span className="flex-1">{item.label}</span>
+                        <span className="flex-1">{t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}</span>
                         {item.path === '/user/notifications' && unreadCount > 0 && (
                           <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-10 font-bold flex items-center justify-center rounded-full">
                             {unreadCount > 99 ? '99+' : unreadCount}
@@ -113,7 +122,7 @@ export default function UserLayout() {
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-md text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                       >
                         <FiLogOut className="text-base" />
-                        Đăng xuất
+                        {t('userLayout.menu.logout', { ns: 'layout', defaultValue: 'Đăng xuất' })}
                       </button>
                     </div>
                   </nav>
@@ -131,11 +140,11 @@ export default function UserLayout() {
                       "flex items-center gap-2.5 px-4 py-3 rounded-xl transition-all font-medium text-base min-w-0",
                       isActive
                         ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
+                        : USER_LAYOUT_IDLE_ITEM_CLASS
                     )}
                   >
                     <item.icon className="text-lg" />
-                    <span className="flex-1">{item.label}</span>
+                    <span className="flex-1">{t(item.labelKey, { ns: 'layout', defaultValue: item.labelKey })}</span>
                     {item.path === '/user/notifications' && unreadCount > 0 && (
                       <span className="min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-10 font-bold flex items-center justify-center rounded-full">
                         {unreadCount > 99 ? '99+' : unreadCount}
@@ -150,7 +159,7 @@ export default function UserLayout() {
                   className="w-full flex items-center justify-start gap-2.5 px-4 py-3 rounded-xl transition-all font-medium text-base text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <FiLogOut className="text-lg" />
-                  Đăng xuất
+                  {t('userLayout.menu.logout', { ns: 'layout', defaultValue: 'Đăng xuất' })}
                 </button>
               </div>
             </nav>

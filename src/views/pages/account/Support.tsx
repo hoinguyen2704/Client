@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { onRealtimeEvent } from '@/realtime/realtimeBus';
+import { useTranslation } from 'react-i18next';
 
 const CLOSED_STATUSES = new Set(['CLOSED', 'RESOLVED']);
 const SUPPORT_REALTIME_EVENTS = new Set<string>([
@@ -18,6 +19,7 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
 ]);
 
 export default function Support() {
+  const { t } = useTranslation('account');
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -54,10 +56,10 @@ export default function Support() {
       const res = await ticketService.getDetail(ticketId);
       setSelectedTicket(res.data);
     } catch {
-      if (!opts?.silent) toast.error('Không tải được chi tiết yêu cầu');
+      if (!opts?.silent) toast.error(t('support.toasts.loadDetailFailed'));
       setSelectedTicket(null);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
 
@@ -115,14 +117,14 @@ export default function Support() {
       const created = res.data;
       setNewSubject('');
       setNewContent('');
-      toast.success('Đã gửi yêu cầu hỗ trợ');
+      toast.success(t('support.toasts.createSuccess'));
       await fetchTickets({ silent: true });
       if (created?.id) {
         setSelectedTicketId(created.id);
         setSelectedTicket(created);
       }
     } catch (e: unknown) {
-      toast.error(getApiErrorMessage(e, 'Gửi yêu cầu thất bại'));
+      toast.error(getApiErrorMessage(e, t, 'support.toasts.createFailed'));
     } finally {
       setCreating(false);
     }
@@ -137,7 +139,7 @@ export default function Support() {
       setReplyText('');
       await fetchTickets({ silent: true });
     } catch (e: unknown) {
-      toast.error(getApiErrorMessage(e, 'Gửi phản hồi thất bại'));
+      toast.error(getApiErrorMessage(e, t, 'support.toasts.replyFailed'));
     } finally {
       setSendingReply(false);
     }
@@ -148,19 +150,19 @@ export default function Support() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl sm:text-2xl font-bold">Hỗ trợ</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('support.title')}</h1>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)] gap-4 sm:gap-6">
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[46dvh] min-h-[300px] sm:min-h-[340px] lg:h-[calc(100dvh-420px)] lg:min-h-[500px]">
           <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-slate-800 space-y-2.5 sm:space-y-3">
-            <h2 className="font-bold text-slate-900 dark:text-white">Tạo yêu cầu mới</h2>
+            <h2 className="font-bold text-slate-900 dark:text-white">{t('support.createTitle')}</h2>
             <FormInput
-              placeholder="Tiêu đề hỗ trợ"
+              placeholder={t('support.subjectPlaceholder')}
               value={newSubject}
               onChange={(e) => setNewSubject(e.target.value)}
             />
             <FormTextarea
-              placeholder="Mô tả vấn đề của bạn..."
+              placeholder={t('support.contentPlaceholder')}
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
               rows={4}
@@ -173,7 +175,7 @@ export default function Support() {
               disabled={!newSubject.trim() || !newContent.trim()}
               fullWidth
             >
-              Gửi yêu cầu
+              {t('support.createAction')}
             </Button>
           </div>
 
@@ -188,7 +190,7 @@ export default function Support() {
             ) : tickets.length === 0 ? (
               <div className="p-8 text-center text-slate-400">
                 <FiMessageSquare className="text-3xl mx-auto mb-2" />
-                <p className="text-md">Bạn chưa có yêu cầu hỗ trợ nào</p>
+                <p className="text-md">{t('support.emptyTickets')}</p>
               </div>
             ) : (
               tickets.map((ticket) => (
@@ -246,12 +248,12 @@ export default function Support() {
               <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800">
                 {isChatClosed ? (
                   <div className="h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-md sm:text-md text-slate-500 flex items-center">
-                    Ticket đã đóng, bạn không thể gửi thêm phản hồi.
+                    {t('support.closedHint')}
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <FormInput
-                      placeholder="Nhập phản hồi..."
+                      placeholder={t('support.replyPlaceholder')}
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleReply()}
@@ -264,7 +266,7 @@ export default function Support() {
                       variant="primary"
                       loading={sendingReply}
                       disabled={!replyText.trim()}
-                      ariaLabel="Gửi phản hồi"
+                      ariaLabel={t('support.replyAria')}
                     />
                   </div>
                 )}
@@ -274,8 +276,8 @@ export default function Support() {
             <div className="flex-1 flex items-center justify-center text-slate-400 p-10 text-center">
               <div>
                 <FiMessageSquare className="text-4xl mx-auto mb-3" />
-                <p>Chọn một yêu cầu bên trái để bắt đầu chat với admin</p>
-                <p className="text-md mt-1">Tin nhắn sẽ được cập nhật realtime.</p>
+                <p>{t('support.emptyChatTitle')}</p>
+                <p className="text-md mt-1">{t('support.emptyChatDescription')}</p>
               </div>
             </div>
           )}

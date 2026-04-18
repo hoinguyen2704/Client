@@ -147,7 +147,7 @@ export default function OrderDetail() {
                     <div key={history.id} className="flex gap-4">
                       {/* Left: Time */}
                       <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
-                        <div className="text-md font-medium text-slate-800 dark:text-slate-200">
+                        <div className="text-md font-medium text-strong-soft">
                           {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                         </div>
                         <div className="text-sm text-slate-500 mt-1">
@@ -166,7 +166,7 @@ export default function OrderDetail() {
 
                       {/* Right: Content */}
                       <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-muted-strong'}`}>
                           {history.status === 'SHIPPED' ? 'Giao hàng thành công' : history.description}
                         </h4>
                         {isFirst && history.status === 'SHIPPED' && (
@@ -251,7 +251,7 @@ export default function OrderDetail() {
           {/* Shipping */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> Giao hàng</h2>
-            <p className="text-md text-slate-700 dark:text-slate-300 leading-relaxed">{order.shippingAddress}</p>
+            <p className="text-md text-body leading-relaxed">{order.shippingAddress}</p>
           </div>
 
           {/* Payment */}

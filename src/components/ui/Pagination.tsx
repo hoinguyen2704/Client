@@ -1,4 +1,5 @@
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 export interface PaginationProps {
   currentPage: number;
@@ -19,7 +20,7 @@ export interface PaginationProps {
 const BTN_BASE =
   'w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl text-md font-semibold transition-all duration-200 select-none';
 const BTN_IDLE =
-  'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 shadow-[1px_1px_3px_rgba(0,0,0,0.06)] hover:shadow-md';
+  'bg-slate-100 dark:bg-slate-800 text-body-soft hover:bg-slate-200 dark:hover:bg-slate-700 shadow-[1px_1px_3px_rgba(0,0,0,0.06)] hover:shadow-md';
 const BTN_ACTIVE =
   'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/30 scale-105';
 const BTN_DISABLED =
@@ -32,9 +33,12 @@ export default function Pagination({
   variant = 'storefront',
   totalItems,
   perPage,
-  label = 'mục',
+  label,
   className = '',
 }: PaginationProps) {
+  const { t } = useTranslation('common');
+  const resolvedLabel = label || t('pagination.items', { defaultValue: 'mục' });
+
   if (totalPages <= 1) return null;
 
   // Generate visible page numbers with smart ellipsis
@@ -70,16 +74,16 @@ export default function Pagination({
     >
       {/* Info text — admin only */}
       {showInfo && (
-        <div className="text-md text-slate-500 dark:text-slate-400">
-          Hiển thị{' '}
+        <div className="text-md text-muted">
+          {t('pagination.showing', { defaultValue: 'Hiển thị' })}{' '}
           <span className="font-semibold text-slate-700 dark:text-slate-200">
             {start}-{end}
           </span>{' '}
-          của{' '}
+          {t('pagination.of', { defaultValue: 'của' })}{' '}
           <span className="font-semibold text-slate-700 dark:text-slate-200">
             {totalItems!.toLocaleString()}
           </span>{' '}
-          {label}
+          {resolvedLabel}
         </div>
       )}
 
@@ -90,7 +94,7 @@ export default function Pagination({
           className={`${BTN_BASE} ${currentPage === 1 ? BTN_DISABLED : BTN_IDLE}`}
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
-          aria-label="Trang trước"
+          aria-label={t('actions.previousPage', { defaultValue: 'Trang trước' })}
         >
           <FiChevronLeft className="text-base" />
         </button>
@@ -100,7 +104,7 @@ export default function Pagination({
           p === '...' ? (
             <span
               key={`dots-${i}`}
-              className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-slate-400 dark:text-slate-500 text-md font-bold tracking-widest"
+              className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-subtle text-md font-bold tracking-widest"
             >
               ···
             </span>
@@ -120,7 +124,7 @@ export default function Pagination({
           className={`${BTN_BASE} ${currentPage === totalPages ? BTN_DISABLED : BTN_IDLE}`}
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          aria-label="Trang sau"
+          aria-label={t('actions.nextPage', { defaultValue: 'Trang sau' })}
         >
           <FiChevronRight className="text-base" />
         </button>

@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "audit:slate-text": "node scripts/audit-slate-text.mjs",
+    "audit:i18n-literals": "node scripts/audit-i18n-literals.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

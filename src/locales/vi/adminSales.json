@@ -1,0 +1,36 @@
+{
+  "orders": {
+    "title": "Quản lý đơn hàng",
+    "export": "Xuất Excel",
+    "searchPlaceholder": "Tìm kiếm theo mã đơn, tên khách hàng...",
+    "table": {
+      "index": "STT",
+      "orderNumber": "Mã đơn hàng",
+      "orderDate": "Ngày đặt",
+      "items": "SP",
+      "total": "Tổng tiền",
+      "payment": "Thanh toán",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "quantityMobile": "Số lượng SP:",
+      "totalMobile": "Tổng tiền:",
+      "paymentMobile": "Thanh toán:",
+      "statusMobile": "Trạng thái:",
+      "empty": "Không có đơn hàng nào",
+      "label": "đơn hàng"
+    },
+    "statusOptions": {
+      "pending": "Chờ xử lý",
+      "confirmed": "Đã xác nhận",
+      "processing": "Đang xử lý",
+      "shipping": "Đang giao",
+      "shipped": "Đã giao",
+      "cancelled": "Đã hủy",
+      "returned": "Đã hoàn trả"
+    },
+    "toasts": {
+      "updated": "Đã cập nhật trạng thái!",
+      "invalidTransition": "Không thể cập nhật trạng thái theo thứ tự này"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { StatusBadge } from '@/components';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { TicketResponse } from '@/types';
@@ -12,6 +13,7 @@ interface TicketListItemProps {
 }
 
 function TicketListItemRaw({ ticket, isSelected, onClick, showUserName }: TicketListItemProps) {
+  const { t } = useTranslation('common');
   return (
     <button
       onClick={() => onClick(ticket)}
@@ -28,7 +30,9 @@ function TicketListItemRaw({ ticket, isSelected, onClick, showUserName }: Ticket
             {showUserName && ticket.userName ? <span className="font-medium text-slate-700 dark:text-slate-300">{ticket.userName} • </span> : ''}
             {ticket.ticketNumber} • {formatDate(ticket.createdAt)}
           </p>
-          <p className="text-sm text-slate-400 mt-1">{ticket.messages?.length || 0} tin nhắn</p>
+          <p className="text-sm text-slate-400 mt-1">
+            {t('labels.messagesCount', { count: ticket.messages?.length || 0 })}
+          </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <StatusBadge status={ticket.status} className="text-10" />

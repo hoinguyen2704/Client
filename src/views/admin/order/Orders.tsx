@@ -1,18 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiEye, FiDownload, FiPackage } from 'react-icons/fi';
+import { FiDownload, FiPackage } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
 import { formatPrice, formatDate } from '@/utils/format';
-import { Button, StatusBadge, CustomSelect, AdminSearch, Pagination, ActionButtons } from '@/components';
+import { Button, CustomSelect, AdminSearch, Pagination, ActionButtons } from '@/components';
 
 import adminOrderService from '@/apis/services/adminOrderService';
-import { ORDER_FILTER_OPTIONS, getAdminOrderStatusOptions } from '@/constants/orderConstants';
+import { getOrderFilterOptions, getAdminOrderStatusOptions } from '@/constants/orderConstants';
 import type { OrderResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { downloadBlob } from '@/utils/download';
 import { getPaginatedRowNumber } from '@/utils/helpers';
 
 export default function AdminOrders() {
+  const { t } = useTranslation(['adminSales', 'common']);
   const [orders, setOrders] = useState<OrderResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,11 +44,11 @@ export default function AdminOrders() {
     if (!newStatus) return;
     try {
       await adminOrderService.updateStatus(orderId, newStatus);
-      toast.success('Đã cập nhật trạng thái!');
+      toast.success(t('orders.toasts.updated'));
       fetchOrders({ silent: true });
     } catch (err) {
       console.error('Update status failed:', err);
-      toast.error('Không thể cập nhật trạng thái theo thứ tự này');
+      toast.error(t('orders.toasts.invalidTransition'));
     }
   };
 
@@ -63,10 +64,10 @@ export default function AdminOrders() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý đơn hàng</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('orders.title')}</h1>
         <div className="flex gap-3 print:hidden">
           <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
-            Xuất Excel
+            {t('orders.export')}
           </Button>
         </div>
       </div>
@@ -76,7 +77,7 @@ export default function AdminOrders() {
         <div className="flex-1">
           <AdminSearch
             boxed={false}
-            placeholder="Tìm kiếm theo mã đơn, tên khách hàng..."
+            placeholder={t('orders.searchPlaceholder')}
             value={searchQuery}
             onChange={(val) => { setSearchQuery(val); setPage(1); }}
           />
@@ -84,7 +85,7 @@ export default function AdminOrders() {
         <CustomSelect 
           value={statusFilter} 
           onChange={(val) => { setStatusFilter(val); setPage(1); }}
-          options={ORDER_FILTER_OPTIONS}
+          options={getOrderFilterOptions(t)}
           className="w-full md:w-56"
         />
       </div>
@@ -95,14 +96,14 @@ export default function AdminOrders() {
         
         {/* Desktop Header */}
         <div className="hidden lg:grid grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
-          <div className="px-4 py-4">STT</div>
-          <div className="px-4 py-4 text-left">Mã đơn hàng</div>
-          <div className="px-4 py-4">Ngày đặt</div>
-          <div className="px-4 py-4">SP</div>
-          <div className="px-4 py-4 text-right">Tổng tiền</div>
-          <div className="px-4 py-4 text-right">Thanh toán</div>
-          <div className="px-4 py-4">Trạng thái</div>
-          <div className="px-4 py-4 text-center print:hidden">Thao tác</div>
+          <div className="px-4 py-4">{t('orders.table.index')}</div>
+          <div className="px-4 py-4 text-left">{t('orders.table.orderNumber')}</div>
+          <div className="px-4 py-4">{t('orders.table.orderDate')}</div>
+          <div className="px-4 py-4">{t('orders.table.items')}</div>
+          <div className="px-4 py-4 text-right">{t('orders.table.total')}</div>
+          <div className="px-4 py-4 text-right">{t('orders.table.payment')}</div>
+          <div className="px-4 py-4">{t('orders.table.status')}</div>
+          <div className="px-4 py-4 text-center print:hidden">{t('orders.table.actions')}</div>
         </div>
         
         <div className="flex flex-col">
@@ -122,7 +123,7 @@ export default function AdminOrders() {
           ) : orders.length === 0 ? (
             <div className="p-10 sm:p-16 flex flex-col items-center justify-center text-slate-400">
               <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4"><FiPackage className="text-2xl" /></div>
-              <span>Không có đơn hàng nào</span>
+              <span>{t('orders.table.empty')}</span>
             </div>
           ) : (
             orders.map((order, index) => {
@@ -149,29 +150,29 @@ export default function AdminOrders() {
                   <div className="hidden lg:flex justify-center items-center px-4 py-4 text-slate-700 dark:text-slate-300 font-medium h-full text-center">{formatDate(order.createdAt)}</div>
                   
                   <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">Số lượng SP:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.quantityMobile')}</span>
                     <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max text-slate-700 dark:text-slate-300">
                       {order.items?.length || 0}
                     </div>
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">Tổng tiền:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.totalMobile')}</span>
                     <div className="font-bold text-slate-800 dark:text-slate-100">{formatPrice(order.totalAmount)}</div>
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                    <span className="lg:hidden text-slate-500 text-md">Thanh toán:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.paymentMobile')}</span>
                     <div className="text-slate-700 dark:text-slate-300 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
                       {order.paymentMethod}
                     </div>
                   </div>
 
                   <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between lg:justify-center items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.statusMobile')}</span>
                     <div className="w-[170px] sm:w-48 lg:w-[150px]">
                       {(() => {
-                        const statusOptions = getAdminOrderStatusOptions(order.orderStatus);
+                        const statusOptions = getAdminOrderStatusOptions(order.orderStatus, t);
                         return (
                           <CustomSelect 
                             value={order.orderStatus} 
@@ -208,7 +209,7 @@ export default function AdminOrders() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.LARGE}
-            label="đơn hàng"
+            label={t('orders.table.label')}
             onPageChange={setPage}
           />
         )}

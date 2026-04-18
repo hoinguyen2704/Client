@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
-import { FiAlertCircle, FiCamera, FiLock, FiShield, FiMoon, FiSun, FiGlobe, FiBell, FiLoader, FiSave, FiUser, FiX } from 'react-icons/fi';
+import { FiAlertCircle, FiCamera, FiLock, FiLoader, FiSave, FiUser, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { getApiErrorMessage } from '@/utils/error';
 import userService from '@/apis/services/userService';
-import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
 import { Button, CustomSelect } from '@/components';
 import type { UserResponse } from '@/types';
 
 export default function Profile() {
+  const { t } = useTranslation('account');
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -52,7 +53,7 @@ export default function Profile() {
       setGender(u.gender || '');
       setPhoneNumber(u.phoneNumber || '');
     } catch {
-      toast.error('Không thể tải thông tin hồ sơ.');
+      toast.error(t('profile.toasts.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -60,14 +61,14 @@ export default function Profile() {
 
   const handleSaveProfile = async () => {
     if (!fullName.trim()) {
-      toast.error('Họ và tên không được để trống.');
+      toast.error(t('profile.toasts.fullNameRequired'));
       return;
     }
 
     if (!hasPersistedPhoneNumber) {
       const compactPhoneNumber = phoneNumber.trim().replaceAll(/[\s().-]/g, '');
       if (compactPhoneNumber && !/^(0|\+84|84)[35789][0-9]{8}$/.test(compactPhoneNumber)) {
-        toast.error('Số điện thoại chưa đúng định dạng Việt Nam.');
+        toast.error(t('profile.toasts.phoneInvalid'));
         return;
       }
     }
@@ -82,9 +83,9 @@ export default function Profile() {
       });
       setUser(res.data);
       setPhoneNumber(res.data.phoneNumber || '');
-      toast.success('Cập nhật hồ sơ thành công!');
+      toast.success(t('profile.toasts.profileUpdated'));
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Cập nhật hồ sơ thất bại.'));
+      toast.error(getApiErrorMessage(err, t, 'profile.toasts.profileUpdateFailed'));
     } finally {
       setSaving(false);
     }
@@ -92,26 +93,26 @@ export default function Profile() {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword) {
-      toast.error('Vui lòng nhập đầy đủ mật khẩu.');
+      toast.error(t('profile.toasts.passwordRequired'));
       return;
     }
     if (newPassword.length < 6) {
-      toast.error('Mật khẩu mới phải ít nhất 6 ký tự.');
+      toast.error(t('profile.toasts.passwordTooShort'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error('Mật khẩu xác nhận không khớp.');
+      toast.error(t('profile.toasts.passwordMismatch'));
       return;
     }
     setSavingPassword(true);
     try {
       await userService.changePassword({ currentPassword, newPassword });
-      toast.success('Đổi mật khẩu thành công!');
+      toast.success(t('profile.toasts.passwordUpdated'));
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu hiện tại.'));
+      toast.error(getApiErrorMessage(err, t, 'profile.toasts.passwordUpdateFailed'));
     } finally {
       setSavingPassword(false);
     }
@@ -120,11 +121,11 @@ export default function Profile() {
   const handleRequestEmailChange = async () => {
     const normalizedEmail = newEmail.trim().toLowerCase();
     if (!normalizedEmail) {
-      toast.error('Vui lòng nhập email mới.');
+      toast.error(t('profile.toasts.newEmailRequired'));
       return;
     }
     if (!emailChangePassword) {
-      toast.error('Vui lòng nhập mật khẩu hiện tại.');
+      toast.error(t('profile.toasts.currentPasswordRequired'));
       return;
     }
 
@@ -136,9 +137,9 @@ export default function Profile() {
       });
       setPendingEmailChange(normalizedEmail);
       setOtpCode('');
-      toast.success('Đã gửi OTP đến email mới.');
+      toast.success(t('profile.toasts.emailOtpSent'));
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Không thể gửi OTP đổi email.'));
+      toast.error(getApiErrorMessage(err, t, 'profile.toasts.emailOtpSendFailed'));
     } finally {
       setSendingEmailOtp(false);
     }
@@ -149,9 +150,9 @@ export default function Profile() {
     setResendingEmailOtp(true);
     try {
       await userService.resendEmailChangeOtp({ newEmail: pendingEmailChange });
-      toast.success('Đã gửi lại OTP.');
+      toast.success(t('profile.toasts.emailOtpResent'));
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Không thể gửi lại OTP.'));
+      toast.error(getApiErrorMessage(err, t, 'profile.toasts.emailOtpResendFailed'));
     } finally {
       setResendingEmailOtp(false);
     }
@@ -160,7 +161,7 @@ export default function Profile() {
   const handleVerifyEmailChange = async () => {
     if (!pendingEmailChange) return;
     if (!otpCode.trim()) {
-      toast.error('Vui lòng nhập mã OTP.');
+      toast.error(t('profile.toasts.otpRequired'));
       return;
     }
 
@@ -172,12 +173,12 @@ export default function Profile() {
       });
       setUser(res.data);
       useAuthStore.getState().updateUser({ email: res.data.email });
-      toast.success('Đổi email thành công. Vui lòng đăng nhập lại.');
+      toast.success(t('profile.toasts.emailUpdated'));
       setTimeout(() => {
         useAuthStore.getState().logout();
       }, 1000);
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Xác thực OTP thất bại.'));
+      toast.error(getApiErrorMessage(err, t, 'profile.toasts.emailVerifyFailed'));
     } finally {
       setVerifyingEmailOtp(false);
     }
@@ -201,9 +202,9 @@ export default function Profile() {
 
       setUser(res.data);
       useAuthStore.getState().updateUser({ avatar: newUrl });
-      toast.success('Cập nhật ảnh đại diện thành công!');
+      toast.success(t('profile.toasts.avatarUpdated'));
     } catch {
-      toast.error('Upload ảnh thất bại.');
+      toast.error(t('profile.toasts.avatarUploadFailed'));
     } finally {
       setUploadingAvatar(false);
     }
@@ -214,7 +215,7 @@ export default function Profile() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-3">
           <FiLoader className="text-3xl text-purple-500 animate-spin" />
-          <span className="text-slate-500 font-medium">Đang tải hồ sơ...</span>
+          <span className="text-slate-500 font-medium">{t('profile.loading.profile')}</span>
         </div>
       </div>
     );
@@ -244,16 +245,16 @@ export default function Profile() {
                     <FiAlertCircle className="text-lg" />
                   </div>
                   <div className="min-w-0 flex-1 space-y-1.5">
-                    <p className="text-sm font-semibold text-slate-900">Tài khoản này chưa có số điện thoại</p>
+                    <p className="text-sm font-semibold text-slate-900">{t('profile.phoneHint.title')}</p>
                     <p className="text-sm leading-6 text-slate-600">
-                      Đăng nhập bằng Google thường không có sẵn số điện thoại. Bạn có thể bổ sung ngay trong hồ sơ để thuận tiện nhận hàng và liên hệ.
+                      {t('profile.phoneHint.description')}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsPhoneHintMinimized(true)}
                     className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                    aria-label="Thu nhỏ gợi ý số điện thoại"
+                    aria-label={t('profile.phoneHint.minimizeAria')}
                   >
                     <FiX className="text-lg" />
                   </button>
@@ -276,12 +277,12 @@ export default function Profile() {
             className="fixed bottom-6 left-4 z-40 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/95 px-4 py-3 text-sm font-semibold text-amber-800 shadow-[0_16px_35px_-22px_rgba(180,83,9,0.5)] backdrop-blur transition-transform hover:-translate-y-0.5 sm:left-auto sm:right-6"
           >
             <FiAlertCircle className="text-base" />
-            Bổ sung số điện thoại
+            {t('profile.phoneHint.pill')}
           </motion.button>
         )}
       </AnimatePresence>
 
-      <h1 className="text-2xl font-bold">Hồ sơ cá nhân</h1>
+      <h1 className="text-2xl font-bold">{t('profile.title')}</h1>
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Avatar Upload */}
@@ -290,7 +291,7 @@ export default function Profile() {
               {user?.avatarUrl ? (
                 <img
                   src={user.avatarUrl}
-                  alt="Avatar"
+                  alt={t('profile.avatar.alt')}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     // Hide broken image tag, show fallback
@@ -306,7 +307,7 @@ export default function Profile() {
               {uploadingAvatar && (
                 <div className="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center text-white z-10">
                   <FiLoader className="text-3xl animate-spin mb-1" />
-                  <span className="text-10 font-medium">Đang tải...</span>
+                  <span className="text-10 font-medium">{t('profile.loading.avatar')}</span>
                 </div>
               )}
               <button
@@ -334,7 +335,7 @@ export default function Profile() {
               size="sm"
               className="text-md text-purple-600 hover:underline"
             >
-              Thay đổi ảnh đại diện
+              {t('profile.avatar.change')}
             </Button>
           </div>
 
@@ -342,7 +343,7 @@ export default function Profile() {
           <div className="flex-1 w-full space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Họ và tên</label>
+                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.fullName')}</label>
                 <input
                   type="text"
                   value={fullName}
@@ -351,7 +352,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Email (Không thể thay đổi)</label>
+                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.emailReadonly')}</label>
                 <input
                   type="email"
                   value={user?.email || ''}
@@ -360,7 +361,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Số điện thoại</label>
+                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.phoneNumber')}</label>
                 <input
                   type="tel"
                   value={displayPhoneNumber}
@@ -369,7 +370,7 @@ export default function Profile() {
                       setPhoneNumber(e.target.value);
                     }
                   }}
-                  placeholder={hasPersistedPhoneNumber ? '' : 'Nhập số điện thoại để nhận hàng'}
+                  placeholder={hasPersistedPhoneNumber ? '' : t('profile.fields.phonePlaceholder')}
                   readOnly={hasPersistedPhoneNumber}
                   className={`w-full h-12 px-4 rounded-xl border-none ${
                     hasPersistedPhoneNumber
@@ -379,12 +380,12 @@ export default function Profile() {
                 />
                 <p className="mt-2 text-sm text-slate-500">
                   {hasPersistedPhoneNumber
-                    ? 'Số điện thoại đã được thiết lập. Nếu cần thay đổi, hãy liên hệ quản trị viên hoặc CSKH.'
-                    : 'Hỗ trợ định dạng `0xxxxxxxxx`, `84xxxxxxxxx` hoặc `+84xxxxxxxxx`.'}
+                    ? t('profile.fields.phoneReadonlyHint')
+                    : t('profile.fields.phoneFormatHint')}
                 </p>
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Ngày sinh</label>
+                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.dateOfBirth')}</label>
                 <input
                   type="date"
                   value={dateOfBirth}
@@ -393,16 +394,16 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Giới tính</label>
+                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.gender')}</label>
                 <CustomSelect
                   value={gender}
                   onChange={(v) => setGender(v)}
                   className="w-full h-12"
                   options={[
-                    { value: '', label: 'Chưa chọn' },
-                    { value: 'MALE', label: 'Nam' },
-                    { value: 'FEMALE', label: 'Nữ' },
-                    { value: 'OTHER', label: 'Khác' }
+                    { value: '', label: t('profile.genderOptions.unset') },
+                    { value: 'MALE', label: t('profile.genderOptions.male') },
+                    { value: 'FEMALE', label: t('profile.genderOptions.female') },
+                    { value: 'OTHER', label: t('profile.genderOptions.other') }
                   ]}
                 />
               </div>
@@ -410,14 +411,14 @@ export default function Profile() {
 
             <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 space-y-4 bg-slate-50/60 dark:bg-slate-800/30">
               <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">Đổi email qua OTP</h3>
+                <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">{t('profile.emailOtp.title')}</h3>
                 <p className="text-md text-slate-500 mt-1">
-                  Nhập email mới và mật khẩu hiện tại để nhận OTP xác thực. Sau khi xác thực thành công, bạn sẽ cần đăng nhập lại.
+                  {t('profile.emailOtp.description')}
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Email mới</label>
+                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.emailOtp.newEmail')}</label>
                   <input
                     type="email"
                     value={newEmail}
@@ -427,7 +428,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Mật khẩu hiện tại</label>
+                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.emailOtp.currentPassword')}</label>
                   <input
                     type="password"
                     value={emailChangePassword}
@@ -444,11 +445,11 @@ export default function Profile() {
                   icon={sendingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
                   size="md"
                 >
-                  {sendingEmailOtp ? 'Đang gửi OTP...' : 'Gửi OTP đổi email'}
+                  {sendingEmailOtp ? t('profile.emailOtp.sendingOtp') : t('profile.emailOtp.sendOtp')}
                 </Button>
                 {pendingEmailChange && (
                   <span className="text-md text-slate-500 self-center">
-                    OTP đã gửi đến: <span className="font-semibold">{pendingEmailChange}</span>
+                    {t('profile.emailOtp.otpSentTo')} <span className="font-semibold">{pendingEmailChange}</span>
                   </span>
                 )}
               </div>
@@ -456,12 +457,12 @@ export default function Profile() {
               {pendingEmailChange && (
                 <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3 items-end">
                   <div>
-                    <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Mã OTP</label>
+                    <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.emailOtp.otpCode')}</label>
                     <input
                       type="text"
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value)}
-                      placeholder="Nhập mã 6 số"
+                      placeholder={t('profile.emailOtp.otpPlaceholder')}
                       className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
@@ -471,7 +472,7 @@ export default function Profile() {
                     icon={verifyingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
                     size="md"
                   >
-                    {verifyingEmailOtp ? 'Đang xác thực...' : 'Xác thực OTP'}
+                    {verifyingEmailOtp ? t('profile.emailOtp.verifyingOtp') : t('profile.emailOtp.verifyOtp')}
                   </Button>
                   <Button
                     onClick={handleResendEmailOtp}
@@ -480,7 +481,7 @@ export default function Profile() {
                     variant="ghost"
                     size="md"
                   >
-                    {resendingEmailOtp ? 'Đang gửi...' : 'Gửi lại OTP'}
+                    {resendingEmailOtp ? t('profile.emailOtp.resendingOtp') : t('profile.emailOtp.resendOtp')}
                   </Button>
                 </div>
               )}
@@ -493,7 +494,7 @@ export default function Profile() {
               size="lg"
               className="h-12 px-6"
             >
-              {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+              {saving ? t('profile.actions.savingChanges') : t('profile.actions.saveChanges')}
             </Button>
           </div>
         </div>
@@ -506,12 +507,12 @@ export default function Profile() {
             <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
               <FiLock />
             </div>
-            <h2 className="text-xl font-bold">Đổi mật khẩu</h2>
+            <h2 className="text-xl font-bold">{t('profile.passwordSection.title')}</h2>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Mật khẩu hiện tại</label>
+              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.passwordSection.currentPassword')}</label>
               <input
                 type="password"
                 placeholder="••••••••"
@@ -521,7 +522,7 @@ export default function Profile() {
               />
             </div>
             <div>
-              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Mật khẩu mới</label>
+              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.passwordSection.newPassword')}</label>
               <input
                 type="password"
                 placeholder="••••••••"
@@ -531,7 +532,7 @@ export default function Profile() {
               />
             </div>
             <div>
-              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Xác nhận mật khẩu mới</label>
+              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.passwordSection.confirmPassword')}</label>
               <input
                 type="password"
                 placeholder="••••••••"
@@ -549,7 +550,7 @@ export default function Profile() {
               fullWidth
               className="mt-4 bg-slate-900 dark:bg-slate-700 text-white hover:bg-purple-600 dark:hover:bg-purple-600"
             >
-              {savingPassword ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
+              {savingPassword ? t('profile.passwordSection.submitting') : t('profile.passwordSection.submit')}
             </Button>
           </div>
         </div>

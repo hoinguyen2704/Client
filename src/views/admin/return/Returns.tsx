@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FiClipboard, FiXCircle, FiCheckCircle, FiClock, FiTruck, FiCreditCard, FiDownload } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { ActionButtons, Pagination, AdminSearch, Button, CustomSelect } from '@/components';
 import returnService from '@/apis/services/returnService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { RETURN_FILTER_OPTIONS, canProcessRefund, ReturnStatusBadge, RefundStatusBadge } from '@/constants/returnConstants';
+import { getReturnFilterOptions, canProcessRefund, ReturnStatusBadge, RefundStatusBadge } from '@/constants/returnConstants';
 import { formatDate, formatPrice } from '@/utils/format';
 import { getApiErrorMessage } from '@/utils/error';
 import { downloadBlob } from '@/utils/download';
@@ -14,6 +15,7 @@ import type { PageResponse, ReturnRequestResponse } from '@/types';
 
 
 export default function AdminReturns() {
+  const { t } = useTranslation('common');
   const [returns, setReturns] = useState<ReturnRequestResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -160,7 +162,7 @@ export default function AdminReturns() {
             setStatusFilter(val);
             setPage(1);
           }}
-          options={RETURN_FILTER_OPTIONS}
+          options={getReturnFilterOptions(t)}
           className="w-full md:w-56"
         />
       </div>

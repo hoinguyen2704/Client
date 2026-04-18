@@ -1,13 +1,20 @@
 import { useState, useRef, useCallback } from 'react';
 import { FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield, FiHelpCircle, FiMenu } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useClickOutside } from '@/hooks';
 import useUIStore from '@/stores/useUIStore';
 import useAuthStore from '@/stores/useAuthStore';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
 import type { AdminHeaderProps } from './types';
 
+const ADMIN_HEADER_ICON_BUTTON_CLASS =
+  'lg:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-body-soft transition-colors';
+const ADMIN_MENU_LINK_CLASS =
+  'flex items-center gap-3 px-4 py-2.5 text-md text-body hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors';
+
 export default function AdminHeader({ onLogout }: AdminHeaderProps) {
+  const { t } = useTranslation(['layout', 'common']);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
@@ -19,14 +26,14 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
       <div className="flex items-center gap-2 sm:gap-4 flex-1">
         <button
           onClick={toggleSidebar}
-          className="lg:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+          className={ADMIN_HEADER_ICON_BUTTON_CLASS}
         >
           <FiMenu className="text-lg sm:text-xl" />
         </button>
         <div className="relative w-80 lg:w-96 hidden md:block group">
           <input
             type="text"
-            placeholder="Tìm kiếm trong admin..."
+            placeholder={t('adminHeader.searchPlaceholder', { ns: 'layout', defaultValue: 'Tìm kiếm trong admin...' })}
             className="w-full h-11 pl-11 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 transition-all"
           />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-purple-500 transition-colors" />
@@ -54,7 +61,11 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
             )}
             <div className="hidden md:block text-md text-left">
               <p className="font-bold">{user?.name || 'Admin'}</p>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</p>
+              <p className="text-muted text-sm">
+                {user?.role === 'ADMIN'
+                  ? t('roles.admin', { ns: 'common', defaultValue: 'Quản trị viên' })
+                  : t('roles.staff', { ns: 'common', defaultValue: 'Nhân viên' })}
+              </p>
             </div>
             <FiChevronDown className={`text-slate-400 ml-0.5 sm:ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
           </button>
@@ -74,8 +85,12 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   )}
                   <div>
                     <p className="font-bold text-md">{user?.name || 'Admin'}</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">{user?.email || ''}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-10 font-bold rounded-md">{user?.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên'}</span>
+                    <p className="text-sm text-muted">{user?.email || ''}</p>
+                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-10 font-bold rounded-md">
+                      {user?.role === 'ADMIN'
+                        ? t('roles.admin', { ns: 'common', defaultValue: 'Quản trị viên' })
+                        : t('roles.staff', { ns: 'common', defaultValue: 'Nhân viên' })}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -85,34 +100,34 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                 <Link 
                   to="/user/profile" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className={ADMIN_MENU_LINK_CLASS}
                 >
                   <FiUser className="text-lg text-slate-400" />
-                  Hồ sơ cá nhân
+                  {t('adminHeader.profile', { ns: 'layout', defaultValue: 'Hồ sơ cá nhân' })}
                 </Link>
                 <Link 
                   to="/admin/settings" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className={ADMIN_MENU_LINK_CLASS}
                 >
                   <FiSettings className="text-lg text-slate-400" />
-                  Cài đặt hệ thống
+                  {t('adminHeader.settings', { ns: 'layout', defaultValue: 'Cài đặt hệ thống' })}
                 </Link>
                 <Link 
                   to="/admin/customers" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className={ADMIN_MENU_LINK_CLASS}
                 >
                   <FiShield className="text-lg text-slate-400" />
-                  Phân quyền
+                  {t('adminHeader.accessControl', { ns: 'layout', defaultValue: 'Phân quyền' })}
                 </Link>
                 <Link 
                   to="/admin/tickets" 
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className={ADMIN_MENU_LINK_CLASS}
                 >
                   <FiHelpCircle className="text-lg text-slate-400" />
-                  Trợ giúp
+                  {t('adminHeader.support', { ns: 'layout', defaultValue: 'Trợ giúp' })}
                 </Link>
               </div>
 
@@ -123,7 +138,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   className="flex items-center gap-3 px-4 py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors w-full"
                 >
                   <FiLogOut className="text-lg" />
-                  Đăng xuất
+                  {t('adminHeader.logout', { ns: 'layout', defaultValue: 'Đăng xuất' })}
                 </button>
               </div>
             </div>

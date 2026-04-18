@@ -9,7 +9,7 @@ import { STOCK_STATUS } from './status.stock';
  * Merged STATUS_CONFIG — gộp tất cả domain status vào 1 map duy nhất
  * để StatusBadge component tra cứu.
  */
-export const STATUS_CONFIG: Record<StatusType, { label: string; className: string }> = {
+export const STATUS_CONFIG: Record<StatusType, { label: string; labelKey?: string; className: string }> = {
   ...GENERIC_STATUS,
   ...CMS_STATUS,
   ...ORDER_STATUS,

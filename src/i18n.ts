@@ -1,43 +1,26 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import settingsEn from './locales/en/settings.json';
-import settingsVi from './locales/vi/settings.json';
-import adminSettingsEn from './locales/en/adminSettings.json';
-import adminSettingsVi from './locales/vi/adminSettings.json';
-
-const resources = {
-  en: {
-    settings: settingsEn,
-    adminSettings: adminSettingsEn,
-  },
-  vi: {
-    settings: settingsVi,
-    adminSettings: adminSettingsVi,
-  },
-};
-
-const savedData = localStorage.getItem('ui');
-let defaultLng = 'vi';
-if (savedData) {
-  try {
-    const parsed = JSON.parse(savedData);
-    if (parsed?.state?.language) {
-      defaultLng = parsed.state.language;
-    }
-  } catch { /* ignore */ }
-}
+import {
+  DEFAULT_NAMESPACE,
+  FALLBACK_LANGUAGE,
+  I18N_NAMESPACES,
+  SUPPORTED_LANGUAGES,
+} from '@/locales/config';
+import { getInitialLanguage } from '@/locales/getInitialLanguage';
+import { i18nResources } from '@/locales/resources';
 
 i18n
   .use(initReactI18next)
   .init({
-    resources,
-    lng: defaultLng, // use saved language
-    fallbackLng: 'vi',
-    ns: ['settings', 'adminSettings'], // namespaces
-    defaultNS: 'settings',
+    resources: i18nResources,
+    lng: getInitialLanguage(),
+    fallbackLng: FALLBACK_LANGUAGE,
+    supportedLngs: SUPPORTED_LANGUAGES,
+    ns: I18N_NAMESPACES,
+    defaultNS: DEFAULT_NAMESPACE,
     interpolation: {
-      escapeValue: false, // react already safes from xss
+      escapeValue: false,
     },
   });
 

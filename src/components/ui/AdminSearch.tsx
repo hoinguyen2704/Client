@@ -1,9 +1,10 @@
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import { type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AdminSearchProps } from './types';
 
 export default function AdminSearch({
-  placeholder = 'Tìm kiếm...',
+  placeholder,
   value,
   onChange,
   filters,
@@ -13,6 +14,10 @@ export default function AdminSearch({
   onClear,
   inputClassName = '',
 }: AdminSearchProps) {
+  const { t } = useTranslation('common');
+  const resolvedPlaceholder = placeholder || t('actions.search');
+  const clearButtonClass =
+    'absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm transition-colors';
   const containerClass = boxed
     ? "bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4"
     : "flex flex-col md:flex-row gap-4";
@@ -30,7 +35,7 @@ export default function AdminSearch({
       <div className="relative flex-1">
         <input
           type="text"
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoFocus={autoFocus}
@@ -41,9 +46,9 @@ export default function AdminSearch({
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm transition-colors"
+            className={clearButtonClass}
           >
-            Xóa
+            {t('actions.clear')}
           </button>
         )}
       </div>
@@ -54,13 +59,14 @@ export default function AdminSearch({
 
 /** Pre-styled filter button */
 export function FilterButton({ onClick, children }: { onClick?: () => void; children?: ReactNode }) {
+  const { t } = useTranslation('common');
   return (
     <button
       onClick={onClick}
-      className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 font-medium"
+      className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 font-medium"
     >
       <FiFilter />
-      {children || 'Lọc'}
+      {children || t('actions.filter')}
     </button>
   );
 }

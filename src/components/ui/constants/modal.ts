@@ -14,11 +14,11 @@ export const MODAL_SIZE_MAP: Record<ModalSize, string> = {
 
 //  StarRating labels & size classes
 export const STAR_LABELS: Record<number, string> = {
-  1: "Rất tệ",
-  2: "Kém",
-  3: "Bình thường",
-  4: "Hài lòng",
-  5: "Tuyệt vời",
+  1: "starRating.labels.1",
+  2: "starRating.labels.2",
+  3: "starRating.labels.3",
+  4: "starRating.labels.4",
+  5: "starRating.labels.5",
 };
 
 export const STAR_SIZE_CLASS: Record<StarSize, string> = {

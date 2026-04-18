@@ -1,0 +1,8 @@
+{
+  "realtime": {
+    "newSupportRequestByUser": "{{userName}} just created a support request",
+    "newSupportRequest": "There is a new support request from a user",
+    "customerReplyTicket": "{{ticketNumber}} has a new customer reply",
+    "customerReply": "A customer just sent a new reply"
+  }
+}

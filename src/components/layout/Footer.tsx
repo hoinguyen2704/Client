@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import {
   FaFacebook,
   FaYoutube,
@@ -12,12 +13,16 @@ import {
 import LogoIcon from "../ui/LogoIcon";
 import useShopStore from '@/stores/useShopStore';
 
+const SOCIAL_LINK_CLASS =
+  "w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-body-soft flex items-center justify-center transition-all";
+
 export default function Footer() {
+  const { t } = useTranslation('layout');
   const { shop, fetchShopInfo } = useShopStore();
   useEffect(() => { fetchShopInfo(); }, [fetchShopInfo]);
 
   return (
-    <footer className="bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 pt-16 pb-8 border-t border-slate-200 dark:border-slate-800 mt-auto">
+    <footer className="bg-white dark:bg-slate-900 text-body-soft pt-16 pb-8 border-t border-slate-200 dark:border-slate-800 mt-auto">
       <div className="w-full px-4 md:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
         {/* Col 1: Brand & Contact */}
         <div className="space-y-6">
@@ -27,25 +32,27 @@ export default function Footer() {
               {shop.shopName}
             </span>
           </Link>
-          <p className="text-slate-500 dark:text-slate-400 text-md leading-relaxed">
-            {shop.shopName} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm
-            công nghệ chính hãng, uy tín và chất lượng hàng đầu Việt Nam.
+          <p className="text-muted text-md leading-relaxed">
+            {t('footer.brandDescription', {
+              shopName: shop.shopName,
+              defaultValue: `${shop.shopName} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm công nghệ chính hãng, uy tín và chất lượng hàng đầu Việt Nam.`,
+            })}
           </p>
           <div className="space-y-2 text-md">
             <p>
               <strong className="text-slate-800 dark:text-white">
-                Địa chỉ:
+                {t('footer.address', { defaultValue: 'Địa chỉ' })}:
               </strong>{" "}
               {shop.address}
             </p>
             <p>
               <strong className="text-slate-800 dark:text-white">
-                Điện thoại:
+                {t('footer.phone', { defaultValue: 'Điện thoại' })}:
               </strong>{" "}
               {shop.hotline}
             </p>
             <p>
-              <strong className="text-slate-800 dark:text-white">Email:</strong>{" "}
+              <strong className="text-slate-800 dark:text-white">{t('footer.email', { defaultValue: 'Email' })}:</strong>{" "}
               {shop.supportEmail}
             </p>
           </div>
@@ -54,7 +61,7 @@ export default function Footer() {
         {/* Col 2: Về chúng tôi */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
-            Về {shop.shopName}
+            {t('footer.aboutTitle', { shopName: shop.shopName, defaultValue: `Về ${shop.shopName}` })}
           </h3>
           <ul className="space-y-3 text-md">
             <li>
@@ -62,7 +69,7 @@ export default function Footer() {
                 to="/about"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Giới thiệu công ty
+                {t('footer.company', { defaultValue: 'Giới thiệu công ty' })}
               </Link>
             </li>
             <li>
@@ -70,7 +77,7 @@ export default function Footer() {
                 to="/careers"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Tuyển dụng
+                {t('footer.careers', { defaultValue: 'Tuyển dụng' })}
               </Link>
             </li>
             <li>
@@ -78,7 +85,7 @@ export default function Footer() {
                 to="/terms"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Điều khoản sử dụng
+                {t('footer.terms', { defaultValue: 'Điều khoản sử dụng' })}
               </Link>
             </li>
             <li>
@@ -86,7 +93,7 @@ export default function Footer() {
                 to="/privacy"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Chính sách bảo mật
+                {t('footer.privacy', { defaultValue: 'Chính sách bảo mật' })}
               </Link>
             </li>
             <li>
@@ -94,7 +101,7 @@ export default function Footer() {
                 to="/contact"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Liên hệ hợp tác
+                {t('footer.partnership', { defaultValue: 'Liên hệ hợp tác' })}
               </Link>
             </li>
           </ul>
@@ -103,7 +110,7 @@ export default function Footer() {
         {/* Col 3: Hỗ trợ khách hàng */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
-            Hỗ trợ khách hàng
+            {t('footer.supportTitle', { defaultValue: 'Hỗ trợ khách hàng' })}
           </h3>
           <ul className="space-y-3 text-md">
             <li>
@@ -111,7 +118,7 @@ export default function Footer() {
                 to="/support/shopping"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Hướng dẫn mua hàng
+                {t('footer.shoppingGuide', { defaultValue: 'Hướng dẫn mua hàng' })}
               </Link>
             </li>
             <li>
@@ -119,7 +126,7 @@ export default function Footer() {
                 to="/support/payment"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Hướng dẫn thanh toán
+                {t('footer.paymentGuide', { defaultValue: 'Hướng dẫn thanh toán' })}
               </Link>
             </li>
             <li>
@@ -127,7 +134,7 @@ export default function Footer() {
                 to="/support/shipping"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Chính sách giao hàng
+                {t('footer.shippingPolicy', { defaultValue: 'Chính sách giao hàng' })}
               </Link>
             </li>
             <li>
@@ -135,7 +142,7 @@ export default function Footer() {
                 to="/support/warranty"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Chính sách bảo hành
+                {t('footer.warrantyPolicy', { defaultValue: 'Chính sách bảo hành' })}
               </Link>
             </li>
             <li>
@@ -143,7 +150,7 @@ export default function Footer() {
                 to="/support/returns"
                 className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
-                Chính sách đổi trả
+                {t('footer.returnPolicy', { defaultValue: 'Chính sách đổi trả' })}
               </Link>
             </li>
           </ul>
@@ -152,39 +159,39 @@ export default function Footer() {
         {/* Col 4: Kết nối & Thanh toán */}
         <div>
           <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
-            Kết nối với chúng tôi
+            {t('footer.connectTitle', { defaultValue: 'Kết nối với chúng tôi' })}
           </h3>
           <div className="flex gap-4 mb-8">
             <a
               href="https://www.facebook.com/hoinguyen.2704"
-              className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all"
+              className={`${SOCIAL_LINK_CLASS} hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white`}
             >
               <FaFacebook className="text-xl" />
             </a>
             <a
               href="https://www.youtube.com/@hozinium"
-              className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-red-600 hover:text-white dark:hover:bg-red-600 dark:hover:text-white transition-all"
+              className={`${SOCIAL_LINK_CLASS} hover:bg-red-600 hover:text-white dark:hover:bg-red-600 dark:hover:text-white`}
             >
               <FaYoutube className="text-xl" />
             </a>
             <a
               href="https://www.tiktok.com/@hozinium"
-              className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-black dark:hover:text-white transition-all"
+              className={`${SOCIAL_LINK_CLASS} hover:bg-black hover:text-white dark:hover:bg-black dark:hover:text-white`}
             >
               <FaTiktok className="text-xl" />
             </a>
             <a
               href="https://www.instagram.com/hoinguyen.2704"
-              className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-pink-600 hover:text-white dark:hover:bg-pink-600 dark:hover:text-white transition-all"
+              className={`${SOCIAL_LINK_CLASS} hover:bg-pink-600 hover:text-white dark:hover:bg-pink-600 dark:hover:text-white`}
             >
               <FaInstagram className="text-xl" />
             </a>
           </div>
 
           <h3 className="text-slate-900 dark:text-white font-bold mb-4 uppercase tracking-wider text-md">
-            Phương thức thanh toán
+            {t('footer.paymentTitle', { defaultValue: 'Phương thức thanh toán' })}
           </h3>
-          <div className="flex gap-3 text-3xl text-slate-400 dark:text-slate-500">
+          <div className="flex gap-3 text-3xl text-subtle">
             <FaCcVisa className="hover:text-blue-600 dark:hover:text-white transition-colors" />
             <FaCcMastercard className="hover:text-orange-500 dark:hover:text-white transition-colors" />
             <FaCcPaypal className="hover:text-blue-500 dark:hover:text-white transition-colors" />
@@ -193,8 +200,8 @@ export default function Footer() {
       </div>
 
       <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-md text-slate-500">
-        <p>© {new Date().getFullYear()} {shop.shopName}. All rights reserved.</p>
-        <p>Thiết kế và phát triển bởi Hội Nguyễn</p>
+        <p>{t('footer.rightsReserved', { year: new Date().getFullYear(), shopName: shop.shopName, defaultValue: `© ${new Date().getFullYear()} ${shop.shopName}. All rights reserved.` })}</p>
+        <p>{t('footer.builtBy', { defaultValue: 'Thiết kế và phát triển bởi Hội Nguyễn' })}</p>
       </div>
     </footer>
   );

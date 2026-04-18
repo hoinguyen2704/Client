@@ -242,7 +242,7 @@ export default function FlashSaleForm() {
             <FiArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-strong flex items-center gap-2">
               <FiZap className="text-yellow-500" />
               {isEditing ? 'Sửa Flash Sale' : 'Tạo Flash Sale mới'}
             </h1>
@@ -278,7 +278,7 @@ export default function FlashSaleForm() {
         <div className="space-y-6">
           {/* ── Form Card ── */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
-            <h2 className="font-semibold text-lg text-slate-800 dark:text-slate-100">Thông tin sự kiện</h2>
+            <h2 className="font-semibold text-lg text-strong">Thông tin sự kiện</h2>
 
             <FormInput
               label="Tên sự kiện *"
@@ -313,7 +313,7 @@ export default function FlashSaleForm() {
           {/* ── Products Section ── */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-              <h2 className="font-semibold text-lg text-slate-800 dark:text-slate-100">
+              <h2 className="font-semibold text-lg text-strong">
                 Sản phẩm tham gia
                 {form.items.length > 0 && (
                   <span className="ml-2 text-sm font-normal text-slate-500">({form.items.length} phân loại)</span>
@@ -329,11 +329,11 @@ export default function FlashSaleForm() {
                 <table className="w-full min-w-[760px] text-left bg-white dark:bg-slate-900 text-md">
                   <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                     <tr>
-                      <th className="p-3 font-medium text-slate-600 dark:text-slate-400">Sản phẩm</th>
-                      <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-32">Giá gốc</th>
-                      <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-36">Giá Flash Sale</th>
-                      <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-40">SL Flash Sale</th>
-                      <th className="p-3 font-medium text-slate-600 dark:text-slate-400 w-16 text-center">Xóa</th>
+                      <th className="p-3 font-medium text-muted">Sản phẩm</th>
+                      <th className="p-3 font-medium text-muted w-32">Giá gốc</th>
+                      <th className="p-3 font-medium text-muted w-36">Giá Flash Sale</th>
+                      <th className="p-3 font-medium text-muted w-40">SL Flash Sale</th>
+                      <th className="p-3 font-medium text-muted w-16 text-center">Xóa</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -366,7 +366,7 @@ export default function FlashSaleForm() {
                                 className="w-10 h-10 object-cover rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0"
                               />
                               <div className="min-w-0">
-                                <div className="font-medium text-slate-800 dark:text-slate-200 truncate" title={item.productName}>
+                                <div className="font-medium text-strong-soft truncate" title={item.productName}>
                                   {item.productName}
                                 </div>
                                 <div className="text-sm text-slate-500">{item.variantName}</div>
@@ -435,7 +435,7 @@ export default function FlashSaleForm() {
 
         <aside className="space-y-4 xl:sticky xl:top-20">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
-            <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3 flex items-center gap-2">
+            <h3 className="font-semibold text-strong mb-3 flex items-center gap-2">
               <FiClock className="text-slate-500" />
               Tổng quan nhanh
             </h3>
@@ -473,12 +473,12 @@ export default function FlashSaleForm() {
           </div>
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
-            <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3 flex items-center gap-2">
+            <h3 className="font-semibold text-strong mb-3 flex items-center gap-2">
               <FiAlertTriangle className={hasWarnings ? 'text-amber-500' : 'text-emerald-500'} />
               Kiểm tra dữ liệu
             </h3>
             {hasWarnings ? (
-              <ul className="space-y-2 text-md text-slate-600 dark:text-slate-300">
+              <ul className="space-y-2 text-md text-body-soft">
                 {invalidTimeRange && (
                   <li>Thời gian kết thúc phải sau thời gian bắt đầu.</li>
                 )}

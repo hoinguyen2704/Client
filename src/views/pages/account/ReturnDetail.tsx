@@ -7,6 +7,7 @@ import type { ReturnRequestResponse } from '@/types';
 import { BackButton, Button, ConfirmDialog } from '@/components';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
+import { useTranslation } from 'react-i18next';
 import {
   buildReturnTimelineSteps,
   ReturnStatusBadge,
@@ -16,6 +17,7 @@ import {
 } from '@/constants/returnConstants';
 
 export default function ReturnDetail() {
+  const { t } = useTranslation('account');
   const { returnNumber } = useParams<{ returnNumber: string }>();
   const [data, setData] = useState<ReturnRequestResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,10 +43,10 @@ export default function ReturnDetail() {
     setCancelDialogOpen(false);
     try {
       await returnService.cancel(data.id);
-      toast.success('Đã hủy yêu cầu trả hàng');
+      toast.success(t('returnDetail.toasts.cancelSuccess'));
       fetchDetail();
     } catch (err) {
-      toast.error(getApiErrorMessage(err, 'Hủy yêu cầu trả hàng thất bại'));
+      toast.error(getApiErrorMessage(err, t, 'returnDetail.toasts.cancelFailed'));
     }
   };
 
@@ -109,8 +111,8 @@ export default function ReturnDetail() {
   if (!data) return (
     <div className="text-center py-12">
       <FiXCircle className="text-6xl text-slate-300 mx-auto mb-4" />
-      <h2 className="text-xl font-bold mb-2">Không tìm thấy yêu cầu trả hàng</h2>
-      <Link to="/user/returns" className="text-purple-600 hover:underline">← Quay lại danh sách</Link>
+      <h2 className="text-xl font-bold mb-2">{t('returnDetail.notFound.title')}</h2>
+      <Link to="/user/returns" className="text-purple-600 hover:underline">← {t('returnDetail.notFound.back')}</Link>
     </div>
   );
 
@@ -121,9 +123,9 @@ export default function ReturnDetail() {
         <div className="flex items-center gap-4">
           <BackButton to="/user/returns" />
           <div>
-            <h1 className="text-xl md:text-2xl font-bold">Chi tiết {data.returnNumber}</h1>
+            <h1 className="text-xl md:text-2xl font-bold">{t('returnDetail.header.title', { returnNumber: data.returnNumber })}</h1>
             <p className="text-md text-slate-500 mt-0.5">
-              Đơn hàng: <Link to={`/user/orders/${data.orderNumber}`} className="text-purple-600 font-semibold hover:underline">{data.orderNumber}</Link>
+              {t('returnDetail.header.order')}: <Link to={`/user/orders/${data.orderNumber}`} className="text-purple-600 font-semibold hover:underline">{data.orderNumber}</Link>
             </p>
           </div>
         </div>
@@ -137,7 +139,7 @@ export default function ReturnDetail() {
               icon={<FiXCircle />}
               onClick={() => setCancelDialogOpen(true)}
             >
-              Hủy yêu cầu
+              {t('returnDetail.actions.cancel')}
             </Button>
           )}
         </div>
@@ -147,7 +149,7 @@ export default function ReturnDetail() {
       {isCancelled && (
         <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-5 border border-red-200 dark:border-red-800 text-red-600 flex items-center gap-3">
           <FiXCircle className="text-2xl flex-shrink-0" />
-          <span className="font-bold text-lg">Yêu cầu đã {data.status === 'CANCELLED' ? 'bị hủy' : 'bị từ chối'}</span>
+          <span className="font-bold text-lg">{data.status === 'CANCELLED' ? t('returnDetail.cancelledBanner.cancelled') : t('returnDetail.cancelledBanner.rejected')}</span>
         </div>
       )}
 
@@ -202,7 +204,7 @@ export default function ReturnDetail() {
 
           {/* Return Items */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">Sản phẩm yêu cầu trả</h3>
+            <h3 className="text-lg font-bold">{t('returnDetail.itemsTitle')}</h3>
             <div className="space-y-3">
               {data.items.map(line => (
                 <div key={line.id} className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5 transition-colors">
@@ -219,14 +221,14 @@ export default function ReturnDetail() {
                     </h4>
                     <p className="text-md text-slate-500 mt-0.5">
                       {line.variantName ? `${line.variantName} | ` : ''} 
-                      {formatPrice(Number(line.unitPrice || 0))} × {line.requestedQuantity}
+                      {formatPrice(Number(line.unitPrice || 0))} x {line.requestedQuantity}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0 space-y-0.5">
                     <p className="font-bold text-purple-600 text-lg">{formatPrice(Number(line.lineAmount || 0))}</p>
                     {line.approvedQuantity != null && (
                       <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full inline-block">
-                        Duyệt: {line.approvedQuantity}
+                        {t('returnDetail.approvedQuantity', { count: line.approvedQuantity })}
                       </p>
                     )}
                   </div>
@@ -238,7 +240,7 @@ export default function ReturnDetail() {
           {/* Admin Note if rejected */}
           {data.adminNote && (
             <div className="bg-red-50 dark:bg-red-900/10 rounded-2xl p-5 border border-red-100 dark:border-red-800">
-              <h3 className="font-bold text-red-600 mb-2">Ghi chú từ admin</h3>
+              <h3 className="font-bold text-red-600 mb-2">{t('returnDetail.adminNoteTitle')}</h3>
               <p className="text-md text-red-700 dark:text-red-300">{data.adminNote}</p>
             </div>
           )}
@@ -248,23 +250,23 @@ export default function ReturnDetail() {
         <div className="w-full lg:w-[400px] shrink-0 space-y-6">
           {/* Request Info */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-md border border-slate-100 dark:border-slate-800">
-            <h3 className="text-lg font-bold mb-4">Thông tin yêu cầu</h3>
+            <h3 className="text-lg font-bold mb-4">{t('returnDetail.info.title')}</h3>
             <div className="space-y-3 text-md">
               <div className="flex justify-between">
-                <span className="text-slate-500">Lý do</span>
+                <span className="text-slate-500">{t('returnDetail.info.reason')}</span>
                 <span className="font-medium text-right max-w-[60%]">{data.reason}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Ghi chú</span>
-                <span className="font-medium text-right max-w-[60%]">{data.evidenceNote || 'Không có'}</span>
+                <span className="text-slate-500">{t('returnDetail.info.note')}</span>
+                <span className="font-medium text-right max-w-[60%]">{data.evidenceNote || t('returnDetail.info.none')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Tạo lúc</span>
+                <span className="text-slate-500">{t('returnDetail.info.createdAt')}</span>
                 <span className="font-medium">{formatDateTime(data.createdAt)}</span>
               </div>
               {data.resolvedAt && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Kết thúc</span>
+                  <span className="text-slate-500">{t('returnDetail.info.resolvedAt')}</span>
                   <span className="font-medium">{formatDateTime(data.resolvedAt)}</span>
                 </div>
               )}
@@ -273,21 +275,21 @@ export default function ReturnDetail() {
 
           {/* Amount */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-md border border-slate-100 dark:border-slate-800">
-            <h3 className="text-lg font-bold mb-4">Số tiền</h3>
+            <h3 className="text-lg font-bold mb-4">{t('returnDetail.amount.title')}</h3>
             <div className="space-y-3 text-md">
               <div className="flex justify-between">
-                <span className="text-slate-500">Yêu cầu hoàn</span>
+                <span className="text-slate-500">{t('returnDetail.amount.requested')}</span>
                 <span className="font-semibold text-purple-600">{formatPrice(Number(data.requestedAmount || 0))}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Số tiền duyệt</span>
+                <span className="text-slate-500">{t('returnDetail.amount.approved')}</span>
                 <span className="font-semibold">
-                  {data.approvedAmount != null ? formatPrice(Number(data.approvedAmount || 0)) : 'Chưa duyệt'}
+                  {data.approvedAmount != null ? formatPrice(Number(data.approvedAmount || 0)) : t('returnDetail.amount.pending')}
                 </span>
               </div>
               <hr className="border-slate-100 dark:border-slate-800" />
               <div className="flex justify-between text-base">
-                <span className="font-bold">Đã hoàn thực tế</span>
+                <span className="font-bold">{t('returnDetail.amount.actualRefunded')}</span>
                 <span className="font-bold text-emerald-600">
                   {data.refundAmount != null ? formatPrice(Number(data.refundAmount || 0)) : formatPrice(0)}
                 </span>
@@ -298,7 +300,7 @@ export default function ReturnDetail() {
           {/* Refund History */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <h3 className="text-lg font-bold">Lịch sử hoàn tiền</h3>
+              <h3 className="text-lg font-bold">{t('returnDetail.refunds.title')}</h3>
               {data.refunds.length > 0 && (
                 <span className="text-md font-semibold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300 px-2 py-0.5 rounded-full">
                   {data.refunds.length}
@@ -311,10 +313,10 @@ export default function ReturnDetail() {
                 {canProcessRefund(data.status) ? (
                   <>
                     <FiAlertTriangle className="text-amber-500 flex-shrink-0" />
-                    <span>Đang chờ admin xử lý hoàn tiền.</span>
+                    <span>{t('returnDetail.refunds.pending')}</span>
                   </>
                 ) : (
-                  <span>Chưa có giao dịch hoàn tiền.</span>
+                  <span>{t('returnDetail.refunds.empty')}</span>
                 )}
               </div>
             ) : (
@@ -326,8 +328,8 @@ export default function ReturnDetail() {
                       <RefundStatusBadge status={tx.status} />
                     </div>
                     <div className="text-md text-slate-500 space-y-0.5">
-                      <p>Provider: {tx.provider}</p>
-                      {tx.transactionId && <p>Mã GD: {tx.transactionId}</p>}
+                      <p>{t('returnDetail.refunds.provider')}: {tx.provider}</p>
+                      {tx.transactionId && <p>{t('returnDetail.refunds.transactionId')}: {tx.transactionId}</p>}
                       <p>{formatDateTime(tx.createdAt)}</p>
                     </div>
                   </div>
@@ -340,9 +342,9 @@ export default function ReturnDetail() {
 
       <ConfirmDialog
         open={cancelDialogOpen}
-        title="Hủy yêu cầu trả hàng"
-        message={`Bạn có chắc muốn hủy ${data.returnNumber}?`}
-        confirmLabel="Hủy yêu cầu"
+        title={t('returnDetail.cancelDialog.title')}
+        message={t('returnDetail.cancelDialog.message', { returnNumber: data.returnNumber })}
+        confirmLabel={t('returnDetail.cancelDialog.confirm')}
         variant="danger"
         onConfirm={handleCancel}
         onCancel={() => setCancelDialogOpen(false)}

@@ -1,0 +1,156 @@
+{
+  "actions": {
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "confirm": "Xác nhận",
+    "close": "Đóng",
+    "clear": "Xóa",
+    "search": "Tìm",
+    "filter": "Lọc",
+    "back": "Trở lại",
+    "retry": "Thử lại",
+    "reload": "Tải lại trang",
+    "logout": "Đăng xuất",
+    "readAll": "Đọc tất cả",
+    "markRead": "Đánh dấu đã đọc",
+    "viewAllNotifications": "Xem tất cả thông báo",
+    "expand": "Mở rộng",
+    "collapse": "Thu gọn",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "viewDetails": "Xem chi tiết",
+    "more": "Thêm",
+    "previousPage": "Trang trước",
+    "nextPage": "Trang sau"
+  },
+  "confirmDialog": {
+    "title": "Xác nhận",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy"
+  },
+  "modal": {
+    "cancel": "Hủy",
+    "submit": "Lưu"
+  },
+  "loading": {
+    "default": "Đang tải..."
+  },
+  "errorBoundary": {
+    "title": "Đã xảy ra lỗi",
+    "description": "Ứng dụng gặp sự cố không mong đợi. Vui lòng thử tải lại trang.",
+    "details": "Chi tiết lỗi",
+    "reload": "Tải lại trang"
+  },
+  "pagination": {
+    "showing": "Hiển thị",
+    "of": "của",
+    "items": "mục"
+  },
+  "filters": {
+    "all": "Tất cả",
+    "allStatuses": "Tất cả trạng thái"
+  },
+  "labels": {
+    "messagesCount": "{{count}} tin nhắn",
+    "unknown": "Không rõ",
+    "notAvailable": "-"
+  },
+  "starRating": {
+    "labels": {
+      "1": "Rất tệ",
+      "2": "Kém",
+      "3": "Bình thường",
+      "4": "Hài lòng",
+      "5": "Tuyệt vời"
+    }
+  },
+  "errors": {
+    "unknown": "Đã có lỗi xảy ra",
+    "timeout": "Yêu cầu quá thời gian chờ. Vui lòng thử lại.",
+    "network": "Không thể kết nối tới máy chủ. Vui lòng kiểm tra mạng và thử lại."
+  },
+  "roles": {
+    "admin": "Quản trị viên",
+    "staff": "Nhân viên",
+    "member": "Thành viên",
+    "customer": "Khách hàng",
+    "user": "Người dùng"
+  },
+  "status": {
+    "generic": {
+      "completed": "Đã giao",
+      "delivered": "Đã giao",
+      "processing": "Chờ xử lý",
+      "shipping": "Đang giao",
+      "cancelled": "Đã hủy",
+      "pending": "Chờ duyệt",
+      "verified": "Đã xác nhận",
+      "active": "Hoạt động",
+      "inactive": "Tạm khóa",
+      "expired": "Hết hạn",
+      "open": "Mới",
+      "inProgress": "Đang xử lý",
+      "replied": "Đã trả lời",
+      "closed": "Đóng",
+      "vip": "VIP",
+      "banned": "Bị khóa"
+    },
+    "cms": {
+      "published": "Đã xuất bản",
+      "draft": "Bản nháp",
+      "hidden": "Đã ẩn",
+      "upcoming": "Sắp diễn ra",
+      "ended": "Đã kết thúc",
+      "approved": "Đã duyệt",
+      "spam": "Spam",
+      "admin": "Admin",
+      "user": "User"
+    },
+    "ticket": {
+      "open": "Đang mở",
+      "inProgress": "Đang xử lý",
+      "answered": "Đã phản hồi",
+      "resolved": "Đã giải quyết",
+      "closed": "Đã đóng"
+    },
+    "return": {
+      "requested": "Yêu cầu mới",
+      "approved": "Đã duyệt",
+      "rejected": "Từ chối",
+      "inTransit": "Đang gửi trả",
+      "received": "Đã nhận hàng hoàn",
+      "qcPassed": "QC đạt",
+      "qcFailed": "QC không đạt",
+      "refundPending": "Chờ hoàn tiền",
+      "refunded": "Đã hoàn tiền",
+      "cancelled": "Đã hủy",
+      "closed": "Đã đóng",
+      "unknown": "Không xác định"
+    },
+    "refund": {
+      "pending": "Chờ hoàn",
+      "processing": "Đang xử lý",
+      "success": "Thành công",
+      "failed": "Thất bại",
+      "reversed": "Đảo ngược"
+    },
+    "order": {
+      "pending": "Chờ xử lý",
+      "confirmed": "Đã xác nhận",
+      "processing": "Đang xử lý",
+      "shipping": "Đang giao",
+      "shipped": "Đã giao",
+      "cancelled": "Đã hủy",
+      "returned": "Đã hoàn"
+    },
+    "payment": {
+      "completed": "Đã thanh toán",
+      "failed": "Thanh toán thất bại",
+      "refunded": "Đã hoàn tiền"
+    },
+    "stock": {
+      "lowStock": "Sắp hết",
+      "outOfStock": "Cạn kho"
+    }
+  }
+}

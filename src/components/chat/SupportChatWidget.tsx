@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FiSend, FiX } from 'react-icons/fi';
 import { AnimatePresence, motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import ticketService from '@/apis/services/ticketService';
 import type { SupportRealtimePayload, TicketResponse } from '@/types';
@@ -23,6 +24,7 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
 ]);
 
 export default function SupportChatWidget() {
+  const { t } = useTranslation(['layout', 'common']);
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user = useAuthStore((s) => s.user);
@@ -79,6 +81,14 @@ export default function SupportChatWidget() {
     },
     [canDirectSupport],
   );
+
+  const resolveStatusLabel = useCallback((status: string) => {
+    const config = STATUS_CONFIG[status as StatusType];
+    if (!config) return status;
+    return config.labelKey
+      ? t(config.labelKey, { ns: 'common', defaultValue: config.label })
+      : config.label;
+  }, [t]);
 
   useEffect(() => {
     fetchTickets();
@@ -148,7 +158,10 @@ export default function SupportChatWidget() {
     const content = draft.trim();
     if (!content || sending) return;
     if (!canDirectSupport) {
-      toast.info('Vui lòng đăng nhập tài khoản khách hàng để chat trực tiếp với admin');
+      toast.info(t('supportChat.loginRequiredToast', {
+        ns: 'layout',
+        defaultValue: 'Vui lòng đăng nhập tài khoản khách hàng để chat trực tiếp với admin',
+      }));
       navigate('/login');
       return;
     }
@@ -160,18 +173,21 @@ export default function SupportChatWidget() {
         setSelectedTicket(res.data);
       } else {
         const res = await ticketService.create({
-          subject: 'Hỗ trợ trực tiếp',
+          subject: t('supportChat.createSubject', { ns: 'layout', defaultValue: 'Hỗ trợ trực tiếp' }),
           content,
         });
         const created = res.data;
         setSelectedTicket(created);
         setSelectedTicketId(created.id);
-        toast.success('Đã tạo cuộc trò chuyện hỗ trợ');
+        toast.success(t('supportChat.createdToast', {
+          ns: 'layout',
+          defaultValue: 'Đã tạo cuộc trò chuyện hỗ trợ',
+        }));
       }
       setDraft('');
       await fetchTickets({ silent: true });
     } catch {
-      toast.error('Không thể gửi tin nhắn');
+      toast.error(t('supportChat.sendError', { ns: 'layout', defaultValue: 'Không thể gửi tin nhắn' }));
     } finally {
       setSending(false);
     }
@@ -186,12 +202,12 @@ export default function SupportChatWidget() {
         className={`fixed bottom-20 right-4 sm:bottom-24 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-[55] overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-700 ${
           isOpen ? 'hidden' : ''
         }`}
-        aria-label="Mở hỗ trợ trực tiếp"
+        aria-label={t('supportChat.openAria', { ns: 'layout', defaultValue: 'Mở hỗ trợ trực tiếp' })}
       >
         <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/12 ring-1 ring-white/20 backdrop-blur">
           <img
             src={supportAvatarUrl}
-            alt="Admin hỗ trợ"
+            alt={t('supportChat.adminAvatarAlt', { ns: 'layout', defaultValue: 'Admin hỗ trợ' })}
             className="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover"
           />
         </span>
@@ -216,13 +232,13 @@ export default function SupportChatWidget() {
                 <div className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white/20 bg-white/10">
                   <img
                     src={supportAvatarUrl}
-                    alt="Admin hỗ trợ"
+                    alt={t('supportChat.adminAvatarAlt', { ns: 'layout', defaultValue: 'Admin hỗ trợ' })}
                     className="h-full w-full object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="font-bold text-md">Hỗ trợ trực tiếp</h3>
-                  <p className="text-11 text-white/80">Realtime với admin</p>
+                  <h3 className="font-bold text-md">{t('supportChat.title', { ns: 'layout', defaultValue: 'Hỗ trợ trực tiếp' })}</h3>
+                  <p className="text-11 text-white/80">{t('supportChat.subtitle', { ns: 'layout', defaultValue: 'Realtime với admin' })}</p>
                 </div>
               </div>
               <button
@@ -242,15 +258,15 @@ export default function SupportChatWidget() {
                   onChange={(val) => setSelectedTicketId(val || null)}
                   options={tickets.map((ticket) => ({
                     value: ticket.id,
-                    label: `${ticket.subject} – ${STATUS_CONFIG[ticket.status as StatusType]?.label || ticket.status}`,
+                    label: `${ticket.subject} – ${resolveStatusLabel(ticket.status)}`,
                   }))}
                   className="w-full"
                 />
               ) : (
                 <p className="text-sm text-slate-500">
                   {canDirectSupport
-                    ? 'Chưa có ticket, gửi tin nhắn để tạo mới.'
-                    : 'Đăng nhập để bắt đầu chat trực tiếp với admin.'}
+                    ? t('supportChat.noTickets', { ns: 'layout', defaultValue: 'Chưa có ticket, gửi tin nhắn để tạo mới.' })
+                    : t('supportChat.loginToStart', { ns: 'layout', defaultValue: 'Đăng nhập để bắt đầu chat trực tiếp với admin.' })}
                 </p>
               )}
             </div>
@@ -262,7 +278,7 @@ export default function SupportChatWidget() {
                   <StatusBadge status={selectedTicket.status} className="text-10" />
                 </div>
               ) : (
-                <p className="text-sm text-slate-400">Phiên chat mới</p>
+                <p className="text-sm text-slate-400">{t('supportChat.newSession', { ns: 'layout', defaultValue: 'Phiên chat mới' })}</p>
               )}
             </div>
 
@@ -291,8 +307,8 @@ export default function SupportChatWidget() {
                 <div className="h-full min-h-24 flex items-center justify-center text-center text-slate-400 text-md px-4">
                   <p>
                     {canDirectSupport
-                      ? 'Bắt đầu cuộc trò chuyện với admin bằng cách gửi một tin nhắn.'
-                      : 'Bạn cần đăng nhập để bắt đầu chat trực tiếp với admin.'}
+                      ? t('supportChat.emptyConversation', { ns: 'layout', defaultValue: 'Bắt đầu cuộc trò chuyện với admin bằng cách gửi một tin nhắn.' })
+                      : t('supportChat.emptyConversationGuest', { ns: 'layout', defaultValue: 'Bạn cần đăng nhập để bắt đầu chat trực tiếp với admin.' })}
                   </p>
                 </div>
               )}
@@ -305,17 +321,17 @@ export default function SupportChatWidget() {
                   onClick={() => navigate('/login')}
                   className="w-full h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white text-md font-semibold"
                 >
-                  Đăng nhập để chat
+                  {t('supportChat.loginButton', { ns: 'layout', defaultValue: 'Đăng nhập để chat' })}
                 </button>
               ) : isClosed ? (
                 <div className="h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-md flex items-center">
-                  Ticket đã đóng, gửi tin nhắn để tạo cuộc trò chuyện mới.
+                  {t('supportChat.closedHint', { ns: 'layout', defaultValue: 'Ticket đã đóng, gửi tin nhắn để tạo cuộc trò chuyện mới.' })}
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <input
                     className="flex-1 h-9 sm:h-10 px-3 rounded-lg text-md bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                    placeholder="Nhập tin nhắn..."
+                    placeholder={t('supportChat.inputPlaceholder', { ns: 'layout', defaultValue: 'Nhập tin nhắn...' })}
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
@@ -327,7 +343,7 @@ export default function SupportChatWidget() {
                     size="md"
                     loading={sending}
                     disabled={!draft.trim()}
-                    ariaLabel="Gửi tin nhắn hỗ trợ"
+                    ariaLabel={t('supportChat.sendAria', { ns: 'layout', defaultValue: 'Gửi tin nhắn hỗ trợ' })}
                   />
                 </div>
               )}

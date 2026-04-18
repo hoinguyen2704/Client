@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import useCartStore from '@/stores/useCartStore';
-import { Button, IconButton, PrimaryButton, QuantitySelector } from '@/components';
+import { Button, Checkbox, IconButton, PrimaryButton, QuantitySelector } from '@/components';
 import type { CartResponse } from '@/types';
 
 export default function Cart() {
@@ -111,7 +111,7 @@ export default function Cart() {
           <div className="lg:col-span-8 space-y-3 sm:space-y-6">
             <div className="flex items-center justify-between p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={allSelectableSelected} onChange={toggleAll} className="w-4 h-4 rounded border-slate-300" />
+                <Checkbox checked={allSelectableSelected} onCheckedChange={() => toggleAll()} className="w-4 h-4" />
                 <span className="font-medium text-md">Chọn tất cả ({items.length})</span>
               </label>
               <Button onClick={handleClearCart} variant="ghost" size="lg" icon={<FiTrash2 />} className="text-red-500 shrink-0">Xóa tất cả</Button>
@@ -120,13 +120,15 @@ export default function Cart() {
             {items.map(item => (
               <div key={item.id} className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 border border-slate-100 dark:border-slate-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                 <div className="flex items-start gap-3 sm:flex-1 sm:min-w-0">
-                  <input
-                    type="checkbox"
-                    checked={item.selected}
-                    disabled={item.available === false}
-                    onChange={() => toggleSelect(item.id)}
-                    className="w-4 h-4 rounded border-slate-300 mt-1 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
-                  />
+                  <span className="mt-1 shrink-0">
+                    <Checkbox
+                      checked={item.selected}
+                      disabled={item.available === false}
+                      onCheckedChange={() => toggleSelect(item.id)}
+                      className="w-4 h-4"
+                      aria-label={item.productName}
+                    />
+                  </span>
                   <Link to={`/product/${item.productSlug}`} className="shrink-0 group block">
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-transparent group-hover:border-purple-300 transition-colors" />

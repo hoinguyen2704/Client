@@ -1,0 +1,479 @@
+{
+  "realtime": {
+    "adminRepliedTicket": "Admin đã phản hồi {{ticketNumber}}",
+    "adminReplied": "Admin vừa phản hồi hỗ trợ",
+    "ticketStatusUpdated": "Trạng thái {{ticketNumber}} đã cập nhật",
+    "supportStatusUpdated": "Yêu cầu hỗ trợ đã cập nhật trạng thái",
+    "newNotification": "Thông báo mới"
+  },
+  "orders": {
+    "title": "Quản lý đơn hàng",
+    "searchPlaceholder": "Tìm kiếm theo mã đơn hàng...",
+    "placedAt": "Ngày đặt",
+    "updatedAt": "Cập nhật",
+    "quantity": "Số lượng",
+    "review": "Đánh giá",
+    "total": "Tổng tiền",
+    "cancelOrder": "Hủy đơn",
+    "viewDetails": "Xem chi tiết",
+    "empty": {
+      "title": "Không tìm thấy đơn hàng",
+      "description": "Bạn chưa có đơn hàng nào trong trạng thái này.",
+      "action": "Tiếp tục mua sắm"
+    },
+    "reviewModal": {
+      "title": "Đánh giá sản phẩm",
+      "back": "Trở lại",
+      "submit": "Gửi đánh giá",
+      "maxReviewed": "Đã đánh giá tối đa",
+      "variant": "Phân loại",
+      "quality": "Chất lượng sản phẩm",
+      "additionalReview": "Đánh giá bổ sung (Lần 2)",
+      "reviewNumber": "Đánh giá lần {{count}}",
+      "placeholder": "Hãy chia sẻ nhận xét của bạn về sản phẩm này nhé..."
+    },
+    "cancelDialog": {
+      "title": "Hủy đơn hàng",
+      "message": "Bạn có chắc muốn hủy đơn hàng này? Hành động này không thể hoàn tác.",
+      "confirm": "Hủy đơn"
+    },
+    "toasts": {
+      "cancelPendingOnly": "Chỉ có thể hủy đơn khi đang ở trạng thái chờ xử lý",
+      "cancelFailed": "Hủy đơn hàng thất bại!",
+      "reviewSuccess": "Cảm ơn bạn đã đánh giá sản phẩm!",
+      "reviewFailed": "Gửi đánh giá thất bại!"
+    },
+    "tabs": {
+      "all": "Tất cả",
+      "pending": "Chờ xác nhận",
+      "confirmed": "Đã xác nhận",
+      "processing": "Người gửi đang chuẩn bị hàng",
+      "shipping": "Đang giao",
+      "shipped": "Đã giao",
+      "cancelled": "Đã hủy",
+      "returned": "Đã hoàn trả"
+    },
+    "badges": {
+      "pending": "Chờ xác nhận",
+      "confirmed": "Đã xác nhận",
+      "processing": "Người gửi đang chuẩn bị hàng",
+      "shipping": "Đang giao",
+      "shipped": "Đã giao",
+      "cancelled": "Đã hủy",
+      "returned": "Đã hoàn"
+    }
+  },
+  "returns": {
+    "title": "Đơn trả hàng / hoàn tiền",
+    "goToOrdersToReturn": "Đi tới đơn hàng để trả",
+    "searchPlaceholder": "Tìm theo mã yêu cầu / mã đơn...",
+    "requestedAmount": "Yêu cầu hoàn",
+    "approvedAmount": "Duyệt",
+    "orderNumber": "Đơn hàng",
+    "createdAt": "Tạo lúc",
+    "reason": "Lý do",
+    "viewDetails": "Xem chi tiết",
+    "cancelRequest": "Hủy yêu cầu",
+    "empty": {
+      "title": "Bạn chưa có yêu cầu trả hàng",
+      "description": "Bạn có thể tạo yêu cầu từ trang chi tiết đơn hàng (đối với đơn đã nhận).",
+      "action": "Đi tới Danh sách đơn hàng"
+    },
+    "cancelDialog": {
+      "title": "Hủy yêu cầu trả hàng",
+      "message": "Bạn có chắc muốn hủy {{returnNumber}}?",
+      "fallbackTarget": "yêu cầu này",
+      "confirm": "Hủy yêu cầu"
+    },
+    "toasts": {
+      "cancelSuccess": "Đã hủy yêu cầu trả hàng",
+      "cancelFailed": "Hủy yêu cầu trả hàng thất bại"
+    }
+  },
+  "paymentMethods": {
+    "title": "Phương thức thanh toán",
+    "addCard": "Thêm thẻ mới",
+    "empty": {
+      "title": "Chưa có thẻ thanh toán",
+      "description": "Bấm thêm thẻ mới để thanh toán nhanh hơn nhé."
+    },
+    "default": "Mặc định",
+    "cardholderName": "Tên chủ thẻ",
+    "expiry": "Hết hạn",
+    "setAsDefault": "Đặt làm mặc định",
+    "setDefault": "Đặt mặc định",
+    "deleteCard": "Xóa thẻ",
+    "delete": "Xóa",
+    "modal": {
+      "title": "Thêm thẻ thanh toán",
+      "cardNumber": "Số thẻ",
+      "cardholderInput": "Tên in trên thẻ",
+      "expiryDate": "Ngày hết hạn",
+      "securityCode": "CVV/CVC",
+      "setDefaultCard": "Đặt làm thẻ mặc định",
+      "saveCard": "Lưu thẻ"
+    }
+  },
+  "orderTracking": {
+    "notFound": {
+      "title": "Không tìm thấy đơn hàng",
+      "back": "Quay lại danh sách đơn hàng"
+    },
+    "title": "Chi tiết đơn hàng #{{orderNumber}}",
+    "actions": {
+      "requestReturn": "Yêu cầu trả hàng"
+    },
+    "returnBanner": {
+      "title": "Đơn hàng đang có yêu cầu trả hàng",
+      "description": "Tiến trình xử lý đang diễn ra. Vui lòng kiểm tra chi tiết.",
+      "button": "Xem chi tiết"
+    },
+    "returnForm": {
+      "title": "Tạo yêu cầu trả hàng",
+      "cancel": "Hủy bỏ",
+      "selectItems": "Chọn sản phẩm & số lượng muốn trả:",
+      "purchased": "Đã mua",
+      "quantity": "Số lượng",
+      "reasonLabel": "Lý do trả hàng",
+      "reasonPlaceholder": "Hoặc nhập chi tiết lý do của bạn...",
+      "noteLabel": "Mô tả thêm / Link ảnh (không bắt buộc)",
+      "notePlaceholder": "Cung cấp thêm thông tin hoặc link ảnh lưu trữ...",
+      "submit": "Gửi yêu cầu trả hàng",
+      "quickReasons": {
+        "defective": "Sản phẩm bị lỗi / hỏng",
+        "wrongItem": "Giao sai sản phẩm",
+        "notAsDescribed": "Sản phẩm không đúng mô tả",
+        "noNeed": "Không còn nhu cầu sử dụng",
+        "missingParts": "Phụ kiện / linh kiện thiếu"
+      }
+    },
+    "shipping": {
+      "title": "Thông tin vận chuyển",
+      "trackingCode": "Mã vận đơn"
+    },
+    "timeline": {
+      "deliveredTitle": "Giao hàng thành công",
+      "deliveredDescription": "Đơn hàng đã được giao thành công"
+    },
+    "cancelled": {
+      "cancelled": "Đơn hàng đã bị hủy",
+      "returned": "Đơn hàng đã hoàn trả"
+    },
+    "steps": {
+      "pending": "Chờ xác nhận",
+      "confirmed": "Đã xác nhận",
+      "processing": "Người gửi đang chuẩn bị hàng",
+      "shipping": "Đang giao",
+      "shipped": "Đã giao"
+    },
+    "items": {
+      "title": "Sản phẩm",
+      "quantity": "Số lượng"
+    },
+    "summary": {
+      "title": "Thông tin đơn hàng",
+      "placedAt": "Ngày đặt",
+      "updatedAt": "Cập nhật lần cuối",
+      "payment": "Thanh toán",
+      "subtotal": "Tạm tính",
+      "shippingFee": "Phí ship",
+      "productDiscount": "Giảm giá sản phẩm",
+      "shippingDiscount": "Giảm phí vận chuyển",
+      "vat": "Thuế VAT ({{percent}}%{{suffix}})",
+      "vatIncluded": ", đã gồm",
+      "total": "Tổng cộng"
+    },
+    "address": {
+      "title": "Địa chỉ giao hàng"
+    },
+    "note": {
+      "title": "Ghi chú"
+    },
+    "toasts": {
+      "reasonRequired": "Vui lòng nhập lý do trả hàng",
+      "selectItemsRequired": "Vui lòng chọn ít nhất 1 sản phẩm cần trả",
+      "createSuccess": "Đã gửi yêu cầu trả hàng thành công",
+      "createFailed": "Tạo yêu cầu trả hàng thất bại"
+    }
+  },
+  "profile": {
+    "title": "Hồ sơ cá nhân",
+    "loading": {
+      "profile": "Đang tải hồ sơ...",
+      "avatar": "Đang tải..."
+    },
+    "phoneHint": {
+      "title": "Tài khoản này chưa có số điện thoại",
+      "description": "Đăng nhập bằng Google thường không có sẵn số điện thoại. Bạn có thể bổ sung ngay trong hồ sơ để thuận tiện nhận hàng và liên hệ.",
+      "minimizeAria": "Thu nhỏ gợi ý số điện thoại",
+      "pill": "Bổ sung số điện thoại"
+    },
+    "avatar": {
+      "change": "Thay đổi ảnh đại diện",
+      "alt": "Avatar"
+    },
+    "fields": {
+      "fullName": "Họ và tên",
+      "emailReadonly": "Email (Không thể thay đổi)",
+      "phoneNumber": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại để nhận hàng",
+      "phoneReadonlyHint": "Số điện thoại đã được thiết lập. Nếu cần thay đổi, hãy liên hệ quản trị viên hoặc CSKH.",
+      "phoneFormatHint": "Hỗ trợ định dạng `0xxxxxxxxx`, `84xxxxxxxxx` hoặc `+84xxxxxxxxx`.",
+      "dateOfBirth": "Ngày sinh",
+      "gender": "Giới tính"
+    },
+    "genderOptions": {
+      "unset": "Chưa chọn",
+      "male": "Nam",
+      "female": "Nữ",
+      "other": "Khác"
+    },
+    "emailOtp": {
+      "title": "Đổi email qua OTP",
+      "description": "Nhập email mới và mật khẩu hiện tại để nhận OTP xác thực. Sau khi xác thực thành công, bạn sẽ cần đăng nhập lại.",
+      "newEmail": "Email mới",
+      "currentPassword": "Mật khẩu hiện tại",
+      "sendOtp": "Gửi OTP đổi email",
+      "sendingOtp": "Đang gửi OTP...",
+      "otpSentTo": "OTP đã gửi đến:",
+      "otpCode": "Mã OTP",
+      "otpPlaceholder": "Nhập mã 6 số",
+      "verifyOtp": "Xác thực OTP",
+      "verifyingOtp": "Đang xác thực...",
+      "resendOtp": "Gửi lại OTP",
+      "resendingOtp": "Đang gửi..."
+    },
+    "passwordSection": {
+      "title": "Đổi mật khẩu",
+      "currentPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Xác nhận mật khẩu mới",
+      "submit": "Cập nhật mật khẩu",
+      "submitting": "Đang cập nhật..."
+    },
+    "actions": {
+      "saveChanges": "Lưu thay đổi",
+      "savingChanges": "Đang lưu..."
+    },
+    "toasts": {
+      "loadFailed": "Không thể tải thông tin hồ sơ.",
+      "fullNameRequired": "Họ và tên không được để trống.",
+      "phoneInvalid": "Số điện thoại chưa đúng định dạng Việt Nam.",
+      "profileUpdated": "Cập nhật hồ sơ thành công!",
+      "profileUpdateFailed": "Cập nhật hồ sơ thất bại.",
+      "passwordRequired": "Vui lòng nhập đầy đủ mật khẩu.",
+      "passwordTooShort": "Mật khẩu mới phải ít nhất 6 ký tự.",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+      "passwordUpdated": "Đổi mật khẩu thành công!",
+      "passwordUpdateFailed": "Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu hiện tại.",
+      "newEmailRequired": "Vui lòng nhập email mới.",
+      "currentPasswordRequired": "Vui lòng nhập mật khẩu hiện tại.",
+      "emailOtpSent": "Đã gửi OTP đến email mới.",
+      "emailOtpSendFailed": "Không thể gửi OTP đổi email.",
+      "emailOtpResent": "Đã gửi lại OTP.",
+      "emailOtpResendFailed": "Không thể gửi lại OTP.",
+      "otpRequired": "Vui lòng nhập mã OTP.",
+      "emailUpdated": "Đổi email thành công. Vui lòng đăng nhập lại.",
+      "emailVerifyFailed": "Xác thực OTP thất bại.",
+      "avatarUpdated": "Cập nhật ảnh đại diện thành công!",
+      "avatarUploadFailed": "Upload ảnh thất bại."
+    }
+  },
+  "support": {
+    "title": "Hỗ trợ",
+    "createTitle": "Tạo yêu cầu mới",
+    "subjectPlaceholder": "Tiêu đề hỗ trợ",
+    "contentPlaceholder": "Mô tả vấn đề của bạn...",
+    "createAction": "Gửi yêu cầu",
+    "emptyTickets": "Bạn chưa có yêu cầu hỗ trợ nào",
+    "closedHint": "Ticket đã đóng, bạn không thể gửi thêm phản hồi.",
+    "replyPlaceholder": "Nhập phản hồi...",
+    "replyAria": "Gửi phản hồi",
+    "emptyChatTitle": "Chọn một yêu cầu bên trái để bắt đầu chat với admin",
+    "emptyChatDescription": "Tin nhắn sẽ được cập nhật realtime.",
+    "toasts": {
+      "loadDetailFailed": "Không tải được chi tiết yêu cầu",
+      "createSuccess": "Đã gửi yêu cầu hỗ trợ",
+      "createFailed": "Gửi yêu cầu thất bại",
+      "replyFailed": "Gửi phản hồi thất bại"
+    }
+  },
+  "addressBook": {
+    "title": "Sổ địa chỉ",
+    "description": "Quản lý địa chỉ nhận hàng của bạn",
+    "addNew": "Thêm địa chỉ mới",
+    "emptyTitle": "Chưa có địa chỉ nào",
+    "emptyDescription": "Thêm địa chỉ nhận hàng để tiện cho việc thanh toán và để chúng tôi giao hàng nhanh chóng hơn.",
+    "emptyAction": "Thêm địa chỉ ngay",
+    "default": "Mặc định",
+    "setDefault": "Đặt mặc định",
+    "setDefaultTitle": "Đặt làm mặc định",
+    "edit": "Sửa",
+    "editTitle": "Chỉnh sửa",
+    "delete": "Xóa",
+    "deleteTitle": "Xóa",
+    "modal": {
+      "addTitle": "Thêm địa chỉ giao hàng mới",
+      "editTitle": "Sửa địa chỉ giao hàng",
+      "cancel": "Hủy bỏ",
+      "save": "Lưu địa chỉ"
+    },
+    "deleteDialog": {
+      "title": "Xóa địa chỉ",
+      "message": "Bạn có chắc muốn xóa địa chỉ này?",
+      "confirm": "Xóa"
+    },
+    "toasts": {
+      "saveFailed": "Lưu địa chỉ thất bại!",
+      "deleteFailed": "Xóa địa chỉ thất bại!",
+      "setDefaultFailed": "Đặt mặc định thất bại!"
+    }
+  },
+  "myReviews": {
+    "title": "Nhận xét của tôi",
+    "tabs": {
+      "toReview": "Cần đánh giá",
+      "reviewed": "Lịch sử đánh giá"
+    },
+    "item": {
+      "variant": "Phân loại",
+      "order": "Đơn hàng",
+      "deliveredAt": "Ngày giao",
+      "reviewDate": "Ngày đánh giá",
+      "defaultVariant": "Mặc định",
+      "reviewedCount": "Đã đánh giá {{count}}/{{max}} lần",
+      "roundBadge": "Lần {{current}}/{{max}}"
+    },
+    "actions": {
+      "writeReview": "Viết đánh giá",
+      "extraReview": "Đánh giá bổ sung",
+      "delete": "Xóa",
+      "reviewNow": "Đánh giá ngay",
+      "complete": "Hoàn thành",
+      "back": "Trở lại"
+    },
+    "empty": {
+      "allReviewedTitle": "Tuyệt vời!",
+      "allReviewedDescription": "Bạn đã đánh giá tất cả sản phẩm đã mua.",
+      "noReviewsTitle": "Chưa có đánh giá nào",
+      "noReviewsDescription": "Bạn chưa viết đánh giá nào cho các sản phẩm đã mua."
+    },
+    "adminReplyTitle": "Phản hồi từ Hozitech",
+    "modal": {
+      "reviewTitle": "Viết đánh giá",
+      "extraReviewTitle": "Đánh giá bổ sung",
+      "previousReviews": "Đánh giá trước đó",
+      "roundLabel": "Lần {{count}}",
+      "ratingLabel": "Chất lượng sản phẩm",
+      "contentLabel": "Nội dung đánh giá",
+      "contentPlaceholder": "Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé..."
+    },
+    "deleteDialog": {
+      "title": "Xóa đánh giá?",
+      "message": "Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác.",
+      "confirm": "Xóa ngay"
+    },
+    "toasts": {
+      "loadFailed": "Không thể tải dữ liệu nhận xét",
+      "limitReached": "Bạn đã đạt giới hạn đánh giá cho sản phẩm này",
+      "submitSuccess": "Gửi đánh giá thành công",
+      "submitFailed": "Gửi đánh giá thất bại",
+      "deleteSuccess": "Đã xóa nhận xét",
+      "deleteFailed": "Xóa nhận xét thất bại"
+    }
+  },
+  "vouchers": {
+    "title": "Ví voucher",
+    "searchTitle": "Nhập mã giảm giá",
+    "searchPlaceholder": "Nhập mã giảm giá...",
+    "check": "Kiểm tra",
+    "searchResultTitle": "Kết quả kiểm tra mã",
+    "publicTitle": "Kho voucher",
+    "publicEmptyTitle": "Chưa có voucher nào đang hoạt động",
+    "publicEmptyDescription": "Bạn có thể quay lại sau để xem thêm ưu đãi mới.",
+    "savedTitle": "Mã đã lưu",
+    "loginSavedTitle": "Đăng nhập để xem mã đã lưu",
+    "loginSavedDescription": "Các voucher bạn lưu sẽ hiển thị tại đây.",
+    "savedEmptyTitle": "Bạn chưa lưu voucher nào",
+    "savedEmptyDescription": "Hãy lưu voucher từ Kho voucher để dùng nhanh ở Checkout.",
+    "notesTitle": "Lưu ý",
+    "notes": {
+      "item1": "Mỗi mã giảm giá chỉ áp dụng 1 lần cho mỗi đơn hàng",
+      "item2": "Voucher có thời hạn sử dụng, vui lòng kiểm tra trước khi thanh toán",
+      "item3": "Lưu voucher để sử dụng nhanh chóng tại trang Checkout",
+      "item4": "Một số voucher chỉ áp dụng cho sản phẩm cụ thể"
+    },
+    "card": {
+      "maxDiscount": "Tối đa {{value}}",
+      "minOrder": "Đơn tối thiểu {{value}}",
+      "applicableProducts": "{{count}} SP",
+      "remainingDays": "Còn {{count}} ngày",
+      "expiry": "HSD: {{date}}",
+      "remainingUses": "Còn {{count}} lượt",
+      "savedInWallet": "Đã lưu trong ví",
+      "save": "Lưu voucher",
+      "saving": "Đang lưu..."
+    },
+    "toasts": {
+      "loginToSave": "Vui lòng đăng nhập để lưu voucher",
+      "saveSuccess": "Đã lưu voucher vào ví!",
+      "saveFailed": "Lưu voucher thất bại",
+      "loginToManage": "Vui lòng đăng nhập để quản lý voucher",
+      "unsaveSuccess": "Đã xóa voucher khỏi ví",
+      "actionFailed": "Thao tác thất bại",
+      "copySuccess": "Đã copy mã {{code}}",
+      "searchFailed": "Mã không tồn tại hoặc đã bị khóa"
+    }
+  },
+  "returnDetail": {
+    "notFound": {
+      "title": "Không tìm thấy yêu cầu trả hàng",
+      "back": "Quay lại danh sách"
+    },
+    "header": {
+      "title": "Chi tiết {{returnNumber}}",
+      "order": "Đơn hàng"
+    },
+    "actions": {
+      "cancel": "Hủy yêu cầu"
+    },
+    "cancelledBanner": {
+      "cancelled": "Yêu cầu đã bị hủy",
+      "rejected": "Yêu cầu đã bị từ chối"
+    },
+    "itemsTitle": "Sản phẩm yêu cầu trả",
+    "approvedQuantity": "Duyệt: {{count}}",
+    "adminNoteTitle": "Ghi chú từ admin",
+    "info": {
+      "title": "Thông tin yêu cầu",
+      "reason": "Lý do",
+      "note": "Ghi chú",
+      "none": "Không có",
+      "createdAt": "Tạo lúc",
+      "resolvedAt": "Kết thúc"
+    },
+    "amount": {
+      "title": "Số tiền",
+      "requested": "Yêu cầu hoàn",
+      "approved": "Số tiền duyệt",
+      "pending": "Chưa duyệt",
+      "actualRefunded": "Đã hoàn thực tế"
+    },
+    "refunds": {
+      "title": "Lịch sử hoàn tiền",
+      "pending": "Đang chờ admin xử lý hoàn tiền.",
+      "empty": "Chưa có giao dịch hoàn tiền.",
+      "provider": "Provider",
+      "transactionId": "Mã GD"
+    },
+    "cancelDialog": {
+      "title": "Hủy yêu cầu trả hàng",
+      "message": "Bạn có chắc muốn hủy {{returnNumber}}?",
+      "confirm": "Hủy yêu cầu"
+    },
+    "toasts": {
+      "cancelSuccess": "Đã hủy yêu cầu trả hàng",
+      "cancelFailed": "Hủy yêu cầu trả hàng thất bại"
+    }
+  }
+}

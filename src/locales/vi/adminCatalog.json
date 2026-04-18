@@ -1,0 +1,95 @@
+{
+  "products": {
+    "title": "Quản lý sản phẩm",
+    "selectedCount": "Đã chọn {{count}} sản phẩm",
+    "actions": {
+      "deleteSelected": "Xóa ({{count}})",
+      "deleteAll": "Xóa tất cả",
+      "exportExcel": "Xuất Excel",
+      "addProduct": "Thêm sản phẩm"
+    },
+    "filters": {
+      "searchPlaceholder": "Tìm kiếm theo tên sản phẩm, mã SKU...",
+      "allCategories": "Tất cả danh mục",
+      "allStatuses": "Tất cả trạng thái",
+      "active": "Đang bán",
+      "draft": "Bản nháp",
+      "inactive": "Đã ẩn"
+    },
+    "table": {
+      "index": "STT",
+      "product": "Sản phẩm",
+      "category": "Danh mục",
+      "price": "Giá bán",
+      "stock": "Tồn kho",
+      "sold": "Đã bán",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "empty": "Không có sản phẩm nào"
+    },
+    "labels": {
+      "pagination": "sản phẩm"
+    },
+    "statusActions": {
+      "moveToDraft": "Chuyển về bản nháp",
+      "activate": "Kích hoạt sản phẩm"
+    },
+    "toasts": {
+      "loadFailed": "Lỗi khi tải danh sách sản phẩm",
+      "deleteConfirm": "Xác nhận xóa sản phẩm này?",
+      "deleteSuccess": "Đã xóa sản phẩm thành công!",
+      "deleteFailed": "Không thể xóa sản phẩm này!",
+      "toggleSuccess": "Đã cập nhật trạng thái sản phẩm!",
+      "toggleFailed": "Cập nhật trạng thái thất bại!",
+      "exportSuccess": "Đã xuất báo cáo sản phẩm!",
+      "exportFailed": "Không thể xuất báo cáo!",
+      "deleteManyConfirm": "Xác nhận xóa {{count}} sản phẩm?",
+      "deleteManyDescription": "Thao tác này không thể hoàn tác.",
+      "deleteManySuccess": "Đã xóa {{count}} sản phẩm thành công!",
+      "deleteManyPartial": "Đã xóa {{success}}/{{total}} sản phẩm. Một số sản phẩm không thể xóa."
+    }
+  },
+  "categories": {
+    "title": "Quản lý danh mục",
+    "searchPlaceholder": "Tìm kiếm theo tên danh mục...",
+    "addCategory": "Thêm danh mục",
+    "editCategory": "Sửa danh mục",
+    "deleteCategory": "Xóa danh mục",
+    "empty": "Không tìm thấy danh mục"
+  },
+  "brands": {
+    "title": "Quản lý thương hiệu",
+    "searchPlaceholder": "Tìm kiếm theo tên thương hiệu...",
+    "addBrand": "Thêm thương hiệu",
+    "editBrand": "Sửa thương hiệu",
+    "deleteBrand": "Xóa thương hiệu",
+    "empty": "Không tìm thấy thương hiệu"
+  },
+  "variants": {
+    "title": "Phân loại",
+    "addVariant": "Thêm phân loại",
+    "stock": "Số lượng tồn",
+    "price": "Giá bán",
+    "sold": "Số lượng bán"
+  },
+  "basicInfo": {
+    "title": "Thông tin cơ bản",
+    "name": "Tên sản phẩm",
+    "category": "Danh mục",
+    "brand": "Thương hiệu",
+    "description": "Mô tả"
+  },
+  "productPicker": {
+    "title": "Chọn sản phẩm",
+    "searchPlaceholder": "Tìm kiếm sản phẩm để thêm...",
+    "selectedLabel": "Đã chọn {{count}} sản phẩm"
+  },
+  "flashSales": {
+    "title": "Flash Sale",
+    "addFlashSale": "Tạo flash sale",
+    "selectProducts": "Chọn sản phẩm",
+    "dateRange": "Khoảng thời gian",
+    "discountType": "Loại giảm giá",
+    "discountValue": "Giá trị giảm"
+  }
+}

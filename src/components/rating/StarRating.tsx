@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FiStar } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import type { StarRatingProps } from '../ui/types';
 import { STAR_LABELS, STAR_SIZE_CLASS } from '../ui/constants';
 
@@ -11,8 +12,12 @@ export default function StarRating({
   labels = STAR_LABELS,
   readOnly = false,
 }: StarRatingProps) {
+  const { t } = useTranslation('common');
   const [hoverRating, setHoverRating] = useState(0);
   const displayRating = hoverRating || value;
+  const resolvedLabel = labels === STAR_LABELS
+    ? t(labels[value], { defaultValue: '' })
+    : (labels[value] || '');
 
   if (readOnly) {
     return (
@@ -49,7 +54,7 @@ export default function StarRating({
       ))}
       {showLabel && (
         <span className="ml-3 text-md font-medium text-slate-500">
-          {labels[value] || ''}
+          {resolvedLabel}
         </span>
       )}
     </div>

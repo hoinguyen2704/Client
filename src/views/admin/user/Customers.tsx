@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { FiLock, FiUnlock, FiDownload } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import adminUserService from "@/apis/services/adminUserService";
 import {
@@ -17,8 +18,10 @@ import { PAGE_SIZE } from "@/constants/paginationConstants";
 import { formatDate } from "@/utils/format";
 import { downloadBlob } from "@/utils/download";
 import { getPaginatedRowNumber } from "@/utils/helpers";
+import { getApiErrorMessage } from "@/utils/error";
 
 export default function Customers() {
+  const { t } = useTranslation(["adminCustomers", "common"]);
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,11 +44,11 @@ export default function Customers() {
       setUsers(res.data.data || []);
     } catch (err) {
       console.error("Failed to fetch users:", err);
-      toast.error("Tải danh sách người dùng thất bại!");
+      toast.error(getApiErrorMessage(err, t, "adminCustomers:customers.toasts.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, roleFilter, page]);
+  }, [page, roleFilter, searchQuery, t]);
 
   useEffect(() => {
     fetchUsers();
@@ -61,10 +64,10 @@ export default function Customers() {
             : u,
         ),
       );
-      toast.success("Cập nhật trạng thái người dùng thành công!");
+      toast.success(t("adminCustomers:customers.toasts.toggleSuccess"));
     } catch (err) {
       console.error("Toggle status failed:", err);
-      toast.error("Cập nhật trạng thái người dùng thất bại!");
+      toast.error(getApiErrorMessage(err, t, "adminCustomers:customers.toasts.toggleFailed"));
     }
   };
 
@@ -75,16 +78,17 @@ export default function Customers() {
         role: roleFilter || undefined,
       });
       downloadBlob(blob, "users.xlsx");
+      toast.success(t("adminCustomers:customers.toasts.exportSuccess"));
     } catch (err) {
       console.error("Export failed:", err);
-      toast.error("Xuất báo cáo thất bại!");
+      toast.error(getApiErrorMessage(err, t, "adminCustomers:customers.toasts.exportFailed"));
     }
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý khách hàng</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t("adminCustomers:customers.title")}</h1>
         <Button
           onClick={handleExport}
           variant="success"
@@ -92,7 +96,7 @@ export default function Customers() {
           icon={<FiDownload />}
           className="w-full sm:w-auto"
         >
-          Xuất danh sách
+          {t("adminCustomers:customers.export")}
         </Button>
       </div>
 
@@ -101,7 +105,7 @@ export default function Customers() {
         <div className="flex-1">
           <AdminSearch
             boxed={false}
-            placeholder="Tìm kiếm theo tên, email, SĐT..."
+            placeholder={t("adminCustomers:customers.searchPlaceholder")}
             value={searchQuery}
             onChange={(val) => {
               setSearchQuery(val);
@@ -116,9 +120,9 @@ export default function Customers() {
             setPage(1);
           }}
           options={[
-            { value: "", label: "Tất cả vai trò" },
-            { value: "USER", label: "Khách hàng" },
-            { value: "ADMIN", label: "Admin" },
+            { value: "", label: t("adminCustomers:customers.filters.allRoles") },
+            { value: "USER", label: t("adminCustomers:customers.filters.customer") },
+            { value: "ADMIN", label: t("adminCustomers:customers.filters.admin") },
           ]}
           className="w-full md:w-48 shrink-0"
         />
@@ -130,16 +134,16 @@ export default function Customers() {
           <table className="w-full min-w-[1020px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">STT</th>
-                <th className="p-3 sm:p-4 font-medium">Người dùng</th>
-                <th className="p-3 sm:p-4 font-medium">Email</th>
-                <th className="p-3 sm:p-4 font-medium">SĐT</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Vai trò</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Ngày tạo</th>
+                <th className="p-3 sm:p-4 font-medium text-center w-20">{t("adminCustomers:customers.table.index")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("adminCustomers:customers.table.user")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("adminCustomers:customers.table.email")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("adminCustomers:customers.table.phone")}</th>
+                <th className="p-3 sm:p-4 font-medium text-center">{t("adminCustomers:customers.table.role")}</th>
+                <th className="p-3 sm:p-4 font-medium text-center">{t("adminCustomers:customers.table.createdAt")}</th>
                 <th className="p-3 sm:p-4 font-medium text-center">
-                  Trạng thái
+                  {t("adminCustomers:customers.table.status")}
                 </th>
-                <th className="p-3 sm:p-4 font-medium text-center">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium text-center">{t("adminCustomers:customers.table.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -151,7 +155,7 @@ export default function Customers() {
                     colSpan={8}
                     className="p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700"
                   >
-                    Không có người dùng nào
+                    {t("adminCustomers:customers.table.empty")}
                   </td>
                 </tr>
               ) : (
@@ -171,7 +175,7 @@ export default function Customers() {
                     </td>
                     <td className="p-3 sm:p-4 text-slate-500">{user.email}</td>
                     <td className="p-3 sm:p-4 text-slate-500">
-                      {user.phoneNumber || "—"}
+                      {user.phoneNumber || t("common:labels.notAvailable")}
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       <StatusBadge
@@ -185,7 +189,9 @@ export default function Customers() {
                       <StatusBadge
                         status={user.status === "ACTIVE" ? "active" : "banned"}
                         label={
-                          user.status === "ACTIVE" ? "Hoạt động" : "Đã khóa"
+                          user.status === "ACTIVE"
+                            ? t("adminCustomers:customers.statuses.active")
+                            : t("adminCustomers:customers.statuses.locked")
                         }
                       />
                     </td>
@@ -207,8 +213,8 @@ export default function Customers() {
                               ),
                             title:
                               user.status === "ACTIVE"
-                                ? "Khóa tài khoản"
-                                : "Mở khóa",
+                                ? t("adminCustomers:customers.actions.lock")
+                                : t("adminCustomers:customers.actions.unlock"),
                           },
                         ]}
                       />
@@ -227,7 +233,7 @@ export default function Customers() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.LARGE}
-            label="người dùng"
+            label={t("adminCustomers:customers.labels.pagination")}
             onPageChange={setPage}
           />
         )}

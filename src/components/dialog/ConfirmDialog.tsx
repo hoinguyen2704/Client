@@ -1,22 +1,43 @@
 import { useEffect, useRef } from 'react';
 import { FiTrash2, FiDownload } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import Modal from '../dialog/Modal';
 import Button from '../button/Button';
 import type { ConfirmDialogProps } from '../ui/types';
 import { CONFIRM_VARIANT_CONFIG } from '../ui/constants';
 
+function resolveConfirmIcon(label: string) {
+  const normalized = label.toLowerCase();
+  if (normalized.includes('xóa') || normalized.includes('delete') || normalized.includes('remove')) {
+    return <FiTrash2 />;
+  }
+  if (
+    normalized.includes('xuất') ||
+    normalized.includes('tải') ||
+    normalized.includes('export') ||
+    normalized.includes('download')
+  ) {
+    return <FiDownload />;
+  }
+  return null;
+}
+
 export default function ConfirmDialog({
   open,
-  title = 'Xác nhận',
+  title,
   message,
-  confirmLabel = 'Xác nhận',
-  cancelLabel = 'Hủy',
+  confirmLabel,
+  cancelLabel,
   variant = 'danger',
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation('common');
   const confirmBtnRef = useRef<HTMLButtonElement>(null);
   const cfg = CONFIRM_VARIANT_CONFIG[variant];
+  const resolvedTitle = title || t('confirmDialog.title');
+  const resolvedConfirmLabel = confirmLabel || t('confirmDialog.confirm');
+  const resolvedCancelLabel = cancelLabel || t('confirmDialog.cancel');
 
   // Auto-focus confirm button when dialog opens
   useEffect(() => {
@@ -38,20 +59,17 @@ export default function ConfirmDialog({
             variant="secondary"
             className="flex-1 h-11"
           >
-            {cancelLabel}
+            {resolvedCancelLabel}
           </Button>
           <Button
             ref={confirmBtnRef}
             onClick={onConfirm}
             icon={
-              !cfg.icon ? null :
-              confirmLabel.toLowerCase().includes('xóa') ? <FiTrash2 /> :
-              confirmLabel.toLowerCase().includes('xuất') || confirmLabel.toLowerCase().includes('tải') ? <FiDownload /> :
-              null
+              !cfg.icon ? null : resolveConfirmIcon(resolvedConfirmLabel)
             }
             className={`flex-1 h-11 focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${cfg.btnClass}`}
           >
-            {confirmLabel}
+            {resolvedConfirmLabel}
           </Button>
         </div>
       }
@@ -64,11 +82,11 @@ export default function ConfirmDialog({
 
         {/* Title */}
         <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-          {title}
+          {resolvedTitle}
         </h3>
 
         {/* Message */}
-        <p className="text-md text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs">
+        <p className="text-md text-muted leading-relaxed max-w-xs">
           {message}
         </p>
       </div>

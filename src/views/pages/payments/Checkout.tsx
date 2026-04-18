@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2, FiBookmark, FiGift } from 'react-icons/fi';
+import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2, FiBookmark, FiGift, FiChevronDown } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Button, Checkbox, ExpandToggle, IconButton, Modal, ModalCancelButton, PrimaryButton, Radio, SectionCard } from '@/components';
+import { Button, Checkbox, IconButton, Modal, ModalCancelButton, PrimaryButton, Radio, SectionCard } from '@/components';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import addressService from '@/apis/services/addressService';
@@ -24,6 +25,7 @@ const createCheckoutIdempotencyKey = () => {
 };
 
 export default function Checkout() {
+  const { t } = useTranslation(['checkout', 'common']);
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
@@ -77,8 +79,10 @@ export default function Checkout() {
           const def = res.data.find(a => a.isDefault);
           setSelectedAddressId(def ? def.id : res.data[res.data.length - 1].id);
       }
-      toast.success('Đã lưu địa chỉ giao hàng!');
-    } catch { toast.error('Lưu địa chỉ thất bại!'); }
+      toast.success(t('address.saveSuccess'));
+    } catch {
+      toast.error(t('address.saveFailed'));
+    }
   };
 
   const handleEditAddress = (addr: AddressResponse) => {
@@ -177,7 +181,7 @@ export default function Checkout() {
       setProductCouponCode('');
       setProductDiscount(0);
     }
-    toast.success('Đã bỏ áp dụng mã giảm giá');
+    toast.success(t('toasts.couponRemoved'));
   };
 
   const getVisibleVouchers = (items: CouponResponse[], expanded: boolean) => (
@@ -216,10 +220,10 @@ export default function Checkout() {
         setProductDiscount(d);
       }
 
-      toast.success('Áp dụng mã giảm giá thành công!');
+      toast.success(t('toasts.couponApplied'));
       return true;
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Mã giảm giá không hợp lệ!'));
+      toast.error(getApiErrorMessage(err, t, 'checkout:toasts.invalidCoupon'));
       return false;
     }
   };
@@ -237,7 +241,7 @@ export default function Checkout() {
 
   const handleSaveVoucher = async (voucher: CouponResponse) => {
     if (!user) {
-      toast.error('Vui lòng đăng nhập để lưu voucher');
+      toast.error(t('toasts.loginToSaveVoucher'));
       return;
     }
     setSavingVoucherId(voucher.id);
@@ -246,9 +250,9 @@ export default function Checkout() {
       setSavedCouponIds(prev => prev.includes(voucher.id) ? prev : [...prev, voucher.id]);
       setPublicVouchers(prev => prev.map(v => v.id === voucher.id ? { ...v, saved: true } : v));
       setSavedVouchers(prev => prev.some(v => v.id === voucher.id) ? prev : [{ ...voucher, saved: true }, ...prev]);
-      toast.success('Đã lưu voucher vào ví');
+      toast.success(t('toasts.voucherSaved'));
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Không thể lưu voucher'));
+      toast.error(getApiErrorMessage(err, t, 'checkout:toasts.voucherSaveFailed'));
     } finally {
       setSavingVoucherId(null);
     }
@@ -256,7 +260,7 @@ export default function Checkout() {
 
   const handleUnsaveVoucher = async (voucherId: string) => {
     if (!user) {
-      toast.error('Vui lòng đăng nhập để quản lý voucher');
+      toast.error(t('toasts.loginToManageVoucher'));
       return;
     }
     setSavingVoucherId(voucherId);
@@ -271,19 +275,19 @@ export default function Checkout() {
       if (validatedShippingCoupon?.id === voucherId) {
         setValidatedShippingCoupon(prev => prev ? { ...prev, saved: false } : prev);
       }
-      toast.success('Đã bỏ lưu voucher');
+      toast.success(t('toasts.voucherUnsaved'));
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Không thể bỏ lưu voucher'));
+      toast.error(getApiErrorMessage(err, t, 'checkout:toasts.voucherUnsaveFailed'));
     } finally {
       setSavingVoucherId(null);
     }
   };
 
   const handleSubmit = async () => {
-    if (!selectedAddressId) { toast.warning('Vui lòng chọn địa chỉ giao hàng!'); return; }
-    if (cartItems.length === 0) { toast.warning('Giỏ hàng trống!'); return; }
+    if (!selectedAddressId) { toast.warning(t('toasts.addressRequired')); return; }
+    if (cartItems.length === 0) { toast.warning(t('toasts.cartEmpty')); return; }
     if (cartItems.some(item => item.available === false)) {
-      toast.warning('Có sản phẩm trong giỏ không còn khả dụng. Vui lòng cập nhật lại giỏ hàng.');
+      toast.warning(t('toasts.cartUnavailable'));
       return;
     }
     setSubmitting(true);
@@ -303,12 +307,12 @@ export default function Checkout() {
       checkoutIdempotencyKeyRef.current = createCheckoutIdempotencyKey();
       if (res.data?.paymentUrl) { window.location.href = res.data.paymentUrl; }
       else { 
-        toast.success('Đặt hàng thành công!');
+        toast.success(t('toasts.orderSuccess'));
         navigate(`/user/orders/${res.data?.orderNumber}`); 
       }
     } catch (err: unknown) {
       const errorCode = getApiErrorCode(err);
-      toast.error(getApiErrorMessage(err, 'Đặt hàng thất bại!'));
+      toast.error(getApiErrorMessage(err, t, 'checkout:toasts.orderFailed'));
       if ([
         'PRICE_CHANGED',
         'INSUFFICIENT_STOCK',
@@ -343,13 +347,13 @@ export default function Checkout() {
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-5 sm:py-8 md:py-12 space-y-5 sm:space-y-8">
-      <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white mb-1 sm:mb-2">Thông tin thanh toán</h1>
+      <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white mb-1 sm:mb-2">{t('title')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
         <div className="lg:col-span-8 space-y-4 sm:space-y-8">
           {/* Address */}
           <SectionCard
-            title="Địa chỉ giao hàng"
+            title={t('address.title')}
             icon={<FiMapPin className="mt-0.5" />}
             action={
               <Button
@@ -360,7 +364,7 @@ export default function Checkout() {
                 icon={<FiPlus className="group-hover:rotate-90 transition-transform" />}
                 className="group w-full justify-center text-md text-purple-600 hover:text-purple-700 dark:text-purple-400 sm:w-auto"
               >
-                Thêm địa chỉ mới
+                {t('address.addNew')}
               </Button>
             }
           >
@@ -370,8 +374,8 @@ export default function Checkout() {
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-3 sm:mb-4 relative z-10 border border-slate-100 dark:border-slate-700 group-hover:scale-110 transition-transform">
                   <FiMapPin className="text-xl sm:text-2xl text-purple-500" />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold mb-2 relative z-10 text-slate-800 dark:text-white">Bạn chưa có địa chỉ giao hàng nào</h3>
-                <p className="text-md text-slate-500 mb-6 max-w-sm relative z-10">Vui lòng thêm địa chỉ để chúng tôi có thể giao hàng đến tận nơi cho bạn.</p>
+                <h3 className="text-base sm:text-lg font-bold mb-2 relative z-10 text-slate-800 dark:text-white">{t('address.emptyTitle')}</h3>
+                <p className="text-md text-slate-500 mb-6 max-w-sm relative z-10">{t('address.emptyDescription')}</p>
                 <Button
                   type="button"
                   onClick={() => { resetForm(); setShowForm(true); }}
@@ -380,7 +384,7 @@ export default function Checkout() {
                   icon={<FiPlus />}
                   className="px-6 border-purple-100 dark:border-purple-900/50 hover:border-purple-500 hover:text-purple-700 text-purple-600 dark:text-purple-400 relative z-10 shadow-sm hover:shadow-md"
                 >
-                  Thêm địa chỉ ngay
+                  {t('address.emptyAction')}
                 </Button>
               </div>
             ) : (
@@ -397,19 +401,19 @@ export default function Checkout() {
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                         <div className="flex items-center flex-wrap gap-2">
                           <span className="font-bold text-md sm:text-base text-slate-800 dark:text-white">{addr.fullName}</span>
-                          <span className="text-slate-300 dark:text-slate-600">|</span> 
-                          <span className="font-medium text-md sm:text-base text-slate-600 dark:text-slate-400">{addr.phoneNumber}</span>
-                          {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-11 font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50 uppercase tracking-wide">Mặc định</span>}
+                          <span className="text-disabled">|</span> 
+                          <span className="font-medium text-md sm:text-base text-muted-strong">{addr.phoneNumber}</span>
+                          {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-11 font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50 uppercase tracking-wide">{t('address.default')}</span>}
                         </div>
                         <IconButton
                           onClick={() => handleEditAddress(addr)}
                           icon={<FiEdit2 />}
-                          title="Sửa địa chỉ"
+                          title={t('address.edit')}
                           variant="ghost"
                           className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                         />
                       </div>
-                      <p className="text-sm sm:text-md text-slate-600 dark:text-slate-400 leading-relaxed">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
+                      <p className="text-sm sm:text-md text-muted-strong leading-relaxed">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
                     </div>
                   </label>
                 ))}
@@ -418,7 +422,7 @@ export default function Checkout() {
           </SectionCard>
 
           {/* Items */}
-          <SectionCard title={`Sản phẩm (${cartItems.length})`}>
+          <SectionCard title={t('items.title', { count: cartItems.length })}>
             <div className="space-y-3">
               {cartItems.map(item => (
                 <div key={item.id} className="flex items-start gap-3 sm:gap-4">
@@ -427,7 +431,7 @@ export default function Checkout() {
                     <h4 className="font-medium text-md sm:text-base truncate">{item.productName}</h4>
                     <p className="text-sm sm:text-md text-slate-500">{item.variantName} | x{item.quantity}</p>
                     {item.available === false && (
-                      <p className="text-sm text-red-500 mt-1">{item.issueMessage || 'Sản phẩm không còn khả dụng'}</p>
+                      <p className="text-sm text-red-500 mt-1">{item.issueMessage || t('items.unavailable')}</p>
                     )}
                   </div>
                   <span className="font-bold text-md sm:text-base text-purple-600 shrink-0">{formatPrice(item.subtotal)}</span>
@@ -437,7 +441,7 @@ export default function Checkout() {
           </SectionCard>
 
           {/* Payment */}
-          <SectionCard title="Phương thức thanh toán">
+          <SectionCard title={t('payment.title')}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               {paymentMethods.map(pm => (
                 <label key={pm.id} className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border cursor-pointer transition-colors ${paymentMethod === pm.id ? 'border-purple-500 bg-purple-50/30 dark:bg-purple-900/10' : 'border-slate-200 dark:border-slate-700'}`}>
@@ -453,40 +457,50 @@ export default function Checkout() {
           </SectionCard>
 
           {/* Note */}
-          <SectionCard title="Ghi chú">
-            <textarea className="w-full h-24 sm:h-20 p-3 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 resize-none text-md sm:text-base" placeholder="Ghi chú cho đơn hàng..." value={note} onChange={(e) => setNote(e.target.value)} />
+          <SectionCard title={t('note.title')}>
+            <textarea className="w-full h-24 sm:h-20 p-3 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 resize-none text-md sm:text-base" placeholder={t('note.placeholder')} value={note} onChange={(e) => setNote(e.target.value)} />
           </SectionCard>
         </div>
 
         {/* Summary */}
         <SectionCard
-          title="Tóm tắt đơn hàng"
-          className="sticky top-24 h-fit space-y-4 shadow-sm sm:top-28 sm:rounded-3xl sm:p-8"
-          titleClassName="text-lg font-bold sm:text-xl"
+          title={t('summary.title')}
+          className="sticky top-24 h-fit lg:col-span-4 sm:top-28 sm:rounded-3xl sm:p-7 xl:p-8"
+          contentClassName="space-y-5 sm:space-y-6"
+          titleClassName="text-xl font-black tracking-tight sm:text-[2rem]"
           headerSeparated
         >
-          <div className="flex gap-2">
-            <input className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-md uppercase focus:ring-2 focus:ring-purple-500 outline-none transition-all placeholder:font-sans" placeholder="Mã giảm giá" value={inputCouponCode} onChange={(e) => {
-              setInputCouponCode(e.target.value.toUpperCase());
-            }} />
-            <IconButton
-              onClick={handleApplyCoupon}
-              icon={<FiTag className="text-lg" />}
-              variant="ghost"
-              className="w-11 h-11 sm:w-12 sm:h-12 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40"
-              title="Áp dụng mã giảm giá"
-            />
+          <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3 sm:p-4 dark:border-slate-800 dark:bg-slate-800/30">
+            <div className="space-y-3">
+              <div className="flex gap-2.5 sm:gap-3">
+                <input
+                  className="min-w-0 flex-1 px-3.5 sm:px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-md uppercase focus:ring-2 focus:ring-purple-500 outline-none transition-all placeholder:font-sans"
+                  placeholder={t('summary.couponPlaceholder')}
+                  value={inputCouponCode}
+                  onChange={(e) => {
+                    setInputCouponCode(e.target.value.toUpperCase());
+                  }}
+                />
+                <IconButton
+                  onClick={handleApplyCoupon}
+                  icon={<FiTag className="text-lg" />}
+                  variant="ghost"
+                  className="w-12 h-12 shrink-0 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+                  title={t('summary.applyCoupon')}
+                />
+              </div>
+              <PrimaryButton
+                onClick={() => setShowVoucherModal(true)}
+                variant="outline"
+                icon={<FiGift />}
+                className="w-full h-11 sm:h-12 rounded-xl text-md font-semibold"
+              >
+                {t('summary.chooseVoucher')}
+              </PrimaryButton>
+            </div>
           </div>
-          <PrimaryButton
-            onClick={() => setShowVoucherModal(true)}
-            variant="outline"
-            icon={<FiGift />}
-            className="w-full h-10 text-md"
-          >
-            Chọn từ kho voucher
-          </PrimaryButton>
           {(validatedProductCoupon || validatedShippingCoupon) && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {validatedProductCoupon && (
                 <CheckoutAppliedCouponCard
                   coupon={validatedProductCoupon}
@@ -511,30 +525,61 @@ export default function Checkout() {
               )}
             </div>
           )}
-          <div className="space-y-3 sm:space-y-4 text-md sm:text-15">
-            <div className="flex justify-between"><span className="text-slate-500">Tạm tính</span><span className="font-medium">{formatPrice(subtotal)}</span></div>
-            <div className="flex justify-between"><span className="text-slate-500">Phí vận chuyển</span><span className="font-medium">{shippingFee === 0 ? <span className="text-emerald-500 font-bold tracking-wide uppercase text-sm">Miễn phí</span> : formatPrice(shippingFee)}</span></div>
-            {productDiscount > 0 && <div className="flex justify-between"><span className="text-slate-500">Giảm giá sản phẩm</span><span className="text-emerald-500 font-bold tracking-wide uppercase text-sm">-{formatPrice(productDiscount)}</span></div>}
-            {shippingDiscount > 0 && <div className="flex justify-between"><span className="text-slate-500">Giảm phí vận chuyển</span><span className="text-emerald-500 font-bold tracking-wide uppercase text-sm">-{formatPrice(shippingDiscount)}</span></div>}
-            {taxAmount > 0 && (
-              <div className="flex justify-between">
-                <span className="text-slate-500">
-                  Thuế VAT ({taxConfig.taxPercent}%{taxConfig.taxMode === 'INCLUDED' ? ', đã gồm' : ''})
-                </span>
-                <span className={`font-medium ${taxConfig.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
-                  {taxConfig.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(taxAmount)}
+          <div className="rounded-2xl border border-slate-100 bg-white/80 p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-950/30">
+            <div className="space-y-3.5 sm:space-y-4 text-md sm:text-[15px]">
+              <div className="flex items-center justify-between gap-4">
+                <span className="max-w-[58%] text-slate-500">{t('summary.subtotal')}</span>
+                <span className="text-right font-semibold tabular-nums text-slate-900 dark:text-white">{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="max-w-[58%] text-slate-500">{t('summary.shippingFee')}</span>
+                <span className="text-right font-semibold tabular-nums text-slate-900 dark:text-white">
+                  {formatPrice(shippingFee)}
                 </span>
               </div>
-            )}
-            <hr className="border-slate-100 dark:border-slate-800" />
-            <div className="flex justify-between text-base sm:text-xl items-end"><span className="font-bold">Tổng thanh toán</span><span className="font-black text-xl sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 leading-none">{formatPrice(total)}</span></div>
-            <p className="text-right text-sm text-slate-400 mt-1">
-              {!taxConfig.enabled
-                ? '(Thuế hiện đang tắt theo cấu hình cửa hàng)'
-                : taxConfig.taxMode === 'INCLUDED'
-                  ? '(Thuế đã bao gồm trong tổng thanh toán)'
-                  : '(Thuế được cộng thêm theo cấu hình cửa hàng)'}
-            </p>
+              {productDiscount > 0 && (
+                <div className="flex items-center justify-between gap-4">
+                  <span className="max-w-[58%] text-slate-500">{t('summary.productDiscount')}</span>
+                  <span className="text-right text-sm font-bold tracking-wide text-emerald-500 tabular-nums uppercase">-{formatPrice(productDiscount)}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between gap-4">
+                <span className="max-w-[58%] text-slate-500">{t('summary.shippingDiscount')}</span>
+                <span className={`text-right font-semibold tabular-nums ${shippingDiscount > 0 ? 'text-emerald-500' : 'text-slate-500'}`}>
+                  {shippingDiscount > 0 ? `-${formatPrice(shippingDiscount)}` : formatPrice(0)}
+                </span>
+              </div>
+              {taxAmount > 0 && (
+                <div className="flex items-center justify-between gap-4">
+                  <span className="max-w-[58%] text-slate-500">
+                    {t('summary.vat', {
+                      percent: taxConfig.taxPercent,
+                      suffix: taxConfig.taxMode === 'INCLUDED' ? t('summary.vatIncluded') : '',
+                    })}
+                  </span>
+                  <span className={`text-right font-semibold tabular-nums ${taxConfig.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
+                    {taxConfig.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(taxAmount)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-purple-100/80 bg-gradient-to-br from-white via-purple-50/50 to-blue-50/60 p-4 sm:p-5 dark:border-purple-900/40 dark:from-slate-900 dark:via-purple-950/15 dark:to-blue-950/15">
+            <div className="space-y-3">
+              <div className="min-w-0">
+                <p className="text-lg font-bold text-slate-900 dark:text-white sm:text-xl">{t('summary.total')}</p>
+                <p className="mt-1 max-w-[15rem] text-sm leading-snug text-slate-500 dark:text-slate-400">
+                  {!taxConfig.enabled
+                    ? t('summary.taxDisabled')
+                    : taxConfig.taxMode === 'INCLUDED'
+                      ? t('summary.taxIncluded')
+                      : t('summary.taxExcluded')}
+                </p>
+              </div>
+              <span className="block w-full text-right font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 text-[1.7rem] sm:text-[2rem] tabular-nums">
+                {formatPrice(total)}
+              </span>
+            </div>
           </div>
           <Button
             onClick={handleSubmit}
@@ -543,9 +588,9 @@ export default function Checkout() {
             iconRight={!submitting ? <FiCheck className="text-xl" /> : undefined}
             fullWidth
             size="lg"
-            className="h-12 sm:h-14 rounded-2xl font-bold text-base sm:text-lg"
+            className="h-14 sm:h-[58px] rounded-2xl font-bold text-base sm:text-lg"
           >
-            {submitting ? 'Đang xử lý...' : 'Xác nhận Đặt hàng'}
+            {submitting ? t('summary.submitting') : t('summary.submit')}
           </Button>
         </SectionCard>
       </div>
@@ -553,25 +598,25 @@ export default function Checkout() {
       <Modal
         open={showVoucherModal}
         onClose={() => setShowVoucherModal(false)}
-        title="Chọn voucher"
+        title={t('voucherModal.title')}
         size="xl"
         scrollable
         footer={
           <ModalCancelButton onClick={() => setShowVoucherModal(false)}>
-            Đóng
+            {t('voucherModal.close')}
           </ModalCancelButton>
         }
       >
         <div className="space-y-5">
           <SectionCard
-            title="Nhập mã"
+            title={t('voucherModal.manualTitle')}
             className="bg-slate-50/70 dark:bg-slate-800/30"
-            titleClassName="text-md font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300"
+            titleClassName="text-md font-bold uppercase tracking-wide text-body-soft"
           >
             <div className="flex flex-col sm:flex-row gap-2">
               <input
                 className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-md uppercase focus:ring-2 focus:ring-purple-500 outline-none"
-                placeholder="Nhập mã giảm giá"
+                placeholder={t('voucherModal.manualPlaceholder')}
                 value={inputCouponCode}
                 onChange={(e) => {
                   setInputCouponCode(e.target.value.toUpperCase());
@@ -579,40 +624,49 @@ export default function Checkout() {
                 onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
               />
               <PrimaryButton onClick={handleApplyCoupon} className="h-10 px-4 w-full sm:w-auto">
-                Kiểm tra
+                {t('voucherModal.check')}
               </PrimaryButton>
             </div>
             {(validatedProductCoupon || validatedShippingCoupon) && (
               <div className="text-sm text-emerald-600 dark:text-emerald-400 space-y-1">
-                 {validatedProductCoupon && <div>Mã sản phẩm <span className="font-mono font-bold">{validatedProductCoupon.code}</span> đã được áp dụng.</div>}
-                 {validatedShippingCoupon && <div>Mã freeship <span className="font-mono font-bold">{validatedShippingCoupon.code}</span> đã được áp dụng.</div>}
+                 {validatedProductCoupon && <div>{t('voucherModal.appliedProduct', { code: validatedProductCoupon.code })}</div>}
+                 {validatedShippingCoupon && <div>{t('voucherModal.appliedShipping', { code: validatedShippingCoupon.code })}</div>}
               </div>
             )}
           </SectionCard>
 
           <SectionCard
             title={
-              <div className="flex items-center gap-2">
-                <span>Kho voucher</span>
-                <span className="px-2 py-0.5 text-11 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
-                  {publicVouchers.length}
-                </span>
-              </div>
+              publicVouchers.length > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setExpandPublic(prev => !prev)}
+                  aria-expanded={expandPublic}
+                  className="group -m-2 inline-flex max-w-full items-center gap-3 rounded-2xl px-2 py-1.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                >
+                  <FiGift className="shrink-0 text-purple-600" />
+                  <span className="shrink-0 whitespace-nowrap leading-none">
+                    {t('voucherModal.publicTitle', { defaultValue: 'Kho voucher' })}
+                  </span>
+                  <span className="shrink-0 px-2 py-0.5 text-11 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                    {publicVouchers.length}
+                  </span>
+                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-purple-600 ${expandPublic ? 'rotate-180' : ''}`} />
+                </button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <FiGift className="shrink-0 text-purple-600" />
+                  <span>{t('voucherModal.publicTitle', { defaultValue: 'Kho voucher' })}</span>
+                  <span className="px-2 py-0.5 text-11 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                    {publicVouchers.length}
+                  </span>
+                </div>
+              )
             }
-            icon={<FiGift className="text-purple-600" />}
-            action={publicVouchers.length > 1 ? (
-              <ExpandToggle
-                expanded={expandPublic}
-                onToggle={() => setExpandPublic(prev => !prev)}
-                expandLabel="Mở rộng"
-                collapseLabel="Thu gọn"
-                variant="outline"
-              />
-            ) : undefined}
-            titleClassName="text-md font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300"
+            titleClassName="text-md font-bold uppercase tracking-wide text-body-soft"
           >
             {publicVouchers.length === 0 ? (
-              <p className="text-md text-slate-400">Hiện chưa có voucher public.</p>
+              <p className="text-md text-slate-400">{t('voucherModal.noPublic')}</p>
             ) : (
               <div className="space-y-3">
                 {getVisibleVouchers(publicVouchers, expandPublic).map(voucher => (
@@ -635,29 +689,38 @@ export default function Checkout() {
 
           <SectionCard
             title={
-              <div className="flex items-center gap-2">
-                <span>Mã đã lưu</span>
-                <span className="px-2 py-0.5 text-11 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
-                  {savedVouchers.length}
-                </span>
-              </div>
+              savedVouchers.length > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setExpandSaved(prev => !prev)}
+                  aria-expanded={expandSaved}
+                  className="group -m-2 inline-flex max-w-full items-center gap-3 rounded-2xl px-2 py-1.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                >
+                  <FiBookmark className="shrink-0 text-purple-600" />
+                  <span className="shrink-0 whitespace-nowrap leading-none">
+                    {t('voucherModal.savedTitle')}
+                  </span>
+                  <span className="shrink-0 px-2 py-0.5 text-11 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                    {savedVouchers.length}
+                  </span>
+                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-purple-600 ${expandSaved ? 'rotate-180' : ''}`} />
+                </button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <FiBookmark className="shrink-0 text-purple-600" />
+                  <span>{t('voucherModal.savedTitle')}</span>
+                  <span className="px-2 py-0.5 text-11 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                    {savedVouchers.length}
+                  </span>
+                </div>
+              )
             }
-            icon={<FiBookmark className="text-purple-600" />}
-            action={savedVouchers.length > 1 ? (
-              <ExpandToggle
-                expanded={expandSaved}
-                onToggle={() => setExpandSaved(prev => !prev)}
-                expandLabel="Mở rộng"
-                collapseLabel="Thu gọn"
-                variant="outline"
-              />
-            ) : undefined}
-            titleClassName="text-md font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300"
+            titleClassName="text-md font-bold uppercase tracking-wide text-body-soft"
           >
             {!user ? (
-              <p className="text-md text-slate-400">Đăng nhập để xem mã đã lưu.</p>
+              <p className="text-md text-slate-400">{t('voucherModal.loginToViewSaved')}</p>
             ) : savedVouchers.length === 0 ? (
-              <p className="text-md text-slate-400">Bạn chưa lưu voucher nào.</p>
+              <p className="text-md text-slate-400">{t('voucherModal.noSaved')}</p>
             ) : (
               <div className="space-y-3">
                 {getVisibleVouchers(savedVouchers, expandSaved).map(voucher => (
@@ -683,16 +746,16 @@ export default function Checkout() {
       <Modal
         open={showForm}
         onClose={resetForm}
-        title={editId ? 'Sửa địa chỉ giao hàng' : 'Thêm địa chỉ giao hàng mới'}
+        title={editId ? t('address.form.editTitle') : t('address.form.addTitle')}
         size="xl"
         scrollable
         footer={
           <>
             <Button onClick={resetForm} variant="secondary" className="h-11 sm:h-14 px-5 sm:px-10 rounded-2xl font-bold text-md sm:text-lg">
-              Hủy bỏ
+              {t('address.form.cancel')}
             </Button>
             <Button onClick={handleSaveAddress} variant="primary" className="h-11 sm:h-14 px-5 sm:px-10 text-md sm:text-lg font-bold rounded-2xl shadow-xl shadow-purple-500/30">
-              Lưu địa chỉ
+              {t('address.form.save')}
             </Button>
           </>
         }
@@ -700,33 +763,33 @@ export default function Checkout() {
         <div className="space-y-5 sm:space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Họ và tên người nhận</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Nhập họ và tên" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.fullName')}</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.fullNamePlaceholder')} value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Số điện thoại liên hệ</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Nhập số điện thoại" value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.phoneNumber')}</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.phoneNumberPlaceholder')} value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Tỉnh/Thành phố</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: Hà Nội" value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.province')}</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.provincePlaceholder')} value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quận/Huyện</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: Cầu Giấy" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.district')}</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.districtPlaceholder')} value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Phường/Xã</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: Dịch Vọng Hậu" value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.ward')}</label>
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.wardPlaceholder')} value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
             </div>
           </div>
 
           <div className="space-y-2 sm:space-y-3">
-            <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Địa chỉ cụ thể (Số nhà, tên đường)</label>
-            <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder="Ví dụ: 123 Xuân Thủy" value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
+            <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.detailAddress')}</label>
+            <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.detailAddressPlaceholder')} value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
           </div>
 
           <div className="pt-1 sm:pt-4">
@@ -739,8 +802,8 @@ export default function Checkout() {
                 />
               </div>
               <div>
-                <span className="text-md sm:text-lg font-bold text-slate-800 dark:text-slate-200">Đặt làm địa chỉ mặc định</span>
-                <p className="text-sm sm:text-base text-slate-500 mt-0.5">Chúng tôi sẽ dùng địa chỉ này ưu tiên cho các đơn hàng tiếp theo của bạn.</p>
+                <span className="text-md sm:text-lg font-bold text-slate-800 dark:text-slate-200">{t('address.form.setDefault')}</span>
+                <p className="text-sm sm:text-base text-slate-500 mt-0.5">{t('address.form.setDefaultHint')}</p>
               </div>
             </label>
           </div>

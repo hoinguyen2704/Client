@@ -7,6 +7,7 @@ import {
   FiSearch,
   FiXCircle,
 } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Button, ConfirmDialog, Pagination, SlidingTabs } from '@/components';
 import { formatDateFull as formatDateTime, formatPrice } from '@/utils/format';
@@ -14,12 +15,13 @@ import { getApiErrorMessage } from '@/utils/error';
 import returnService from '@/apis/services/returnService';
 import type { ReturnRequestResponse } from '@/types';
 import {
-  USER_RETURN_TABS,
+  getUserReturnTabs,
   ReturnStatusBadge,
   RefundStatusBadge,
 } from '@/constants/returnConstants';
 
 export default function MyReturns() {
+  const { t } = useTranslation(['account', 'common']);
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [returns, setReturns] = useState<ReturnRequestResponse[]>([]);
@@ -59,10 +61,10 @@ export default function MyReturns() {
   const handleCancelReturn = async (target: ReturnRequestResponse) => {
     try {
       await returnService.cancel(target.id);
-      toast.success('Đã hủy yêu cầu trả hàng');
+      toast.success(t('returns.toasts.cancelSuccess'));
       fetchReturns();
     } catch (err) {
-      toast.error(getApiErrorMessage(err, 'Hủy yêu cầu trả hàng thất bại'));
+      toast.error(getApiErrorMessage(err, t, 'account:returns.toasts.cancelFailed'));
     } finally {
       setCancelTarget(null);
     }
@@ -71,15 +73,15 @@ export default function MyReturns() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-xl sm:text-2xl font-bold">Đơn trả hàng / hoàn tiền</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('returns.title')}</h1>
         <Link to="/user/orders" className="h-10 px-4 rounded-xl flex items-center justify-center gap-2 font-semibold bg-purple-600 text-white hover:bg-purple-700 transition">
-          <FiPlus /> Đi tới đơn hàng để trả
+          <FiPlus /> {t('returns.goToOrdersToReturn')}
         </Link>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3 sm:space-y-4">
         <SlidingTabs
-          tabs={USER_RETURN_TABS}
+          tabs={getUserReturnTabs(t)}
           activeTab={activeTab}
           onChange={(id) => { setActiveTab(id); setPage(1); }}
           variant="underline"
@@ -88,7 +90,7 @@ export default function MyReturns() {
         <div className="relative">
           <input
             type="text"
-            placeholder="Tìm theo mã yêu cầu / mã đơn..."
+            placeholder={t('returns.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -99,7 +101,7 @@ export default function MyReturns() {
             onClick={handleSearch}
             className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-3 rounded-lg text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors"
           >
-            Tìm
+            {t('common:actions.search')}
           </button>
         </div>
       </div>
@@ -120,11 +122,11 @@ export default function MyReturns() {
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl sm:text-4xl">
               <FiClipboard />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold mb-2">Bạn chưa có yêu cầu trả hàng</h3>
-            <p className="text-md sm:text-base text-slate-500 mb-6">
-              Bạn có thể tạo yêu cầu từ trang chi tiết đơn hàng (đối với đơn đã nhận).
-            </p>
-            <Link to="/user/orders" className="inline-flex h-11 px-6 rounded-xl items-center justify-center font-semibold bg-purple-600 text-white hover:bg-purple-700 transition">Đi tới Danh sách đơn hàng</Link>
+            <h3 className="text-lg sm:text-xl font-bold mb-2">{t('returns.empty.title')}</h3>
+            <p className="text-md sm:text-base text-slate-500 mb-6">{t('returns.empty.description')}</p>
+            <Link to="/user/orders" className="inline-flex h-11 px-6 rounded-xl items-center justify-center font-semibold bg-purple-600 text-white hover:bg-purple-700 transition">
+              {t('returns.empty.action')}
+            </Link>
           </div>
         ) : (
           returns.map((item) => (
@@ -140,16 +142,16 @@ export default function MyReturns() {
                     <RefundStatusBadge status={item.refundStatus} />
                   </div>
                   <p className="text-md text-slate-500">
-                    Đơn hàng: <span className="font-semibold text-slate-700 dark:text-slate-200">{item.orderNumber}</span>
+                    {t('returns.orderNumber')}: <span className="font-semibold text-slate-700 dark:text-slate-200">{item.orderNumber}</span>
                   </p>
-                  <p className="text-md text-slate-500">Tạo lúc: {formatDateTime(item.createdAt)}</p>
+                  <p className="text-md text-slate-500">{t('returns.createdAt')}: {formatDateTime(item.createdAt)}</p>
                 </div>
                 <div className="text-left sm:text-right">
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Yêu cầu hoàn</p>
+                  <p className="text-sm text-slate-500 uppercase tracking-wide">{t('returns.requestedAmount')}</p>
                   <p className="text-lg font-bold text-purple-600">{formatPrice(Number(item.requestedAmount || 0))}</p>
                   {item.approvedAmount != null && (
                     <p className="text-sm text-slate-500 mt-1">
-                      Duyệt: <span className="font-semibold">{formatPrice(Number(item.approvedAmount || 0))}</span>
+                      {t('returns.approvedAmount')}: <span className="font-semibold">{formatPrice(Number(item.approvedAmount || 0))}</span>
                     </p>
                   )}
                 </div>
@@ -157,14 +159,14 @@ export default function MyReturns() {
 
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto_auto] sm:items-center">
                 <p className="text-md text-slate-600 dark:text-slate-300 line-clamp-1">
-                  Lý do: <span className="font-medium">{item.reason}</span>
+                  {t('returns.reason')}: <span className="font-medium">{item.reason}</span>
                 </p>
 
                 <Link
                   to={`/user/returns/${item.returnNumber}`}
                   className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-lg border border-slate-200 dark:border-slate-700 text-md font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                  Xem chi tiết <FiChevronRight />
+                  {t('returns.viewDetails')} <FiChevronRight />
                 </Link>
 
                 {item.status === 'REQUESTED' ? (
@@ -175,7 +177,7 @@ export default function MyReturns() {
                     icon={<FiXCircle />}
                     className="justify-center"
                   >
-                    Hủy yêu cầu
+                    {t('returns.cancelRequest')}
                   </Button>
                 ) : (
                   <div />
@@ -190,9 +192,11 @@ export default function MyReturns() {
 
       <ConfirmDialog
         open={!!cancelTarget}
-        title="Hủy yêu cầu trả hàng"
-        message={`Bạn có chắc muốn hủy ${cancelTarget?.returnNumber || 'yêu cầu này'}?`}
-        confirmLabel="Hủy yêu cầu"
+        title={t('returns.cancelDialog.title')}
+        message={t('returns.cancelDialog.message', {
+          returnNumber: cancelTarget?.returnNumber || t('returns.cancelDialog.fallbackTarget'),
+        })}
+        confirmLabel={t('returns.cancelDialog.confirm')}
         variant="danger"
         onConfirm={() => cancelTarget && handleCancelReturn(cancelTarget)}
         onCancel={() => setCancelTarget(null)}

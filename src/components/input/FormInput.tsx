@@ -26,7 +26,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   ({ label, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label className="block text-md font-medium text-slate-700 dark:text-slate-300">
+        <label className="block text-md font-medium text-body">
           {label}
         </label>
       )}
@@ -51,7 +51,7 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
   ({ label, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label className="block text-md font-medium text-slate-700 dark:text-slate-300">
+        <label className="block text-md font-medium text-body">
           {label}
         </label>
       )}
@@ -85,7 +85,7 @@ export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
   ({ label, options, inputClassName = "", className = "", ...rest }, ref) => (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label className="block text-md font-medium text-slate-700 dark:text-slate-300">
+        <label className="block text-md font-medium text-body">
           {label}
         </label>
       )}

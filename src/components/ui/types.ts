@@ -44,6 +44,7 @@ export type StatusType =
   | "admin"
   | "user"
   | "ACTIVE"
+  | "DRAFT"
   | "INACTIVE"
   | "UPCOMING"
   | "ENDED"
@@ -173,6 +174,8 @@ export interface ActionConfig {
   href?: string;
   /** Custom title tooltip */
   title?: string;
+  /** Translation key for tooltip */
+  titleKey?: string;
   /** Custom icon override */
   icon?: ReactNode;
   /** Click handler for buttons */

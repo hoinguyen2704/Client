@@ -1,0 +1,48 @@
+{
+  "customers": {
+    "title": "Quản lý khách hàng",
+    "export": "Xuất danh sách",
+    "searchPlaceholder": "Tìm kiếm theo tên, email, SĐT...",
+    "filters": {
+      "allRoles": "Tất cả vai trò",
+      "customer": "Khách hàng",
+      "admin": "Admin"
+    },
+    "table": {
+      "index": "STT",
+      "user": "Người dùng",
+      "email": "Email",
+      "phone": "SĐT",
+      "role": "Vai trò",
+      "createdAt": "Ngày tạo",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "empty": "Không có người dùng nào"
+    },
+    "statuses": {
+      "active": "Hoạt động",
+      "locked": "Đã khóa"
+    },
+    "actions": {
+      "lock": "Khóa tài khoản",
+      "unlock": "Mở khóa"
+    },
+    "labels": {
+      "pagination": "người dùng"
+    },
+    "toasts": {
+      "loadFailed": "Tải danh sách người dùng thất bại!",
+      "toggleSuccess": "Cập nhật trạng thái người dùng thành công!",
+      "toggleFailed": "Cập nhật trạng thái người dùng thất bại!",
+      "exportSuccess": "Xuất danh sách người dùng thành công!",
+      "exportFailed": "Xuất báo cáo thất bại!"
+    }
+  },
+  "detail": {
+    "title": "Chi tiết khách hàng",
+    "profile": "Thông tin hồ sơ",
+    "orders": "Đơn hàng",
+    "returns": "Yêu cầu trả hàng",
+    "activity": "Hoạt động gần đây"
+  }
+}

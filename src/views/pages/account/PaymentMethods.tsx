@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { FiPlus, FiCreditCard, FiTrash2, FiCheckCircle } from 'react-icons/fi';
-import { Button, PrimaryButton, Modal } from '@/components';
+import { useTranslation } from 'react-i18next';
+import { Button, PrimaryButton, Modal, Checkbox } from '@/components';
 import { motion, AnimatePresence } from 'motion/react';
 import type { PaymentMethod } from '@/types';
 
 
 
 export default function PaymentMethods() {
+  const { t } = useTranslation('account');
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -24,17 +26,17 @@ export default function PaymentMethods() {
   return (
     <div className="space-y-5 sm:space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Phương thức thanh toán</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('paymentMethods.title')}</h1>
         <PrimaryButton onClick={() => setIsModalOpen(true)} icon={<FiPlus className="text-base" />} className="w-full sm:w-auto">
-          Thêm thẻ mới
+          {t('paymentMethods.addCard')}
         </PrimaryButton>
       </div>
 
       {methods.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-100 dark:border-slate-800 shadow-sm">
           <FiCreditCard className="text-4xl sm:text-5xl text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg sm:text-xl font-bold mb-2">Chưa có thẻ thanh toán</h3>
-          <p className="text-md sm:text-base text-slate-500">Bấm thêm thẻ mới để thanh toán nhanh hơn nhé.</p>
+          <h3 className="text-lg sm:text-xl font-bold mb-2">{t('paymentMethods.empty.title')}</h3>
+          <p className="text-md sm:text-base text-slate-500">{t('paymentMethods.empty.description')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -53,7 +55,7 @@ export default function PaymentMethods() {
 
                 {method.isDefault && (
                   <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/20 backdrop-blur-md px-2 py-1 rounded-lg text-sm font-bold">
-                    <FiCheckCircle /> Mặc định
+                    <FiCheckCircle /> {t('paymentMethods.default')}
                   </div>
                 )}
 
@@ -66,11 +68,11 @@ export default function PaymentMethods() {
                   <div className="text-lg sm:text-xl tracking-[0.2em] font-mono">•••• •••• •••• {method.last4}</div>
                   <div className="flex justify-between items-end">
                     <div>
-                      <p className="text-sm opacity-70 uppercase tracking-wider mb-1">Tên chủ thẻ</p>
+                      <p className="text-sm opacity-70 uppercase tracking-wider mb-1">{t('paymentMethods.cardholderName')}</p>
                       <p className="text-md sm:text-base font-medium tracking-wider">{method.name}</p>
                     </div>
                     <div>
-                      <p className="text-sm opacity-70 uppercase tracking-wider mb-1">Hết hạn</p>
+                      <p className="text-sm opacity-70 uppercase tracking-wider mb-1">{t('paymentMethods.expiry')}</p>
                       <p className="text-md sm:text-base font-medium tracking-wider">{method.expiry}</p>
                     </div>
                   </div>
@@ -80,12 +82,12 @@ export default function PaymentMethods() {
                   {!method.isDefault && (
                     <button onClick={() => setAsDefault(method.id)}
                       className="px-4 py-2 bg-white text-slate-900 rounded-lg font-medium hover:bg-slate-100 transition-colors">
-                      Đặt làm mặc định
+                      {t('paymentMethods.setAsDefault')}
                     </button>
                   )}
                   <button onClick={() => deleteMethod(method.id)}
                     className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors flex items-center gap-2">
-                    <FiTrash2 /> Xóa thẻ
+                    <FiTrash2 /> {t('paymentMethods.deleteCard')}
                   </button>
                 </div>
 
@@ -93,12 +95,12 @@ export default function PaymentMethods() {
                   {!method.isDefault && (
                     <button onClick={() => setAsDefault(method.id)}
                       className="flex-1 px-3 py-2 bg-white text-slate-900 rounded-lg text-md font-semibold hover:bg-slate-100 transition-colors">
-                      Đặt mặc định
+                      {t('paymentMethods.setDefault')}
                     </button>
                   )}
                   <button onClick={() => deleteMethod(method.id)}
                     className="px-3 py-2 bg-red-500 text-white rounded-lg text-md font-semibold hover:bg-red-600 transition-colors flex items-center gap-1.5">
-                    <FiTrash2 /> Xóa
+                    <FiTrash2 /> {t('paymentMethods.delete')}
                   </button>
                 </div>
               </motion.div>
@@ -110,27 +112,27 @@ export default function PaymentMethods() {
       <Modal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Thêm thẻ thanh toán"
+        title={t('paymentMethods.modal.title')}
         size="sm"
       >
         <div className="space-y-4">
           <div>
-            <label className="block font-medium mb-2">Số thẻ</label>
+            <label className="block font-medium mb-2">{t('paymentMethods.modal.cardNumber')}</label>
             <div className="relative">
               <input type="text" placeholder="0000 0000 0000 0000" className="w-full h-11 sm:h-12 pl-11 sm:pl-12 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-mono tracking-widest text-md sm:text-base" maxLength={19} />
               <FiCreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
             </div>
           </div>
-          <div><label className="block font-medium mb-2">Tên in trên thẻ</label><input type="text" placeholder="NGUYEN VAN A" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase text-md sm:text-base" /></div>
+          <div><label className="block font-medium mb-2">{t('paymentMethods.modal.cardholderInput')}</label><input type="text" placeholder="NGUYEN VAN A" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase text-md sm:text-base" /></div>
           <div className="grid grid-cols-2 gap-4">
-            <div><label className="block font-medium mb-2">Ngày hết hạn</label><input type="text" placeholder="MM/YY" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center text-md sm:text-base" maxLength={5} /></div>
-            <div><label className="block font-medium mb-2">CVV/CVC</label><input type="password" placeholder="•••" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center tracking-widest text-md sm:text-base" maxLength={3} /></div>
+            <div><label className="block font-medium mb-2">{t('paymentMethods.modal.expiryDate')}</label><input type="text" placeholder="MM/YY" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center text-md sm:text-base" maxLength={5} /></div>
+            <div><label className="block font-medium mb-2">{t('paymentMethods.modal.securityCode')}</label><input type="password" placeholder="•••" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center tracking-widest text-md sm:text-base" maxLength={3} /></div>
           </div>
           <label className="flex items-center gap-3 cursor-pointer mt-4">
-            <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500" />
-            <span className="font-medium">Đặt làm thẻ mặc định</span>
+            <Checkbox className="w-5 h-5" />
+            <span className="font-medium">{t('paymentMethods.modal.setDefaultCard')}</span>
           </label>
-          <Button onClick={() => setIsModalOpen(false)} fullWidth size="lg" className="mt-6">Lưu thẻ</Button>
+          <Button onClick={() => setIsModalOpen(false)} fullWidth size="lg" className="mt-6">{t('paymentMethods.modal.saveCard')}</Button>
         </div>
       </Modal>
     </div>

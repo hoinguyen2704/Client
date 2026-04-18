@@ -1,4 +1,25 @@
 type UnknownRecord = Record<string, unknown>;
+type ErrorTranslator = (key: string, options?: Record<string, unknown>) => string;
+
+function resolveTranslator(
+  input?: ErrorTranslator | string,
+): ErrorTranslator | undefined {
+  return typeof input === 'function' ? input : undefined;
+}
+
+function resolveDefaultFallback(
+  translator?: ErrorTranslator,
+  fallbackInput?: ErrorTranslator | string,
+  fallbackKey = 'common:errors.unknown',
+): string {
+  if (typeof fallbackInput === 'string') {
+    return fallbackInput;
+  }
+
+  return translator
+    ? translator(fallbackKey)
+    : 'Something went wrong';
+}
 
 function flattenMessages(input: unknown): string[] {
   if (!input) return [];
@@ -19,20 +40,30 @@ function flattenMessages(input: unknown): string[] {
   return [];
 }
 
-export function getApiErrorMessage(error: unknown, fallback = 'Đã có lỗi xảy ra'): string {
+export function getApiErrorMessage(
+  error: unknown,
+  translatorOrFallback?: ErrorTranslator | string,
+  fallbackKey = 'common:errors.unknown',
+): string {
+  const translator = resolveTranslator(translatorOrFallback);
+  const fallback = resolveDefaultFallback(translator, translatorOrFallback, fallbackKey);
   const raw = error as any;
   const payload = raw?.response?.data ?? raw;
   const rawMessage = typeof raw?.message === 'string' ? raw.message : '';
 
   if (raw?.code === 'ECONNABORTED' || rawMessage.toLowerCase().includes('timeout')) {
-    return 'Yêu cầu quá thời gian chờ. Vui lòng thử lại.';
+    return translator
+      ? translator('common:errors.timeout')
+      : 'The request timed out. Please try again.';
   }
 
   if (
     rawMessage.toLowerCase().includes('network error') ||
     rawMessage.toLowerCase().includes('failed to fetch')
   ) {
-    return 'Không thể kết nối tới máy chủ. Vui lòng kiểm tra mạng và thử lại.';
+    return translator
+      ? translator('common:errors.network')
+      : 'Unable to connect to the server. Please check your network and try again.';
   }
 
   if (typeof payload === 'string') {

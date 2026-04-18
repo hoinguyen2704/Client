@@ -5,8 +5,21 @@
     "darkMode": "Dark Mode",
     "darkModeDesc": "Switch interface to protect eyes",
     "language": "Language",
+    "languageOptions": {
+      "vi": "Vietnamese",
+      "en": "English"
+    },
     "promotions": "Promotional Notifications",
     "promotionsDesc": "Coupons, sales programs"
+  },
+  "aria": {
+    "toggleDarkMode": "Toggle dark mode",
+    "togglePromotions": "Toggle promotional notifications",
+    "toggleEmail": "Toggle email notifications",
+    "toggleSms": "Toggle SMS notifications",
+    "toggleApp": "Toggle app notifications",
+    "toggleOrders": "Toggle order notifications",
+    "toggleTwoFactor": "Toggle two-factor authentication"
   },
   "notifications": {
     "title": "Notification Settings",
@@ -31,23 +44,55 @@
       "current": "Current password",
       "new": "New password",
       "confirm": "Confirm new password",
-      "save": "Save new password"
+      "save": "Save new password",
+      "saving": "Updating..."
     },
     "twoFactor": {
       "title": "Two-Factor Authentication (2FA)",
-      "desc": "Enhance account security"
+      "desc": "Enhance account security",
+      "setupDescription": "Scan this QR code with Google Authenticator or Authy to set up 2FA.",
+      "otpPlaceholder": "Enter the 6-digit code...",
+      "confirm": "Confirm"
     }
   },
   "socialAccounts": {
     "title": "Linked Accounts",
     "linked": "Linked",
+    "linkedWithEmail": "Linked ({{email}})",
     "notLinked": "Not linked",
     "unlink": "Unlink",
-    "linkNow": "Link now"
+    "linkNow": "Link now",
+    "linking": "Linking...",
+    "loading": "Loading status...",
+    "googleMismatch": "The Google account email must match your current account email.",
+    "googleAlreadyLinked": "This Google account is already linked elsewhere.",
+    "facebookComingSoon": "Will be supported in a later release",
+    "unsupported": "Not supported"
   },
   "deleteAccount": {
     "title": "Delete Account",
     "warning": "When you delete your account, all personal data, order history, and accumulated points will be permanently deleted and cannot be recovered.",
     "button": "Request account deletion"
+  },
+  "unlinkGoogleModal": {
+    "title": "Verify to unlink Google",
+    "description": "For security, please enter your current password before unlinking Google.",
+    "currentPassword": "Current password",
+    "confirm": "Unlink",
+    "submitting": "Unlinking..."
+  },
+  "toasts": {
+    "socialLoadFailed": "Unable to load linked account status.",
+    "passwordRequired": "Please enter all password fields.",
+    "passwordTooShort": "The new password must be at least 6 characters.",
+    "passwordMismatch": "Password confirmation does not match.",
+    "passwordUpdated": "Password changed successfully!",
+    "passwordUpdateFailed": "Failed to change password. Please check your current password.",
+    "googleLinked": "Google linked successfully!",
+    "googleLinkFailed": "Failed to link Google.",
+    "unlinkPasswordRequired": "Please enter your password to verify.",
+    "googleUnlinked": "Google unlinked successfully.",
+    "unlinkLastLoginMethod": "You cannot unlink the last remaining sign-in method.",
+    "googleUnlinkFailed": "Failed to unlink Google."
   }
 }

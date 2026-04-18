@@ -1,0 +1,43 @@
+{
+  "products": {
+    "breadcrumbCurrent": "Tất cả sản phẩm",
+    "mobileFilter": "Lọc sản phẩm",
+    "filterTitle": "Bộ lọc",
+    "searchTitle": "Tìm kiếm",
+    "searchPlaceholder": "Tên sản phẩm...",
+    "categoriesTitle": "Danh mục sản phẩm",
+    "allCategories": "Tất cả danh mục",
+    "brandsTitle": "Thương hiệu",
+    "clearFilters": "Xóa bộ lọc",
+    "pageTitle": "Tất cả sản phẩm",
+    "sortBy": "Sắp xếp theo:",
+    "sortOptions": {
+      "popular": "Phổ biến / Bán chạy",
+      "newest": "Mới nhất",
+      "bestRated": "Đánh giá cao",
+      "priceAsc": "Giá tăng dần",
+      "priceDesc": "Giá giảm dần"
+    },
+    "empty": {
+      "title": "Không tìm thấy sản phẩm nào",
+      "description": "Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn. Vui lòng thử lại với các tiêu chí khác."
+    },
+    "toasts": {
+      "loadFailed": "Tải sản phẩm thất bại!"
+    }
+  },
+  "flashSale": {
+    "empty": {
+      "title": "Chưa có Flash Sale",
+      "description": "Hãy quay lại sau để không bỏ lỡ các ưu đãi hấp dẫn!"
+    },
+    "endsIn": "Kết thúc sau:",
+    "remainingProducts": "Còn {{count}} sản phẩm",
+    "soldOut": "Đã hết",
+    "countdown": {
+      "hours": "giờ",
+      "minutes": "phút",
+      "seconds": "giây"
+    }
+  }
+}

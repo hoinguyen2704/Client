@@ -1,0 +1,156 @@
+{
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "confirm": "Confirm",
+    "close": "Close",
+    "clear": "Clear",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "retry": "Retry",
+    "reload": "Reload page",
+    "logout": "Log out",
+    "readAll": "Mark all as read",
+    "markRead": "Mark as read",
+    "viewAllNotifications": "View all notifications",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "edit": "Edit",
+    "delete": "Delete",
+    "viewDetails": "View details",
+    "more": "More",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
+  },
+  "confirmDialog": {
+    "title": "Confirm",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "modal": {
+    "cancel": "Cancel",
+    "submit": "Save"
+  },
+  "loading": {
+    "default": "Loading..."
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "The application encountered an unexpected issue. Please try reloading the page.",
+    "details": "Error details",
+    "reload": "Reload page"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "items": "items"
+  },
+  "filters": {
+    "all": "All",
+    "allStatuses": "All statuses"
+  },
+  "labels": {
+    "messagesCount": "{{count}} messages",
+    "unknown": "Unknown",
+    "notAvailable": "-"
+  },
+  "starRating": {
+    "labels": {
+      "1": "Very bad",
+      "2": "Poor",
+      "3": "Average",
+      "4": "Good",
+      "5": "Excellent"
+    }
+  },
+  "errors": {
+    "unknown": "Something went wrong",
+    "timeout": "The request timed out. Please try again.",
+    "network": "Unable to connect to the server. Please check your network and try again."
+  },
+  "roles": {
+    "admin": "Administrator",
+    "staff": "Staff",
+    "member": "Member",
+    "customer": "Customer",
+    "user": "User"
+  },
+  "status": {
+    "generic": {
+      "completed": "Delivered",
+      "delivered": "Delivered",
+      "processing": "Pending processing",
+      "shipping": "Shipping",
+      "cancelled": "Cancelled",
+      "pending": "Pending approval",
+      "verified": "Verified",
+      "active": "Active",
+      "inactive": "Suspended",
+      "expired": "Expired",
+      "open": "New",
+      "inProgress": "In progress",
+      "replied": "Replied",
+      "closed": "Closed",
+      "vip": "VIP",
+      "banned": "Banned"
+    },
+    "cms": {
+      "published": "Published",
+      "draft": "Draft",
+      "hidden": "Hidden",
+      "upcoming": "Upcoming",
+      "ended": "Ended",
+      "approved": "Approved",
+      "spam": "Spam",
+      "admin": "Admin",
+      "user": "User"
+    },
+    "ticket": {
+      "open": "Open",
+      "inProgress": "In progress",
+      "answered": "Answered",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "return": {
+      "requested": "New request",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "inTransit": "In transit",
+      "received": "Returned items received",
+      "qcPassed": "QC passed",
+      "qcFailed": "QC failed",
+      "refundPending": "Refund pending",
+      "refunded": "Refunded",
+      "cancelled": "Cancelled",
+      "closed": "Closed",
+      "unknown": "Unknown"
+    },
+    "refund": {
+      "pending": "Refund pending",
+      "processing": "Processing",
+      "success": "Success",
+      "failed": "Failed",
+      "reversed": "Reversed"
+    },
+    "order": {
+      "pending": "Pending processing",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "shipping": "Shipping",
+      "shipped": "Delivered",
+      "cancelled": "Cancelled",
+      "returned": "Returned"
+    },
+    "payment": {
+      "completed": "Paid",
+      "failed": "Payment failed",
+      "refunded": "Refunded"
+    },
+    "stock": {
+      "lowStock": "Low stock",
+      "outOfStock": "Out of stock"
+    }
+  }
+}

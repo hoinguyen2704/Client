@@ -29,6 +29,14 @@ const toImageUrls = (images: ProductImageResponse[]): string[] =>
     .map((img) => img.imageUrl)
     .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
 
+const keepActiveVariants = (product: ProductResponse | null): ProductResponse | null => {
+  if (!product) return product;
+  return {
+    ...product,
+    variants: (product.variants || []).filter((variant) => variant.active !== false),
+  };
+};
+
 export default function ProductDetail() {
   const { slug } = useParams();
   const [product, setProduct] = useState<ProductResponse | null>(null);
@@ -52,7 +60,7 @@ export default function ProductDetail() {
           flashSaleService.getActiveList().catch(() => null),
         ]);
 
-        const loadedProduct = productRes.data;
+        const loadedProduct = keepActiveVariants(productRes.data);
         setProduct(loadedProduct);
         setActiveFlashSales(flashSaleRes?.data || []);
 
@@ -105,11 +113,11 @@ export default function ProductDetail() {
 
   if (loading) {
     return (
-      <div className="w-full px-4 md:px-8 lg:px-12 py-8">
+      <div className="mx-auto w-full px-4 md:px-8 lg:px-12 py-8">
         <div className="animate-pulse space-y-8">
           <div className="h-4 w-64 bg-slate-200 rounded" />
-          <div className="flex flex-col lg:flex-row gap-12">
-            <div className="w-full lg:w-5/12 aspect-square bg-slate-200 rounded-2xl" />
+          <div className="grid gap-6 lg:grid-cols-[minmax(340px,420px)_minmax(0,1fr)] lg:gap-8">
+            <div className="w-full aspect-square bg-slate-200 rounded-2xl" />
             <div className="flex-1 space-y-4">
               <div className="h-8 w-3/4 bg-slate-200 rounded" />
               <div className="h-6 w-1/2 bg-slate-200 rounded" />
@@ -123,7 +131,7 @@ export default function ProductDetail() {
 
   if (!product) {
     return (
-      <div className="w-full px-4 md:px-8 lg:px-12 py-20 text-center">
+      <div className="mx-auto w-full px-4 md:px-8 lg:px-12 py-20 text-center">
         <h2 className="text-2xl font-bold mb-4">Không tìm thấy sản phẩm</h2>
         <Button href="/products">Quay lại danh sách</Button>
       </div>
@@ -138,9 +146,9 @@ export default function ProductDetail() {
   });
 
   return (
-    <div className="w-full px-4 md:px-8 lg:px-12 py-8">
+    <div className="mx-auto w-full px-4 md:px-8 lg:px-12 py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-md text-slate-500 mb-8">
+      <nav className="flex text-sm md:text-md text-slate-500 mb-6">
         <ol className="flex items-center space-x-2">
           <li><Link to="/" className="hover:text-purple-600">Trang chủ</Link></li>
           <li><FiChevronRight /></li>
@@ -150,8 +158,8 @@ export default function ProductDetail() {
         </ol>
       </nav>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 md:p-6 shadow-sm border border-slate-100 dark:border-slate-800 mb-6">
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 md:p-5 xl:p-6 shadow-sm border border-slate-100 dark:border-slate-800 mb-6">
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(340px,420px)_minmax(0,1fr)] lg:gap-6 xl:gap-8">
           <ProductGallery
             images={finalGalleryImages}
             activeImage={activeImage}

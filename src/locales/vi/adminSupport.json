@@ -1,0 +1,8 @@
+{
+  "realtime": {
+    "newSupportRequestByUser": "{{userName}} vừa tạo yêu cầu hỗ trợ",
+    "newSupportRequest": "Có yêu cầu hỗ trợ mới từ người dùng",
+    "customerReplyTicket": "{{ticketNumber}} có phản hồi mới từ khách hàng",
+    "customerReply": "Khách hàng vừa gửi phản hồi mới"
+  }
+}

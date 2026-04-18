@@ -1,104 +1,166 @@
-import { FiPackage, FiTruck, FiCheckCircle, FiXCircle } from "react-icons/fi";
+import type { TFunction } from 'i18next';
+import type { IconType } from 'react-icons';
+import { FiCheckCircle, FiPackage, FiTruck, FiXCircle } from 'react-icons/fi';
+import i18n from '@/i18n';
 
 export type AdminOrderStatus =
-  | "PENDING"
-  | "CONFIRMED"
-  | "PROCESSING"
-  | "SHIPPING"
-  | "SHIPPED"
-  | "CANCELLED"
-  | "RETURNED";
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'PROCESSING'
+  | 'SHIPPING'
+  | 'SHIPPED'
+  | 'CANCELLED'
+  | 'RETURNED';
 
-//  ADMIN ORDER CONSTANTS
+type LabelledItem = {
+  label: string;
+  labelKey: string;
+};
+
+type OrderStatusOption = LabelledItem & {
+  value: AdminOrderStatus;
+  colorClass: string;
+};
+
+type ClientOrderTab = LabelledItem & {
+  id: 'all' | AdminOrderStatus;
+};
+
+type OrderTrackingStep = LabelledItem & {
+  key: Exclude<AdminOrderStatus, 'CANCELLED' | 'RETURNED'>;
+  icon: IconType;
+};
+
+type BadgeConfig = LabelledItem & {
+  icon: IconType;
+  className: string;
+};
+
+function translateLabel(t: TFunction | undefined, key: string, fallback: string) {
+  const translator = t ?? i18n.t.bind(i18n);
+  return translator(key, { defaultValue: fallback });
+}
+
 export const ORDER_STATUS_OPTIONS = [
   {
-    value: "PENDING",
-    label: "Chờ xử lý",
+    value: 'PENDING',
+    label: 'Chờ xử lý',
+    labelKey: 'adminSales:orders.statusOptions.pending',
     colorClass:
-      "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400",
+      'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400',
   },
   {
-    value: "CONFIRMED",
-    label: "Đã xác nhận",
+    value: 'CONFIRMED',
+    label: 'Đã xác nhận',
+    labelKey: 'adminSales:orders.statusOptions.confirmed',
     colorClass:
-      "bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400",
+      'bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400',
   },
   {
-    value: "PROCESSING",
-    label: "Đang xử lý",
+    value: 'PROCESSING',
+    label: 'Đang xử lý',
+    labelKey: 'adminSales:orders.statusOptions.processing',
     colorClass:
-      "bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400",
+      'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400',
   },
   {
-    value: "SHIPPING",
-    label: "Đang giao",
+    value: 'SHIPPING',
+    label: 'Đang giao',
+    labelKey: 'adminSales:orders.statusOptions.shipping',
     colorClass:
-      "bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-500/10 dark:border-violet-500/20 dark:text-violet-400",
+      'bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-500/10 dark:border-violet-500/20 dark:text-violet-400',
   },
   {
-    value: "SHIPPED",
-    label: "Đã giao",
+    value: 'SHIPPED',
+    label: 'Đã giao',
+    labelKey: 'adminSales:orders.statusOptions.shipped',
     colorClass:
-      "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400",
+      'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400',
   },
   {
-    value: "CANCELLED",
-    label: "Đã hủy",
+    value: 'CANCELLED',
+    label: 'Đã hủy',
+    labelKey: 'adminSales:orders.statusOptions.cancelled',
     colorClass:
-      "bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400",
+      'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400',
   },
   {
-    value: "RETURNED",
-    label: "Đã hoàn trả",
+    value: 'RETURNED',
+    label: 'Đã hoàn trả',
+    labelKey: 'adminSales:orders.statusOptions.returned',
     colorClass:
-      "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-400",
+      'bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-400',
   },
-];
+] satisfies OrderStatusOption[];
 
-export const ORDER_FILTER_OPTIONS = [
-  { value: "", label: "Tất cả trạng thái" },
-  ...ORDER_STATUS_OPTIONS,
-];
+export function getOrderFilterOptions(t?: TFunction) {
+  return [
+    {
+      value: '',
+      label: translateLabel(t, 'common:filters.allStatuses', 'Tất cả trạng thái'),
+    },
+    ...ORDER_STATUS_OPTIONS.map((option) => ({
+      ...option,
+      label: translateLabel(t, option.labelKey, option.label),
+    })),
+  ];
+}
 
 export const ADMIN_ORDER_STATUS_TRANSITIONS: Record<AdminOrderStatus, AdminOrderStatus[]> = {
-  PENDING: ["CONFIRMED", "CANCELLED"],
-  CONFIRMED: ["PROCESSING", "CANCELLED"],
-  PROCESSING: ["SHIPPING", "CANCELLED"],
-  SHIPPING: ["SHIPPED"],
-  SHIPPED: ["RETURNED"],
+  PENDING: ['CONFIRMED', 'CANCELLED'],
+  CONFIRMED: ['PROCESSING', 'CANCELLED'],
+  PROCESSING: ['SHIPPING', 'CANCELLED'],
+  SHIPPING: ['SHIPPED'],
+  SHIPPED: ['RETURNED'],
   CANCELLED: [],
   RETURNED: [],
 };
 
-export const getAdminOrderStatusOptions = (currentStatus: string) => {
+export const getAdminOrderStatusOptions = (currentStatus: string, t?: TFunction) => {
   const current = currentStatus as AdminOrderStatus;
   const next = ADMIN_ORDER_STATUS_TRANSITIONS[current] || [];
   const allowedStatuses = new Set<AdminOrderStatus>([current, ...next]);
 
   return ORDER_STATUS_OPTIONS.filter((option) =>
     allowedStatuses.has(option.value as AdminOrderStatus),
-  );
+  ).map((option) => ({
+    ...option,
+    label: translateLabel(t, option.labelKey, option.label),
+  }));
 };
 
-//  CLIENT ACCOUNT ORDER CONSTANTS
 export const CLIENT_ORDER_TABS = [
-  { id: "all", label: "Tất cả" },
-  { id: "PENDING", label: "Chờ xác nhận" },
-  { id: "CONFIRMED", label: "Đã xác nhận" },
-  { id: "PROCESSING", label: "Người gửi đang chuẩn bị hàng" },
-  { id: "SHIPPING", label: "Đang giao" },
-  { id: "SHIPPED", label: "Đã giao" },
-  { id: "CANCELLED", label: "Đã hủy" },
-  { id: "RETURNED", label: "Đã hoàn trả" },
-];
+  { id: 'all', label: 'Tất cả', labelKey: 'common:filters.all' },
+  { id: 'PENDING', label: 'Chờ xác nhận', labelKey: 'account:orders.tabs.pending' },
+  { id: 'CONFIRMED', label: 'Đã xác nhận', labelKey: 'account:orders.tabs.confirmed' },
+  { id: 'PROCESSING', label: 'Người gửi đang chuẩn bị hàng', labelKey: 'account:orders.tabs.processing' },
+  { id: 'SHIPPING', label: 'Đang giao', labelKey: 'account:orders.tabs.shipping' },
+  { id: 'SHIPPED', label: 'Đã giao', labelKey: 'account:orders.tabs.shipped' },
+  { id: 'CANCELLED', label: 'Đã hủy', labelKey: 'account:orders.tabs.cancelled' },
+  { id: 'RETURNED', label: 'Đã hoàn trả', labelKey: 'account:orders.tabs.returned' },
+] satisfies ClientOrderTab[];
+
+export function getClientOrderTabs(t?: TFunction) {
+  return CLIENT_ORDER_TABS.map((tab) => ({
+    ...tab,
+    label: translateLabel(t, tab.labelKey, tab.label),
+  }));
+}
 
 export const ORDER_TRACKING_STEPS = [
-  { key: "PENDING", label: "Chờ xác nhận", icon: FiPackage },
-  { key: "CONFIRMED", label: "Đã xác nhận", icon: FiCheckCircle },
-  { key: "PROCESSING", label: "Người gửi đang chuẩn bị hàng", icon: FiPackage },
-  { key: "SHIPPING", label: "Đang giao", icon: FiTruck },
-  { key: "SHIPPED", label: "Đã giao", icon: FiCheckCircle },
-];
+  { key: 'PENDING', label: 'Chờ xác nhận', labelKey: 'account:orderTracking.steps.pending', icon: FiPackage },
+  { key: 'CONFIRMED', label: 'Đã xác nhận', labelKey: 'account:orderTracking.steps.confirmed', icon: FiCheckCircle },
+  { key: 'PROCESSING', label: 'Người gửi đang chuẩn bị hàng', labelKey: 'account:orderTracking.steps.processing', icon: FiPackage },
+  { key: 'SHIPPING', label: 'Đang giao', labelKey: 'account:orderTracking.steps.shipping', icon: FiTruck },
+  { key: 'SHIPPED', label: 'Đã giao', labelKey: 'account:orderTracking.steps.shipped', icon: FiCheckCircle },
+] satisfies OrderTrackingStep[];
+
+export function getOrderTrackingSteps(t?: TFunction) {
+  return ORDER_TRACKING_STEPS.map((step) => ({
+    ...step,
+    label: translateLabel(t, step.labelKey, step.label),
+  }));
+}
 
 export const ORDER_STATUS_INDEX: Record<string, number> = {
   PENDING: 0,
@@ -108,56 +170,74 @@ export const ORDER_STATUS_INDEX: Record<string, number> = {
   SHIPPED: 4,
 };
 
-// Define status badge render helper for client UI
-export const getClientStatusBadge = (status: string) => {
-  switch (status) {
-    case "PENDING":
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-600 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400 text-sm font-bold uppercase tracking-wider">
-          <FiPackage /> Chờ xác nhận
-        </span>
-      );
-    case "CONFIRMED":
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400 text-sm font-bold uppercase tracking-wider">
-          <FiCheckCircle /> Đã xác nhận
-        </span>
-      );
-    case "PROCESSING":
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400 text-sm font-bold uppercase tracking-wider">
-          <FiPackage /> Người gửi đang chuẩn bị hàng
-        </span>
-      );
-    case "SHIPPING":
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 text-violet-600 dark:bg-violet-500/10 dark:border-violet-500/20 dark:text-violet-400 text-sm font-bold uppercase tracking-wider">
-          <FiTruck /> Đang giao
-        </span>
-      );
-    case "SHIPPED":
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400 text-sm font-bold uppercase tracking-wider">
-          <FiCheckCircle /> Đã giao
-        </span>
-      );
-    case "CANCELLED":
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-600 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400 text-sm font-bold uppercase tracking-wider">
-          <FiXCircle /> Đã hủy
-        </span>
-      );
-    case "RETURNED":
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-slate-600 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-400 text-sm font-bold uppercase tracking-wider">
-          <FiXCircle /> Đã hoàn
-        </span>
-      );
-    default:
-      return (
-        <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm font-bold uppercase tracking-wider">
-          {status}
-        </span>
-      );
+const CLIENT_STATUS_BADGE_CONFIG: Record<AdminOrderStatus, BadgeConfig> = {
+  PENDING: {
+    label: 'Chờ xác nhận',
+    labelKey: 'account:orders.badges.pending',
+    icon: FiPackage,
+    className:
+      'bg-amber-50 border border-amber-200 text-amber-600 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400',
+  },
+  CONFIRMED: {
+    label: 'Đã xác nhận',
+    labelKey: 'account:orders.badges.confirmed',
+    icon: FiCheckCircle,
+    className:
+      'bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400',
+  },
+  PROCESSING: {
+    label: 'Người gửi đang chuẩn bị hàng',
+    labelKey: 'account:orders.badges.processing',
+    icon: FiPackage,
+    className:
+      'bg-blue-50 border border-blue-200 text-blue-600 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400',
+  },
+  SHIPPING: {
+    label: 'Đang giao',
+    labelKey: 'account:orders.badges.shipping',
+    icon: FiTruck,
+    className:
+      'bg-violet-50 border border-violet-200 text-violet-600 dark:bg-violet-500/10 dark:border-violet-500/20 dark:text-violet-400',
+  },
+  SHIPPED: {
+    label: 'Đã giao',
+    labelKey: 'account:orders.badges.shipped',
+    icon: FiCheckCircle,
+    className:
+      'bg-emerald-50 border border-emerald-200 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400',
+  },
+  CANCELLED: {
+    label: 'Đã hủy',
+    labelKey: 'account:orders.badges.cancelled',
+    icon: FiXCircle,
+    className:
+      'bg-rose-50 border border-rose-200 text-rose-600 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400',
+  },
+  RETURNED: {
+    label: 'Đã hoàn',
+    labelKey: 'account:orders.badges.returned',
+    icon: FiXCircle,
+    className:
+      'bg-slate-50 border border-slate-200 text-slate-600 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-400',
+  },
+};
+
+export const getClientStatusBadge = (status: string, t?: TFunction) => {
+  const config = CLIENT_STATUS_BADGE_CONFIG[status as AdminOrderStatus];
+  if (!config) {
+    return (
+      <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm font-bold uppercase tracking-wider">
+        {status}
+      </span>
+    );
   }
+
+  const Icon = config.icon;
+  const label = translateLabel(t, config.labelKey, config.label);
+
+  return (
+    <span className={`flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider ${config.className}`}>
+      <Icon /> {label}
+    </span>
+  );
 };

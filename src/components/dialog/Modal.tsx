@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslation } from 'react-i18next';
 import type {
   ModalProps,
   ModalCancelButtonProps,
@@ -22,6 +23,8 @@ export default function Modal({
   className = "",
   containerClassName = "",
 }: ModalProps) {
+  const closeButtonClass =
+    "rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors";
   // Stable ref for onClose — avoids re-attaching listener when parent re-renders
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -90,7 +93,7 @@ export default function Modal({
                   onClick={onClose}
                   variant="ghost"
                   icon={<FiX className="text-lg sm:text-xl" />}
-                  className="rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className={closeButtonClass}
                 />
               </div>
             )}
@@ -120,15 +123,16 @@ export default function Modal({
 
 export function ModalCancelButton({
   onClick,
-  children = "Hủy",
+  children,
 }: ModalCancelButtonProps) {
+  const { t } = useTranslation('common');
   return (
     <Button
       onClick={onClick}
       variant="secondary"
       className="h-10 px-6 font-medium w-full sm:w-auto"
     >
-      {children}
+      {children || t('modal.cancel')}
     </Button>
   );
 }
@@ -136,9 +140,10 @@ export function ModalCancelButton({
 export function ModalSubmitButton({
   onClick,
   icon,
-  children = "Lưu",
+  children,
   variant = "primary",
 }: ModalSubmitButtonProps) {
+  const { t } = useTranslation('common');
   return (
     <Button
       onClick={onClick}
@@ -146,7 +151,7 @@ export function ModalSubmitButton({
       variant={variant === "danger" ? "danger" : "primary"}
       className="h-10 px-6 font-medium w-full sm:w-auto"
     >
-      {children}
+      {children || t('modal.submit')}
     </Button>
   );
 }

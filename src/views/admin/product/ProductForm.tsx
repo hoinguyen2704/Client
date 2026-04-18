@@ -2,7 +2,6 @@ import { FiLoader, FiSave } from "react-icons/fi";
 import { Button, PrimaryButton, BackButton } from "@/components";
 import useProductForm from "./hooks/useProductForm";
 import BasicInfoSection from "./sections/BasicInfoSection";
-import VariantSection from "./sections/VariantSection";
 import ImageUploadSection from "./sections/ImageUploadSection";
 import StatusPricingSection from "./sections/StatusPricingSection";
 
@@ -37,6 +36,7 @@ export default function ProductForm() {
     getSpecAttributeIdByKey: form.getSpecAttributeIdByKey,
     handleCreateCategory: form.handleCreateCategory,
     handleCreateBrand: form.handleCreateBrand,
+    categoryLocked: form.categoryLocked,
   };
 
   // Loading state
@@ -64,6 +64,16 @@ export default function ProductForm() {
           </h1>
         </div>
         <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
+          {form.isEditMode && (
+            <Button
+              href={`/admin/products/${form.id}/variants`}
+              variant="secondary"
+              size="md"
+              className="flex-1 sm:flex-none"
+            >
+              Quản lý phân loại
+            </Button>
+          )}
           <Button
             onClick={() => form.navigate("/admin/products")}
             variant="outline"
@@ -93,25 +103,32 @@ export default function ProductForm() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Info */}
         <div className="lg:col-span-2 space-y-6">
-          <BasicInfoSection {...basicInfoSectionProps} showSpecs={false} />
+          {form.isEditMode && (
+            <div className="rounded-2xl border border-indigo-200 bg-indigo-50/80 p-4 text-indigo-700 dark:border-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-semibold">
+                    {form.hasVariants
+                      ? `Sản phẩm đang có ${form.variantCount} phân loại.`
+                      : "Sản phẩm chưa có phân loại nào."}
+                  </p>
+                  <p className="text-sm">
+                    SKU, giá bán, tồn kho và ảnh theo phân loại được quản lý ở màn riêng.
+                  </p>
+                </div>
+                <Button
+                  href={`/admin/products/${form.id}/variants`}
+                  variant="outline"
+                  size="md"
+                  className="w-full sm:w-auto"
+                >
+                  Quản lý phân loại
+                </Button>
+              </div>
+            </div>
+          )}
 
-          <VariantSection
-            variants={form.variants}
-            variantSchema={form.variantSchema}
-            uploadingVariantKeys={form.uploadingVariantKeys}
-            variantFileInputRefs={form.variantFileInputRefs}
-            addVariant={form.addVariant}
-            generateVariantCombinations={form.generateVariantCombinations}
-            sortVariantsByBestSelling={form.sortVariantsByBestSelling}
-            removeVariant={form.removeVariant}
-            updateVariant={form.updateVariant}
-            updateVariantSelection={form.updateVariantSelection}
-            regenerateVariantSku={form.regenerateVariantSku}
-            getVariantUiKey={form.getVariantUiKey}
-            handleVariantFilesSelected={form.handleVariantFilesSelected}
-            removeVariantPendingFile={form.removeVariantPendingFile}
-            deleteVariantImage={form.deleteVariantImage}
-          />
+          <BasicInfoSection {...basicInfoSectionProps} showSpecs={false} />
 
           <BasicInfoSection {...basicInfoSectionProps} showBasicInfo={false} />
         </div>
@@ -131,6 +148,7 @@ export default function ProductForm() {
           />
 
           <StatusPricingSection
+            isEditMode={form.isEditMode}
             status={form.status} setStatus={form.setStatus}
             originPrice={form.originPrice} setOriginPrice={form.setOriginPrice}
             isFeatured={form.isFeatured} setIsFeatured={form.setIsFeatured}

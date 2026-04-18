@@ -11,6 +11,7 @@ import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
 import userService from '@/apis/services/userService';
 import { requestGoogleIdToken } from '@/utils/googleAuth';
 import type { LinkedSocialAccountResponse } from '@/types';
+import type { SupportedLanguage } from '@/locales/config';
 
 export default function Settings() {
   const [notifications, setNotifications] = useState({
@@ -35,7 +36,7 @@ export default function Settings() {
   const [unlinkingGoogle, setUnlinkingGoogle] = useState(false);
   const user = useAuthStore(s => s.user);
   const { darkMode, toggleDarkMode, language, setLanguage } = useUIStore();
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation(['settings', 'common']);
 
   const handleNotificationChange = (key: keyof typeof notifications) => {
     setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
@@ -51,7 +52,7 @@ export default function Settings() {
       const res = await userService.getSocialAccounts();
       setSocialAccounts(res.data ?? []);
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Không thể tải trạng thái liên kết tài khoản.'));
+      toast.error(getApiErrorMessage(err, t, 'settings:toasts.socialLoadFailed'));
       setSocialAccounts([]);
     } finally {
       setLoadingSocialAccounts(false);
@@ -63,27 +64,27 @@ export default function Settings() {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword) {
-      toast.error('Vui lòng nhập đầy đủ mật khẩu.');
+      toast.error(t('settings:toasts.passwordRequired'));
       return;
     }
     if (newPassword.length < 6) {
-      toast.error('Mật khẩu mới phải ít nhất 6 ký tự.');
+      toast.error(t('settings:toasts.passwordTooShort'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error('Mật khẩu xác nhận không khớp.');
+      toast.error(t('settings:toasts.passwordMismatch'));
       return;
     }
     setSavingPassword(true);
     try {
       await userService.changePassword({ currentPassword, newPassword });
-      toast.success('Đổi mật khẩu thành công!');
+      toast.success(t('settings:toasts.passwordUpdated'));
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       setIsChangingPassword(false);
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, 'Đổi mật khẩu thất bại. Kiểm tra lại mật khẩu hiện tại.'));
+      toast.error(getApiErrorMessage(err, t, 'settings:toasts.passwordUpdateFailed'));
     } finally {
       setSavingPassword(false);
     }
@@ -96,18 +97,18 @@ export default function Settings() {
       const token = await requestGoogleIdToken();
       await userService.linkSocialAccount({ provider: 'GOOGLE', token });
       await fetchSocialAccounts();
-      toast.success('Liên kết Google thành công!');
+      toast.success(t('settings:toasts.googleLinked'));
     } catch (err: unknown) {
       const code = getApiErrorCode(err);
       if (code === 'GOOGLE_EMAIL_MISMATCH') {
-        toast.error('Email tài khoản Google phải trùng với email tài khoản hiện tại.');
+        toast.error(t('settings:socialAccounts.googleMismatch'));
         return;
       }
       if (code === 'SOCIAL_ACCOUNT_ALREADY_LINKED') {
-        toast.error('Tài khoản Google này đã được liên kết ở nơi khác.');
+        toast.error(t('settings:socialAccounts.googleAlreadyLinked'));
         return;
       }
-      toast.error(getApiErrorMessage(err, 'Liên kết Google thất bại.'));
+      toast.error(getApiErrorMessage(err, t, 'settings:toasts.googleLinkFailed'));
     } finally {
       setLinkingGoogle(false);
     }
@@ -127,7 +128,7 @@ export default function Settings() {
   const handleConfirmUnlinkGoogle = async () => {
     if (unlinkingGoogle) return;
     if (!unlinkPassword.trim()) {
-      toast.error('Vui lòng nhập mật khẩu để xác minh.');
+      toast.error(t('settings:toasts.unlinkPasswordRequired'));
       return;
     }
     setUnlinkingGoogle(true);
@@ -136,14 +137,14 @@ export default function Settings() {
       await fetchSocialAccounts();
       setUnlinkGoogleModalOpen(false);
       setUnlinkPassword('');
-      toast.success('Hủy liên kết Google thành công.');
+      toast.success(t('settings:toasts.googleUnlinked'));
     } catch (err: unknown) {
       const code = getApiErrorCode(err);
       if (code === 'UNLINK_LAST_LOGIN_METHOD') {
-        toast.error('Không thể hủy liên kết phương thức đăng nhập cuối cùng.');
+        toast.error(t('settings:toasts.unlinkLastLoginMethod'));
         return;
       }
-      toast.error(getApiErrorMessage(err, 'Hủy liên kết Google thất bại.'));
+      toast.error(getApiErrorMessage(err, t, 'settings:toasts.googleUnlinkFailed'));
     } finally {
       setUnlinkingGoogle(false);
     }
@@ -164,7 +165,7 @@ export default function Settings() {
             <div className="space-y-6">
               <label className="flex items-center justify-between cursor-pointer group">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-body-soft transition-colors">
                     <FiSun className="text-lg" />
                   </div>
                   <p className="font-medium text-slate-900 dark:text-white">{t('displayOptions.darkMode')}</p>
@@ -173,7 +174,7 @@ export default function Settings() {
                   checked={darkMode}
                   onChange={toggleDarkMode}
                   tone="slate"
-                  ariaLabel="Bật tắt chế độ tối"
+                  ariaLabel={t('settings:aria.toggleDarkMode')}
                 />
               </label>
 
@@ -187,10 +188,10 @@ export default function Settings() {
                 <div className="w-40 h-9">
                   <CustomSelect
                     value={language}
-                    onChange={(v) => setLanguage(v as 'vi' | 'en')}
+                    onChange={(v) => setLanguage(v as SupportedLanguage)}
                     options={[
-                      { value: 'vi', label: 'Tiếng Việt', colorClass: "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-200" },
-                      { value: 'en', label: 'English', colorClass: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-200" }
+                      { value: 'vi', label: t('settings:displayOptions.languageOptions.vi'), colorClass: "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-200" },
+                      { value: 'en', label: t('settings:displayOptions.languageOptions.en'), colorClass: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-200" }
                     ]}
                     dropdownAlign="right"
                   />
@@ -208,7 +209,7 @@ export default function Settings() {
                   checked={notifications.promotions}
                   onChange={() => handleNotificationChange('promotions')}
                   tone="purple"
-                  ariaLabel="Bật tắt thông báo khuyến mãi"
+                  ariaLabel={t('settings:aria.togglePromotions')}
                 />
               </label>
             </div>
@@ -220,12 +221,12 @@ export default function Settings() {
               <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
                 <FiBell />
               </div>
-              Cài đặt thông báo
+              {t('settings:notifications.title')}
             </h2>
 
             <div className="space-y-6">
               <div className="space-y-4">
-                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Kênh nhận thông báo</h3>
+                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">{t('settings:notifications.channels')}</h3>
 
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div className="flex items-center gap-3">
@@ -233,15 +234,15 @@ export default function Settings() {
                       <FiMail />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">Email</p>
-                      <p className="text-md text-slate-500">Nhận thông báo qua email</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:notifications.emailTitle')}</p>
+                      <p className="text-md text-slate-500">{t('settings:notifications.emailDesc')}</p>
                     </div>
                   </div>
                   <SwitchToggle
                     checked={notifications.email}
                     onChange={() => handleNotificationChange('email')}
                     tone="blue"
-                    ariaLabel="Bật tắt thông báo email"
+                    ariaLabel={t('settings:aria.toggleEmail')}
                   />
                 </label>
 
@@ -251,15 +252,15 @@ export default function Settings() {
                       <FiSmartphone />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">SMS</p>
-                      <p className="text-md text-slate-500">Nhận tin nhắn văn bản</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:notifications.smsTitle')}</p>
+                      <p className="text-md text-slate-500">{t('settings:notifications.smsDesc')}</p>
                     </div>
                   </div>
                   <SwitchToggle
                     checked={notifications.sms}
                     onChange={() => handleNotificationChange('sms')}
                     tone="blue"
-                    ariaLabel="Bật tắt thông báo SMS"
+                    ariaLabel={t('settings:aria.toggleSms')}
                   />
                 </label>
 
@@ -269,32 +270,32 @@ export default function Settings() {
                       <FiBell />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">Thông báo đẩy (App)</p>
-                      <p className="text-md text-slate-500">Nhận thông báo trên ứng dụng</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:notifications.appTitle')}</p>
+                      <p className="text-md text-slate-500">{t('settings:notifications.appDesc')}</p>
                     </div>
                   </div>
                   <SwitchToggle
                     checked={notifications.app}
                     onChange={() => handleNotificationChange('app')}
                     tone="blue"
-                    ariaLabel="Bật tắt thông báo ứng dụng"
+                    ariaLabel={t('settings:aria.toggleApp')}
                   />
                 </label>
               </div>
 
               <div className="space-y-4 pt-4">
-                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Loại thông báo</h3>
+                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">{t('settings:notifications.types')}</h3>
 
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Cập nhật đơn hàng</p>
-                    <p className="text-md text-slate-500">Trạng thái giao hàng, thanh toán</p>
+                    <p className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{t('settings:notifications.ordersTitle')}</p>
+                    <p className="text-md text-slate-500">{t('settings:notifications.ordersDesc')}</p>
                   </div>
                   <SwitchToggle
                     checked={notifications.orders}
                     onChange={() => handleNotificationChange('orders')}
                     tone="blue"
-                    ariaLabel="Bật tắt thông báo đơn hàng"
+                    ariaLabel={t('settings:aria.toggleOrders')}
                   />
                 </label>
               </div>
@@ -309,7 +310,7 @@ export default function Settings() {
               <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
                 <FiShield />
               </div>
-              Bảo mật
+              {t('settings:security.title')}
             </h2>
 
             <div className="space-y-6">
@@ -321,8 +322,8 @@ export default function Settings() {
                       <FiKey />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">Mật khẩu</p>
-                      <p className="text-md text-slate-500">Cập nhật lần cuối: 30 ngày trước</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:security.password.title')}</p>
+                      <p className="text-md text-slate-500">{t('settings:security.password.lastUpdated')}</p>
                     </div>
                   </div>
                   <Button
@@ -331,7 +332,7 @@ export default function Settings() {
                     size="sm"
                     className="px-4 border border-slate-200 dark:border-slate-700"
                   >
-                    {isChangingPassword ? 'Hủy' : 'Đổi mật khẩu'}
+                    {isChangingPassword ? t('settings:security.password.buttonCancel') : t('settings:security.password.buttonChange')}
                   </Button>
                 </div>
 
@@ -342,15 +343,15 @@ export default function Settings() {
                     className="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800"
                   >
                     <div>
-                      <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-1">Mật khẩu hiện tại</label>
+                      <label className="block text-md font-medium text-body mb-1">{t('settings:security.password.current')}</label>
                       <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" className="w-full h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <div>
-                      <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-1">Mật khẩu mới</label>
+                      <label className="block text-md font-medium text-body mb-1">{t('settings:security.password.new')}</label>
                       <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" className="w-full h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <div>
-                      <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-1">Xác nhận mật khẩu mới</label>
+                      <label className="block text-md font-medium text-body mb-1">{t('settings:security.password.confirm')}</label>
                       <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" className="w-full h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <Button
@@ -363,7 +364,7 @@ export default function Settings() {
                       fullWidth
                       className="h-10 from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700"
                     >
-                      {savingPassword ? 'Đang cập nhật...' : 'Lưu mật khẩu mới'}
+                      {savingPassword ? t('settings:security.password.saving') : t('settings:security.password.save')}
                     </Button>
                   </motion.form>
                 )}
@@ -376,15 +377,15 @@ export default function Settings() {
                     <FiLock />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white">Xác thực 2 bước (2FA)</p>
-                    <p className="text-md text-slate-500">Tăng cường bảo mật tài khoản</p>
+                    <p className="font-medium text-slate-900 dark:text-white">{t('settings:security.twoFactor.title')}</p>
+                    <p className="text-md text-slate-500">{t('settings:security.twoFactor.desc')}</p>
                   </div>
                 </div>
                 <SwitchToggle
                   checked={twoFactor}
                   onChange={setTwoFactor}
                   tone="success"
-                  ariaLabel="Bật tắt xác thực 2 lớp"
+                  ariaLabel={t('settings:aria.toggleTwoFactor')}
                 />
               </div>
 
@@ -398,10 +399,10 @@ export default function Settings() {
                   >
                     <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center text-center mt-4">
                       <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=otpauth://totp/Hozitech:${user?.email}?secret=JBSWY3DPEHPK3PXP&issuer=Hozitech`} alt="QR Code" className="w-32 h-32 mb-4 rounded-lg bg-white p-2" />
-                      <p className="text-md text-slate-600 dark:text-slate-400 mb-4">Quét mã QR này bằng ứng dụng Google Authenticator hoặc Authy để thiết lập 2FA.</p>
+                      <p className="text-md text-muted-strong mb-4">{t('settings:security.twoFactor.setupDescription')}</p>
                       <div className="flex gap-2 w-full">
-                        <input type="text" placeholder="Nhập mã 6 số..." className="flex-1 h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 text-center tracking-widest font-mono" maxLength={6} />
-                        <Button variant="success" size="sm" className="px-4 bg-blue-600 hover:bg-blue-700 text-white border-0">Xác nhận</Button>
+                        <input type="text" placeholder={t('settings:security.twoFactor.otpPlaceholder')} className="flex-1 h-10 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 text-center tracking-widest font-mono" maxLength={6} />
+                        <Button variant="success" size="sm" className="px-4 bg-blue-600 hover:bg-blue-700 text-white border-0">{t('settings:security.twoFactor.confirm')}</Button>
                       </div>
                     </div>
                   </motion.div>
@@ -412,7 +413,7 @@ export default function Settings() {
 
           {/* Social Accounts */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Liên kết tài khoản</h2>
+            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">{t('settings:socialAccounts.title')}</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
                 <div className="flex items-center gap-3">
@@ -422,13 +423,15 @@ export default function Settings() {
                   <div>
                     <p className="font-medium text-slate-900 dark:text-white">Google</p>
                     {loadingSocialAccounts ? (
-                      <p className="text-md text-slate-500">Đang tải trạng thái...</p>
+                      <p className="text-md text-slate-500">{t('settings:socialAccounts.loading')}</p>
                     ) : isGoogleLinked ? (
                       <p className="text-md text-slate-500">
-                        Đã liên kết{googleSocialAccount?.email ? ` (${googleSocialAccount.email})` : ''}
+                        {googleSocialAccount?.email
+                          ? t('settings:socialAccounts.linkedWithEmail', { email: googleSocialAccount.email })
+                          : t('settings:socialAccounts.linked')}
                       </p>
                     ) : (
-                      <p className="text-md text-slate-500">Chưa liên kết</p>
+                      <p className="text-md text-slate-500">{t('settings:socialAccounts.notLinked')}</p>
                     )}
                   </div>
                 </div>
@@ -440,7 +443,7 @@ export default function Settings() {
                   icon={linkingGoogle ? <FiLoader className="animate-spin" /> : undefined}
                   className={`text-md ${isGoogleLinked ? 'text-slate-500 hover:text-red-500' : 'text-blue-600 hover:text-blue-700'}`}
                 >
-                  {linkingGoogle ? 'Đang liên kết...' : isGoogleLinked ? 'Hủy liên kết' : 'Liên kết ngay'}
+                  {linkingGoogle ? t('settings:socialAccounts.linking') : isGoogleLinked ? t('settings:socialAccounts.unlink') : t('settings:socialAccounts.linkNow')}
                 </Button>
               </div>
 
@@ -451,7 +454,7 @@ export default function Settings() {
                   </div>
                   <div>
                     <p className="font-medium text-slate-900 dark:text-white">Facebook</p>
-                    <p className="text-md text-slate-500">Sẽ hỗ trợ trong phiên bản sau</p>
+                    <p className="text-md text-slate-500">{t('settings:socialAccounts.facebookComingSoon')}</p>
                   </div>
                 </div>
                 <Button
@@ -460,7 +463,7 @@ export default function Settings() {
                   disabled
                   className="text-md text-slate-400 cursor-not-allowed"
                 >
-                  Chưa hỗ trợ
+                  {t('settings:socialAccounts.unsupported')}
                 </Button>
               </div>
             </div>
@@ -473,12 +476,12 @@ export default function Settings() {
                 <FiAlertTriangle />
               </div>
               <div>
-                <h3 className="font-bold text-red-600 dark:text-red-400 mb-1">Xóa tài khoản</h3>
+                <h3 className="font-bold text-red-600 dark:text-red-400 mb-1">{t('settings:deleteAccount.title')}</h3>
                 <p className="text-md text-red-500/80 dark:text-red-400/80 mb-4">
-                  Khi xóa tài khoản, tất cả dữ liệu cá nhân, lịch sử đơn hàng và điểm tích lũy sẽ bị xóa vĩnh viễn và không thể khôi phục.
+                  {t('settings:deleteAccount.warning')}
                 </p>
                 <Button variant="danger" size="sm" className="px-4 text-md">
-                  Yêu cầu xóa tài khoản
+                  {t('settings:deleteAccount.button')}
                 </Button>
               </div>
             </div>
@@ -489,28 +492,28 @@ export default function Settings() {
       <Modal
         open={unlinkGoogleModalOpen}
         onClose={closeUnlinkGoogleModal}
-        title="Xác minh để hủy liên kết Google"
+        title={t('settings:unlinkGoogleModal.title')}
         size="md"
         footer={
           <>
-            <ModalCancelButton onClick={closeUnlinkGoogleModal}>Hủy</ModalCancelButton>
+            <ModalCancelButton onClick={closeUnlinkGoogleModal}>{t('common:actions.cancel')}</ModalCancelButton>
             <ModalSubmitButton
               onClick={handleConfirmUnlinkGoogle}
               variant="danger"
               icon={unlinkingGoogle ? <FiLoader className="animate-spin" /> : undefined}
             >
-              {unlinkingGoogle ? 'Đang hủy liên kết...' : 'Hủy liên kết'}
+              {unlinkingGoogle ? t('settings:unlinkGoogleModal.submitting') : t('settings:unlinkGoogleModal.confirm')}
             </ModalSubmitButton>
           </>
         }
       >
         <div className="space-y-4">
-          <p className="text-md text-slate-600 dark:text-slate-400">
-            Để bảo mật, vui lòng nhập mật khẩu hiện tại trước khi hủy liên kết Google.
+          <p className="text-md text-muted-strong">
+            {t('settings:unlinkGoogleModal.description')}
           </p>
           <div>
-            <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Mật khẩu hiện tại
+            <label className="block text-md font-medium text-body mb-1">
+              {t('settings:unlinkGoogleModal.currentPassword')}
             </label>
             <input
               type="password"

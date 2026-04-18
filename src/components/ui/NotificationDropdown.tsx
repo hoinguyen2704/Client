@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { useClickOutside } from '@/hooks';
 import useNotificationStore from '@/stores/useNotificationStore';
 import notificationService from '@/apis/services/notificationService';
@@ -17,7 +18,11 @@ const typeIcons: Record<string, React.ReactNode> = {
   SYSTEM: <FiInfo className="text-slate-500" />,
 };
 
+const BELL_BUTTON_CLASS =
+  "p-2 sm:p-2.5 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative";
+
 export default function NotificationDropdown({ iconSize = 'text-xl' }: NotificationDropdownProps) {
+  const { t } = useTranslation(['layout', 'common']);
   const [isOpen, setIsOpen] = useState(false);
   const [localNotifications, setLocalNotifications] = useState<NotificationResponse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -68,7 +73,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
       {/* Bell button */}
       <button
         onClick={handleToggle}
-        className="p-2 sm:p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative"
+        className={BELL_BUTTON_CLASS}
       >
         <FiBell className={iconSize} />
         {unreadCount > 0 && (
@@ -91,10 +96,10 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
             {/* Header */}
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-md">Thông báo</h3>
+                <h3 className="font-bold text-md">{t('notifications.title', { ns: 'layout', defaultValue: 'Thông báo' })}</h3>
                 {unreadCount > 0 && (
                   <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-11 font-bold rounded-full">
-                    {unreadCount} mới
+                    {t('notifications.newCount', { ns: 'layout', count: unreadCount, defaultValue: `${unreadCount} mới` })}
                   </span>
                 )}
               </div>
@@ -104,7 +109,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                   className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors"
                 >
                   <FiCheckCircle className="text-sm" />
-                  Đọc tất cả
+                  {t('notifications.markAllRead', { ns: 'layout', defaultValue: 'Đọc tất cả' })}
                 </button>
               )}
             </div>
@@ -126,8 +131,8 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                 </div>
               ) : localNotifications.length === 0 ? (
                 <div className="py-10 text-center">
-                  <FiBell className="text-3xl text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                  <p className="text-sm text-slate-400">Không có thông báo</p>
+                  <FiBell className="text-3xl text-disabled mx-auto mb-3" />
+                  <p className="text-sm text-slate-400">{t('notifications.empty', { ns: 'layout', defaultValue: 'Không có thông báo' })}</p>
                 </div>
               ) : (
                 localNotifications.map(n => (
@@ -146,14 +151,14 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                         <h4 className="font-semibold text-sm truncate">{n.title}</h4>
                         {!n.isRead && <span className="w-1.5 h-1.5 rounded-full bg-purple-600 shrink-0" />}
                       </div>
-                      <p className="text-sm text-slate-500 line-clamp-2 leading-snug">{n.content}</p>
-                      <span className="text-11 text-slate-400 mt-1 block">{formatDate(n.createdAt)}</span>
+                      <p className="text-sm text-muted line-clamp-2 leading-snug">{n.content}</p>
+                      <span className="text-11 text-subtle mt-1 block">{formatDate(n.createdAt)}</span>
                     </div>
                     {!n.isRead && (
                       <button
                         onClick={(e) => { e.stopPropagation(); handleMarkRead(n.id); }}
                         className="p-1 text-slate-400 hover:text-green-600 shrink-0 mt-0.5"
-                        title="Đánh dấu đã đọc"
+                        title={t('notifications.markRead', { ns: 'layout', defaultValue: 'Đánh dấu đã đọc' })}
                       >
                         <FiCheck className="text-sm" />
                       </button>
@@ -170,7 +175,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                 onClick={() => setIsOpen(false)}
                 className="flex items-center justify-center gap-2 text-sm font-semibold text-purple-600 hover:text-purple-700 transition-colors"
               >
-                Xem tất cả thông báo
+                {t('notifications.viewAll', { ns: 'layout', defaultValue: 'Xem tất cả thông báo' })}
                 <FiExternalLink className="text-xs" />
               </Link>
             </div>

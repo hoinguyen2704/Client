@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiZap, FiClock } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/utils/format';
 import flashSaleService from '@/apis/services/flashSaleService';
@@ -17,6 +18,7 @@ const getTimeLeft = (endTime: string, nowMs: number): TimeLeft => {
 };
 
 export default function FlashSale() {
+  const { t } = useTranslation('catalog');
   const [sales, setSales] = useState<FlashSaleResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,8 +42,8 @@ export default function FlashSale() {
     return (
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-10 sm:py-12 text-center">
         <FiZap className="text-5xl sm:text-6xl text-slate-300 mx-auto mb-4" />
-        <h2 className="text-xl sm:text-2xl font-bold mb-2">Chưa có Flash Sale</h2>
-        <p className="text-md sm:text-base text-slate-500">Hãy quay lại sau để không bỏ lỡ các ưu đãi hấp dẫn!</p>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">{t('flashSale.empty.title')}</h2>
+        <p className="text-md sm:text-base text-slate-500">{t('flashSale.empty.description')}</p>
       </div>
     );
   }
@@ -66,7 +68,7 @@ export default function FlashSale() {
                 <div className="flex items-center gap-1.5 sm:gap-2 w-full md:w-auto justify-between md:justify-start">
                   <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     <FiClock className="text-base sm:text-xl" />
-                    <span className="text-sm sm:text-md">Kết thúc sau:</span>
+                    <span className="text-sm sm:text-md">{t('flashSale.endsIn')}</span>
                   </div>
                   <SaleCountdown endTime={sale.endTime} />
                 </div>
@@ -122,7 +124,9 @@ export default function FlashSale() {
                         />
                       </div>
                       <p className="text-10 sm:text-sm text-slate-500">
-                        {item.remainingStock > 0 ? `Còn ${item.remainingStock} sản phẩm` : 'Đã hết'}
+                        {item.remainingStock > 0
+                          ? t('flashSale.remainingProducts', { count: item.remainingStock })
+                          : t('flashSale.soldOut')}
                       </p>
                     </div>
                   </Link>
@@ -137,6 +141,7 @@ export default function FlashSale() {
 }
 
 function SaleCountdown({ endTime }: { endTime: string }) {
+  const { t } = useTranslation('catalog');
   const [nowMs, setNowMs] = useState(() => Date.now());
 
   useEffect(() => {
@@ -149,9 +154,9 @@ function SaleCountdown({ endTime }: { endTime: string }) {
   return (
     <div className="flex gap-1">
       {[
-        { val: timeLeft.hours, label: 'giờ' },
-        { val: timeLeft.minutes, label: 'phút' },
-        { val: timeLeft.seconds, label: 'giây' },
+        { val: timeLeft.hours, label: t('flashSale.countdown.hours') },
+        { val: timeLeft.minutes, label: t('flashSale.countdown.minutes') },
+        { val: timeLeft.seconds, label: t('flashSale.countdown.seconds') },
       ].map((t, i) => (
         <div key={i} className="bg-white/20 backdrop-blur rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-center min-w-[44px] sm:min-w-[56px]">
           <div className="text-lg sm:text-2xl font-black leading-none">{String(t.val).padStart(2, '0')}</div>

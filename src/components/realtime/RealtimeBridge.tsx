@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import useAuthStore from '@/stores/useAuthStore';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { emitRealtimeEvent } from '@/realtime/realtimeBus';
@@ -21,18 +22,25 @@ function resolveSupportWebSocketUrl(token: string): string | null {
   }
 }
 
-function handleUserToast(event: RealtimeEventEnvelope) {
+function handleUserToast(
+  event: RealtimeEventEnvelope,
+  t: (key: string, options?: Record<string, unknown>) => string,
+) {
   if (event.type === REALTIME_EVENT_TYPES.SUPPORT_MESSAGE_CREATED) {
     const payload = (event.data || {}) as SupportRealtimePayload;
     if (payload.senderType === 'ADMIN') {
-      toast.info(payload.ticketNumber ? `Admin đã phản hồi ${payload.ticketNumber}` : 'Admin vừa phản hồi hỗ trợ');
+      toast.info(payload.ticketNumber
+        ? t('realtime.adminRepliedTicket', { ns: 'account', ticketNumber: payload.ticketNumber, defaultValue: `Admin đã phản hồi ${payload.ticketNumber}` })
+        : t('realtime.adminReplied', { ns: 'account', defaultValue: 'Admin vừa phản hồi hỗ trợ' }));
     }
     return;
   }
 
   if (event.type === REALTIME_EVENT_TYPES.SUPPORT_STATUS_UPDATED) {
     const payload = (event.data || {}) as SupportRealtimePayload;
-    toast.info(payload.ticketNumber ? `Trạng thái ${payload.ticketNumber} đã cập nhật` : 'Yêu cầu hỗ trợ đã cập nhật trạng thái');
+    toast.info(payload.ticketNumber
+      ? t('realtime.ticketStatusUpdated', { ns: 'account', ticketNumber: payload.ticketNumber, defaultValue: `Trạng thái ${payload.ticketNumber} đã cập nhật` })
+      : t('realtime.supportStatusUpdated', { ns: 'account', defaultValue: 'Yêu cầu hỗ trợ đã cập nhật trạng thái' }));
     return;
   }
 
@@ -43,16 +51,21 @@ function handleUserToast(event: RealtimeEventEnvelope) {
       store.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse)
     );
     if (payload.type === 'SUPPORT') return;
-    toast.info(payload.title || 'Thông báo mới', {
+    toast.info(payload.title || t('realtime.newNotification', { ns: 'account', defaultValue: 'Thông báo mới' }), {
       description: payload.content || '',
     });
   }
 }
 
-function handleAdminToast(event: RealtimeEventEnvelope) {
+function handleAdminToast(
+  event: RealtimeEventEnvelope,
+  t: (key: string, options?: Record<string, unknown>) => string,
+) {
   if (event.type === REALTIME_EVENT_TYPES.SUPPORT_TICKET_CREATED) {
     const payload = (event.data || {}) as SupportRealtimePayload;
-    toast.info(payload.userName ? `${payload.userName} vừa tạo yêu cầu hỗ trợ` : 'Có yêu cầu hỗ trợ mới từ người dùng');
+    toast.info(payload.userName
+      ? t('realtime.newSupportRequestByUser', { ns: 'adminSupport', userName: payload.userName, defaultValue: `${payload.userName} vừa tạo yêu cầu hỗ trợ` })
+      : t('realtime.newSupportRequest', { ns: 'adminSupport', defaultValue: 'Có yêu cầu hỗ trợ mới từ người dùng' }));
     return;
   }
 
@@ -60,8 +73,8 @@ function handleAdminToast(event: RealtimeEventEnvelope) {
     const payload = (event.data || {}) as SupportRealtimePayload;
     if (payload.senderType === 'USER') {
       toast.info(payload.ticketNumber
-        ? `${payload.ticketNumber} có phản hồi mới từ khách hàng`
-        : 'Khách hàng vừa gửi phản hồi mới');
+        ? t('realtime.customerReplyTicket', { ns: 'adminSupport', ticketNumber: payload.ticketNumber, defaultValue: `${payload.ticketNumber} có phản hồi mới từ khách hàng` })
+        : t('realtime.customerReply', { ns: 'adminSupport', defaultValue: 'Khách hàng vừa gửi phản hồi mới' }));
     }
   }
 
@@ -75,6 +88,7 @@ function handleAdminToast(event: RealtimeEventEnvelope) {
 }
 
 export default function RealtimeBridge() {
+  const { t } = useTranslation(['account', 'adminSupport']);
   const token = useAuthStore((s) => s.token);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user = useAuthStore((s) => s.user);
@@ -144,9 +158,9 @@ export default function RealtimeBridge() {
 
           emitRealtimeEvent(parsed);
           if (user.role === 'ADMIN') {
-            handleAdminToast(parsed);
+            handleAdminToast(parsed, t);
           } else {
-            handleUserToast(parsed);
+            handleUserToast(parsed, t);
           }
         } catch {
           // Ignore malformed payload

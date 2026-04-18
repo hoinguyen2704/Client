@@ -1,0 +1,36 @@
+{
+  "orders": {
+    "title": "Order management",
+    "export": "Export Excel",
+    "searchPlaceholder": "Search by order number or customer name...",
+    "table": {
+      "index": "No.",
+      "orderNumber": "Order number",
+      "orderDate": "Order date",
+      "items": "Items",
+      "total": "Total",
+      "payment": "Payment",
+      "status": "Status",
+      "actions": "Actions",
+      "quantityMobile": "Items:",
+      "totalMobile": "Total:",
+      "paymentMobile": "Payment:",
+      "statusMobile": "Status:",
+      "empty": "No orders found",
+      "label": "orders"
+    },
+    "statusOptions": {
+      "pending": "Pending processing",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "shipping": "Shipping",
+      "shipped": "Delivered",
+      "cancelled": "Cancelled",
+      "returned": "Returned"
+    },
+    "toasts": {
+      "updated": "Order status updated!",
+      "invalidTransition": "Cannot update to this status from the current state"
+    }
+  }
+}

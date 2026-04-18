@@ -1,6 +1,7 @@
 import { Button, IconButton } from "@/components";
 import type { CouponResponse } from "@/types";
 import { FiBookmark, FiX } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 type AppliedCouponVariant = "product" | "shipping";
 
@@ -17,14 +18,12 @@ interface CheckoutAppliedCouponCardProps {
 const VARIANT_CONFIG: Record<
   AppliedCouponVariant,
   {
-    title: string;
     containerClassName: string;
     accentClassName: string;
     saveButtonClassName: string;
   }
 > = {
   product: {
-    title: "Voucher Sản Phẩm",
     containerClassName:
       "border border-purple-100 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/20",
     accentClassName: "text-purple-600",
@@ -32,7 +31,6 @@ const VARIANT_CONFIG: Record<
       "from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700",
   },
   shipping: {
-    title: "Voucher Freeship",
     containerClassName:
       "border border-blue-100 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-900/20",
     accentClassName: "text-blue-600",
@@ -50,6 +48,7 @@ export default function CheckoutAppliedCouponCard({
   onSave,
   onRemove,
 }: CheckoutAppliedCouponCardProps) {
+  const { t } = useTranslation("checkout");
   const config = VARIANT_CONFIG[variant];
 
   return (
@@ -58,10 +57,10 @@ export default function CheckoutAppliedCouponCard({
     >
       <div className="flex flex-col">
         <span className={`text-sm font-bold ${config.accentClassName}`}>
-          {config.title}
+          {variant === "product" ? t("appliedVoucher.productTitle") : t("appliedVoucher.shippingTitle")}
         </span>
         <span className="text-slate-600 dark:text-slate-300">
-          Mã <strong className="font-mono">{coupon.code}</strong> đã áp dụng.
+          {t("appliedVoucher.appliedCode", { code: coupon.code })}
         </span>
       </div>
 
@@ -69,7 +68,7 @@ export default function CheckoutAppliedCouponCard({
         <div className="flex items-center gap-2">
           {isSaved ? (
             <span className="font-bold text-emerald-600 dark:text-emerald-400">
-              Đã lưu trong ví
+              {t("appliedVoucher.savedInWallet")}
             </span>
           ) : coupon.isPublic ? (
             <Button
@@ -80,7 +79,7 @@ export default function CheckoutAppliedCouponCard({
               icon={<FiBookmark className="text-md" />}
               className={`h-8 rounded-lg px-3 ${config.saveButtonClassName}`}
             >
-              Lưu vào ví
+              {t("appliedVoucher.saveToWallet")}
             </Button>
           ) : null}
 
@@ -88,12 +87,12 @@ export default function CheckoutAppliedCouponCard({
             onClick={onRemove}
             icon={<FiX className="h-4 w-4" />}
             className="h-7 w-7 rounded-md text-slate-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
-            title="Bỏ áp dụng"
+            title={t("appliedVoucher.remove")}
             variant="ghost"
           />
         </div>
       ) : (
-        <span className="text-slate-400">Đăng nhập để lưu mã</span>
+        <span className="text-slate-400">{t("appliedVoucher.loginToSave")}</span>
       )}
     </div>
   );

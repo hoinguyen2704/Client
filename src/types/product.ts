@@ -110,7 +110,7 @@ export interface ProductImageResponse {
   variantId?: string | null;
 }
 
-export interface ProductRequest {
+export interface ProductBasicRequest {
   name: string;
   description?: string;
   brandId: string;
@@ -119,8 +119,11 @@ export interface ProductRequest {
   productCode?: string;
   status?: string;
   isFeatured?: boolean;
-  variants?: ProductVariantRequest[];
   specs?: ProductSpecRequest[];
+}
+
+export interface ProductRequest extends ProductBasicRequest {
+  variants?: ProductVariantRequest[];
   images?: ProductImageRequest[];
 }
 
@@ -148,6 +151,10 @@ export interface ProductVariantSelectionRequest {
 export interface ProductImageRequest {
   imageUrl: string;
   isPrimary?: boolean;
+}
+
+export interface ProductVariantsUpdateRequest {
+  variants: ProductVariantRequest[];
 }
 
 export interface CategoryResponse {

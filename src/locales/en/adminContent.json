@@ -1,0 +1,97 @@
+{
+  "cms": {
+    "title": "Content management",
+    "tabs": {
+      "banners": "Banners",
+      "articles": "Articles"
+    },
+    "actions": {
+      "add": "Add new",
+      "addBanner": "Add banner",
+      "addArticle": "Add article",
+      "create": "Create new",
+      "update": "Update"
+    },
+    "banners": {
+      "title": "Banner management",
+      "titleLabel": "Title",
+      "imageUrl": "Banner image URL",
+      "targetUrl": "Target URL",
+      "sortOrder": "Display order",
+      "active": "Active",
+      "uploadImage": "Upload banner image",
+      "uploadingImage": "Uploading image...",
+      "chooseImage": "Choose image from device",
+      "helperText": "Supports PNG/JPG/WEBP, maximum 5MB.",
+      "previewAlt": "Banner preview",
+      "visibilityTitle": "Show banner",
+      "visibilityDescription": "Turn off to hide the banner from the homepage",
+      "createTitle": "Create banner",
+      "editTitle": "Edit banner",
+      "createSuccess": "Banner created successfully!",
+      "updateSuccess": "Banner updated successfully!",
+      "titlePlaceholder": "Example: Weekend flash sale",
+      "targetPlaceholder": "/products or https://..."
+    },
+    "articles": {
+      "title": "Article management",
+      "titleLabel": "Title",
+      "thumbnailUrl": "Thumbnail URL",
+      "published": "Published",
+      "content": "Content",
+      "uploadThumbnail": "Upload thumbnail",
+      "uploadingThumbnail": "Uploading image...",
+      "chooseThumbnail": "Choose image from device",
+      "helperText": "Supports PNG/JPG/WEBP, maximum 5MB.",
+      "previewAlt": "Thumbnail preview",
+      "publishTitle": "Publish now",
+      "publishDescription": "If disabled, the article will remain as a draft",
+      "createTitle": "Create article",
+      "editTitle": "Edit article",
+      "createSuccess": "Article created successfully!",
+      "updateSuccess": "Article updated successfully!",
+      "titlePlaceholder": "Enter article title",
+      "contentPlaceholder": "Enter article content"
+    },
+    "table": {
+      "title": "Title",
+      "author": "Author",
+      "createdAt": "Created at",
+      "status": "Status",
+      "actions": "Actions",
+      "emptyBanners": "No banners available",
+      "emptyArticles": "No articles available",
+      "pagination": "articles"
+    },
+    "validation": {
+      "bannerImageRequired": "Please enter a banner image URL",
+      "articleRequired": "Please enter both article title and content"
+    },
+    "upload": {
+      "invalidType": "Only image files are supported (PNG, JPG, WEBP...)",
+      "maxSize": "Maximum image size is 5MB"
+    },
+    "toasts": {
+      "loadBannersFailed": "Failed to load banners!",
+      "loadArticlesFailed": "Failed to load articles!",
+      "deleteBannerSuccess": "Banner deleted successfully!",
+      "deleteBannerFailed": "Failed to delete banner!",
+      "deleteArticleSuccess": "Article deleted successfully!",
+      "deleteArticleFailed": "Failed to delete article!",
+      "uploadBannerSuccess": "Banner image uploaded successfully!",
+      "uploadBannerFailed": "Failed to upload banner image!",
+      "uploadThumbnailSuccess": "Thumbnail uploaded successfully!",
+      "uploadThumbnailFailed": "Failed to upload thumbnail!",
+      "saveBannerSuccess": "Banner saved successfully!",
+      "saveBannerFailed": "Failed to save banner!",
+      "saveArticleSuccess": "Article saved successfully!",
+      "saveArticleFailed": "Failed to save article!"
+    },
+    "deleteDialog": {
+      "bannerTitle": "Delete banner",
+      "bannerMessage": "Are you sure you want to delete this banner?",
+      "articleTitle": "Delete article",
+      "articleMessage": "Are you sure you want to delete this article?"
+    }
+  }
+}

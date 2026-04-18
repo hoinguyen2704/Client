@@ -11,10 +11,10 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary:
     'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:-translate-y-0.5 active:translate-y-0',
   secondary:
-    'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700',
+    'bg-slate-100 dark:bg-slate-800 text-body hover:bg-slate-200 dark:hover:bg-slate-700',
   danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm',
   ghost:
-    'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800',
+    'bg-transparent text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800',
   outline:
     'border-2 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 bg-transparent',
   success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm',

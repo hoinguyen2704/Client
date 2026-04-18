@@ -48,6 +48,7 @@ export default memo(function BasicInfoSection(props: Props) {
     getSpecAttributeIdByKey,
     handleCreateCategory,
     handleCreateBrand,
+    categoryLocked,
     showBasicInfo = true,
     showSpecs = true,
   } = props;
@@ -110,10 +111,12 @@ export default memo(function BasicInfoSection(props: Props) {
               <button
                 type="button"
                 onClick={() => {
+                  if (categoryLocked) return;
                   setShowCategoryDropdown(!showCategoryDropdown);
                   setCategorySearch("");
                 }}
-                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+                disabled={categoryLocked}
+                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 <span
                   className={
@@ -258,6 +261,11 @@ export default memo(function BasicInfoSection(props: Props) {
                 </div>
               )}
             </div>
+            {categoryLocked && (
+              <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
+                Danh mục đã bị khóa vì sản phẩm đã có phân loại. Muốn đổi danh mục, cần xử lý phân loại hiện có trước.
+              </p>
+            )}
           </div>
           {/* Brand Dropdown */}
           <div>

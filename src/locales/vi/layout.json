@@ -1,0 +1,117 @@
+{
+  "navigation": {
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "compare": "So sánh",
+    "promotions": "Khuyến mãi",
+    "contact": "Liên hệ",
+    "blog": "Blog công nghệ"
+  },
+  "header": {
+    "searchPlaceholder": "Tìm kiếm sản phẩm công nghệ...",
+    "toggleTheme": "Chuyển chế độ giao diện",
+    "adminPanel": "Quản trị viên",
+    "myAccount": "Tài khoản của tôi",
+    "orders": "Đơn mua",
+    "logout": "Đăng xuất"
+  },
+  "mobileMenu": {
+    "closeMenu": "Đóng menu",
+    "searchPlaceholder": "Tìm kiếm...",
+    "adminPanel": "Quản trị viên",
+    "myAccount": "Tài khoản của tôi",
+    "orders": "Đơn mua",
+    "returns": "Trả hàng / Hoàn tiền",
+    "logout": "Đăng xuất",
+    "loginRegister": "Đăng nhập / Đăng ký"
+  },
+  "adminHeader": {
+    "searchPlaceholder": "Tìm kiếm trong admin...",
+    "profile": "Hồ sơ cá nhân",
+    "settings": "Cài đặt hệ thống",
+    "accessControl": "Phân quyền",
+    "support": "Trợ giúp",
+    "logout": "Đăng xuất"
+  },
+  "adminSidebar": {
+    "dashboard": "Tổng quan",
+    "orders": "Đơn hàng",
+    "returns": "Trả hàng / Hoàn tiền",
+    "products": "Sản phẩm & Kho",
+    "categories": "Danh mục",
+    "brands": "Thương hiệu",
+    "customers": "Khách hàng",
+    "vouchers": "Voucher",
+    "flashSale": "Flash Sale",
+    "feedbacks": "Đánh giá",
+    "tickets": "Hỗ trợ (Tickets)",
+    "chatbot": "AI Chatbot",
+    "content": "Nội dung (CMS)",
+    "settings": "Cài đặt"
+  },
+  "userLayout": {
+    "menu": {
+      "profile": "Hồ sơ cá nhân",
+      "address": "Sổ địa chỉ",
+      "payment": "Thanh toán",
+      "orders": "Đơn hàng",
+      "returns": "Trả hàng / Hoàn tiền",
+      "vouchers": "Kho Voucher",
+      "reviews": "Nhận xét của tôi",
+      "recentlyViewed": "Đã xem gần đây",
+      "notifications": "Thông báo",
+      "settings": "Cài đặt",
+      "support": "Hỗ trợ",
+      "logout": "Đăng xuất"
+    }
+  },
+  "footer": {
+    "brandDescription": "{{shopName}} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm công nghệ chính hãng, uy tín và chất lượng hàng đầu Việt Nam.",
+    "address": "Địa chỉ",
+    "phone": "Điện thoại",
+    "email": "Email",
+    "aboutTitle": "Về {{shopName}}",
+    "company": "Giới thiệu công ty",
+    "careers": "Tuyển dụng",
+    "terms": "Điều khoản sử dụng",
+    "privacy": "Chính sách bảo mật",
+    "partnership": "Liên hệ hợp tác",
+    "supportTitle": "Hỗ trợ khách hàng",
+    "shoppingGuide": "Hướng dẫn mua hàng",
+    "paymentGuide": "Hướng dẫn thanh toán",
+    "shippingPolicy": "Chính sách giao hàng",
+    "warrantyPolicy": "Chính sách bảo hành",
+    "returnPolicy": "Chính sách đổi trả",
+    "connectTitle": "Kết nối với chúng tôi",
+    "paymentTitle": "Phương thức thanh toán",
+    "rightsReserved": "© {{year}} {{shopName}}. All rights reserved.",
+    "builtBy": "Thiết kế và phát triển bởi Hội Nguyễn"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "newCount": "{{count}} mới",
+    "markAllRead": "Đọc tất cả",
+    "empty": "Không có thông báo",
+    "markRead": "Đánh dấu đã đọc",
+    "viewAll": "Xem tất cả thông báo"
+  },
+  "supportChat": {
+    "openAria": "Mở hỗ trợ trực tiếp",
+    "adminAvatarAlt": "Admin hỗ trợ",
+    "title": "Hỗ trợ trực tiếp",
+    "subtitle": "Realtime với admin",
+    "noTickets": "Chưa có ticket, gửi tin nhắn để tạo mới.",
+    "loginToStart": "Đăng nhập để bắt đầu chat trực tiếp với admin.",
+    "newSession": "Phiên chat mới",
+    "emptyConversation": "Bắt đầu cuộc trò chuyện với admin bằng cách gửi một tin nhắn.",
+    "emptyConversationGuest": "Bạn cần đăng nhập để bắt đầu chat trực tiếp với admin.",
+    "loginButton": "Đăng nhập để chat",
+    "closedHint": "Ticket đã đóng, gửi tin nhắn để tạo cuộc trò chuyện mới.",
+    "inputPlaceholder": "Nhập tin nhắn...",
+    "sendAria": "Gửi tin nhắn hỗ trợ",
+    "createSubject": "Hỗ trợ trực tiếp",
+    "loginRequiredToast": "Vui lòng đăng nhập tài khoản khách hàng để chat trực tiếp với admin",
+    "createdToast": "Đã tạo cuộc trò chuyện hỗ trợ",
+    "sendError": "Không thể gửi tin nhắn"
+  }
+}

@@ -10,7 +10,7 @@ export default function AdminLayout() {
   const sidebarCollapsed = useUIStore((s) => s.sidebarCollapsed);
 
   return (
-    <div className="admin-border-strong min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50">
+    <div className="admin-border-strong min-h-screen flex bg-slate-50 dark:bg-slate-900 text-ink-max">
       <AdminSidebar />
 
       <div className={`flex-1 min-w-0 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'}`}>

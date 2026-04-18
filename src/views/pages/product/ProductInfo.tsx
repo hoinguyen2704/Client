@@ -47,6 +47,14 @@ const selectionMapEquals = (
   return aKeys.every((key) => a[key] === b[key]);
 };
 
+const formatCompactValue = (value: number): string => {
+  if (value >= 1000) {
+    const compact = value >= 10000 ? (value / 1000).toFixed(0) : (value / 1000).toFixed(1);
+    return `${compact.replace(/\.0$/, '')}k`;
+  }
+  return value.toLocaleString('vi-VN');
+};
+
 export default function ProductInfo({
   product,
   flashItemsByVariantId = {},
@@ -63,6 +71,10 @@ export default function ProductInfo({
 
   const variants = product.variants || [];
   const requiredAttributeIds = useMemo(() => {
+    if (variants.length <= 1) {
+      return [];
+    }
+
     if ((product.variantSchema || []).length > 0) {
       return (product.variantSchema || [])
         .map((attribute) => attribute.id)
@@ -251,9 +263,11 @@ export default function ProductInfo({
 
   const price = pricing?.salePrice ?? 0;
   const comparePrice = pricing?.originPrice ?? 0;
+  const discountPercent = pricing?.discount ?? 0;
   const rating = product.averageRating || 0;
   const reviews = product.totalReviews || 0;
   const stock = activeVariant?.stockQuantity ?? 0;
+  const totalSold = product.totalSold ?? 0;
 
   const syncFromServer = useCartStore((state) => state.syncFromServer);
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
@@ -270,6 +284,47 @@ export default function ProductInfo({
       .slice(0, 4)
       .map((spec) => [spec.name, spec.value] as [string, string]);
   }, [product.specs]);
+  const metaChips = useMemo(() => {
+    const chips: string[] = [];
+
+    if (product.category?.name) {
+      chips.push(product.category.name);
+    }
+
+    if (product.brandName) {
+      chips.push(product.brandName);
+    }
+
+    if (canPurchase && stock > 0) {
+      chips.push(`Còn ${stock} sản phẩm`);
+    } else if (!isSelectionRequired && product.outOfStock !== true && variants.length === 0) {
+      chips.push('Sẵn hàng');
+    }
+
+    if (isSelectionComplete && activeVariant && (activeVariant.grossSoldQty ?? 0) > 0) {
+      chips.push(`Đã bán ${formatCompactValue(activeVariant.grossSoldQty ?? 0)}`);
+    } else if (totalSold > 0) {
+      chips.push(`Đã bán ${formatCompactValue(totalSold)}`);
+    }
+
+    if (discountPercent > 0) {
+      chips.push(`Giảm ${discountPercent}%`);
+    }
+
+    return chips.slice(0, 4);
+  }, [
+    activeVariant,
+    canPurchase,
+    discountPercent,
+    isSelectionComplete,
+    isSelectionRequired,
+    product.brandName,
+    product.category?.name,
+    product.outOfStock,
+    stock,
+    totalSold,
+    variants.length,
+  ]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -333,10 +388,10 @@ export default function ProductInfo({
   };
 
   return (
-    <div className="w-full lg:w-5/12 flex flex-col">
-      <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">{product.name}</h1>
+    <div className="w-full min-w-0 flex flex-col gap-4 lg:gap-5">
+      <h1 className="text-3xl md:text-[2.45rem] font-bold leading-[1.08]">{product.name}</h1>
 
-      <div className="flex items-center gap-4 mb-6 flex-wrap">
+      <div className="flex items-center gap-x-3 gap-y-2 flex-wrap text-sm md:text-[15px]">
         {rating > 0 && (
           <>
             <div className="flex items-center gap-1 text-yellow-400">
@@ -345,19 +400,19 @@ export default function ProductInfo({
               ))}
             </div>
             <span className="font-medium">{rating.toFixed(1)}/5</span>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
             <span className="text-slate-500">{reviews} Đánh giá</span>
           </>
         )}
-        {(product.totalSold ?? 0) > 0 && (
+        {totalSold > 0 && (
           <>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
-            <span className="text-slate-500">Đã bán <strong>{(product.totalSold ?? 0) > 999 ? `${((product.totalSold ?? 0) / 1000).toFixed(1)}k` : product.totalSold}</strong></span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <span className="text-slate-500">Đã bán <strong>{formatCompactValue(totalSold)}</strong></span>
           </>
         )}
         {isSelectionComplete && activeVariant && (
           <>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
             <span className="text-slate-500">
               Phân loại đã chọn bán <strong>{(activeVariant.grossSoldQty ?? 0).toLocaleString('vi-VN')}</strong>
             </span>
@@ -365,24 +420,24 @@ export default function ProductInfo({
         )}
         {product.brandName && (
           <>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
             <span className="text-slate-500">Thương hiệu: <strong>{product.brandName}</strong></span>
           </>
         )}
       </div>
 
-      <div className="flex items-end gap-4 mb-6 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+      <div className="inline-flex max-w-[520px] flex-wrap items-end gap-x-4 gap-y-2 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 px-4 py-3">
         {canShowVariantPrice ? (
           <>
-            <span className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
+            <span className="text-[2.1rem] md:text-[2.6rem] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
               {formatPrice(price)}
             </span>
             {comparePrice > price && (
-              <span className="text-xl text-slate-400 line-through mb-1">{formatPrice(comparePrice)}</span>
+              <span className="text-lg md:text-xl text-slate-400 line-through mb-0.5">{formatPrice(comparePrice)}</span>
             )}
           </>
         ) : isSelectionRequired && !isSelectionComplete && variantSalePriceRange ? (
-          <span className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
+          <span className="text-[2.1rem] md:text-[2.6rem] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
             {variantSalePriceRange.min === variantSalePriceRange.max
               ? formatPrice(variantSalePriceRange.min)
               : `${formatPrice(variantSalePriceRange.min)} - ${formatPrice(variantSalePriceRange.max)}`}
@@ -393,8 +448,20 @@ export default function ProductInfo({
           </span>
         )}
       </div>
+      {metaChips.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {metaChips.map((chip) => (
+            <span
+              key={chip}
+              className="inline-flex min-h-8 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      )}
       {isSelectionRequired && !isSelectionComplete && variantSoldRange && (
-        <div className="mb-6 text-sm text-slate-500">
+        <div className="text-sm text-slate-500">
           Đã bán theo phân loại:{' '}
           <strong>
             {variantSoldRange.min === variantSoldRange.max
@@ -404,23 +471,23 @@ export default function ProductInfo({
         </div>
       )}
       {canShowVariantPrice && pricing?.isFlashSale && (
-        <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold text-md">
+        <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold text-sm md:text-md">
           <FiZap className="text-base" />
-          Flash Sale -{pricing.discount}%{activeFlashItem ? ` • Còn ${activeFlashItem.remainingStock} suất giá sốc` : ''}
+          Flash Sale -{discountPercent}%{activeFlashItem ? ` • Còn ${activeFlashItem.remainingStock} suất giá sốc` : ''}
         </div>
       )}
 
       {highlightSpecs.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2">
           {highlightSpecs.map(([key, value]) => (
-            <span key={key} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-md font-medium rounded-lg border border-slate-200 dark:border-slate-700">
+            <span key={key} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm md:text-md font-medium rounded-lg border border-slate-200 dark:border-slate-700">
               {value}
             </span>
           ))}
         </div>
       )}
 
-      <div className="space-y-6 mb-8">
+      <div className="space-y-5 pt-1">
         <VariantSelector
           variants={variants}
           variantSchema={product.variantSchema}
@@ -431,18 +498,19 @@ export default function ProductInfo({
           onSelectOption={handleSelectOption}
         />
 
-        <div className="pt-2">
-          <h3 className="font-bold mb-3">Số lượng</h3>
-          <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+        <div className="pt-1">
+          <h3 className="font-bold mb-3 text-base">Số lượng</h3>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <QuantitySelector
               value={quantity}
               onChange={setQuantity}
               min={1}
               max={Math.max(1, stock)}
+              size="sm"
               disabled={!canPurchase || stock <= 0}
               overMaxWarning={`Chỉ còn ${stock} sản phẩm có sẵn!`}
             />
-            <span className="text-md text-slate-500 font-medium">
+            <span className="text-sm md:text-md text-slate-500 font-medium">
               {!isSelectionComplete && isSelectionRequired
                 ? `Chọn thêm: ${missingAttributeNames.join(', ')}`
                 : stock > 0
@@ -454,7 +522,7 @@ export default function ProductInfo({
                 variant="danger"
                 size="sm"
                 onClick={handleClearSelections}
-                className="!h-10 !rounded-xl"
+                className="!h-9 !rounded-xl"
               >
                 Xóa lựa chọn
               </Button>
@@ -463,7 +531,7 @@ export default function ProductInfo({
         </div>
       </div>
 
-      <div className="flex gap-4 mt-auto">
+      <div className="mt-1 flex flex-col gap-3 sm:flex-row">
         <button
           onClick={async () => {
             if (!isAuthenticated) {
@@ -473,7 +541,7 @@ export default function ProductInfo({
             }
             if (product.id) await toggleWishlist(product.id);
           }}
-          className={`w-14 h-14 shrink-0 rounded-2xl border-2 flex items-center justify-center transition-all ${
+          className={`h-12 w-12 shrink-0 rounded-xl border-2 flex items-center justify-center transition-all ${
             liked
               ? 'border-red-200 bg-red-50 text-red-500 dark:border-red-800 dark:bg-red-900/20'
               : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
@@ -485,16 +553,16 @@ export default function ProductInfo({
           variant="outline"
           onClick={handleAddToCart}
           disabled={!canPurchase || stock === 0 || !canShowVariantPrice || price <= 0}
-          icon={<FiShoppingCart className="text-xl" />}
-          className="flex-1 !h-14 !rounded-2xl !text-lg !font-bold"
+          icon={<FiShoppingCart className="text-lg" />}
+          className="flex-1 !h-12 !rounded-xl !text-base !font-semibold"
         >
           Thêm vào giỏ
         </PrimaryButton>
         <PrimaryButton
           onClick={handleBuyNow}
           disabled={!canPurchase || stock === 0 || !canShowVariantPrice || price <= 0}
-          icon={<FiZap className="text-xl" />}
-          className="flex-1 !h-14 !rounded-2xl !text-lg"
+          icon={<FiZap className="text-lg" />}
+          className="flex-1 !h-12 !rounded-xl !text-base !font-semibold"
         >
           Mua ngay
         </PrimaryButton>

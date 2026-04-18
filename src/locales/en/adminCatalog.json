@@ -1,0 +1,95 @@
+{
+  "products": {
+    "title": "Product management",
+    "selectedCount": "{{count}} products selected",
+    "actions": {
+      "deleteSelected": "Delete ({{count}})",
+      "deleteAll": "Delete all",
+      "exportExcel": "Export Excel",
+      "addProduct": "Add product"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by product name, SKU...",
+      "allCategories": "All categories",
+      "allStatuses": "All statuses",
+      "active": "On sale",
+      "draft": "Draft",
+      "inactive": "Hidden"
+    },
+    "table": {
+      "index": "No.",
+      "product": "Product",
+      "category": "Category",
+      "price": "Price",
+      "stock": "Stock",
+      "sold": "Sold",
+      "status": "Status",
+      "actions": "Actions",
+      "empty": "No products found"
+    },
+    "labels": {
+      "pagination": "products"
+    },
+    "statusActions": {
+      "moveToDraft": "Move to draft",
+      "activate": "Activate product"
+    },
+    "toasts": {
+      "loadFailed": "Failed to load product list",
+      "deleteConfirm": "Confirm deleting this product?",
+      "deleteSuccess": "Product deleted successfully!",
+      "deleteFailed": "Unable to delete this product!",
+      "toggleSuccess": "Product status updated!",
+      "toggleFailed": "Failed to update product status!",
+      "exportSuccess": "Product report exported!",
+      "exportFailed": "Unable to export report!",
+      "deleteManyConfirm": "Confirm deleting {{count}} products?",
+      "deleteManyDescription": "This action cannot be undone.",
+      "deleteManySuccess": "Deleted {{count}} products successfully!",
+      "deleteManyPartial": "Deleted {{success}}/{{total}} products. Some products could not be removed."
+    }
+  },
+  "categories": {
+    "title": "Category management",
+    "searchPlaceholder": "Search by category name...",
+    "addCategory": "Add category",
+    "editCategory": "Edit category",
+    "deleteCategory": "Delete category",
+    "empty": "No categories found"
+  },
+  "brands": {
+    "title": "Brand management",
+    "searchPlaceholder": "Search by brand name...",
+    "addBrand": "Add brand",
+    "editBrand": "Edit brand",
+    "deleteBrand": "Delete brand",
+    "empty": "No brands found"
+  },
+  "variants": {
+    "title": "Variants",
+    "addVariant": "Add variant",
+    "stock": "Stock quantity",
+    "price": "Price",
+    "sold": "Sold quantity"
+  },
+  "basicInfo": {
+    "title": "Basic information",
+    "name": "Product name",
+    "category": "Category",
+    "brand": "Brand",
+    "description": "Description"
+  },
+  "productPicker": {
+    "title": "Select products",
+    "searchPlaceholder": "Search products to add...",
+    "selectedLabel": "{{count}} products selected"
+  },
+  "flashSales": {
+    "title": "Flash sale",
+    "addFlashSale": "Create flash sale",
+    "selectProducts": "Select products",
+    "dateRange": "Date range",
+    "discountType": "Discount type",
+    "discountValue": "Discount value"
+  }
+}

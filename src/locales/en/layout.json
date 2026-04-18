@@ -1,0 +1,117 @@
+{
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "compare": "Compare",
+    "promotions": "Promotions",
+    "contact": "Contact",
+    "blog": "Tech Blog"
+  },
+  "header": {
+    "searchPlaceholder": "Search for tech products...",
+    "toggleTheme": "Toggle theme",
+    "adminPanel": "Admin panel",
+    "myAccount": "My account",
+    "orders": "My orders",
+    "logout": "Log out"
+  },
+  "mobileMenu": {
+    "closeMenu": "Close menu",
+    "searchPlaceholder": "Search...",
+    "adminPanel": "Admin panel",
+    "myAccount": "My account",
+    "orders": "My orders",
+    "returns": "Returns / Refunds",
+    "logout": "Log out",
+    "loginRegister": "Log in / Register"
+  },
+  "adminHeader": {
+    "searchPlaceholder": "Search in admin...",
+    "profile": "Profile",
+    "settings": "System settings",
+    "accessControl": "Access control",
+    "support": "Support",
+    "logout": "Log out"
+  },
+  "adminSidebar": {
+    "dashboard": "Overview",
+    "orders": "Orders",
+    "returns": "Returns / Refunds",
+    "products": "Products & Inventory",
+    "categories": "Categories",
+    "brands": "Brands",
+    "customers": "Customers",
+    "vouchers": "Vouchers",
+    "flashSale": "Flash Sale",
+    "feedbacks": "Reviews",
+    "tickets": "Support (Tickets)",
+    "chatbot": "AI Chatbot",
+    "content": "Content (CMS)",
+    "settings": "Settings"
+  },
+  "userLayout": {
+    "menu": {
+      "profile": "Profile",
+      "address": "Address book",
+      "payment": "Payments",
+      "orders": "Orders",
+      "returns": "Returns / Refunds",
+      "vouchers": "Voucher wallet",
+      "reviews": "My reviews",
+      "recentlyViewed": "Recently viewed",
+      "notifications": "Notifications",
+      "settings": "Settings",
+      "support": "Support",
+      "logout": "Log out"
+    }
+  },
+  "footer": {
+    "brandDescription": "{{shopName}} is an e-commerce platform specializing in genuine tech products with top-tier reliability and quality in Vietnam.",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "aboutTitle": "About {{shopName}}",
+    "company": "About the company",
+    "careers": "Careers",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy",
+    "partnership": "Partnership contact",
+    "supportTitle": "Customer support",
+    "shoppingGuide": "Shopping guide",
+    "paymentGuide": "Payment guide",
+    "shippingPolicy": "Shipping policy",
+    "warrantyPolicy": "Warranty policy",
+    "returnPolicy": "Return policy",
+    "connectTitle": "Connect with us",
+    "paymentTitle": "Payment methods",
+    "rightsReserved": "© {{year}} {{shopName}}. All rights reserved.",
+    "builtBy": "Designed and built by Hội Nguyễn"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "newCount": "{{count}} new",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications",
+    "markRead": "Mark as read",
+    "viewAll": "View all notifications"
+  },
+  "supportChat": {
+    "openAria": "Open live support",
+    "adminAvatarAlt": "Support admin",
+    "title": "Live support",
+    "subtitle": "Realtime with admin",
+    "noTickets": "No tickets yet. Send a message to create one.",
+    "loginToStart": "Log in to start chatting directly with admin.",
+    "newSession": "New chat session",
+    "emptyConversation": "Start the conversation by sending a message to admin.",
+    "emptyConversationGuest": "You need to log in to start live chat with admin.",
+    "loginButton": "Log in to chat",
+    "closedHint": "This ticket is closed. Send a message to create a new conversation.",
+    "inputPlaceholder": "Type a message...",
+    "sendAria": "Send support message",
+    "createSubject": "Live support",
+    "loginRequiredToast": "Please log in with a customer account to chat directly with admin",
+    "createdToast": "Support conversation created",
+    "sendError": "Unable to send message"
+  }
+}
