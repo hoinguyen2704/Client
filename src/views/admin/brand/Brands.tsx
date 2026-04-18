@@ -17,6 +17,7 @@ import {
   PrimaryButton,
   TableRowSkeleton,
 } from "@/components";
+import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Brands() {
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -243,30 +244,36 @@ export default function Brands() {
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] text-left border-collapse">
+          <table className="w-full min-w-[960px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+                <th className="p-3 sm:p-4 font-medium text-center w-20">STT</th>
                 <th className="p-3 sm:p-4 font-medium">Thương hiệu</th>
                 <th className="p-3 sm:p-4 font-medium">Slug</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Số sản phẩm</th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  Số sản phẩm
+                </th>
                 <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <TableRowSkeleton rows={5} cols={4} />
+                <TableRowSkeleton rows={5} cols={5} />
               ) : brands.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-12 text-center text-slate-400">
+                  <td colSpan={5} className="p-12 text-center text-slate-400">
                     Không có thương hiệu nào
                   </td>
                 </tr>
               ) : (
-                brands.map((brand) => (
+                brands.map((brand, index) => (
                   <tr
                     key={brand.id}
                     className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
+                    <td className="p-3 sm:p-4 text-center font-semibold text-slate-500">
+                      {getPaginatedRowNumber(page, PAGE_SIZE.MEDIUM, index)}
+                    </td>
                     <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-3">
                         {brand.logoUrl ? (

@@ -10,11 +10,7 @@ import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import adminBrandService from "@/apis/services/adminBrandService";
-import type {
-  BrandResponse,
-  CategoryResponse,
-  SpecTemplateRow,
-} from "@/types";
+import type { BrandResponse, CategoryResponse, SpecTemplateRow } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import useAdminList from "@/hooks/useAdminList";
 import {
@@ -35,6 +31,7 @@ import {
 import CategorySpecTemplatesSection from "./components/CategorySpecTemplatesSection";
 import CategoryVariantAttributesSection from "./components/CategoryVariantAttributesSection";
 import type { VariantAttributeRow } from "./types";
+import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Categories() {
   const [brandFilter, setBrandFilter] = useState("");
@@ -66,7 +63,9 @@ export default function Categories() {
     parentId: "",
   });
   const [specTemplates, setSpecTemplates] = useState<SpecTemplateRow[]>([]);
-  const [variantAttributes, setVariantAttributes] = useState<VariantAttributeRow[]>([]);
+  const [variantAttributes, setVariantAttributes] = useState<
+    VariantAttributeRow[]
+  >([]);
   const [saving, setSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
@@ -166,7 +165,9 @@ export default function Categories() {
       (cat.variantAttributes || []).map((attr, index) => ({
         name: attr.name,
         code: attr.code || "",
-        optionsText: (attr.options || []).map((option) => option.label).join(", "),
+        optionsText: (attr.options || [])
+          .map((option) => option.label)
+          .join(", "),
         sortOrder: attr.sortOrder ?? index,
       })),
     );
@@ -277,7 +278,9 @@ export default function Categories() {
                 type="text"
                 placeholder="VD: Điện thoại, Laptop..."
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 required
                 inputClassName="h-11 border-2 border-slate-200 dark:border-slate-700"
               />
@@ -286,7 +289,9 @@ export default function Categories() {
                 type="text"
                 placeholder="Mô tả ngắn về danh mục..."
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 inputClassName="h-11 border-2 border-slate-200 dark:border-slate-700"
               />
             </div>
@@ -354,32 +359,45 @@ export default function Categories() {
       {/* Categories Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-2 border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[980px] text-left border-collapse">
+          <table className="w-full min-w-[1040px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x-2 divide-slate-200 dark:divide-slate-700">
+                <th className="p-3 sm:p-4 font-medium text-center w-20">STT</th>
                 <th className="p-3 sm:p-4 font-medium">Danh mục</th>
                 <th className="p-3 sm:p-4 font-medium">Slug</th>
                 <th className="p-3 sm:p-4 font-medium text-center">Thông số</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Số sản phẩm</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Trạng thái</th>
-                <th className="p-3 sm:p-4 font-medium text-center w-[232px]">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  Số sản phẩm
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  Trạng thái
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-center w-[232px]">
+                  Thao tác
+                </th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <TableRowSkeleton rows={5} cols={6} />
+                <TableRowSkeleton rows={5} cols={7} />
               ) : categories.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-12 text-center text-slate-400 border-b-2 border-slate-200 dark:border-slate-700">
+                  <td
+                    colSpan={7}
+                    className="p-12 text-center text-slate-400 border-b-2 border-slate-200 dark:border-slate-700"
+                  >
                     Không có danh mục nào
                   </td>
                 </tr>
               ) : (
-                categories.map((cat) => (
+                categories.map((cat, index) => (
                   <tr
                     key={cat.id}
                     className="border-b-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x-2 divide-slate-200 dark:divide-slate-700"
                   >
+                    <td className="p-3 sm:p-4 text-center font-semibold text-slate-400">
+                      {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
+                    </td>
                     <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-3">
                         {cat.imageUrl && (
@@ -419,7 +437,9 @@ export default function Categories() {
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       <div className="flex justify-center">
-                        <StatusBadge status={cat.active ? "active" : "hidden"} />
+                        <StatusBadge
+                          status={cat.active ? "active" : "hidden"}
+                        />
                       </div>
                     </td>
                     <td className="p-3 sm:p-4">
@@ -454,7 +474,8 @@ export default function Categories() {
         </div>
 
         {pageData && (
-          <Pagination variant="admin"
+          <Pagination
+            variant="admin"
             currentPage={page}
             totalPages={pageData.lastPage}
             totalItems={pageData.total}

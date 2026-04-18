@@ -10,6 +10,7 @@ import { ORDER_FILTER_OPTIONS, getAdminOrderStatusOptions } from '@/constants/or
 import type { OrderResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { downloadBlob } from '@/utils/download';
+import { getPaginatedRowNumber } from '@/utils/helpers';
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
@@ -93,7 +94,8 @@ export default function AdminOrders() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         
         {/* Desktop Header */}
-        <div className="hidden lg:grid grid-cols-[350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
+        <div className="hidden lg:grid grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
+          <div className="px-4 py-4">STT</div>
           <div className="px-4 py-4 text-left">Mã đơn hàng</div>
           <div className="px-4 py-4">Ngày đặt</div>
           <div className="px-4 py-4">SP</div>
@@ -106,7 +108,8 @@ export default function AdminOrders() {
         <div className="flex flex-col">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex flex-col lg:grid lg:grid-cols-[350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse">
+              <div key={i} className="flex flex-col lg:grid lg:grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse">
+                <div className="hidden lg:flex px-4 py-4 w-full justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
@@ -122,68 +125,79 @@ export default function AdminOrders() {
               <span>Không có đơn hàng nào</span>
             </div>
           ) : (
-            orders.map((order) => (
-              <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
-                {/* Mobile: Order Header */}
-                <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                  <div className="font-bold text-purple-600 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 lg:hidden"><FiPackage className="text-md" /></div>
-                    {order.orderNumber}
+            orders.map((order, index) => {
+              const rowNumber = getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index);
+
+              return (
+                <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
+                  <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-slate-400">
+                    {rowNumber}
                   </div>
-                  <div className="lg:hidden text-slate-500 text-md ">{formatDate(order.createdAt)}</div>
-                </div>
 
-                <div className="hidden lg:flex justify-center items-center px-4 py-4 text-slate-700 dark:text-slate-300 font-medium h-full text-center">{formatDate(order.createdAt)}</div>
-                
-                <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                  <span className="lg:hidden text-slate-500 text-md">Số lượng SP:</span>
-                  <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max text-slate-700 dark:text-slate-300">
-                    {order.items?.length || 0}
+                  {/* Mobile: Order Header */}
+                  <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
+                    <div className="font-bold text-purple-600 flex items-center gap-2">
+                      <span className="inline-flex lg:hidden items-center justify-center min-w-9 h-8 px-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 text-sm font-semibold">
+                        {rowNumber}
+                      </span>
+                      <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 lg:hidden"><FiPackage className="text-md" /></div>
+                      {order.orderNumber}
+                    </div>
+                    <div className="lg:hidden text-slate-500 text-md ">{formatDate(order.createdAt)}</div>
                   </div>
-                </div>
 
-                <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                  <span className="lg:hidden text-slate-500 text-md">Tổng tiền:</span>
-                  <div className="font-bold text-slate-800 dark:text-slate-100">{formatPrice(order.totalAmount)}</div>
-                </div>
-
-                <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                  <span className="lg:hidden text-slate-500 text-md">Thanh toán:</span>
-                  <div className="text-slate-700 dark:text-slate-300 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
-                    {order.paymentMethod}
+                  <div className="hidden lg:flex justify-center items-center px-4 py-4 text-slate-700 dark:text-slate-300 font-medium h-full text-center">{formatDate(order.createdAt)}</div>
+                  
+                  <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
+                    <span className="lg:hidden text-slate-500 text-md">Số lượng SP:</span>
+                    <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max text-slate-700 dark:text-slate-300">
+                      {order.items?.length || 0}
+                    </div>
                   </div>
-                </div>
 
-                <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between lg:justify-center items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                  <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
-                  <div className="w-[170px] sm:w-48 lg:w-[150px]">
-                    {(() => {
-                      const statusOptions = getAdminOrderStatusOptions(order.orderStatus);
-                      return (
-                    <CustomSelect 
-                      value={order.orderStatus} 
-                      onChange={(val) => handleStatusChange(order.id, val)}
-                      options={statusOptions}
-                      className="w-full"
-                      disabled={statusOptions.length <= 1}
+                  <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
+                    <span className="lg:hidden text-slate-500 text-md">Tổng tiền:</span>
+                    <div className="font-bold text-slate-800 dark:text-slate-100">{formatPrice(order.totalAmount)}</div>
+                  </div>
+
+                  <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
+                    <span className="lg:hidden text-slate-500 text-md">Thanh toán:</span>
+                    <div className="text-slate-700 dark:text-slate-300 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
+                      {order.paymentMethod}
+                    </div>
+                  </div>
+
+                  <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between lg:justify-center items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
+                    <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
+                    <div className="w-[170px] sm:w-48 lg:w-[150px]">
+                      {(() => {
+                        const statusOptions = getAdminOrderStatusOptions(order.orderStatus);
+                        return (
+                          <CustomSelect 
+                            value={order.orderStatus} 
+                            onChange={(val) => handleStatusChange(order.id, val)}
+                            options={statusOptions}
+                            className="w-full"
+                            disabled={statusOptions.length <= 1}
+                          />
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  <div className="w-full lg:w-auto mt-2 lg:mt-0 flex justify-end lg:justify-center items-center print:hidden px-4 pb-4 pt-2 lg:px-4 lg:py-4 lg:h-full">
+                    <ActionButtons
+                      actions={[
+                        {
+                          type: 'view',
+                          href: `/admin/orders/${order.orderNumber}`,
+                        }
+                      ]}
                     />
-                      );
-                    })()}
                   </div>
                 </div>
-
-                <div className="w-full lg:w-auto mt-2 lg:mt-0 flex justify-end lg:justify-center items-center print:hidden px-4 pb-4 pt-2 lg:px-4 lg:py-4 lg:h-full">
-                  <ActionButtons
-                    actions={[
-                      {
-                        type: 'view',
-                        href: `/admin/orders/${order.orderNumber}`,
-                      }
-                    ]}
-                  />
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

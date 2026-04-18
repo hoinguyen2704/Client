@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FiCamera, FiLock, FiShield, FiMoon, FiSun, FiGlobe, FiBell, FiLoader, FiSave, FiUser } from 'react-icons/fi';
+import { FiAlertCircle, FiCamera, FiLock, FiShield, FiMoon, FiSun, FiGlobe, FiBell, FiLoader, FiSave, FiUser, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
@@ -20,6 +20,8 @@ export default function Profile() {
   const [fullName, setFullName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [gender, setGender] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isPhoneHintMinimized, setIsPhoneHintMinimized] = useState(false);
 
   // Password fields
   const [currentPassword, setCurrentPassword] = useState('');
@@ -48,6 +50,7 @@ export default function Profile() {
       setFullName(u.fullName || '');
       setDateOfBirth(u.dateOfBirth || '');
       setGender(u.gender || '');
+      setPhoneNumber(u.phoneNumber || '');
     } catch {
       toast.error('Không thể tải thông tin hồ sơ.');
     } finally {
@@ -60,14 +63,25 @@ export default function Profile() {
       toast.error('Họ và tên không được để trống.');
       return;
     }
+
+    if (!hasPersistedPhoneNumber) {
+      const compactPhoneNumber = phoneNumber.trim().replaceAll(/[\s().-]/g, '');
+      if (compactPhoneNumber && !/^(0|\+84|84)[35789][0-9]{8}$/.test(compactPhoneNumber)) {
+        toast.error('Số điện thoại chưa đúng định dạng Việt Nam.');
+        return;
+      }
+    }
+
     setSaving(true);
     try {
       const res = await userService.updateProfile({
         fullName: fullName.trim(),
         dateOfBirth: dateOfBirth || undefined,
         gender: gender || undefined,
+        phoneNumber: !hasPersistedPhoneNumber && phoneNumber.trim() ? phoneNumber.trim() : undefined,
       });
       setUser(res.data);
+      setPhoneNumber(res.data.phoneNumber || '');
       toast.success('Cập nhật hồ sơ thành công!');
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, 'Cập nhật hồ sơ thất bại.'));
@@ -206,8 +220,67 @@ export default function Profile() {
     );
   }
 
+  const hasPersistedPhoneNumber = Boolean(user?.phoneNumber?.trim());
+  const showPhoneHintPopup = !hasPersistedPhoneNumber && !isPhoneHintMinimized;
+  const showPhoneHintPill = !hasPersistedPhoneNumber && isPhoneHintMinimized;
+  const displayPhoneNumber = hasPersistedPhoneNumber ? (user?.phoneNumber || '') : phoneNumber;
+
   return (
     <div className="space-y-8">
+      <AnimatePresence>
+        {showPhoneHintPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="fixed bottom-6 left-4 right-4 z-40 sm:left-auto sm:right-6 sm:w-[360px]"
+          >
+            <div className="overflow-hidden rounded-2xl border border-amber-200/90 bg-white/95 shadow-[0_18px_45px_-20px_rgba(180,83,9,0.45)] backdrop-blur">
+              <div className="h-1.5 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300" />
+              <div className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+                    <FiAlertCircle className="text-lg" />
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    <p className="text-sm font-semibold text-slate-900">Tài khoản này chưa có số điện thoại</p>
+                    <p className="text-sm leading-6 text-slate-600">
+                      Đăng nhập bằng Google thường không có sẵn số điện thoại. Bạn có thể bổ sung ngay trong hồ sơ để thuận tiện nhận hàng và liên hệ.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsPhoneHintMinimized(true)}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                    aria-label="Thu nhỏ gợi ý số điện thoại"
+                  >
+                    <FiX className="text-lg" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showPhoneHintPill && (
+          <motion.button
+            type="button"
+            initial={{ opacity: 0, y: 20, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.92 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            onClick={() => setIsPhoneHintMinimized(false)}
+            className="fixed bottom-6 left-4 z-40 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/95 px-4 py-3 text-sm font-semibold text-amber-800 shadow-[0_16px_35px_-22px_rgba(180,83,9,0.5)] backdrop-blur transition-transform hover:-translate-y-0.5 sm:left-auto sm:right-6"
+          >
+            <FiAlertCircle className="text-base" />
+            Bổ sung số điện thoại
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       <h1 className="text-2xl font-bold">Hồ sơ cá nhân</h1>
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -290,10 +363,25 @@ export default function Profile() {
                 <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Số điện thoại</label>
                 <input
                   type="tel"
-                  value={user?.phoneNumber || ''}
-                  readOnly
-                  className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-none text-slate-500 cursor-not-allowed"
+                  value={displayPhoneNumber}
+                  onChange={(e) => {
+                    if (!hasPersistedPhoneNumber) {
+                      setPhoneNumber(e.target.value);
+                    }
+                  }}
+                  placeholder={hasPersistedPhoneNumber ? '' : 'Nhập số điện thoại để nhận hàng'}
+                  readOnly={hasPersistedPhoneNumber}
+                  className={`w-full h-12 px-4 rounded-xl border-none ${
+                    hasPersistedPhoneNumber
+                      ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-500 cursor-not-allowed'
+                      : 'bg-slate-100 dark:bg-slate-800 focus:ring-2 focus:ring-purple-500'
+                  }`}
                 />
+                <p className="mt-2 text-sm text-slate-500">
+                  {hasPersistedPhoneNumber
+                    ? 'Số điện thoại đã được thiết lập. Nếu cần thay đổi, hãy liên hệ quản trị viên hoặc CSKH.'
+                    : 'Hỗ trợ định dạng `0xxxxxxxxx`, `84xxxxxxxxx` hoặc `+84xxxxxxxxx`.'}
+                </p>
               </div>
               <div>
                 <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">Ngày sinh</label>

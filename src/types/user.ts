@@ -17,6 +17,7 @@ export interface UpdateUserRequest {
   fullName: string;
   dateOfBirth?: string;
   gender?: string;
+  phoneNumber?: string;
 }
 
 export interface EmailChangeRequest {

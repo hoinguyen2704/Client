@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FiMessageSquare, FiSend, FiX } from 'react-icons/fi';
+import { FiSend, FiX } from 'react-icons/fi';
 import { AnimatePresence, motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import ticketService from '@/apis/services/ticketService';
@@ -36,6 +36,7 @@ export default function SupportChatWidget() {
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse | null>(null);
   const [draft, setDraft] = useState('');
+  const supportAvatarUrl = '/admin.png';
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const selectedTicketIdRef = useRef<string | null>(null);
@@ -182,12 +183,18 @@ export default function SupportChatWidget() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-20 right-4 sm:bottom-24 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-[55] bg-gradient-to-r from-purple-600 to-blue-600 ${
+        className={`fixed bottom-20 right-4 sm:bottom-24 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-[55] overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-700 ${
           isOpen ? 'hidden' : ''
         }`}
         aria-label="Mở hỗ trợ trực tiếp"
       >
-        <FiMessageSquare className="text-xl sm:text-2xl" />
+        <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/12 ring-1 ring-white/20 backdrop-blur">
+          <img
+            src={supportAvatarUrl}
+            alt="Admin hỗ trợ"
+            className="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover"
+          />
+        </span>
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-11 font-bold flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -204,10 +211,19 @@ export default function SupportChatWidget() {
             transition={{ duration: 0.16 }}
             className="fixed bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden z-[55] right-3 bottom-16 w-[280px] max-w-[82vw] h-[min(70dvh,600px)] sm:right-6 sm:bottom-24 sm:w-[360px] sm:h-[520px] sm:max-w-[92vw] sm:max-h-[88vh]"
           >
-            <div className="h-14 px-3 sm:px-4 flex items-center justify-between text-white bg-gradient-to-r from-purple-600 to-blue-600">
-              <div>
-                <h3 className="font-bold text-md">Hỗ trợ trực tiếp</h3>
-                <p className="text-11 text-white/80">Realtime với admin</p>
+            <div className="h-14 px-3 sm:px-4 flex items-center justify-between text-white bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-700">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white/20 bg-white/10">
+                  <img
+                    src={supportAvatarUrl}
+                    alt="Admin hỗ trợ"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-bold text-md">Hỗ trợ trực tiếp</h3>
+                  <p className="text-11 text-white/80">Realtime với admin</p>
+                </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}

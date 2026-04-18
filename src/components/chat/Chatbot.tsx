@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
-  FiMessageSquare,
   FiX,
   FiSend,
   FiUser,
@@ -87,6 +86,7 @@ export default function Chatbot() {
   const botSubtitle = useMemo(() => widgetConfig.bot?.subtitle || DEFAULT_CONFIG.bot.subtitle, [widgetConfig.bot?.subtitle]);
   const themeColor = useMemo(() => widgetConfig.bot?.themeColor || DEFAULT_CONFIG.bot.themeColor, [widgetConfig.bot?.themeColor]);
   const avatarUrl = widgetConfig.bot?.avatarUrl || "";
+  const launcherAvatarUrl = avatarUrl || "/logo.svg";
   const suggestions = useMemo(
     () => widgetConfig.suggestions?.length ? widgetConfig.suggestions : DEFAULT_CONFIG.suggestions,
     [widgetConfig.suggestions],
@@ -189,13 +189,23 @@ export default function Chatbot() {
       <button
         onClick={() => setIsOpen(true)}
         className={
-          "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-50 " +
+          "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-50 overflow-hidden " +
           (isOpen ? "hidden" : "")
         }
         style={{ ...gradientStyle, ...shadowStyle }}
         aria-label="Mở chatbot"
       >
-        <FiMessageSquare className="text-xl sm:text-2xl" />
+        <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/18 ring-1 ring-white/30 backdrop-blur">
+          {launcherAvatarUrl ? (
+            <img
+              src={launcherAvatarUrl}
+              alt={botName}
+              className="h-6 w-6 sm:h-7 sm:w-7 rounded-full object-cover"
+            />
+          ) : (
+            <FiCpu className="text-xl sm:text-2xl" />
+          )}
+        </span>
       </button>
 
       {/* Chat Window */}

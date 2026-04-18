@@ -9,6 +9,7 @@ import adminCategoryService from '@/apis/services/adminCategoryService';
 import type { ProductResponse, PageResponse, CategoryResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { downloadBlob } from '@/utils/download';
+import { getPaginatedRowNumber } from '@/utils/helpers';
 
 export default function Products() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -215,9 +216,10 @@ export default function Products() {
       {/* Products Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[920px] text-left border-collapse">
+          <table className="w-full min-w-[1000px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
+                <th className="p-4 font-medium w-20 text-center">STT</th>
                 <th className="p-4 font-medium w-10 text-center">
                   <Checkbox
                     checked={selectedItems.length === products.length && products.length > 0}
@@ -247,6 +249,7 @@ export default function Products() {
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-200 dark:border-slate-700 divide-x divide-slate-200 dark:divide-slate-700 animate-pulse">
+                    <td className="p-4"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
                     <td className="p-4"><div className="w-4 h-4 bg-slate-200 dark:bg-slate-700 rounded mx-auto" /></td>
                     <td className="p-4"><div className="flex gap-3"><div className="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg shrink-0" /><div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded mt-4" /></div></td>
                     <td className="p-4"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></td>
@@ -258,12 +261,14 @@ export default function Products() {
                   </tr>
                 ))
               ) : products.length === 0 ? (
-                <tr><td colSpan={8} className="p-10 sm:p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">Không có sản phẩm nào</td></tr>
+                <tr><td colSpan={9} className="p-10 sm:p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">Không có sản phẩm nào</td></tr>
               ) : (
-                products.map((product) => {
+                products.map((product, index) => {
                   const stock = totalStock(product);
+                  const rowNumber = getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index);
                   return (
                     <tr key={product.id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group divide-x divide-slate-200 dark:divide-slate-700">
+                      <td className="p-4 text-center font-semibold text-slate-900">{rowNumber}</td>
                       <td className="p-4">
                         <Checkbox
                           checked={selectedItems.includes(product.id)}
