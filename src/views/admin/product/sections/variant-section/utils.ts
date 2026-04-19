@@ -2,14 +2,15 @@ import type { VariantAttributeSchemaResponse } from "@/types";
 
 export const formatVariantSummaryValue = (
   value: string | number | null | undefined,
+  emptyLabel: string,
 ) => {
   if (value === "" || value === null || value === undefined) {
-    return "Chưa nhập";
+    return emptyLabel;
   }
 
   const numericValue = Number(value);
   return Number.isFinite(numericValue)
-    ? numericValue.toLocaleString("vi-VN")
+    ? numericValue.toLocaleString()
     : String(value);
 };
 

@@ -11,7 +11,7 @@ import { Button, StatusBadge, UserAvatar, BackButton } from '@/components';
 import type { UserResponse } from '@/types';
 
 export default function CustomerDetail() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['adminCustomers', 'common']);
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,21 +38,21 @@ export default function CustomerDetail() {
     try {
       const res = await adminUserService.toggleStatus(user.id);
       setUser(res.data);
-      toast.success('Cập nhật trạng thái người dùng thành công!');
+      toast.success(t('detail.toasts.toggleSuccess'));
     } catch (err) {
       console.error(err);
-      toast.error('Cập nhật trạng thái người dùng thất bại!');
+      toast.error(t('detail.toasts.toggleFailed'));
     }
   };
 
   const handleUpdatePhone = async () => {
     if (!user) return;
     if (!phoneNumber.trim()) {
-      toast.error('Vui lòng nhập số điện thoại.');
+      toast.error(t('detail.toasts.phoneRequired'));
       return;
     }
     if (!phoneReason.trim()) {
-      toast.error('Vui lòng nhập lý do thay đổi.');
+      toast.error(t('detail.toasts.reasonRequired'));
       return;
     }
 
@@ -65,7 +65,7 @@ export default function CustomerDetail() {
       setUser(res.data);
       setPhoneNumber(res.data.phoneNumber || '');
       setPhoneReason('');
-      toast.success('Cập nhật số điện thoại thành công!');
+      toast.success(t('detail.toasts.phoneUpdated'));
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, translate, 'common:errors.updatePhoneFailed'));
     } finally {
@@ -90,14 +90,14 @@ export default function CustomerDetail() {
   }
 
   if (!user) {
-    return <div className="p-8 text-center text-slate-400">Không tìm thấy người dùng</div>;
+    return <div className="p-8 text-center text-slate-400">{t('detail.notFound')}</div>;
   }
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center gap-3 sm:gap-4">
         <BackButton to="/admin/customers" />
-        <h1 className="text-xl sm:text-2xl font-bold">Chi tiết khách hàng</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('detail.title')}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -116,7 +116,10 @@ export default function CustomerDetail() {
             <p className="text-slate-500 text-md mb-4">@{user.userName || user.email.split('@')[0]}</p>
 
             <div className="flex justify-center gap-2 mb-6">
-              <StatusBadge status={user.status === 'ACTIVE' ? 'active' : 'banned'} label={user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'} />
+              <StatusBadge
+                status={user.status === 'ACTIVE' ? 'active' : 'banned'}
+                label={user.status === 'ACTIVE' ? t('customers.statuses.active') : t('customers.statuses.locked')}
+              />
               <StatusBadge status={user.role === 'ADMIN' ? 'admin' : 'user'} />
             </div>
 
@@ -126,7 +129,7 @@ export default function CustomerDetail() {
               fullWidth
               icon={user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />}
             >
-              {user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}
+              {user.status === 'ACTIVE' ? t('customers.actions.lock') : t('customers.actions.unlock')}
             </Button>
 
             <div className="mt-5 sm:mt-6 space-y-3 text-left text-md">
@@ -140,7 +143,7 @@ export default function CustomerDetail() {
               </div>
               <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                 <FiCalendar className="text-slate-400 shrink-0" />
-                <span>Tham gia: {formatDate(user.createdAt)}</span>
+                <span>{t('detail.joined', { date: formatDate(user.createdAt) })}</span>
               </div>
             </div>
           </div>
@@ -150,57 +153,57 @@ export default function CustomerDetail() {
         <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800">
-              <h2 className="text-lg font-bold">Thông tin tài khoản</h2>
+              <h2 className="text-lg font-bold">{t('detail.accountInfo')}</h2>
             </div>
             <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <span className="text-md text-slate-500">Họ tên</span>
+                <span className="text-md text-slate-500">{t('detail.fullName')}</span>
                 <p className="font-bold">{user.fullName}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">Email</span>
+                <span className="text-md text-slate-500">{t('detail.email')}</span>
                 <p className="font-bold">{user.email}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">Số điện thoại</span>
+                <span className="text-md text-slate-500">{t('detail.phone')}</span>
                 <p className="font-bold">{user.phoneNumber || '—'}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">Giới tính</span>
+                <span className="text-md text-slate-500">{t('detail.gender')}</span>
                 <p className="font-bold">{user.gender || '—'}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">Ngày sinh</span>
+                <span className="text-md text-slate-500">{t('detail.dateOfBirth')}</span>
                 <p className="font-bold">{user.dateOfBirth ? formatDate(user.dateOfBirth) : '—'}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">Ngày tạo</span>
+                <span className="text-md text-slate-500">{t('detail.createdAt')}</span>
                 <p className="font-bold">{formatDate(user.createdAt)}</p>
               </div>
             </div>
 
             <div className="px-4 sm:px-6 pb-4 sm:pb-6">
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-4">
-                <h3 className="text-md font-bold">Cập nhật số điện thoại (Admin)</h3>
+                <h3 className="text-md font-bold">{t('detail.phoneUpdateTitle')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-md text-slate-500 mb-2">Số điện thoại mới</label>
+                    <label className="block text-md text-slate-500 mb-2">{t('detail.newPhone')}</label>
                     <input
                       type="tel"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       className="w-full h-11 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                      placeholder="Nhập số điện thoại"
+                      placeholder={t('detail.newPhonePlaceholder')}
                     />
                   </div>
                   <div>
-                    <label className="block text-md text-slate-500 mb-2">Lý do thay đổi</label>
+                    <label className="block text-md text-slate-500 mb-2">{t('detail.changeReason')}</label>
                     <input
                       type="text"
                       value={phoneReason}
                       onChange={(e) => setPhoneReason(e.target.value)}
                       className="w-full h-11 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                      placeholder="Bắt buộc"
+                      placeholder={t('detail.changeReasonPlaceholder')}
                     />
                   </div>
                 </div>
@@ -209,7 +212,7 @@ export default function CustomerDetail() {
                   disabled={updatingPhone}
                   size="md"
                 >
-                  {updatingPhone ? 'Đang cập nhật...' : 'Lưu số điện thoại'}
+                  {updatingPhone ? t('detail.savingPhone') : t('detail.savePhone')}
                 </Button>
               </div>
             </div>

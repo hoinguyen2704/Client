@@ -23,7 +23,9 @@ export interface VariantCardProps {
   isExpanded: boolean;
   isVariantUploading: boolean;
   canRemove: boolean;
+  autoFocusSku?: boolean;
   variantFileInputRefs: VariantSectionProps["variantFileInputRefs"];
+  onAutoFocusHandled?: () => void;
   onToggleExpanded: () => void;
   removeVariant: VariantSectionProps["removeVariant"];
   updateVariant: VariantSectionProps["updateVariant"];

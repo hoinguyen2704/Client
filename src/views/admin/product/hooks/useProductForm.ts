@@ -5,6 +5,7 @@ import {
   useRef,
   useMemo,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import adminProductService from "@/apis/services/adminProductService";
 import adminCategoryService from "@/apis/services/adminCategoryService";
@@ -22,9 +23,15 @@ import { PAGE_SIZE } from "@/constants/paginationConstants";
 import { getSpecTemplatesFromCategory } from "./productFormShared";
 
 export default function useProductForm() {
+  const { t } = useTranslation(["adminCatalog", "common"]);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
+  const translate = useCallback(
+    (key: string, options?: Record<string, unknown>) =>
+      String(t(key, options as never)),
+    [t],
+  );
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -89,9 +96,10 @@ export default function useProductForm() {
   const getHintForSpec = useCallback(
     (specKey: string): string => {
       const templates = getSelectedCategoryTemplates();
-      return templates.find((template) => template.specKey === specKey)?.hint || "Nhập giá trị...";
+      return templates.find((template) => template.specKey === specKey)?.hint
+        || t("productForm.specValueHint");
     },
-    [getSelectedCategoryTemplates],
+    [getSelectedCategoryTemplates, t],
   );
 
   const getSpecAttributeIdByKey = useCallback(
@@ -179,9 +187,11 @@ export default function useProductForm() {
       setCategoryId(newCat.id);
       setNewCategoryName("");
       setIsCreatingCategory(false);
-      toast.success(`Đã tạo danh mục "${newCat.name}"`);
+      toast.success(
+        t("categories.toasts.inlineCreateSuccess", { name: newCat.name }),
+      );
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, "Tạo danh mục thất bại"));
+      toast.error(getApiErrorMessage(err, translate, "categories.toasts.saveFailed"));
     } finally {
       setSavingCategory(false);
     }
@@ -197,9 +207,11 @@ export default function useProductForm() {
       setBrandId(newBrand.id);
       setNewBrandName("");
       setIsCreatingBrand(false);
-      toast.success(`Đã tạo thương hiệu "${newBrand.name}"`);
+      toast.success(
+        t("brands.toasts.inlineCreateSuccess", { name: newBrand.name }),
+      );
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, "Tạo thương hiệu thất bại"));
+      toast.error(getApiErrorMessage(err, translate, "brands.toasts.saveFailed"));
     } finally {
       setSavingBrand(false);
     }
@@ -226,7 +238,7 @@ export default function useProductForm() {
       const res = await adminProductService.getById(id);
       const product = res.data;
       if (!product) {
-        setError("Không tìm thấy sản phẩm");
+        setError(t("productForm.errors.notFound"));
         return;
       }
 
@@ -254,11 +266,11 @@ export default function useProductForm() {
       });
       setExistingImages(images);
     } catch (err: unknown) {
-      setError(getApiErrorMessage(err, "Lỗi khi tải sản phẩm"));
+      setError(getApiErrorMessage(err, translate, "productForm.errors.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, t, translate]);
 
   useEffect(() => {
     void fetchDropdowns();
@@ -283,9 +295,11 @@ export default function useProductForm() {
         .uploadImages(id, files)
         .then((res) => {
           setExistingImages((prev) => [...prev, ...res.data]);
-          toast.success(`Tải lên ${files.length} ảnh thành công!`);
+          toast.success(
+            t("productForm.toasts.uploadSuccess", { count: files.length }),
+          );
         })
-        .catch(() => toast.error("Upload thất bại, vui lòng thử lại."))
+        .catch(() => toast.error(t("productForm.toasts.uploadFailed")))
         .finally(() => setUploadingImages(false));
       return;
     }
@@ -301,9 +315,9 @@ export default function useProductForm() {
     try {
       await adminProductService.deleteImage(id!, imageId);
       setExistingImages((prev) => prev.filter((image) => image.id !== imageId));
-      toast.success("Xóa ảnh thành công!");
+      toast.success(t("productForm.toasts.deleteImageSuccess"));
     } catch {
-      toast.error("Xóa ảnh thất bại.");
+      toast.error(t("productForm.toasts.deleteImageFailed"));
     }
   };
 
@@ -330,15 +344,15 @@ export default function useProductForm() {
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      setError("Vui lòng nhập tên sản phẩm");
+      setError(t("productForm.errors.nameRequired"));
       return;
     }
     if (!categoryId) {
-      setError("Vui lòng chọn danh mục");
+      setError(t("productForm.errors.categoryRequired"));
       return;
     }
     if (!brandId) {
-      setError("Vui lòng chọn thương hiệu");
+      setError(t("productForm.errors.brandRequired"));
       return;
     }
 
@@ -354,7 +368,7 @@ export default function useProductForm() {
           await adminProductService.uploadImages(id, pendingFiles);
           setPendingFiles([]);
         }
-        toast.success("Cập nhật thông tin sản phẩm thành công!");
+        toast.success(t("productForm.toasts.updateSuccess"));
         await fetchProduct();
       } else {
         const res = await adminProductService.createBasic(payload);
@@ -363,9 +377,7 @@ export default function useProductForm() {
           await adminProductService.uploadImages(newProductId, pendingFiles);
           setPendingFiles([]);
         }
-        toast.success(
-          'Đã tạo sản phẩm ở trạng thái bản nháp. Vào "Quản lý phân loại" để cấu hình SKU, giá và tồn kho.',
-        );
+        toast.success(t("productForm.toasts.createDraftSuccess"));
         if (newProductId) {
           navigate(`/admin/products/${newProductId}`);
         } else {
@@ -373,7 +385,7 @@ export default function useProductForm() {
         }
       }
     } catch (err: unknown) {
-      setError(getApiErrorMessage(err, "Lỗi khi lưu sản phẩm"));
+      setError(getApiErrorMessage(err, translate, "productForm.errors.saveFailed"));
     } finally {
       setSaving(false);
     }

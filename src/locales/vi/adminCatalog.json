@@ -55,15 +55,137 @@
     "addCategory": "Thêm danh mục",
     "editCategory": "Sửa danh mục",
     "deleteCategory": "Xóa danh mục",
-    "empty": "Không tìm thấy danh mục"
+    "empty": "Không tìm thấy danh mục",
+    "filters": {
+      "allBrands": "Tất cả nhãn hàng"
+    },
+    "table": {
+      "index": "STT",
+      "category": "Danh mục",
+      "slug": "Slug",
+      "specs": "Thông số",
+      "productCount": "Số sản phẩm",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "empty": "Không có danh mục nào"
+    },
+    "labels": {
+      "pagination": "danh mục"
+    },
+    "actions": {
+      "show": "Hiện",
+      "hide": "Ẩn"
+    },
+    "confirmDelete": {
+      "title": "Xóa danh mục",
+      "message": "Bạn có chắc muốn xóa danh mục này? Thao tác này không thể hoàn tác.",
+      "confirm": "Xóa"
+    },
+    "form": {
+      "loading": "Đang tải dữ liệu danh mục...",
+      "backToList": "Quay lại danh sách danh mục",
+      "createTitle": "Thêm danh mục mới",
+      "editTitle": "Sửa danh mục",
+      "back": "Quay lại",
+      "save": "Lưu danh mục",
+      "basicTitle": "Thông tin cơ bản",
+      "basicDescription": "Thiết lập tên hiển thị cho danh mục.",
+      "nameLabel": "Tên danh mục *",
+      "namePlaceholder": "VD: Điện thoại, Laptop...",
+      "variantTitle": "Thuộc tính biến thể",
+      "variantDescription": "Khai báo các thuộc tính dùng để sinh biến thể.",
+      "variantAdd": "Thêm thuộc tính",
+      "variantCount": "{{count}} thuộc tính",
+      "specTitle": "Thông số kỹ thuật",
+      "specDescription": "Schema thông số gợi ý sẽ được dùng khi tạo hoặc sửa sản phẩm thuộc danh mục này.",
+      "specAdd": "Thêm thông số",
+      "specCount": "{{count}} thông số",
+      "expand": "Mở rộng",
+      "collapse": "Thu gọn"
+    },
+    "variantAttributes": {
+      "header": "Thuộc tính biến thể",
+      "count": "{{count}} thuộc tính",
+      "add": "Thêm",
+      "empty": "Chưa có thuộc tính biến thể nào",
+      "namePlaceholder": "Tên thuộc tính (VD: Màu)",
+      "codePlaceholder": "Code (VD: COLOR)",
+      "optionsPlaceholder": "Options, ngăn cách dấu phẩy (VD: Đen, Trắng, Xanh)"
+    },
+    "specTemplates": {
+      "header": "Gợi ý thông số kỹ thuật",
+      "count": "{{count}} thông số",
+      "add": "Thêm",
+      "empty": "Chưa có thông số gợi ý nào",
+      "firstAdd": "Thêm thông số đầu tiên",
+      "nameHeader": "Tên thông số",
+      "hintHeader": "Gợi ý (placeholder)",
+      "namePlaceholder": "VD: Màn hình, RAM...",
+      "hintPlaceholder": "VD: 6.7 inch OLED, 120Hz"
+    },
+    "toasts": {
+      "deleteSuccess": "Đã xóa danh mục!",
+      "deleteFailed": "Không thể xóa danh mục này!",
+      "toggleSuccess": "Cập nhật trạng thái thành công!",
+      "toggleFailed": "Cập nhật trạng thái thất bại!",
+      "createSuccess": "Đã tạo danh mục mới!",
+      "inlineCreateSuccess": "Đã tạo danh mục \"{{name}}\"",
+      "updateSuccess": "Đã cập nhật danh mục!",
+      "saveFailed": "Lưu danh mục thất bại!",
+      "loadFailed": "Không thể tải dữ liệu danh mục.",
+      "notFound": "Không tìm thấy danh mục.",
+      "nameRequired": "Tên danh mục không được để trống.",
+      "attributeOptionsRequired": "Thuộc tính \"{{name}}\" phải có ít nhất một option."
+    }
   },
   "brands": {
     "title": "Quản lý thương hiệu",
-    "searchPlaceholder": "Tìm kiếm theo tên thương hiệu...",
+    "searchPlaceholder": "Tìm kiếm thương hiệu...",
     "addBrand": "Thêm thương hiệu",
     "editBrand": "Sửa thương hiệu",
     "deleteBrand": "Xóa thương hiệu",
-    "empty": "Không tìm thấy thương hiệu"
+    "empty": "Không tìm thấy thương hiệu",
+    "filters": {
+      "allCategories": "Tất cả danh mục"
+    },
+    "table": {
+      "index": "STT",
+      "brand": "Thương hiệu",
+      "slug": "Slug",
+      "productCount": "Số sản phẩm",
+      "actions": "Thao tác",
+      "empty": "Không có thương hiệu nào"
+    },
+    "labels": {
+      "pagination": "thương hiệu"
+    },
+    "confirmDelete": {
+      "title": "Xóa thương hiệu?",
+      "message": "Thao tác này không thể hoàn tác. Nếu thương hiệu đang có sản phẩm, hệ thống sẽ từ chối xóa.",
+      "confirm": "Xóa",
+      "cancel": "Hủy"
+    },
+    "form": {
+      "createTitle": "Thêm thương hiệu mới",
+      "editTitle": "Sửa thương hiệu",
+      "closeAria": "Đóng form",
+      "nameLabel": "Tên thương hiệu *",
+      "namePlaceholder": "VD: Apple, Samsung...",
+      "logoLabel": "Logo URL",
+      "logoPlaceholder": "https://...",
+      "cancel": "Hủy",
+      "create": "Tạo thương hiệu",
+      "update": "Cập nhật thương hiệu"
+    },
+    "toasts": {
+      "nameRequired": "Tên thương hiệu không được để trống.",
+      "createSuccess": "Đã tạo thương hiệu mới!",
+      "inlineCreateSuccess": "Đã tạo thương hiệu \"{{name}}\"",
+      "updateSuccess": "Đã cập nhật thương hiệu!",
+      "saveFailed": "Lưu thương hiệu thất bại.",
+      "deleteSuccess": "Đã xóa thương hiệu!",
+      "deleteFailed": "Không thể xóa thương hiệu này."
+    }
   },
   "variants": {
     "title": "Phân loại",
@@ -77,12 +199,227 @@
     "name": "Tên sản phẩm",
     "category": "Danh mục",
     "brand": "Thương hiệu",
-    "description": "Mô tả"
+    "description": "Mô tả",
+    "selectCategory": "Chọn danh mục",
+    "selectBrand": "Chọn thương hiệu",
+    "addCategory": "Thêm danh mục",
+    "addBrand": "Thêm thương hiệu",
+    "categoryLocked": "Không thể đổi danh mục khi sản phẩm đã có phân loại.",
+    "productCode": {
+      "label": "Mã sản phẩm",
+      "hint": "Có thể để trống để hệ thống tự sinh khi cần.",
+      "locked": "Mã sản phẩm đã được khóa ở chế độ chỉnh sửa."
+    },
+    "placeholders": {
+      "name": "Nhập tên sản phẩm",
+      "productCode": "VD: IP15PMX",
+      "description": "Nhập mô tả ngắn hoặc HTML cho sản phẩm",
+      "categorySearch": "Tìm danh mục...",
+      "brandSearch": "Tìm thương hiệu...",
+      "newCategory": "Tên danh mục mới",
+      "newBrand": "Tên thương hiệu mới"
+    },
+    "specs": {
+      "title": "Thông số kỹ thuật",
+      "templateTitle": "Áp dụng mẫu thông số từ danh mục",
+      "templateAction": "Chọn mẫu",
+      "templateModalTitle": "Áp dụng thông số từ danh mục",
+      "templateRequiresCategory": "Hãy chọn danh mục trước khi áp dụng mẫu thông số.",
+      "selectAll": "Chọn tất cả",
+      "close": "Đóng",
+      "empty": "Chưa có thông số nào.",
+      "expand": "Xem thêm",
+      "collapse": "Thu gọn"
+    }
+  },
+  "productForm": {
+    "loading": "Đang tải sản phẩm...",
+    "createTitle": "Thêm sản phẩm mới",
+    "editTitle": "Sửa sản phẩm",
+    "manageVariants": "Quản lý phân loại",
+    "cancel": "Hủy",
+    "save": "Lưu sản phẩm",
+    "update": "Cập nhật",
+    "variantNoticeWithCount": "Sản phẩm đang có {{count}} phân loại.",
+    "variantNoticeEmpty": "Sản phẩm chưa có phân loại nào.",
+    "variantNoticeDescription": "SKU, giá bán, tồn kho và ảnh theo phân loại được quản lý ở màn riêng.",
+    "specValueHint": "Nhập giá trị...",
+    "errors": {
+      "notFound": "Không tìm thấy sản phẩm",
+      "loadFailed": "Lỗi khi tải sản phẩm",
+      "nameRequired": "Vui lòng nhập tên sản phẩm",
+      "categoryRequired": "Vui lòng chọn danh mục",
+      "brandRequired": "Vui lòng chọn thương hiệu",
+      "saveFailed": "Lỗi khi lưu sản phẩm"
+    },
+    "toasts": {
+      "updateSuccess": "Cập nhật thông tin sản phẩm thành công!",
+      "createDraftSuccess": "Đã tạo sản phẩm ở trạng thái bản nháp. Vào \"Quản lý phân loại\" để cấu hình SKU, giá và tồn kho.",
+      "uploadSuccess": "Tải lên {{count}} ảnh thành công!",
+      "uploadFailed": "Upload thất bại, vui lòng thử lại.",
+      "deleteImageSuccess": "Xóa ảnh thành công!",
+      "deleteImageFailed": "Xóa ảnh thất bại."
+    }
+  },
+  "imageUpload": {
+    "title": "Hình ảnh sản phẩm",
+    "count": "{{count}} ảnh",
+    "dropActive": "Thả ảnh vào đây!",
+    "dropIdle": "Kéo thả hoặc bấm để chọn ảnh",
+    "formatHint": "PNG, JPG, WEBP (Max 5MB)",
+    "pendingBadge": "Chưa lưu",
+    "primaryBadge": "Ảnh chính"
+  },
+  "statusPricing": {
+    "title": "Trạng thái & Giá",
+    "status": "Trạng thái",
+    "draftHint": "Tạo mới bước đầu luôn lưu dưới dạng bản nháp. Có thể đổi trạng thái sau khi cấu hình phân loại.",
+    "originPrice": "Giá gốc (VNĐ)",
+    "originPriceHint": "Giá sale/giảm giá nằm ở từng phân loại (Giá gốc so sánh)",
+    "featured": "Sản phẩm nổi bật",
+    "featuredOn": "Đang hiện trên trang chủ",
+    "featuredOff": "Không nổi bật",
+    "statusOptions": {
+      "active": "Đang bán",
+      "draft": "Bản nháp",
+      "inactive": "Đã ẩn"
+    }
+  },
+  "variantPage": {
+    "loading": "Đang tải phân loại sản phẩm...",
+    "backToProduct": "Quay lại thông tin sản phẩm",
+    "title": "Quản lý phân loại",
+    "fallbackDescription": "Cấu hình SKU, tồn kho, giá bán và ảnh theo phân loại.",
+    "productInfo": "Thông tin sản phẩm",
+    "save": "Lưu phân loại",
+    "schemaHint": "Phân loại luôn bám theo schema của danh mục. Nếu cần đổi danh mục, quay lại màn thông tin sản phẩm và xử lý danh mục trước khi chỉnh SKU.",
+    "defaultVariant": "Mặc định",
+    "errors": {
+      "notFound": "Không tìm thấy sản phẩm",
+      "loadFailed": "Lỗi khi tải phân loại sản phẩm",
+      "missingProduct": "Không tìm thấy sản phẩm để cập nhật phân loại.",
+      "invalidVariant": "Mỗi phân loại phải đủ SKU và đầy đủ tổ hợp thuộc tính.",
+      "inactiveSelection": "Có phân loại đang dùng option đã ngưng hoạt động. Vui lòng đổi sang option đang hoạt động trước khi lưu.",
+      "duplicateCombination": "Không thể lưu: có phân loại bị trùng tổ hợp thuộc tính.",
+      "saveFailed": "Lỗi khi lưu phân loại sản phẩm"
+    },
+    "toasts": {
+      "uploadSuccess": "Đã tải {{count}} ảnh cho phân loại \"{{name}}\"",
+      "uploadFailed": "Upload ảnh phân loại thất bại.",
+      "deleteImageSuccess": "Xóa ảnh phân loại thành công!",
+      "deleteImageFailed": "Xóa ảnh phân loại thất bại.",
+      "updateSuccess": "Cập nhật phân loại sản phẩm thành công!"
+    },
+    "skuChange": {
+      "title": "Xác nhận đổi SKU",
+      "confirmLabel": "Tiếp tục lưu",
+      "emptySku": "(trống)",
+      "more": "... và {{count}} SKU khác",
+      "confirm": "Bạn sắp đổi SKU đã tồn tại:\n{{preview}}{{more}}\n\nXác nhận tiếp tục?"
+    }
+  },
+  "variantSection": {
+    "title": "Phân loại hàng",
+    "count": "{{count}} phân loại",
+    "generate": "Sinh tổ hợp",
+    "generateTitle": "Chọn nhanh option theo từng thuộc tính để sinh hàng loạt phân loại",
+    "sortLatestUpdated": "Mới cập nhật nhất",
+    "sortLatestUpdatedTitle": "Giữ danh sách phân loại theo thời gian cập nhật mới nhất",
+    "add": "Thêm phân loại",
+    "emptyTitle": "Chưa có phân loại nào",
+    "emptyDescription": "Bấm \"Thêm phân loại\" để bắt đầu"
+  },
+  "variantBulkGenerate": {
+    "description": "Chọn option theo từng thuộc tính để sinh tổ hợp (hệ thống tự bỏ qua tổ hợp đã tồn tại).",
+    "clearAll": "Bỏ chọn tất cả",
+    "selectAll": "Chọn tất cả",
+    "generate": "Sinh tổ hợp"
+  },
+  "variantCard": {
+    "title": "Phân loại {{order}}",
+    "statusActive": "Đang bán",
+    "statusInactive": "Đã ẩn",
+    "uploading": "Đang tải ảnh",
+    "sku": "SKU",
+    "price": "Giá",
+    "stock": "Tồn",
+    "net": "Net",
+    "expand": "Mở rộng",
+    "collapse": "Thu gọn",
+    "remove": "Xóa",
+    "skuPlaceholder": "VD: IP15P-BLK-256",
+    "regenTitle": "Sinh lại SKU theo tổ hợp thuộc tính",
+    "skuModeManual": "Thủ công",
+    "skuModeSuggested": "Gợi ý",
+    "autoName": "Tên phân loại (tự dựng)",
+    "defaultName": "Mặc định",
+    "priceLabel": "Giá bán (VNĐ)",
+    "compareAtPriceLabel": "Giá gốc so sánh (VNĐ)",
+    "compareAtPricePlaceholder": "Giá trước giảm",
+    "stockLabel": "Tồn kho",
+    "salesLabel": "Gross / Return / Net",
+    "imagesTitle": "Ảnh theo phân loại",
+    "imagesDescription": "Ảnh trong khung này thuộc riêng SKU: {{sku}}",
+    "uploadImages": "Tải ảnh cho phân loại",
+    "pendingBadge": "Chờ lưu",
+    "primaryBadge": "Chính",
+    "notEntered": "Chưa nhập",
+    "createdAt": "Tạo lúc",
+    "updatedAt": "Cập nhật lúc",
+    "timeUnavailable": "Chưa có",
+    "variantImageAlt": "Ảnh phân loại"
   },
   "productPicker": {
     "title": "Chọn sản phẩm",
+    "heroTitle": "Chọn sản phẩm Flash Sale",
+    "heroDescription": "Tìm kiếm, lọc và chọn các phân loại muốn thêm vào chương trình.",
     "searchPlaceholder": "Tìm kiếm sản phẩm để thêm...",
-    "selectedLabel": "Đã chọn {{count}} sản phẩm"
+    "selectedLabel": "Đã chọn {{count}} sản phẩm",
+    "selectedVariants": "<strong>{{count}}</strong> phân loại đã chọn",
+    "filtersTitle": "Bộ lọc",
+    "filters": {
+      "allCategories": "Tất cả danh mục",
+      "allBrands": "Tất cả thương hiệu",
+      "default": "Mặc định",
+      "soldDesc": "Bán chạy nhất",
+      "soldAsc": "Bán chậm nhất",
+      "stockDesc": "Tồn kho cao nhất",
+      "stockAsc": "Tồn kho thấp nhất"
+    },
+    "clearFilters": "Xóa bộ lọc",
+    "loading": "Đang tải dữ liệu...",
+    "empty": "Không tìm thấy sản phẩm phù hợp",
+    "table": {
+      "product": "Sản phẩm",
+      "sold": "Đã bán",
+      "stock": "Tồn kho",
+      "actions": "Thao tác"
+    },
+    "paginationLabel": "phân loại",
+    "footerEmpty": "Chưa chọn phân loại nào.",
+    "footerSelected": "Đã chọn <strong>{{count}}</strong> phân loại để thêm vào Flash Sale.",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận ({{count}})",
+    "variantFallback": "Mặc định",
+    "productRow": {
+      "loading": "Đang tải...",
+      "selectAll": "Chọn tất cả",
+      "unselectAll": "Bỏ chọn tất cả",
+      "sold": "Đã bán",
+      "stock": "Tồn",
+      "loadFailed": "Không thể tải danh sách phân loại cho sản phẩm này.",
+      "noVariants": "Sản phẩm này chưa có phân loại khả dụng."
+    },
+    "variantRow": {
+      "defaultName": "Mặc định",
+      "sku": "Mã",
+      "alreadyInSale": "Đã tham gia",
+      "selected": "Đã chọn",
+      "clickToSelect": "Nhấn để chọn",
+      "gross": "Gross",
+      "netAndReturned": "N/R",
+      "stock": "Tồn"
+    }
   },
   "flashSales": {
     "title": "Flash Sale",
@@ -90,6 +427,103 @@
     "selectProducts": "Chọn sản phẩm",
     "dateRange": "Khoảng thời gian",
     "discountType": "Loại giảm giá",
-    "discountValue": "Giá trị giảm"
+    "discountValue": "Giá trị giảm",
+    "list": {
+      "title": "Quản lý Flash Sale",
+      "create": "Tạo Flash Sale",
+      "loading": "Đang tải...",
+      "empty": "Chưa có Flash Sale nào",
+      "table": {
+        "index": "STT",
+        "name": "Tên sự kiện",
+        "start": "Bắt đầu",
+        "end": "Kết thúc",
+        "products": "Sản phẩm",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "status": {
+        "scheduled": "Sắp diễn ra",
+        "active": "Đang diễn ra",
+        "ended": "Đã kết thúc"
+      },
+      "productsCount": "{{count}} sản phẩm",
+      "pagination": "flash sale",
+      "deleteDialog": {
+        "title": "Xóa Flash Sale",
+        "message": "Bạn có chắc muốn xóa Flash Sale này? Thao tác này không thể hoàn tác.",
+        "confirm": "Xóa"
+      },
+      "toasts": {
+        "deleteSuccess": "Xóa Flash Sale thành công!",
+        "deleteFailed": "Xóa Flash Sale thất bại!",
+        "statusSuccess": "Cập nhật trạng thái thành công!",
+        "statusFailed": "Cập nhật trạng thái thất bại!"
+      }
+    },
+    "form": {
+      "loading": "Đang tải dữ liệu...",
+      "createTitle": "Tạo Flash Sale mới",
+      "editTitle": "Sửa Flash Sale",
+      "createDescription": "Điền thông tin và chọn sản phẩm tham gia sự kiện",
+      "editDescription": "Chỉnh sửa thông tin và sản phẩm tham gia",
+      "cancel": "Hủy",
+      "saving": "Đang lưu...",
+      "create": "Tạo mới",
+      "update": "Cập nhật",
+      "eventInfoTitle": "Thông tin sự kiện",
+      "nameLabel": "Tên sự kiện *",
+      "namePlaceholder": "Ví dụ: Flash Sale 12.12",
+      "descriptionLabel": "Mô tả",
+      "descriptionPlaceholder": "Mô tả ngắn về sự kiện...",
+      "startLabel": "Bắt đầu *",
+      "endLabel": "Kết thúc *",
+      "itemsTitle": "Sản phẩm tham gia",
+      "itemCount": "{{count}} phân loại",
+      "addProducts": "Thêm sản phẩm",
+      "table": {
+        "product": "Sản phẩm",
+        "originalPrice": "Giá gốc",
+        "flashPrice": "Giá Flash Sale",
+        "flashStock": "SL Flash Sale",
+        "remove": "Xóa"
+      },
+      "empty": "Chưa có sản phẩm nào được chọn",
+      "addNow": "Thêm sản phẩm ngay",
+      "historyEmpty": "Chưa có dữ liệu lịch sử cho phân loại này.",
+      "historyLabel": "Lịch sử: G {{gross}} / R {{returned}} / N {{net}}",
+      "stockLabel": "Tồn hiện tại: {{stock}}",
+      "pagination": "phân loại",
+      "summaryTitle": "Tổng quan nhanh",
+      "scheduleStatus": "Trạng thái lịch",
+      "participatingVariants": "Phân loại tham gia",
+      "totalStock": "Tổng tồn Flash Sale",
+      "originalValue": "Giá trị gốc",
+      "flashValue": "Giá trị Flash Sale",
+      "estimatedSavings": "Tiết kiệm ước tính",
+      "validationTitle": "Kiểm tra dữ liệu",
+      "validationValid": "Dữ liệu hiện tại hợp lệ để lưu sự kiện.",
+      "validationTime": "Thời gian kết thúc phải sau thời gian bắt đầu.",
+      "validationPrice": "Có {{count}} sản phẩm có giá Flash Sale không hợp lệ (phải lớn hơn 0 và nhỏ hơn giá gốc).",
+      "validationStock": "Có {{count}} sản phẩm có số lượng bán không hợp lệ (phải lớn hơn 0).",
+      "startAt": "Bắt đầu: {{date}}",
+      "endAt": "Kết thúc: {{date}}",
+      "schedule": {
+        "incomplete": "Chưa đủ thời gian",
+        "invalid": "Thời gian không hợp lệ",
+        "scheduled": "Sắp diễn ra",
+        "active": "Đang diễn ra",
+        "ended": "Đã kết thúc"
+      }
+    },
+    "toasts": {
+      "loadFailed": "Không thể tải dữ liệu Flash Sale",
+      "nameRequired": "Vui lòng nhập tên sự kiện",
+      "timeRequired": "Vui lòng chọn thời gian bắt đầu và kết thúc",
+      "itemsRequired": "Vui lòng thêm ít nhất 1 sản phẩm",
+      "createSuccess": "Tạo Flash Sale thành công!",
+      "updateSuccess": "Cập nhật Flash Sale thành công!",
+      "saveFailed": "Không thể lưu Flash Sale"
+    }
   }
 }

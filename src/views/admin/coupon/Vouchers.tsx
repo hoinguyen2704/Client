@@ -28,8 +28,10 @@ import {
 } from "@/components";
 import useAdminList from "@/hooks/useAdminList";
 import { getPaginatedRowNumber } from "@/utils/helpers";
+import { useTranslation } from "react-i18next";
 
 export default function AdminVouchers() {
+  const { t } = useTranslation("adminSales");
   const {
     items: vouchers,
     loading,
@@ -57,10 +59,10 @@ export default function AdminVouchers() {
     try {
       await adminCouponService.toggleStatus(id);
       fetchVouchers({ silent: true });
-      toast.success("Cập nhật trạng thái voucher thành công!");
+      toast.success(t("vouchers.toasts.toggleSuccess"));
     } catch (err) {
       console.error(err);
-      toast.error("Cập nhật trạng thái voucher thất bại!");
+      toast.error(t("vouchers.toasts.toggleFailed"));
     }
   };
 
@@ -103,24 +105,24 @@ export default function AdminVouchers() {
 
       if (editingId) {
         await adminCouponService.update(editingId, payload as CouponRequest);
-        toast.success("Cập nhật voucher thành công!");
+        toast.success(t("vouchers.toasts.updateSuccess"));
       } else {
         await adminCouponService.create(payload as CouponRequest);
-        toast.success("Tạo voucher thành công!");
+        toast.success(t("vouchers.toasts.createSuccess"));
       }
       setIsModalOpen(false);
       resetForm();
       fetchVouchers({ silent: true });
     } catch (err: unknown) {
       console.error(err);
-      toast.error(getApiErrorMessage(err, "Thao tác voucher thất bại!"));
+      toast.error(getApiErrorMessage(err, t("vouchers.toasts.saveFailed")));
     }
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý Voucher</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t("vouchers.title")}</h1>
         <PrimaryButton
           onClick={() => {
             resetForm();
@@ -129,12 +131,12 @@ export default function AdminVouchers() {
           icon={<FiPlus className="text-base" />}
           className="w-full sm:w-auto"
         >
-          Tạo Voucher mới
+          {t("vouchers.create")}
         </PrimaryButton>
       </div>
 
       <AdminSearch
-        placeholder="Tìm kiếm theo mã voucher..."
+        placeholder={t("vouchers.searchPlaceholder")}
         value={searchQuery}
         onChange={(val) => {
           setSearchQuery(val);
@@ -147,15 +149,15 @@ export default function AdminVouchers() {
           <table className="w-full min-w-[1080px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">STT</th>
-                <th className="p-3 sm:p-4 font-medium">Mã Voucher</th>
-                <th className="p-3 sm:p-4 font-medium">Loại / Giá trị</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Đã dùng</th>
-                <th className="p-3 sm:p-4 font-medium">Thời gian</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Hiển thị</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Phạm vi</th>
-                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
-                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium text-center w-20">{t("vouchers.table.index")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.code")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.typeValue")}</th>
+                <th className="p-3 sm:p-4 font-medium text-center">{t("vouchers.table.used")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.time")}</th>
+                <th className="p-3 sm:p-4 font-medium text-center">{t("vouchers.table.visibility")}</th>
+                <th className="p-3 sm:p-4 font-medium text-center">{t("vouchers.table.scope")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.status")}</th>
+                <th className="p-3 sm:p-4 font-medium text-right">{t("vouchers.table.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -164,7 +166,7 @@ export default function AdminVouchers() {
               ) : vouchers.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="p-12 text-center text-slate-400">
-                    Không có voucher nào
+                    {t("vouchers.empty")}
                   </td>
                 </tr>
               ) : (
@@ -197,14 +199,14 @@ export default function AdminVouchers() {
                           className={`px-1.5 py-0.5 rounded ${v.couponCategory === "SHIPPING" ? "bg-teal-100 text-teal-600" : "bg-purple-100 text-purple-600"}`}
                         >
                           {v.couponCategory === "SHIPPING"
-                            ? "Freeship"
-                            : "Sản phẩm"}
+                            ? t("vouchers.meta.freeship")
+                            : t("vouchers.meta.product")}
                         </span>
                         <span>-</span>
                         <span>
                           {v.discountType === "PERCENTAGE"
-                            ? "Giảm %"
-                            : "Cố định"}
+                            ? t("vouchers.meta.percentage")
+                            : t("vouchers.meta.fixed")}
                         </span>
                       </div>
                     </td>
@@ -227,18 +229,18 @@ export default function AdminVouchers() {
                     </td>
                     <td className="p-3 sm:p-4 text-md text-slate-500">
                       <div>
-                        Từ: {v.startDate ? formatDate(v.startDate) : "—"}
+                        {t("vouchers.meta.from")}: {v.startDate ? formatDate(v.startDate) : "—"}
                       </div>
-                      <div>Đến: {v.endDate ? formatDate(v.endDate) : "—"}</div>
+                      <div>{t("vouchers.meta.to")}: {v.endDate ? formatDate(v.endDate) : "—"}</div>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       {v.isPublic ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                          <FiGlobe className="text-10" /> Công khai
+                          <FiGlobe className="text-10" /> {t("vouchers.meta.public")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                          <FiLock className="text-10" /> Riêng tư
+                          <FiLock className="text-10" /> {t("vouchers.meta.private")}
                         </span>
                       )}
                     </td>
@@ -246,17 +248,21 @@ export default function AdminVouchers() {
                       {v.applyType === "SPECIFIC_PRODUCTS" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                           <FiPackage className="text-10" />{" "}
-                          {v.applicableProducts?.length || 0} SP
+                          {t("vouchers.meta.applyCount", {
+                            count: v.applicableProducts?.length || 0,
+                          })}
                         </span>
                       ) : (
-                        <span className="text-sm text-slate-400">Tất cả</span>
+                        <span className="text-sm text-slate-400">{t("vouchers.meta.all")}</span>
                       )}
                     </td>
                     <td className="p-3 sm:p-4">
                       <StatusBadge
                         status={v.status === "ACTIVE" ? "active" : "inactive"}
                         label={
-                          v.status === "ACTIVE" ? "Đang hoạt động" : "Tạm dừng"
+                          v.status === "ACTIVE"
+                            ? t("vouchers.meta.active")
+                            : t("vouchers.meta.inactive")
                         }
                       />
                     </td>
@@ -266,7 +272,9 @@ export default function AdminVouchers() {
                           {
                             type: "more",
                             title:
-                              v.status === "ACTIVE" ? "Tạm dừng" : "Kích hoạt",
+                              v.status === "ACTIVE"
+                                ? t("vouchers.meta.pause")
+                                : t("vouchers.meta.activate"),
                             icon:
                               v.status === "ACTIVE" ? (
                                 <FiToggleRight className="text-green-500 text-xl" />
@@ -296,7 +304,7 @@ export default function AdminVouchers() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.MEDIUM}
-            label="voucher"
+            label={t("vouchers.pagination")}
             onPageChange={setPage}
           />
         )}
@@ -308,7 +316,7 @@ export default function AdminVouchers() {
           setIsModalOpen(false);
           resetForm();
         }}
-        title={editingId ? "Chỉnh sửa Voucher" : "Tạo Voucher Mới"}
+        title={editingId ? t("vouchers.modal.editTitle") : t("vouchers.modal.createTitle")}
         size="lg"
         scrollable
         footer={
@@ -321,13 +329,13 @@ export default function AdminVouchers() {
               variant="secondary"
               size="md"
             >
-              Hủy
+              {t("vouchers.modal.cancel")}
             </Button>
             <PrimaryButton
               onClick={handleSubmit}
               icon={<FiCheck className="text-base" />}
             >
-              {editingId ? "Cập nhật" : "Lưu Voucher"}
+              {editingId ? t("vouchers.modal.update") : t("vouchers.modal.save")}
             </PrimaryButton>
           </>
         }
@@ -335,9 +343,9 @@ export default function AdminVouchers() {
         <div className="space-y-4 sm:space-y-5">
           {/* Code */}
           <FormInput
-            label="Mã Voucher"
+            label={t("vouchers.form.codeLabel")}
             type="text"
-            placeholder="VD: SUMMER2024"
+            placeholder={t("vouchers.form.codePlaceholder")}
             value={form.code || ""}
             onChange={(e) =>
               setForm({ ...form, code: e.target.value.toUpperCase() })
@@ -347,7 +355,7 @@ export default function AdminVouchers() {
 
           {/* Discount Type */}
           <div className="space-y-2">
-            <label className="text-md font-medium">Loại Giảm Giá</label>
+            <label className="text-md font-medium">{t("vouchers.form.discountTypeLabel")}</label>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -359,7 +367,7 @@ export default function AdminVouchers() {
                   }
                   className="text-purple-600"
                 />
-                <span className="text-md">Theo %</span>
+                <span className="text-md">{t("vouchers.form.percentage")}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -371,14 +379,14 @@ export default function AdminVouchers() {
                   }
                   className="text-purple-600"
                 />
-                <span className="text-md">Tiền cố định</span>
+                <span className="text-md">{t("vouchers.form.fixedAmount")}</span>
               </label>
             </div>
           </div>
 
           {/* Coupon Category */}
           <div className="space-y-3">
-            <label className="text-md font-medium">Nhóm Voucher</label>
+            <label className="text-md font-medium">{t("vouchers.form.couponCategoryLabel")}</label>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -391,7 +399,7 @@ export default function AdminVouchers() {
                   className="text-purple-600"
                 />
                 <span className="text-md">
-                  Voucher Sản Phẩm (Nền tảng / Shop)
+                  {t("vouchers.form.productVoucher")}
                 </span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
@@ -404,7 +412,7 @@ export default function AdminVouchers() {
                   }
                   className="text-purple-600"
                 />
-                <span className="text-md">Voucher Freeship</span>
+                <span className="text-md">{t("vouchers.form.shippingVoucher")}</span>
               </label>
             </div>
           </div>
@@ -415,15 +423,15 @@ export default function AdminVouchers() {
               label={
                 form.couponCategory === "SHIPPING" &&
                 form.discountType !== "PERCENTAGE"
-                  ? "Hỗ trợ phí ship tối đa"
-                  : "Giá trị giảm"
+                  ? t("vouchers.form.shippingCapLabel")
+                  : t("vouchers.form.discountValueLabel")
               }
               type="number"
               placeholder={
                 form.couponCategory === "SHIPPING" &&
                 form.discountType !== "PERCENTAGE"
-                  ? "K/Trống = Freeship 100%"
-                  : "VD: 10"
+                  ? t("vouchers.form.shippingCapPlaceholder")
+                  : t("vouchers.form.discountValuePlaceholder")
               }
               value={form.discountValue || ""}
               onChange={(e) =>
@@ -431,7 +439,7 @@ export default function AdminVouchers() {
               }
             />
             <FormInput
-              label="Đơn tối thiểu"
+              label={t("vouchers.form.minOrderValueLabel")}
               type="number"
               placeholder="500000"
               value={form.minOrderValue || ""}
@@ -444,7 +452,7 @@ export default function AdminVouchers() {
           {/* Limit + Max */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInput
-              label="Giới hạn sử dụng"
+              label={t("vouchers.form.usageLimitLabel")}
               type="number"
               placeholder="100"
               value={form.usageLimit || ""}
@@ -460,9 +468,9 @@ export default function AdminVouchers() {
               }
             >
               <FormInput
-                label="Giảm tối đa (chỉ dành cho loại %)"
+                label={t("vouchers.form.maxDiscountAmountLabel")}
                 type="number"
-                placeholder="Trống = Không giới hạn"
+                placeholder={t("vouchers.form.maxDiscountAmountPlaceholder")}
                 value={form.maxDiscountAmount || ""}
                 onChange={(e) =>
                   setForm({ ...form, maxDiscountAmount: +e.target.value })
@@ -475,13 +483,13 @@ export default function AdminVouchers() {
           {/* Dates */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInput
-              label="Thời gian bắt đầu"
+              label={t("vouchers.form.startDateLabel")}
               type="datetime-local"
               value={form.startDate || ""}
               onChange={(e) => setForm({ ...form, startDate: e.target.value })}
             />
             <FormInput
-              label="Thời gian kết thúc"
+              label={t("vouchers.form.endDateLabel")}
               type="datetime-local"
               value={form.endDate || ""}
               onChange={(e) => setForm({ ...form, endDate: e.target.value })}
@@ -498,12 +506,12 @@ export default function AdminVouchers() {
                   ) : (
                     <FiLock className="text-slate-400" />
                   )}
-                  Hiển thị công khai
+                  {t("vouchers.form.visibilityTitle")}
                 </div>
                 <p className="text-sm text-slate-500 mt-0.5">
                   {form.isPublic
-                    ? "Voucher sẽ hiển thị trên trang của khách hàng, họ có thể lưu & sử dụng"
-                    : "Chỉ khi khách hàng nhập đúng mã mới dùng được"}
+                    ? t("vouchers.form.visibilityPublicDescription")
+                    : t("vouchers.form.visibilityPrivateDescription")}
                 </p>
               </div>
               <button
@@ -520,7 +528,7 @@ export default function AdminVouchers() {
 
           {/* Apply Type */}
           <div className="space-y-3">
-            <label className="text-md font-medium">Phạm vi áp dụng</label>
+            <label className="text-md font-medium">{t("vouchers.form.applyScopeLabel")}</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
@@ -537,9 +545,9 @@ export default function AdminVouchers() {
                     : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
                 }`}
               >
-                <div className="text-md font-bold">🛒 Tất cả sản phẩm</div>
+                <div className="text-md font-bold">{t("vouchers.form.applyAllTitle")}</div>
                 <div className="text-sm text-slate-500 mt-0.5">
-                  Áp dụng cho toàn bộ đơn hàng
+                  {t("vouchers.form.applyAllDescription")}
                 </div>
               </button>
               <button
@@ -553,16 +561,15 @@ export default function AdminVouchers() {
                     : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
                 }`}
               >
-                <div className="text-md font-bold">📦 Sản phẩm cụ thể</div>
+                <div className="text-md font-bold">{t("vouchers.form.applySpecificTitle")}</div>
                 <div className="text-sm text-slate-500 mt-0.5">
-                  Chỉ giảm cho SP được chọn
+                  {t("vouchers.form.applySpecificDescription")}
                 </div>
               </button>
             </div>
             {form.applyType === "SPECIFIC_PRODUCTS" && (
               <div className="text-sm text-amber-600 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50">
-                💡 Tính năng chọn sản phẩm cụ thể sẽ được cập nhật trong phiên
-                bản tiếp theo. Hiện tại voucher sẽ áp dụng cho tất cả SP.
+                {t("vouchers.form.applySpecificHint")}
               </div>
             )}
           </div>

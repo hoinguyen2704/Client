@@ -21,6 +21,38 @@ export const getNextVariantDisplayOrder = (variants: VariantFormData[]) =>
     0,
   ) + 1;
 
+const resolveVariantUpdatedAtMs = (variant: Pick<VariantFormData, "updatedAt">) => {
+  if (!variant.updatedAt) return 0;
+  const parsed = Date.parse(variant.updatedAt);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+export const sortVariantsByUpdatedAt = (
+  variants: VariantFormData[],
+): VariantFormData[] =>
+  variants
+    .map((variant, index) => ({ variant, index }))
+    .sort((left, right) => {
+      const updatedDiff =
+        resolveVariantUpdatedAtMs(right.variant) - resolveVariantUpdatedAtMs(left.variant);
+      if (updatedDiff !== 0) {
+        return updatedDiff;
+      }
+
+      const orderDiff =
+        (left.variant.displayOrder ?? left.index + 1)
+        - (right.variant.displayOrder ?? right.index + 1);
+      if (orderDiff !== 0) {
+        return orderDiff;
+      }
+
+      return left.index - right.index;
+    })
+    .map(({ variant }, index) => ({
+      ...variant,
+      displayOrder: index + 1,
+    }));
+
 export const normalizeToken = (input: string): string =>
   input
     .normalize("NFD")
@@ -32,6 +64,16 @@ export const normalizeToken = (input: string): string =>
 
 export const normalizeCodeKey = (value?: string): string =>
   normalizeToken(value || "");
+
+const DEFAULT_OPTION_CODE_KEYS = ["MAC-DINH", "DEFAULT"];
+
+const isDefaultOption = (code?: string, label?: string): boolean => {
+  const normalizedCode = normalizeCodeKey(code);
+  const normalizedLabel = normalizeCodeKey(label);
+  return DEFAULT_OPTION_CODE_KEYS.some((token) =>
+    normalizedCode.includes(token) || normalizedLabel.includes(token)
+  );
+};
 
 export const getSpecTemplatesFromCategory = (
   category: CategoryResponse | undefined,
@@ -61,8 +103,9 @@ export const buildVariantSignature = (
 export const buildVariantDisplayName = (
   schema: VariantAttributeSchemaResponse[],
   selections: Record<string, string>,
+  defaultLabel = "Default",
 ): string => {
-  if (schema.length === 0) return "Mặc định";
+  if (schema.length === 0) return defaultLabel;
   return schema
     .map(
       (attr) =>
@@ -153,6 +196,14 @@ export const resolveOptionId = (
       }
     }
   }
+
+  const defaultActiveOption = attribute.options.find(
+    (option) => option.active !== false && isDefaultOption(option.code, option.label),
+  );
+  if (defaultActiveOption) {
+    return defaultActiveOption.id;
+  }
+
   return (
     attribute.options.find((option) => option.active !== false)?.id
     || attribute.options[0]?.id
@@ -182,13 +233,18 @@ export const createEmptyVariant = (
   schema: VariantAttributeSchemaResponse[],
   productCode: string,
   usedSkus: Set<string>,
+  defaultLabel = "Default",
 ): VariantFormData => {
+  const createdAt = new Date().toISOString();
+  const updatedAt = new Date().toISOString();
   const selections = normalizeSelectionsBySchema(schema);
-  const variantName = buildVariantDisplayName(schema, selections);
+  const variantName = buildVariantDisplayName(schema, selections, defaultLabel);
   const variantSignature = buildVariantSignature(schema, selections);
   const sku = buildSkuSuggestion(productCode, schema, selections, usedSkus);
 
   return {
+    createdAt,
+    updatedAt,
     sku,
     skuMode: "suggested",
     variantName,

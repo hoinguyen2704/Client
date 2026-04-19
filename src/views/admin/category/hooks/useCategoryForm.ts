@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import type {
@@ -25,8 +26,8 @@ const normalizeCode = (value: string) =>
   value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d")
-    .replace(/Đ/g, "D")
+    .replace(/\u0111/g, "d")
+    .replace(/\u0110/g, "D")
     .replace(/[^A-Za-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "")
     .toUpperCase();
@@ -75,10 +76,16 @@ const mapCategoryToVariantAttributes = (
   }));
 
 export default function useCategoryForm() {
+  const { t } = useTranslation(["adminCatalog", "common"]);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isEditMode = useMemo(() => Boolean(id), [id]);
+  const translate = useCallback(
+    (key: string, options?: Record<string, unknown>) =>
+      String(t(key, options as never)),
+    [t],
+  );
 
   const [loading, setLoading] = useState(isEditMode);
   const [saving, setSaving] = useState(false);
@@ -136,14 +143,20 @@ export default function useCategoryForm() {
         const category = extractCategoryResponse(response);
 
         if (!category) {
-          throw new Error("Không tìm thấy danh mục.");
+          throw new Error(t("categories.toasts.notFound"));
         }
         if (!cancelled) {
           hydrateForm(category);
         }
       } catch (err: unknown) {
         if (!cancelled) {
-          setError(getApiErrorMessage(err, undefined, "Không thể tải dữ liệu danh mục."));
+          setError(
+            getApiErrorMessage(
+              err,
+              translate,
+              "adminCatalog:categories.toasts.loadFailed",
+            ),
+          );
         }
       } finally {
         if (!cancelled) {
@@ -244,7 +257,9 @@ export default function useCategoryForm() {
         const optionLabels = parseOptionsText(row.optionsText);
 
         if (optionLabels.length === 0) {
-          throw new Error(`Thuộc tính "${row.name}" phải có ít nhất một option.`);
+          throw new Error(
+            t("categories.toasts.attributeOptionsRequired", { name: row.name }),
+          );
         }
 
         return {
@@ -261,7 +276,7 @@ export default function useCategoryForm() {
       });
 
     if (!normalizedName) {
-      throw new Error("Tên danh mục không được để trống.");
+      throw new Error(t("categories.toasts.nameRequired"));
     }
 
     return {
@@ -286,7 +301,7 @@ export default function useCategoryForm() {
         if (isEditMode && id) {
           await adminCategoryService.update(id, payload);
           await invalidateCategoryQueries();
-          toast.success("Đã cập nhật danh mục!");
+          toast.success(t("categories.toasts.updateSuccess"));
 
           const refreshedResponse = await adminCategoryService.getSchema(id);
           const refreshedCategory = extractCategoryResponse(refreshedResponse);
@@ -296,18 +311,32 @@ export default function useCategoryForm() {
         } else {
           await adminCategoryService.create(payload);
           await invalidateCategoryQueries();
-          toast.success("Đã tạo danh mục mới!");
+          toast.success(t("categories.toasts.createSuccess"));
           navigate("/admin/categories");
         }
       } catch (err: unknown) {
-        const message = getApiErrorMessage(err, undefined, "Lưu danh mục thất bại!");
+        const message = getApiErrorMessage(
+          err,
+          translate,
+          "adminCatalog:categories.toasts.saveFailed",
+        );
         setError(message);
         toast.error(message);
       } finally {
         setSaving(false);
       }
     },
-    [buildPayload, hydrateForm, id, invalidateCategoryQueries, isEditMode, navigate, saving],
+    [
+      buildPayload,
+      hydrateForm,
+      id,
+      invalidateCategoryQueries,
+      isEditMode,
+      navigate,
+      saving,
+      t,
+      translate,
+    ],
   );
 
   return {

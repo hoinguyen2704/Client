@@ -86,7 +86,7 @@ export default function ConfirmDialog({
         </h3>
 
         {/* Message */}
-        <p className="text-md text-muted leading-relaxed max-w-xs">
+        <p className="max-w-xs whitespace-pre-line text-md leading-relaxed text-muted">
           {message}
         </p>
       </div>

@@ -43,6 +43,29 @@
     "profile": "Profile information",
     "orders": "Orders",
     "returns": "Returns",
-    "activity": "Recent activity"
+    "activity": "Recent activity",
+    "notFound": "User not found",
+    "accountInfo": "Account information",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone number",
+    "gender": "Gender",
+    "dateOfBirth": "Date of birth",
+    "createdAt": "Created at",
+    "joined": "Joined: {{date}}",
+    "phoneUpdateTitle": "Update phone number (Admin)",
+    "newPhone": "New phone number",
+    "newPhonePlaceholder": "Enter phone number",
+    "changeReason": "Reason for change",
+    "changeReasonPlaceholder": "Required",
+    "savePhone": "Save phone number",
+    "savingPhone": "Updating...",
+    "toasts": {
+      "toggleSuccess": "User status updated successfully!",
+      "toggleFailed": "Failed to update user status!",
+      "phoneRequired": "Please enter a phone number.",
+      "reasonRequired": "Please enter the reason for the change.",
+      "phoneUpdated": "Phone number updated successfully!"
+    }
   }
 }

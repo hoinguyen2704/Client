@@ -1,10 +1,12 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components';
 import { FiShoppingBag, FiCheckCircle, FiXCircle, FiTrendingUp } from 'react-icons/fi';
 import type { DashboardChildProps } from './types';
 import ChartXAxisTick from './ChartXAxisTick';
 
 export default function OrderChart({ stats }: DashboardChildProps) {
+  const { t } = useTranslation('adminDashboard');
   const chartData = (stats.revenueChart || []).map((item) => ({
     name: item.label,
     orders: item.orders,
@@ -23,40 +25,40 @@ export default function OrderChart({ stats }: DashboardChildProps) {
           <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
             <FiShoppingBag className="text-xl" />
           </div>
-          <h2 className="text-lg font-bold">Thống kê đơn hàng</h2>
+          <h2 className="text-lg font-bold">{t('overview.charts.orders.title')}</h2>
         </div>
       </div>
 
       <div className="grid grid-cols-2 min-[420px]:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Tổng đơn (kỳ này)</p>
+          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.orders.summaryTotal')}</p>
           <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{totalOrders.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-2.5 sm:p-4">
           <div className="flex items-center gap-1 mb-1">
             <FiCheckCircle className="text-emerald-500 text-sm" />
-            <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400">Đơn mới</p>
+            <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400">{t('overview.charts.orders.summaryNew')}</p>
           </div>
           <p className="text-md sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{stats.newOrders.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-900/20 dark:to-red-800/10 rounded-2xl p-2.5 sm:p-4">
           <div className="flex items-center gap-1 mb-1">
             <FiXCircle className="text-red-500 text-sm" />
-            <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400">Hủy/Trả</p>
+            <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400">{t('overview.charts.orders.summaryReturns')}</p>
           </div>
           <p className="text-md sm:text-lg font-bold text-red-700 dark:text-red-400">{(stats.cancelledOrders + stats.returnedOrders).toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/20 dark:to-amber-800/10 rounded-2xl p-2.5 sm:p-4">
           <div className="flex items-center gap-1 mb-1">
             <FiTrendingUp className="text-amber-500 text-sm" />
-            <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400">Cao nhất</p>
+            <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400">{t('overview.charts.orders.summaryPeak')}</p>
           </div>
           <p className="text-md sm:text-lg font-bold text-amber-700 dark:text-amber-400">{maxItem.orders} <span className="text-10 sm:text-sm font-normal text-slate-400">({maxItem.name.split('|')[0]})</span></p>
         </div>
       </div>
 
       {chartData.length === 0 ? (
-        <div className="h-64 sm:h-80 flex items-center justify-center text-slate-400">Chưa có dữ liệu đơn hàng</div>
+        <div className="h-64 sm:h-80 flex items-center justify-center text-slate-400">{t('overview.charts.orders.empty')}</div>
       ) : (
         <div className="h-64 sm:h-80 min-w-0">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={256}>
@@ -80,7 +82,7 @@ export default function OrderChart({ stats }: DashboardChildProps) {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                formatter={(value: number) => [value.toLocaleString(), 'Đơn hàng']}
+                formatter={(value: number) => [value.toLocaleString(), t('overview.charts.orders.tooltipSeries')]}
                 labelFormatter={(label: string) => {
                   const parts = label.replace('|_TODAY', '').split('|');
                   return parts.length > 1 ? `${parts[0]} - ${parts[1]}` : parts[0];

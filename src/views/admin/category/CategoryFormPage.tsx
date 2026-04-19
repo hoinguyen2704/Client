@@ -13,11 +13,13 @@ import {
   FormInput,
   SectionCard,
 } from "@/components";
+import { useTranslation } from "react-i18next";
 import CategorySpecTemplatesSection from "./components/CategorySpecTemplatesSection";
 import CategoryVariantAttributesSection from "./components/CategoryVariantAttributesSection";
 import useCategoryForm from "./hooks/useCategoryForm";
 
 export default function CategoryFormPage() {
+  const { t } = useTranslation("adminCatalog");
   const form = useCategoryForm();
 
   if (form.loading) {
@@ -26,7 +28,7 @@ export default function CategoryFormPage() {
         <div className="flex flex-col items-center gap-3">
           <FiLoader className="animate-spin text-3xl text-purple-500" />
           <span className="font-medium text-slate-500">
-            Đang tải dữ liệu danh mục...
+            {t("categories.form.loading")}
           </span>
         </div>
       </div>
@@ -37,9 +39,11 @@ export default function CategoryFormPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
-          <BackButton to="/admin/categories" label="Quay lại danh sách danh mục" />
+          <BackButton to="/admin/categories" label={t("categories.form.backToList")} />
           <h1 className="text-xl font-bold sm:text-2xl">
-            {form.isEditMode ? "Sửa danh mục" : "Thêm danh mục mới"}
+            {form.isEditMode
+              ? t("categories.form.editTitle")
+              : t("categories.form.createTitle")}
           </h1>
         </div>
 
@@ -50,7 +54,7 @@ export default function CategoryFormPage() {
             size="md"
             className="flex-1 sm:flex-none"
           >
-            Quay lại
+            {t("categories.form.back")}
           </Button>
           <Button
             type="submit"
@@ -60,7 +64,7 @@ export default function CategoryFormPage() {
             icon={<FiSave />}
             loading={form.saving}
           >
-            Lưu danh mục
+            {t("categories.form.save")}
           </Button>
         </div>
       </div>
@@ -77,16 +81,16 @@ export default function CategoryFormPage() {
         className="space-y-6"
       >
         <SectionCard
-          title="Thông tin cơ bản"
-          description="Thiết lập tên hiển thị cho danh mục."
+          title={t("categories.form.basicTitle")}
+          description={t("categories.form.basicDescription")}
           icon={<FiTag className="text-xl text-purple-500" />}
           className="border-2 border-slate-200 dark:border-slate-700"
         >
           <div className="max-w-2xl">
             <FormInput
-              label="Tên danh mục *"
+              label={t("categories.form.nameLabel")}
               type="text"
-              placeholder="VD: Điện thoại, Laptop..."
+              placeholder={t("categories.form.namePlaceholder")}
               value={form.formData.name}
               onChange={(event) => form.setFormField("name", event.target.value)}
               required
@@ -98,13 +102,15 @@ export default function CategoryFormPage() {
         <SectionCard
           title={
             <div className="flex flex-wrap items-center gap-3">
-              <span>Thuộc tính biến thể</span>
+              <span>{t("categories.form.variantTitle")}</span>
               <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-sm font-semibold text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
-                {form.variantAttributes.length} thuộc tính
+                {t("categories.form.variantCount", {
+                  count: form.variantAttributes.length,
+                })}
               </span>
             </div>
           }
-          description="Khai báo các thuộc tính dùng để sinh biến thể."
+          description={t("categories.form.variantDescription")}
           icon={<FiLayers className="text-xl text-indigo-500" />}
           action={
             <div className="flex flex-wrap justify-end gap-2">
@@ -116,13 +122,13 @@ export default function CategoryFormPage() {
                 icon={<FiPlus />}
                 className="text-indigo-600"
               >
-                Thêm thuộc tính
+                {t("categories.form.variantAdd")}
               </Button>
               <ExpandToggle
                 expanded={form.variantExpanded}
                 onToggle={() => form.setVariantExpanded((prev) => !prev)}
-                expandLabel="Mở rộng"
-                collapseLabel="Thu gọn"
+                expandLabel={t("categories.form.expand")}
+                collapseLabel={t("categories.form.collapse")}
               />
             </div>
           }
@@ -140,13 +146,15 @@ export default function CategoryFormPage() {
         <SectionCard
           title={
             <div className="flex flex-wrap items-center gap-3">
-              <span>Thông số kỹ thuật</span>
+              <span>{t("categories.form.specTitle")}</span>
               <span className="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-1 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
-                {form.specTemplates.length} thông số
+                {t("categories.form.specCount", {
+                  count: form.specTemplates.length,
+                })}
               </span>
             </div>
           }
-          description="Schema thông số gợi ý sẽ được dùng khi tạo hoặc sửa sản phẩm thuộc danh mục này."
+          description={t("categories.form.specDescription")}
           icon={<FiList className="text-xl text-purple-500" />}
           action={
             <div className="flex flex-wrap justify-end gap-2">
@@ -158,13 +166,13 @@ export default function CategoryFormPage() {
                 icon={<FiPlus />}
                 className="text-purple-600"
               >
-                Thêm thông số
+                {t("categories.form.specAdd")}
               </Button>
               <ExpandToggle
                 expanded={form.specExpanded}
                 onToggle={() => form.setSpecExpanded((prev) => !prev)}
-                expandLabel="Mở rộng"
-                collapseLabel="Thu gọn"
+                expandLabel={t("categories.form.expand")}
+                collapseLabel={t("categories.form.collapse")}
               />
             </div>
           }

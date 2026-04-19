@@ -10,7 +10,7 @@ import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { formatDate } from '@/utils/format';
 
 export default function Feedbacks() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['adminSales', 'common']);
   const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -26,7 +26,7 @@ export default function Feedbacks() {
       setPageData(res.data);
       setReviews(res.data.data || []);
     } catch (err) { console.error('Failed to fetch feedbacks:', err); 
-      toast.error('Tải danh sách đánh giá thất bại!'); }
+      toast.error(t('feedbacks.toasts.loadFailed')); }
     finally { setLoading(false); }
   }, [statusFilter, page]);
 
@@ -35,7 +35,7 @@ export default function Feedbacks() {
   const handleStatusChange = async (id: string, status: string) => {
     try { await adminFeedbackService.updateStatus(id, status); fetchReviews({ silent: true }); }
     catch (err) { console.error('Update failed:', err); 
-      toast.error('Cập nhật trạng thái đánh giá thất bại!'); }
+      toast.error(t('feedbacks.toasts.statusFailed')); }
   };
 
   const handleReply = async (id: string) => {
@@ -46,12 +46,12 @@ export default function Feedbacks() {
       setReplyId(null);
       fetchReviews({ silent: true });
     } catch (err) { console.error('Reply failed:', err);
-       toast.error('Phản hồi đánh giá thất bại!'); }
+       toast.error(t('feedbacks.toasts.replyFailed')); }
   };
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý đánh giá</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('feedbacks.title')}</h1>
         <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
           options={getFeedbackFilterOptions(t)} className="w-full sm:w-48 z-20 shrink-0" />
       </div>
@@ -64,7 +64,7 @@ export default function Feedbacks() {
             </div>
           ))
         ) : reviews.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">Không có đánh giá nào</div>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">{t('feedbacks.empty')}</div>
         ) : (
           reviews.map((review) => (
             <div key={review.id} className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -80,12 +80,14 @@ export default function Feedbacks() {
                       <StarRating value={review.rating} onChange={() => {}} readOnly size="sm" showLabel={false} />
                     </div>
                   </div>
-                  <p className="text-md text-slate-500 mb-1">SP: <span className="font-medium text-slate-700 dark:text-slate-300">{review.productName}</span></p>
+                  <p className="text-md text-slate-500 mb-1">
+                    {t('feedbacks.productLabel')}: <span className="font-medium text-slate-700 dark:text-slate-300">{review.productName}</span>
+                  </p>
                   <p className="text-slate-700 dark:text-slate-300">{review.content}</p>
 
                   {review.adminReply && (
                     <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-md">
-                      <span className="font-bold text-blue-600">Admin:</span> {review.adminReply}
+                      <span className="font-bold text-blue-600">{t('feedbacks.adminLabel')}:</span> {review.adminReply}
                     </div>
                   )}
 
@@ -96,20 +98,20 @@ export default function Feedbacks() {
                       <Button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
                         variant="ghost" size="sm" icon={<FiMessageCircle />}
                         className="text-purple-600">
-                        Trả lời
+                        {t('feedbacks.reply')}
                       </Button>
                     )}
                   </div>
 
                   {replyId === review.id && (
                     <div className="mt-3 flex flex-col sm:flex-row gap-2">
-                      <input type="text" placeholder="Nhập nội dung trả lời..."
+                      <input type="text" placeholder={t('feedbacks.replyPlaceholder')}
                         ref={replyRef}
                         defaultValue=""
                         autoFocus
                         onKeyDown={(e) => { if (e.key === 'Enter') handleReply(review.id); }}
                         className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 outline-none text-md" />
-                      <Button onClick={() => handleReply(review.id)} size="sm" className="w-full sm:w-auto">Gửi</Button>
+                      <Button onClick={() => handleReply(review.id)} size="sm" className="w-full sm:w-auto">{t('feedbacks.send')}</Button>
                     </div>
                   )}
                 </div>
@@ -125,7 +127,7 @@ export default function Feedbacks() {
           totalPages={pageData.lastPage}
           totalItems={pageData.total}
           perPage={PAGE_SIZE.LARGE}
-          label="đánh giá"
+          label={t('feedbacks.pagination')}
           onPageChange={setPage}
         />
       )}

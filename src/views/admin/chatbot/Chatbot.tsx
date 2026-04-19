@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FiCpu,
   FiSettings,
@@ -23,7 +24,6 @@ import ChatbotOverviewStatCard from "./components/ChatbotOverviewStatCard";
 
 type EditableSection = "shopInfo" | "bot" | "ai";
 
-/*  Model options cho dropdown  */
 const MODEL_OPTIONS = [
   { value: "gemini-3-flash-preview", label: "gemini-3-flash-preview" },
   { value: "gemini-3-pro-preview", label: "gemini-3-pro-preview" },
@@ -33,6 +33,7 @@ const MODEL_OPTIONS = [
 ];
 
 export default function Chatbot() {
+  const { t } = useTranslation("adminSupport");
   const [activeTab, setActiveTab] = useState<"overview" | "settings">(
     "settings",
   );
@@ -42,8 +43,12 @@ export default function Chatbot() {
   const [dirty, setDirty] = useState(false);
   const [newSuggestion, setNewSuggestion] = useState("");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const translate = useCallback(
+    (key: string, options?: Record<string, unknown>) =>
+      String(t(key, options as never)),
+    [t],
+  );
 
-  /*  Load config on mount  */
   const loadConfig = useCallback(async () => {
     try {
       setLoading(true);
@@ -51,17 +56,22 @@ export default function Chatbot() {
       setConfig(data);
       setDirty(false);
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, "Không thể tải cấu hình chatbot"));
+      toast.error(
+        getApiErrorMessage(
+          err,
+          translate,
+          "adminSupport:chatbot.toasts.loadFailed",
+        ),
+      );
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [translate]);
 
   useEffect(() => {
     loadConfig();
   }, [loadConfig]);
 
-  /*  Helpers: cập nhật config local  */
   const updateField = (
     section: EditableSection,
     key: string,
@@ -82,7 +92,6 @@ export default function Chatbot() {
     setDirty(true);
   };
 
-  /*  Save  */
   const handleSave = async () => {
     if (!config || saving) return;
     try {
@@ -90,18 +99,20 @@ export default function Chatbot() {
       const result = await chatbotService.updateConfig(config);
       setConfig(result.config);
       setDirty(false);
-      toast.success(result.message || "Cập nhật cấu hình thành công!");
+      toast.success(result.message || t("chatbot.toasts.saveSuccess"));
     } catch (err: unknown) {
       toast.error(
-        "Lỗi lưu cấu hình: " +
-          getApiErrorMessage(err, "Lưu cấu hình thất bại"),
+        getApiErrorMessage(
+          err,
+          translate,
+          "adminSupport:chatbot.toasts.saveFailed",
+        ),
       );
     } finally {
       setSaving(false);
     }
   };
 
-  /*  Reset  */
   const handleReset = async () => {
     setShowResetConfirm(false);
     try {
@@ -109,15 +120,20 @@ export default function Chatbot() {
       const result = await chatbotService.resetConfig();
       setConfig(result.config);
       setDirty(false);
-      toast.success(result.message || "Đã khôi phục mặc định!");
+      toast.success(result.message || t("chatbot.toasts.resetSuccess"));
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, "Lỗi khôi phục"));
+      toast.error(
+        getApiErrorMessage(
+          err,
+          translate,
+          "adminSupport:chatbot.toasts.resetFailed",
+        ),
+      );
     } finally {
       setSaving(false);
     }
   };
 
-  /*  Suggestions CRUD  */
   const addSuggestion = () => {
     if (!config || !newSuggestion.trim()) return;
     updateTopLevel("suggestions", [
@@ -135,11 +151,11 @@ export default function Chatbot() {
     );
   };
 
-  /*  Loading / Error states  */
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64 gap-3 text-slate-400">
-        <FiRefreshCw className="animate-spin text-xl" /> Đang tải cấu hình...
+        <FiRefreshCw className="animate-spin text-xl" />
+        {t("chatbot.states.loading")}
       </div>
     );
   }
@@ -148,27 +164,33 @@ export default function Chatbot() {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4 text-red-500">
         <FiAlertTriangle className="text-4xl" />
-        <p>Không thể kết nối đến Chatbot Server</p>
+        <p>{t("chatbot.states.connectionFailed")}</p>
         <button
           onClick={loadConfig}
           className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors text-md"
         >
-          Thử lại
+          {t("chatbot.actions.retry")}
         </button>
       </div>
     );
   }
 
+  const notAvailable = t("chatbot.overview.notAvailable");
+  const currentModel = config.ai?.model || notAvailable;
+  const storeName = config.shopInfo?.name || notAvailable;
+  const hotline = config.shopInfo?.hotline || notAvailable;
+  const suggestionsCount = config.suggestions?.length ?? 0;
+
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-            <FiCpu className="text-purple-600" /> Quản lý AI Chatbot
+            <FiCpu className="text-purple-600" />
+            {t("chatbot.title")}
           </h1>
           <p className="text-md text-slate-500 mt-1">
-            Powered by Gemini AI — Model: {config.ai?.model}
+            {t("chatbot.subtitle", { model: currentModel })}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -177,87 +199,84 @@ export default function Chatbot() {
             disabled={saving}
             className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
-            <FiRefreshCw className={saving ? "animate-spin" : ""} /> Khôi phục
-            mặc định
+            <FiRefreshCw className={saving ? "animate-spin" : ""} />
+            {t("chatbot.actions.reset")}
           </button>
           <button
             onClick={handleSave}
             disabled={saving || !dirty}
             className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
-            <FiSave /> {saving ? "Đang lưu..." : "Lưu cấu hình"}
+            <FiSave />
+            {saving ? t("chatbot.actions.saving") : t("chatbot.actions.save")}
           </button>
         </div>
       </div>
 
-      {/* Unsaved indicator */}
       {dirty && (
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 px-4 py-2 rounded-xl text-md flex items-center gap-2">
-          <FiAlertTriangle /> Có thay đổi chưa lưu
+          <FiAlertTriangle />
+          {t("chatbot.states.dirty")}
         </div>
       )}
 
-      {/* Tabs */}
       <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
         <button
           onClick={() => setActiveTab("settings")}
           className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiSettings className="inline mr-1.5 -mt-0.5" />
-          Cấu hình
+          {t("chatbot.tabs.settings")}
         </button>
         <button
           onClick={() => setActiveTab("overview")}
           className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiActivity className="inline mr-1.5 -mt-0.5" />
-          Tổng quan
+          {t("chatbot.tabs.overview")}
         </button>
       </div>
 
-      {/*  TAB: CẤU HÌNH  */}
       {activeTab === "settings" && (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-          {/*  Cột trái: 2/3  */}
           <div className="xl:col-span-2 space-y-4 sm:space-y-6">
-            {/* Card: Thông tin cửa hàng */}
             <SectionCard
-              title="🏪 Thông tin cửa hàng"
-              description="Thông tin này được nhúng vào System Prompt để bot giới thiệu cho khách."
+              title={`🏪 ${t("chatbot.sections.shopInfo.title")}`}
+              description={t("chatbot.sections.shopInfo.description")}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormInput
-                  label="Tên cửa hàng"
+                  label={t("chatbot.sections.shopInfo.fields.name")}
                   value={config.shopInfo?.name || ""}
                   onChange={(e) => updateField("shopInfo", "name", e.target.value)}
                   inputClassName="h-11"
                 />
                 <FormInput
-                  label="Slogan"
+                  label={t("chatbot.sections.shopInfo.fields.slogan")}
                   value={config.shopInfo?.slogan || ""}
                   onChange={(e) => updateField("shopInfo", "slogan", e.target.value)}
                   inputClassName="h-11"
                 />
                 <FormInput
-                  label="Địa chỉ"
+                  label={t("chatbot.sections.shopInfo.fields.address")}
                   value={config.shopInfo?.address || ""}
                   onChange={(e) => updateField("shopInfo", "address", e.target.value)}
                   inputClassName="h-11"
                 />
                 <FormInput
-                  label="Hotline"
+                  label={t("chatbot.sections.shopInfo.fields.hotline")}
                   value={config.shopInfo?.hotline || ""}
                   onChange={(e) => updateField("shopInfo", "hotline", e.target.value)}
                   inputClassName="h-11"
                 />
                 <FormInput
-                  label="Email hỗ trợ"
+                  label={t("chatbot.sections.shopInfo.fields.email")}
                   value={config.shopInfo?.email || ""}
                   onChange={(e) => updateField("shopInfo", "email", e.target.value)}
                   inputClassName="h-11"
                 />
                 <FormInput
-                  label="Website"
+                  label={t("chatbot.sections.shopInfo.fields.website")}
                   value={config.shopInfo?.website || ""}
                   onChange={(e) => updateField("shopInfo", "website", e.target.value)}
                   inputClassName="h-11"
@@ -265,15 +284,14 @@ export default function Chatbot() {
               </div>
             </SectionCard>
 
-            {/* Card: Cấu hình AI */}
             <SectionCard
-              title="🧠 Cấu hình AI"
-              description="Điều chỉnh model, nhiệt độ sáng tạo, và quy tắc hành vi bot."
+              title={`🧠 ${t("chatbot.sections.ai.title")}`}
+              description={t("chatbot.sections.ai.description")}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-md font-medium mb-1.5">
-                    Model AI
+                    {t("chatbot.sections.ai.fields.model")}
                   </label>
                   <CustomSelect
                     value={config.ai?.model || ""}
@@ -284,10 +302,9 @@ export default function Chatbot() {
                 </div>
                 <div>
                   <label className="block text-md font-medium mb-1.5">
-                    Temperature:{" "}
-                    <span className="text-purple-600 font-bold">
-                      {config.ai?.temperature ?? 0.7}
-                    </span>
+                    {t("chatbot.sections.ai.fields.temperature", {
+                      value: config.ai?.temperature ?? 0.7,
+                    })}
                   </label>
                   <input
                     type="range"
@@ -305,38 +322,36 @@ export default function Chatbot() {
                     className="w-full mt-2 accent-purple-600"
                   />
                   <div className="flex justify-between text-sm text-slate-400 mt-1">
-                    <span>0 — Chính xác</span>
-                    <span>1 — Sáng tạo</span>
+                    <span>{t("chatbot.sections.ai.temperatureExact")}</span>
+                    <span>{t("chatbot.sections.ai.temperatureCreative")}</span>
                   </div>
                 </div>
               </div>
 
               <div>
                 <FormTextarea
-                  label="System Prompt (Quy tắc hành vi)"
+                  label={t("chatbot.sections.ai.fields.systemPrompt")}
                   value={config.ai?.systemRules || ""}
                   onChange={(e) =>
                     updateField("ai", "systemRules", e.target.value)
                   }
                   rows={8}
                   inputClassName="resize-y font-mono leading-relaxed"
-                  placeholder="Nhập các quy tắc cho chatbot..."
+                  placeholder={t("chatbot.sections.ai.systemPromptPlaceholder")}
                 />
                 <p className="text-sm text-slate-500 mt-1.5">
-                  Mỗi dòng bắt đầu bằng «-» là 1 quy tắc. Thay đổi sẽ ảnh hưởng
-                  trực tiếp đến cách bot trả lời.
+                  {t("chatbot.sections.ai.systemPromptHint")}
                 </p>
               </div>
 
-              {/* Runtime Parameters */}
               <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-4">
                 <h3 className="text-md font-bold text-slate-700 dark:text-slate-300 mb-3">
-                  ⚙️ Thông số vận hành
+                  {`⚙️ ${t("chatbot.sections.runtime.title")}`}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <FormInput
-                      label="Số sản phẩm tối đa / lần trả lời"
+                      label={t("chatbot.sections.runtime.fields.maxProducts")}
                       type="number"
                       min={1}
                       max={20}
@@ -354,13 +369,12 @@ export default function Chatbot() {
                       inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
-                      Mặc định: 3. Số này càng cao thì câu trả lời càng dài và
-                      tốn token hơn; chỉ tăng khi thực sự cần nhiều kết quả.
+                      {t("chatbot.sections.runtime.hints.maxProducts")}
                     </p>
                   </div>
                   <div>
                     <FormInput
-                      label="Số lần retry khi AI lỗi"
+                      label={t("chatbot.sections.runtime.fields.maxRetries")}
                       type="number"
                       min={0}
                       max={5}
@@ -378,12 +392,12 @@ export default function Chatbot() {
                       inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
-                      Mặc định: 1. Số lần thử lại khi Gemini API timeout/lỗi.
+                      {t("chatbot.sections.runtime.hints.maxRetries")}
                     </p>
                   </div>
                   <div>
                     <FormInput
-                      label="Timeout AI phân tích (ms)"
+                      label={t("chatbot.sections.runtime.fields.planTimeoutMs")}
                       type="number"
                       min={5000}
                       max={60000}
@@ -402,12 +416,12 @@ export default function Chatbot() {
                       inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
-                      Mặc định: 25000ms. Thời gian chờ AI phân tích câu hỏi.
+                      {t("chatbot.sections.runtime.hints.planTimeoutMs")}
                     </p>
                   </div>
                   <div>
                     <FormInput
-                      label="Timeout truy vấn DB (ms)"
+                      label={t("chatbot.sections.runtime.fields.dbTimeoutMs")}
                       type="number"
                       min={1000}
                       max={30000}
@@ -426,7 +440,7 @@ export default function Chatbot() {
                       inputClassName="h-11"
                     />
                     <p className="text-sm text-slate-400 mt-1">
-                      Mặc định: 6000ms. Thời gian chờ truy vấn database.
+                      {t("chatbot.sections.runtime.hints.dbTimeoutMs")}
                     </p>
                   </div>
                 </div>
@@ -434,33 +448,42 @@ export default function Chatbot() {
             </SectionCard>
           </div>
 
-          {/*  Cột phải: 1/3  */}
           <div className="space-y-4 sm:space-y-6">
-            {/* Card: Bật/Tắt chatbot */}
-            <SectionCard title="Trạng thái Chatbot">
+            <SectionCard title={t("chatbot.sections.status.title")}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-500 mt-1">
                     {config.isEnabled
-                      ? "Chatbot đang hoạt động trên trang khách hàng"
-                      : "Chatbot đang tắt — khách hàng không thấy widget"}
+                      ? t("chatbot.sections.status.enabledDescription")
+                      : t("chatbot.sections.status.disabledDescription")}
                   </p>
                 </div>
                 <button
                   onClick={() => updateTopLevel("isEnabled", !config.isEnabled)}
                   className={`text-3xl transition-colors ${config.isEnabled ? "text-green-500" : "text-slate-300 dark:text-slate-600"}`}
-                  title={config.isEnabled ? "Tắt chatbot" : "Bật chatbot"}
+                  title={
+                    config.isEnabled
+                      ? t("chatbot.actions.disable")
+                      : t("chatbot.actions.enable")
+                  }
+                  aria-label={
+                    config.isEnabled
+                      ? t("chatbot.actions.disable")
+                      : t("chatbot.actions.enable")
+                  }
                 >
                   {config.isEnabled ? <FiToggleRight /> : <FiToggleLeft />}
                 </button>
               </div>
             </SectionCard>
 
-            {/* Card: Giao diện Widget */}
-            <SectionCard title="🎨 Giao diện Widget" contentClassName="space-y-4">
+            <SectionCard
+              title={`🎨 ${t("chatbot.sections.widget.title")}`}
+              contentClassName="space-y-4"
+            >
               <div>
                 <FormInput
-                  label="Tên Bot"
+                  label={t("chatbot.sections.widget.fields.botName")}
                   value={config.bot?.name || ""}
                   onChange={(e) => updateField("bot", "name", e.target.value)}
                   inputClassName="h-11"
@@ -469,7 +492,7 @@ export default function Chatbot() {
 
               <div>
                 <FormInput
-                  label="Subtitle"
+                  label={t("chatbot.sections.widget.fields.subtitle")}
                   value={config.bot?.subtitle || ""}
                   onChange={(e) =>
                     updateField("bot", "subtitle", e.target.value)
@@ -480,7 +503,7 @@ export default function Chatbot() {
 
               <div>
                 <label className="block text-md font-medium mb-1.5">
-                  Màu sắc chủ đạo
+                  {t("chatbot.sections.widget.fields.themeColor")}
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -504,14 +527,14 @@ export default function Chatbot() {
 
               <div>
                 <label className="block text-md font-medium mb-1.5">
-                  Avatar Bot
+                  {t("chatbot.sections.widget.fields.avatar")}
                 </label>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700 shrink-0">
                     {config.bot?.avatarUrl ? (
                       <img
                         src={config.bot.avatarUrl}
-                        alt="Bot"
+                        alt={t("chatbot.sections.widget.avatarAlt")}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -524,15 +547,17 @@ export default function Chatbot() {
                     onChange={(e) =>
                       updateField("bot", "avatarUrl", e.target.value)
                     }
-                    placeholder="URL ảnh avatar..."
+                    placeholder={t("chatbot.sections.widget.avatarPlaceholder")}
                     className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                   />
                 </div>
               </div>
             </SectionCard>
 
-            {/* Card: Tin nhắn chào mừng */}
-            <SectionCard title="💬 Tin nhắn chào mừng" contentClassName="space-y-4">
+            <SectionCard
+              title={`💬 ${t("chatbot.sections.welcome.title")}`}
+              contentClassName="space-y-4"
+            >
               <FormTextarea
                 value={config.bot?.welcomeMessage || ""}
                 onChange={(e) =>
@@ -540,17 +565,16 @@ export default function Chatbot() {
                 }
                 rows={5}
                 inputClassName="resize-y"
-                placeholder="Tin nhắn chào khách khi mở chatbot..."
+                placeholder={t("chatbot.sections.welcome.placeholder")}
               />
               <p className="text-sm text-slate-500">
-                Hỗ trợ Markdown: **bold**, *italic*, - danh sách
+                {t("chatbot.sections.welcome.hint")}
               </p>
             </SectionCard>
 
-            {/* Card: Gợi ý nhanh */}
             <SectionCard
-              title="⚡ Gợi ý nhanh (Quick Suggestions)"
-              description="Các chip gợi ý hiển thị dưới tin nhắn chào."
+              title={`⚡ ${t("chatbot.sections.suggestions.title")}`}
+              description={t("chatbot.sections.suggestions.description")}
               contentClassName="space-y-3"
             >
               <div className="space-y-2">
@@ -582,7 +606,7 @@ export default function Chatbot() {
                   value={newSuggestion}
                   onChange={(e) => setNewSuggestion(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addSuggestion()}
-                  placeholder="Thêm gợi ý mới..."
+                  placeholder={t("chatbot.sections.suggestions.newPlaceholder")}
                   className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
                 />
                 <button
@@ -590,7 +614,8 @@ export default function Chatbot() {
                   disabled={!newSuggestion.trim()}
                   className="h-10 px-3 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 text-md font-medium flex items-center justify-center gap-1 w-full sm:w-auto"
                 >
-                  <FiPlus /> Thêm
+                  <FiPlus />
+                  {t("chatbot.actions.addSuggestion")}
                 </button>
               </div>
             </SectionCard>
@@ -598,49 +623,56 @@ export default function Chatbot() {
         </div>
       )}
 
-      {/*  TAB: TỔNG QUAN  */}
       {activeTab === "overview" && (
         <div className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <ChatbotOverviewStatCard
-              label="Trạng thái"
+              label={t("chatbot.overview.cards.status")}
               value={
                 config.isEnabled ? (
                   <span className="flex items-center gap-2 text-green-500">
-                    <FiCheckCircle /> Đang hoạt động
+                    <FiCheckCircle />
+                    {t("chatbot.overview.cards.active")}
                   </span>
                 ) : (
-                  <span className="text-red-500">Đã tắt</span>
+                  <span className="text-red-500">
+                    {t("chatbot.overview.cards.disabled")}
+                  </span>
                 )
               }
               icon={<FiMessageCircle />}
               iconClassName="bg-blue-100 text-blue-600"
             />
             <ChatbotOverviewStatCard
-              label="Model AI"
-              value={config.ai?.model || "N/A"}
-              description={`Temperature: ${config.ai?.temperature ?? "N/A"}`}
+              label={t("chatbot.overview.cards.model")}
+              value={currentModel}
+              description={t("chatbot.overview.cards.modelDescription", {
+                value: config.ai?.temperature ?? notAvailable,
+              })}
               icon={<FiCpu />}
               iconClassName="bg-purple-100 text-purple-600"
             />
             <ChatbotOverviewStatCard
-              label="Cửa hàng"
-              value={config.shopInfo?.name || "N/A"}
-              description={`Hotline: ${config.shopInfo?.hotline || "N/A"}`}
+              label={t("chatbot.overview.cards.store")}
+              value={storeName}
+              description={t("chatbot.overview.cards.storeDescription", {
+                value: hotline,
+              })}
               icon={<FiCheckCircle />}
               iconClassName="bg-green-100 text-green-600"
             />
             <ChatbotOverviewStatCard
-              label="Gợi ý nhanh"
-              value={<span className="text-2xl font-bold">{config.suggestions?.length ?? 0}</span>}
-              description="suggestions đang hoạt động"
+              label={t("chatbot.overview.cards.suggestions")}
+              value={<span className="text-2xl font-bold">{suggestionsCount}</span>}
+              description={t("chatbot.overview.cards.suggestionsDescription", {
+                count: suggestionsCount,
+              })}
               icon={<FiClock />}
               iconClassName="bg-orange-100 text-orange-600"
             />
           </div>
 
-          {/* Current config summary */}
-          <SectionCard title="📋 Cấu hình hiện tại (JSON)">
+          <SectionCard title={`📋 ${t("chatbot.overview.configTitle")}`}>
             <pre className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-sm font-mono overflow-x-auto max-h-96 overflow-y-auto">
               {JSON.stringify(config, null, 2)}
             </pre>
@@ -649,9 +681,9 @@ export default function Chatbot() {
       )}
       <ConfirmDialog
         open={showResetConfirm}
-        title="Khôi phục mặc định"
-        message="Bạn có chắc muốn khôi phục toàn bộ cấu hình về mặc định? Hành động này không thể hoàn tác."
-        confirmLabel="Khôi phục"
+        title={t("chatbot.resetDialog.title")}
+        message={t("chatbot.resetDialog.message")}
+        confirmLabel={t("chatbot.resetDialog.confirm")}
         variant="warning"
         onConfirm={handleReset}
         onCancel={() => setShowResetConfirm(false)}

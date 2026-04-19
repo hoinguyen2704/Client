@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiCheck } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
 import { Button, StatusBadge, CustomSelect, BackButton } from '@/components';
 import { toast } from 'sonner';
@@ -12,6 +13,7 @@ import useShopStore from '@/stores/useShopStore';
 import { downloadBlob } from '@/utils/download';
 
 export default function OrderDetail() {
+  const { t } = useTranslation('adminSales');
   const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,8 +47,8 @@ export default function OrderDetail() {
   useEffect(() => { fetchShopInfo(); }, [fetchShopInfo]);
 
   const orderStatusOptions = useMemo(
-    () => (order ? getAdminOrderStatusOptions(order.orderStatus) : []),
-    [order],
+    () => (order ? getAdminOrderStatusOptions(order.orderStatus, t) : []),
+    [order, t],
   );
 
   const handleUpdateStatus = async (newStatus: string) => {
@@ -63,11 +65,11 @@ export default function OrderDetail() {
       } catch (refreshErr) {
         console.warn('Refetch order detail after status update failed:', refreshErr);
       }
-      toast.success('Cập nhật trạng thái đơn hàng thành công!');
+      toast.success(t('orderDetail.toasts.statusUpdated'));
     } catch (err) {
       console.error(err);
       setEditStatus(previousStatus);
-      toast.error('Cập nhật trạng thái đơn hàng thất bại!');
+      toast.error(t('orderDetail.toasts.statusFailed'));
     } finally {
       setIsUpdatingStatus(false);
     }
@@ -78,10 +80,10 @@ export default function OrderDetail() {
     try {
       const blob = await adminOrderService.exportInvoice(order.id);
       downloadBlob(blob, `invoice_${order.orderNumber}.pdf`);
-      toast.success('Xuất hóa đơn PDF thành công!');
+      toast.success(t('orderDetail.toasts.invoiceSuccess'));
     } catch (err) {
       console.error(err);
-      toast.error('Xuất hóa đơn thất bại!');
+      toast.error(t('orderDetail.toasts.invoiceFailed'));
     }
   };
   if (loading) {
@@ -97,7 +99,7 @@ export default function OrderDetail() {
   }
 
   if (!order) {
-    return <div className="p-8 text-center text-slate-400">Không tìm thấy đơn hàng</div>;
+    return <div className="p-8 text-center text-slate-400">{t('orderDetail.notFound')}</div>;
   }
 
   return (
@@ -108,7 +110,7 @@ export default function OrderDetail() {
           <BackButton to="/admin/orders" />
           <div>
             <h1 className="text-xl sm:text-2xl font-bold flex flex-wrap items-center gap-2 sm:gap-3">
-              Đơn hàng {order.orderNumber}
+              {t('orderDetail.title', { orderNumber: order.orderNumber })}
               <StatusBadge status={order.orderStatus} />
             </h1>
             <p className="text-slate-500 text-md mt-1">{formatDate(order.createdAt)}</p>
@@ -116,7 +118,7 @@ export default function OrderDetail() {
         </div>
       <div className="flex flex-col sm:flex-row sm:items-end gap-3">
           <div className="w-full sm:w-56">
-            <label className="block text-sm font-semibold text-slate-500 mb-1.5">Trạng thái đơn hàng</label>
+            <label className="block text-sm font-semibold text-slate-500 mb-1.5">{t('orderDetail.statusLabel')}</label>
             <CustomSelect
               value={editStatus || order.orderStatus}
               onChange={handleUpdateStatus}
@@ -126,7 +128,7 @@ export default function OrderDetail() {
             />
           </div>
           <Button onClick={handleExportInvoice} variant="success" size="md" icon={<FiDownload />} className="w-full sm:w-auto">
-            Tải hóa đơn PDF
+            {t('orderDetail.downloadInvoice')}
           </Button>
         </div>
       </div>
@@ -148,10 +150,10 @@ export default function OrderDetail() {
                       {/* Left: Time */}
                       <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
                         <div className="text-md font-medium text-strong-soft">
-                          {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                          {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>
                         <div className="text-sm text-slate-500 mt-1">
-                          {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                          {time.toLocaleDateString()}
                         </div>
                       </div>
 
@@ -167,11 +169,11 @@ export default function OrderDetail() {
                       {/* Right: Content */}
                       <div className="pb-8 pt-1 flex-1">
                         <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-muted-strong'}`}>
-                          {history.status === 'SHIPPED' ? 'Giao hàng thành công' : history.description}
+                          {history.status === 'SHIPPED' ? t('orderDetail.timelineDelivered') : history.description}
                         </h4>
                         {isFirst && history.status === 'SHIPPED' && (
                           <div className="inline-flex items-center gap-1 text-md text-purple-600 mt-1">
-                            <FiCheck /> Đơn hàng đã được giao thành công
+                            <FiCheck /> {t('orderDetail.timelineDeliveredDescription')}
                           </div>
                         )}
                       </div>
@@ -184,15 +186,17 @@ export default function OrderDetail() {
 
           {/* Items */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold flex items-center gap-2 mb-4 sm:mb-6"><FiPackage className="text-purple-600" /> Sản phẩm ({order.items?.length || 0})</h2>
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-4 sm:mb-6">
+              <FiPackage className="text-purple-600" /> {t('orderDetail.itemsTitle', { count: order.items?.length || 0 })}
+            </h2>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[620px] text-left border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                    <th className="pb-3 font-medium">Sản phẩm</th>
-                    <th className="pb-3 font-medium text-center">Đơn giá</th>
-                    <th className="pb-3 font-medium text-center">SL</th>
-                    <th className="pb-3 font-medium text-right">Thành tiền</th>
+                    <th className="pb-3 font-medium">{t('orderDetail.table.product')}</th>
+                    <th className="pb-3 font-medium text-center">{t('orderDetail.table.unitPrice')}</th>
+                    <th className="pb-3 font-medium text-center">{t('orderDetail.table.quantity')}</th>
+                    <th className="pb-3 font-medium text-right">{t('orderDetail.table.subtotal')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -214,9 +218,9 @@ export default function OrderDetail() {
 
           {/* Note */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">Ghi chú</h2>
+            <h2 className="text-lg font-bold mb-4">{t('orderDetail.noteTitle')}</h2>
             <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-xl text-md border border-yellow-100 dark:border-yellow-900/50">
-              {order.note || 'Không có ghi chú.'}
+              {order.note || t('orderDetail.noNote')}
             </div>
           </div>
         </div>
@@ -225,23 +229,23 @@ export default function OrderDetail() {
         <div className="space-y-4 sm:space-y-6">
           {/* Customer Info */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-purple-600" /> Khách hàng</h2>
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-purple-600" /> {t('orderDetail.customerTitle')}</h2>
             <div className="space-y-3 text-md">
               {order.customerName && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">Họ tên:</span>
+                  <span className="text-slate-500">{t('orderDetail.fullName')}:</span>
                   <span className="font-medium">{order.customerName}</span>
                 </div>
               )}
               {order.customerEmail && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">Email:</span>
+                  <span className="text-slate-500">{t('orderDetail.email')}:</span>
                   <span className="font-medium text-purple-600">{order.customerEmail}</span>
                 </div>
               )}
               {order.customerPhone && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">SĐT:</span>
+                  <span className="text-slate-500">{t('orderDetail.phone')}:</span>
                   <span className="font-medium">{order.customerPhone}</span>
                 </div>
               )}
@@ -250,25 +254,25 @@ export default function OrderDetail() {
 
           {/* Shipping */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> Giao hàng</h2>
-            <p className="text-md text-body leading-relaxed">{order.shippingAddress}</p>
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> {t('orderDetail.shippingTitle')}</h2>
+            <p className="text-md text-body leading-relaxed">{order.shippingAddress || t('orderDetail.shippingAddressFallback')}</p>
           </div>
 
           {/* Payment */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><FiCreditCard className="text-green-600" /> Thanh toán</h2>
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><FiCreditCard className="text-green-600" /> {t('orderDetail.paymentTitle')}</h2>
             <div className="space-y-3 text-md">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-slate-500">Phương thức:</span>
+                <span className="text-slate-500">{t('orderDetail.paymentMethod')}:</span>
                 <span className="font-medium">{order.paymentMethod}</span>
               </div>
               <div className="flex items-start justify-between gap-3">
-                <span className="text-slate-500">Trạng thái:</span>
+                <span className="text-slate-500">{t('orderDetail.paymentStatus')}:</span>
                 <StatusBadge status={order.paymentStatus} />
               </div>
               {order.couponCode && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">Mã giảm giá:</span>
+                  <span className="text-slate-500">{t('orderDetail.couponCode')}:</span>
                   <span className="font-mono font-bold text-purple-600">{order.couponCode}</span>
                 </div>
               )}
@@ -277,22 +281,27 @@ export default function OrderDetail() {
 
           {/* Summary / Total */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">Tổng thanh toán</h2>
+            <h2 className="text-lg font-bold mb-4">{t('orderDetail.summaryTitle')}</h2>
             <div className="space-y-3 text-md">
-              <div className="flex justify-between text-slate-500"><span>Tạm tính</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
-              <div className="flex justify-between text-slate-500"><span>Phí vận chuyển</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
-              {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm giá sản phẩm</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
-              {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>Giảm phí vận chuyển</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
+              <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.subtotal')}</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
+              <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.shippingFee')}</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
+              {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.productDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
+              {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.shippingDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
               {(order.taxAmount || 0) > 0 && (
                 <div className="flex justify-between text-slate-500">
-                  <span>Thuế VAT ({order.taxPercent ?? 0}%{order.taxMode === 'INCLUDED' ? ', đã gồm' : ''})</span>
+                  <span>
+                    {t('orderDetail.summary.vat', {
+                      percent: order.taxPercent ?? 0,
+                      suffix: order.taxMode === 'INCLUDED' ? t('orderDetail.summary.vatIncluded') : '',
+                    })}
+                  </span>
                   <span className={`font-medium ${order.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
                     {order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}
                   </span>
                 </div>
               )}
               <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-purple-600">
-                <span>Tổng cộng</span><span>{formatPrice(order.totalAmount)}</span>
+                <span>{t('orderDetail.summary.total')}</span><span>{formatPrice(order.totalAmount)}</span>
               </div>
             </div>
           </div>
@@ -306,36 +315,36 @@ export default function OrderDetail() {
         <div>
           <h2 className="text-3xl font-bold font-serif mb-2 text-[#2539e6]">{shop.shopName}</h2>
           <p className="text-md">{shop.address}</p>
-          <p className="text-md">SĐT: {shop.hotline}</p>
+          <p className="text-md">{t('orderDetail.phone')}: {shop.hotline}</p>
           <p className="text-md">Email: {shop.shopEmail}</p>
         </div>
         <div className="text-right">
-          <h1 className="text-2xl font-bold uppercase tracking-widest text-[#2539e6]">Hóa Đơn</h1>
+          <h1 className="text-2xl font-bold uppercase tracking-widest text-[#2539e6]">{t('orderDetail.invoice.title')}</h1>
           <p className="font-bold text-lg mt-2 font-mono">#{order.orderNumber}</p>
-          <p className="text-md text-slate-600">Ngày: {formatDate(order.createdAt)}</p>
+          <p className="text-md text-slate-600">{t('orderDetail.invoice.date')}: {formatDate(order.createdAt)}</p>
         </div>
       </div>
 
       <div className="mb-8 border-t border-slate-200 pt-6 flex justify-between">
         <div>
-          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">Khách hàng</h3>
+          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">{t('orderDetail.invoice.customer')}</h3>
           <p className="font-bold text-base">{order.customerName}</p>
-          <p className="text-md">{order.shippingAddress || 'Nhận tại cửa hàng'}</p>
+          <p className="text-md">{order.shippingAddress || t('orderDetail.invoice.pickupFallback')}</p>
         </div>
         <div className="text-right">
-          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">Thanh toán & Giao hàng</h3>
-          <p className="text-md"><strong>Phương thức:</strong> {order.paymentMethod}</p>
-          <p className="text-md"><strong>Trạng thái:</strong> {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thu tiền'}</p>
+          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">{t('orderDetail.invoice.paymentShipping')}</h3>
+          <p className="text-md"><strong>{t('orderDetail.paymentMethod')}:</strong> {order.paymentMethod}</p>
+          <p className="text-md"><strong>{t('orderDetail.paymentStatus')}:</strong> {order.paymentStatus === 'PAID' ? t('orderDetail.invoice.paid') : t('orderDetail.invoice.unpaid')}</p>
         </div>
       </div>
 
       <table className="w-full text-left mb-8 border-collapse">
         <thead>
           <tr className="border-b-2 border-slate-800 text-md">
-            <th className="py-2 font-bold">Sản phẩm</th>
-            <th className="py-2 font-bold text-center">SL</th>
-            <th className="py-2 font-bold text-right">Đơn giá</th>
-            <th className="py-2 font-bold text-right">Thành tiền</th>
+            <th className="py-2 font-bold">{t('orderDetail.table.product')}</th>
+            <th className="py-2 font-bold text-center">{t('orderDetail.table.quantity')}</th>
+            <th className="py-2 font-bold text-right">{t('orderDetail.table.unitPrice')}</th>
+            <th className="py-2 font-bold text-right">{t('orderDetail.table.subtotal')}</th>
           </tr>
         </thead>
         <tbody className="text-md">
@@ -344,7 +353,7 @@ export default function OrderDetail() {
               <td className="py-3 pr-4">
                 <div className="font-medium text-base">{item.productName}</div>
                 {item.variantName && (
-                  <div className="text-sm mt-1 italic">N/L: {item.variantName}</div>
+                  <div className="text-sm mt-1 italic">{t('orderDetail.invoice.variantPrefix', { name: item.variantName })}</div>
                 )}
               </td>
               <td className="py-3 text-center">{item.quantity}</td>
@@ -357,17 +366,20 @@ export default function OrderDetail() {
 
       <div className="flex justify-end mb-12">
         <div className="w-64 space-y-2 text-md">
-          <div className="flex justify-between"><span>Tạm tính:</span> <span>{formatPrice(order.subtotal + order.shippingFee)}</span></div>
-          {(order.discountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm giá sản phẩm:</span> <span>-{formatPrice(order.discountAmount!)}</span></div>}
-          {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between"><span>Giảm phí vận chuyển:</span> <span>-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
+          <div className="flex justify-between"><span>{t('orderDetail.summary.subtotal')}:</span> <span>{formatPrice(order.subtotal + order.shippingFee)}</span></div>
+          {(order.discountAmount || 0) > 0 && <div className="flex justify-between"><span>{t('orderDetail.summary.productDiscount')}:</span> <span>-{formatPrice(order.discountAmount!)}</span></div>}
+          {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between"><span>{t('orderDetail.summary.shippingDiscount')}:</span> <span>-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
           {(order.taxAmount || 0) > 0 && (
             <div className="flex justify-between">
-              <span>Thuế VAT ({order.taxPercent ?? 0}%{order.taxMode === 'INCLUDED' ? ', đã gồm' : ''}):</span>
+              <span>{t('orderDetail.summary.vat', {
+                percent: order.taxPercent ?? 0,
+                suffix: order.taxMode === 'INCLUDED' ? t('orderDetail.summary.vatIncluded') : '',
+              })}:</span>
               <span>{order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}</span>
             </div>
           )}
           <div className="flex justify-between font-bold text-lg pt-3 border-t-2 border-slate-800 mt-2">
-            <span>Tổng cộng:</span>
+            <span>{t('orderDetail.summary.total')}:</span>
             <span>{formatPrice(order.totalAmount)}</span>
           </div>
         </div>
@@ -375,17 +387,17 @@ export default function OrderDetail() {
 
       <div className="flex justify-between text-center mx-12 mt-16 text-md">
         <div>
-          <p className="font-bold mb-24">Người mua hàng</p>
-          <p className="text-slate-500 italic">(Ký, ghi rõ họ tên)</p>
+          <p className="font-bold mb-24">{t('orderDetail.invoice.buyer')}</p>
+          <p className="text-slate-500 italic">{t('orderDetail.invoice.signatureHint')}</p>
         </div>
         <div>
-          <p className="font-bold mb-24">Người bán hàng</p>
-          <p className="text-slate-500 italic">(Ký, ghi rõ họ tên)</p>
+          <p className="font-bold mb-24">{t('orderDetail.invoice.seller')}</p>
+          <p className="text-slate-500 italic">{t('orderDetail.invoice.signatureHint')}</p>
         </div>
       </div>
 
       <div className="mt-20 text-center text-sm text-slate-500 border-t border-slate-200 pt-4">
-        Cảm ơn quý khách đã mua bán tại {shop.shopName}!
+        {t('orderDetail.invoice.thanks', { shopName: shop.shopName })}
       </div>
     </div>
     </>

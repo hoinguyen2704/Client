@@ -44,11 +44,11 @@ export interface VariantSectionProps {
   variantSchema: VariantAttributeSchemaResponse[];
   uploadingVariantKeys: Record<string, boolean>;
   variantFileInputRefs: { current: Record<string, HTMLInputElement | null> };
-  addVariant: () => void;
+  addVariant: () => string | undefined;
   generateVariantCombinations: (
     selectedOptionsByAttribute: Record<string, string[]>,
   ) => void;
-  sortVariantsByBestSelling: () => void;
+  sortVariantsByLatestUpdated: () => void;
   removeVariant: (index: number) => void;
   updateVariant: (
     index: number,

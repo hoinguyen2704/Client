@@ -15,7 +15,7 @@ import type { PageResponse, ReturnRequestResponse } from '@/types';
 
 
 export default function AdminReturns() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['adminSales', 'common']);
   const [returns, setReturns] = useState<ReturnRequestResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,9 +55,15 @@ export default function AdminReturns() {
     try {
       await returnService.adminReview(target.id, {
         approved,
-        note: approved ? 'Duyệt nhanh từ danh sách' : 'Từ chối nhanh từ danh sách',
+        note: approved
+          ? t('returns.list.notes.quickApprove')
+          : t('returns.list.notes.quickReject'),
       });
-      toast.success(approved ? 'Đã duyệt yêu cầu trả hàng' : 'Đã từ chối yêu cầu trả hàng');
+      toast.success(
+        approved
+          ? t('returns.list.toasts.reviewApproved')
+          : t('returns.list.toasts.reviewRejected'),
+      );
       fetchReturns({ silent: true });
     } catch (err) {
       toast.error(getApiErrorMessage(err, translate, 'common:errors.reviewReturnFailed'));
@@ -73,9 +79,9 @@ export default function AdminReturns() {
         keyword: searchQuery || undefined,
       });
       downloadBlob(blob, `returns_${new Date().toISOString().slice(0, 10)}.xlsx`);
-      toast.success('Xuất Excel thành công!');
+      toast.success(t('returns.list.toasts.exportSuccess'));
     } catch {
-      toast.error('Xuất Excel thất bại!');
+      toast.error(t('returns.list.toasts.exportFailed'));
     }
   };
 
@@ -83,12 +89,12 @@ export default function AdminReturns() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold">Quản lý trả hàng / hoàn tiền</h1>
-          <p className="text-md text-slate-500 mt-1">Danh sách yêu cầu trả hàng của khách và trạng thái hoàn tiền.</p>
+          <h1 className="text-xl sm:text-2xl font-bold">{t('returns.list.title')}</h1>
+          <p className="text-md text-slate-500 mt-1">{t('returns.list.description')}</p>
         </div>
         <div className="flex gap-3 print:hidden">
           <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
-            Xuất Excel
+            {t('returns.list.export')}
           </Button>
         </div>
       </div>
@@ -97,7 +103,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-md text-slate-500 font-medium">Tổng số trang này</p>
+              <p className="text-md text-slate-500 font-medium">{t('returns.list.stats.pageTotal')}</p>
               <h3 className="text-2xl font-bold mt-1 text-slate-800 dark:text-slate-100">{returns.length}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
@@ -108,7 +114,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-md text-slate-500 font-medium">Chờ duyệt</p>
+              <p className="text-md text-slate-500 font-medium">{t('returns.list.stats.pendingReview')}</p>
               <h3 className="text-2xl font-bold mt-1 text-amber-600">
                 {returns.filter(r => r.status === 'REQUESTED').length}
               </h3>
@@ -121,7 +127,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-md text-slate-500 font-medium">Đang xử lý</p>
+              <p className="text-md text-slate-500 font-medium">{t('returns.list.stats.inProgress')}</p>
               <h3 className="text-2xl font-bold mt-1 text-blue-600">
                 {returns.filter(r => ['APPROVED', 'IN_TRANSIT', 'RECEIVED', 'QC_PASSED', 'QC_FAILED'].includes(r.status)).length}
               </h3>
@@ -134,7 +140,7 @@ export default function AdminReturns() {
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-md text-slate-500 font-medium">Cần hoàn tiền</p>
+              <p className="text-md text-slate-500 font-medium">{t('returns.list.stats.refundPending')}</p>
               <h3 className="text-2xl font-bold mt-1 text-emerald-600">
                 {returns.filter(r => canProcessRefund(r.status) && r.refundStatus !== 'SUCCESS').length}
               </h3>
@@ -150,7 +156,7 @@ export default function AdminReturns() {
         <div className="flex-1">
           <AdminSearch
             boxed={false}
-            placeholder="Tìm theo mã yêu cầu, mã đơn, tên/email khách..."
+            placeholder={t('returns.list.searchPlaceholder')}
             value={searchQuery}
             onChange={(val) => {
               setSearchQuery(val);
@@ -172,14 +178,14 @@ export default function AdminReturns() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         {/* Desktop Header */}
         <div className="hidden lg:grid grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
-          <div className="px-4 py-4">STT</div>
-          <div className="px-4 py-4 text-left">Mã yêu cầu</div>
-          <div className="px-4 py-4 text-left">Mã đơn</div>
-          <div className="px-4 py-4 text-left">Khách hàng</div>
-          <div className="px-4 py-4 text-right">Yêu cầu hoàn</div>
-          <div className="px-4 py-4">Trạng thái</div>
-          <div className="px-4 py-4">Ngày tạo</div>
-          <div className="px-4 py-4 text-center">Thao tác</div>
+          <div className="px-4 py-4">{t('returns.list.table.index')}</div>
+          <div className="px-4 py-4 text-left">{t('returns.list.table.returnNumber')}</div>
+          <div className="px-4 py-4 text-left">{t('returns.list.table.orderNumber')}</div>
+          <div className="px-4 py-4 text-left">{t('returns.list.table.customer')}</div>
+          <div className="px-4 py-4 text-right">{t('returns.list.table.requestedAmount')}</div>
+          <div className="px-4 py-4">{t('returns.list.table.status')}</div>
+          <div className="px-4 py-4">{t('returns.list.table.createdAt')}</div>
+          <div className="px-4 py-4 text-center">{t('returns.list.table.actions')}</div>
         </div>
 
         <div className="flex flex-col">
@@ -204,7 +210,7 @@ export default function AdminReturns() {
               <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
                 <FiClipboard className="text-2xl" />
               </div>
-              <span>Không có yêu cầu trả hàng nào</span>
+              <span>{t('returns.list.empty')}</span>
             </div>
           ) : (
             returns.map((item, index) => {
@@ -220,7 +226,7 @@ export default function AdminReturns() {
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">Mã yêu cầu:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('returns.list.mobile.returnNumber')}</span>
                     <div className="font-bold text-purple-600 flex items-center gap-2">
                       <span className="inline-flex lg:hidden items-center justify-center min-w-9 h-8 px-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 text-sm font-semibold">
                         {rowNumber}
@@ -230,25 +236,25 @@ export default function AdminReturns() {
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">Mã đơn:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('returns.list.mobile.orderNumber')}</span>
                     <div className="font-medium text-slate-700 dark:text-slate-300">{item.orderNumber}</div>
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">Khách hàng:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('returns.list.mobile.customer')}</span>
                     <div className="text-md">
-                      <div className="font-medium text-slate-800 dark:text-slate-100">{item.userName || 'Không rõ'}</div>
+                      <div className="font-medium text-slate-800 dark:text-slate-100">{item.userName || t('returns.list.unknownUser')}</div>
                       <div className="text-slate-500 text-sm">{item.userEmail || '-'}</div>
                     </div>
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-right text-slate-800 dark:text-slate-100">
-                    <span className="lg:hidden text-slate-500 text-md">Yêu cầu hoàn:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('returns.list.mobile.requestedAmount')}</span>
                     <div className="font-bold">{formatPrice(Number(item.requestedAmount || 0))}</div>
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                    <span className="lg:hidden text-slate-500 text-md">Trạng thái:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('returns.list.mobile.status')}</span>
                     <div className="flex flex-col xl:flex-row xl:flex-wrap gap-1.5 justify-end lg:justify-center w-full">
                       <ReturnStatusBadge status={item.status} />
                       <RefundStatusBadge status={item.refundStatus} />
@@ -256,7 +262,7 @@ export default function AdminReturns() {
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                    <span className="lg:hidden text-slate-500 text-md">Ngày tạo:</span>
+                    <span className="lg:hidden text-slate-500 text-md">{t('returns.list.mobile.createdAt')}</span>
                     <div className="text-slate-500 text-md font-medium">{formatDate(item.createdAt)}</div>
                   </div>
 
@@ -269,7 +275,7 @@ export default function AdminReturns() {
                           onClick={() => handleQuickReview(item, true)}
                           loading={reviewingKey === `${item.id}:approve`}
                         >
-                          ✓ Duyệt
+                          {t('returns.list.quickApprove')}
                         </Button>
                         <Button
                           size="sm"
@@ -277,7 +283,7 @@ export default function AdminReturns() {
                           onClick={() => handleQuickReview(item, false)}
                           loading={reviewingKey === `${item.id}:reject`}
                         >
-                          ✗ Từ chối
+                          {t('returns.list.quickReject')}
                         </Button>
                       </>
                     )}
@@ -302,7 +308,7 @@ export default function AdminReturns() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.LARGE}
-            label="yêu cầu trả hàng"
+            label={t('returns.list.pagination')}
             onPageChange={setPage}
           />
         )}

@@ -2,8 +2,10 @@ import type { ChangeEvent, DragEvent } from "react";
 import { FiTrash2, FiUploadCloud, FiLoader } from "react-icons/fi";
 import type { ImageUploadSectionProps as Props } from "./types";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 export default memo(function ImageUploadSection(props: Props) {
+  const { t } = useTranslation("adminCatalog");
   const {
     existingImages,
     pendingFiles,
@@ -19,10 +21,10 @@ export default memo(function ImageUploadSection(props: Props) {
     <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold">Hình ảnh sản phẩm</h2>
+          <h2 className="text-lg font-bold">{t("imageUpload.title")}</h2>
           {existingImages.length > 0 && (
             <span className="text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">
-              {existingImages.length} ảnh
+              {t("imageUpload.count", { count: existingImages.length })}
             </span>
           )}
         </div>
@@ -79,11 +81,11 @@ export default memo(function ImageUploadSection(props: Props) {
         </div>
         <span className="font-semibold text-md text-slate-600 dark:text-slate-300">
           {isDragging
-            ? "Thả ảnh vào đây!"
-            : "Kéo thả hoặc bấm để chọn ảnh"}
+            ? t("imageUpload.dropActive")
+            : t("imageUpload.dropIdle")}
         </span>
         <span className="text-sm text-slate-400 mt-1">
-          PNG, JPG, WEBP (Max 5MB)
+          {t("imageUpload.formatHint")}
         </span>
       </div>
 
@@ -101,7 +103,7 @@ export default memo(function ImageUploadSection(props: Props) {
                 className="w-full h-full object-cover"
               />
               <span className="absolute bottom-2 left-2 text-10 font-bold bg-amber-500 text-white px-2 py-0.5 rounded-md shadow">
-                Chưa lưu
+                {t("imageUpload.pendingBadge")}
               </span>
               <button
                 type="button"
@@ -133,7 +135,7 @@ export default memo(function ImageUploadSection(props: Props) {
               />
               {idx === 0 && pendingFiles.length === 0 && (
                 <span className="absolute top-2 left-2 text-10 font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-2 py-0.5 rounded-md shadow">
-                  Ảnh chính
+                  {t("imageUpload.primaryBadge")}
                 </span>
               )}
               <button

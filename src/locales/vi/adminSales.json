@@ -52,7 +52,9 @@
     "customerTitle": "Khách hàng",
     "fullName": "Họ tên",
     "phone": "SĐT",
+    "email": "Email",
     "shippingTitle": "Giao hàng",
+    "shippingAddressFallback": "Nhận tại cửa hàng",
     "paymentTitle": "Thanh toán",
     "paymentMethod": "Phương thức",
     "paymentStatus": "Trạng thái",
@@ -68,17 +70,18 @@
       "total": "Tổng cộng"
     },
     "invoice": {
-      "title": "Hóa Đơn",
+      "title": "Hóa đơn",
       "date": "Ngày",
       "customer": "Khách hàng",
       "pickupFallback": "Nhận tại cửa hàng",
-      "paymentShipping": "Thanh toán & Giao hàng",
+      "paymentShipping": "Thanh toán & giao hàng",
       "paid": "Đã thanh toán",
       "unpaid": "Chưa thu tiền",
       "buyer": "Người mua hàng",
       "seller": "Người bán hàng",
       "signatureHint": "(Ký, ghi rõ họ tên)",
-      "thanks": "Cảm ơn quý khách đã mua bán tại {{shopName}}!"
+      "thanks": "Cảm ơn quý khách đã mua bán tại {{shopName}}!",
+      "variantPrefix": "N/L: {{name}}"
     },
     "toasts": {
       "statusUpdated": "Cập nhật trạng thái đơn hàng thành công!",
@@ -88,10 +91,56 @@
     }
   },
   "returns": {
+    "list": {
+      "title": "Quản lý trả hàng / hoàn tiền",
+      "description": "Danh sách yêu cầu trả hàng của khách và trạng thái hoàn tiền.",
+      "export": "Xuất Excel",
+      "searchPlaceholder": "Tìm theo mã yêu cầu, mã đơn, tên/email khách...",
+      "stats": {
+        "pageTotal": "Tổng số trang này",
+        "pendingReview": "Chờ duyệt",
+        "inProgress": "Đang xử lý",
+        "refundPending": "Cần hoàn tiền"
+      },
+      "table": {
+        "index": "STT",
+        "returnNumber": "Mã yêu cầu",
+        "orderNumber": "Mã đơn",
+        "customer": "Khách hàng",
+        "requestedAmount": "Yêu cầu hoàn",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "actions": "Thao tác"
+      },
+      "mobile": {
+        "returnNumber": "Mã yêu cầu:",
+        "orderNumber": "Mã đơn:",
+        "customer": "Khách hàng:",
+        "requestedAmount": "Yêu cầu hoàn:",
+        "status": "Trạng thái:",
+        "createdAt": "Ngày tạo:"
+      },
+      "empty": "Không có yêu cầu trả hàng nào",
+      "unknownUser": "Không rõ",
+      "quickApprove": "✓ Duyệt",
+      "quickReject": "✗ Từ chối",
+      "pagination": "yêu cầu trả hàng",
+      "notes": {
+        "quickApprove": "Duyệt nhanh từ danh sách",
+        "quickReject": "Từ chối nhanh từ danh sách"
+      },
+      "toasts": {
+        "reviewApproved": "Đã duyệt yêu cầu trả hàng",
+        "reviewRejected": "Đã từ chối yêu cầu trả hàng",
+        "exportSuccess": "Xuất Excel thành công!",
+        "exportFailed": "Xuất Excel thất bại!"
+      }
+    },
     "detail": {
       "notFound": "Không tìm thấy yêu cầu trả hàng",
       "orderLabel": "Đơn hàng",
       "createdAtLabel": "Tạo lúc",
+      "timelineRequested": "Yêu cầu mới",
       "itemsTitle": "Danh sách sản phẩm trả",
       "table": {
         "product": "Sản phẩm",
@@ -105,6 +154,7 @@
       "refundTransactionsEmpty": "Chưa có giao dịch hoàn tiền nào cho yêu cầu này.",
       "refundTransactionsTable": {
         "time": "Thời gian",
+        "provider": "Provider",
         "transactionId": "Mã giao dịch",
         "amount": "Số tiền",
         "status": "Trạng thái"
@@ -136,9 +186,12 @@
       "transactionIdPlaceholder": "Mã giao dịch hoàn tiền",
       "refundAdminNotePlaceholder": "Ghi chú admin về giao dịch hoàn tiền (bắt buộc)",
       "currencyPlaceholder": "Đơn vị tiền tệ",
+      "rawPayloadPlaceholder": "Raw payload (tùy chọn)",
       "confirmRefund": "Xác nhận hoàn tiền thủ công",
       "refundProviders": {
         "manual": "Hoàn tiền thủ công (Cash/Bank)",
+        "vnpay": "Qua VNPAY",
+        "momo": "Qua MOMO",
         "bankTransfer": "Chuyển khoản Ngân Hàng"
       },
       "toasts": {
@@ -154,6 +207,98 @@
         "refundAdminNoteRequired": "Vui lòng nhập ghi chú xử lý hoàn tiền",
         "refundSuccess": "Đã xử lý hoàn tiền thành công"
       }
+    }
+  },
+  "vouchers": {
+    "title": "Quản lý Voucher",
+    "create": "Tạo Voucher mới",
+    "searchPlaceholder": "Tìm kiếm theo mã voucher...",
+    "empty": "Không có voucher nào",
+    "pagination": "voucher",
+    "table": {
+      "index": "STT",
+      "code": "Mã Voucher",
+      "typeValue": "Loại / Giá trị",
+      "used": "Đã dùng",
+      "time": "Thời gian",
+      "visibility": "Hiển thị",
+      "scope": "Phạm vi",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "meta": {
+      "product": "Sản phẩm",
+      "freeship": "Freeship",
+      "percentage": "Giảm %",
+      "fixed": "Cố định",
+      "from": "Từ",
+      "to": "Đến",
+      "public": "Công khai",
+      "private": "Riêng tư",
+      "all": "Tất cả",
+      "active": "Đang hoạt động",
+      "inactive": "Tạm dừng",
+      "pause": "Tạm dừng",
+      "activate": "Kích hoạt",
+      "applyCount": "{{count}} SP"
+    },
+    "modal": {
+      "createTitle": "Tạo Voucher Mới",
+      "editTitle": "Chỉnh sửa Voucher",
+      "cancel": "Hủy",
+      "save": "Lưu Voucher",
+      "update": "Cập nhật"
+    },
+    "form": {
+      "codeLabel": "Mã Voucher",
+      "codePlaceholder": "VD: SUMMER2024",
+      "discountTypeLabel": "Loại Giảm Giá",
+      "percentage": "Theo %",
+      "fixedAmount": "Tiền cố định",
+      "couponCategoryLabel": "Nhóm Voucher",
+      "productVoucher": "Voucher Sản Phẩm (Nền tảng / Shop)",
+      "shippingVoucher": "Voucher Freeship",
+      "shippingCapLabel": "Hỗ trợ phí ship tối đa",
+      "shippingCapPlaceholder": "K/Trống = Freeship 100%",
+      "discountValueLabel": "Giá trị giảm",
+      "discountValuePlaceholder": "VD: 10",
+      "minOrderValueLabel": "Đơn tối thiểu",
+      "usageLimitLabel": "Giới hạn sử dụng",
+      "maxDiscountAmountLabel": "Giảm tối đa (chỉ dành cho loại %)",
+      "maxDiscountAmountPlaceholder": "Trống = Không giới hạn",
+      "startDateLabel": "Thời gian bắt đầu",
+      "endDateLabel": "Thời gian kết thúc",
+      "visibilityTitle": "Hiển thị công khai",
+      "visibilityPublicDescription": "Voucher sẽ hiển thị trên trang của khách hàng, họ có thể lưu & sử dụng",
+      "visibilityPrivateDescription": "Chỉ khi khách hàng nhập đúng mã mới dùng được",
+      "applyScopeLabel": "Phạm vi áp dụng",
+      "applyAllTitle": "🛒 Tất cả sản phẩm",
+      "applyAllDescription": "Áp dụng cho toàn bộ đơn hàng",
+      "applySpecificTitle": "📦 Sản phẩm cụ thể",
+      "applySpecificDescription": "Chỉ giảm cho SP được chọn",
+      "applySpecificHint": "💡 Tính năng chọn sản phẩm cụ thể sẽ được cập nhật trong phiên bản tiếp theo. Hiện tại voucher sẽ áp dụng cho tất cả SP."
+    },
+    "toasts": {
+      "toggleSuccess": "Cập nhật trạng thái voucher thành công!",
+      "toggleFailed": "Cập nhật trạng thái voucher thất bại!",
+      "updateSuccess": "Cập nhật voucher thành công!",
+      "createSuccess": "Tạo voucher thành công!",
+      "saveFailed": "Thao tác voucher thất bại!"
+    }
+  },
+  "feedbacks": {
+    "title": "Quản lý đánh giá",
+    "empty": "Không có đánh giá nào",
+    "productLabel": "SP",
+    "adminLabel": "Admin",
+    "reply": "Trả lời",
+    "replyPlaceholder": "Nhập nội dung trả lời...",
+    "send": "Gửi",
+    "pagination": "đánh giá",
+    "toasts": {
+      "loadFailed": "Tải danh sách đánh giá thất bại!",
+      "statusFailed": "Cập nhật trạng thái đánh giá thất bại!",
+      "replyFailed": "Phản hồi đánh giá thất bại!"
     }
   }
 }

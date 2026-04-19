@@ -1,8 +1,10 @@
 import { FiChevronDown, FiCheck, FiStar } from "react-icons/fi";
 import type { StatusPricingSectionProps as Props } from "./types";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 export default memo(function StatusPricingSection(props: Props) {
+  const { t } = useTranslation("adminCatalog");
   const {
     isEditMode,
     status, setStatus,
@@ -14,10 +16,10 @@ export default memo(function StatusPricingSection(props: Props) {
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
-      <h2 className="text-lg font-bold mb-4">Trạng thái & Giá</h2>
+      <h2 className="text-lg font-bold mb-4">{t("statusPricing.title")}</h2>
 
       <div>
-        <label className="block font-medium mb-2">Trạng thái</label>
+        <label className="block font-medium mb-2">{t("statusPricing.status")}</label>
         <div className="relative" ref={statusDropdownRef}>
           <button
             type="button"
@@ -40,10 +42,10 @@ export default memo(function StatusPricingSection(props: Props) {
               />
               <span className="text-slate-900 dark:text-slate-100">
                 {status === "ACTIVE"
-                  ? "Đang bán"
+                  ? t("statusPricing.statusOptions.active")
                   : status === "DRAFT"
-                    ? "Bản nháp"
-                    : "Đã ẩn"}
+                    ? t("statusPricing.statusOptions.draft")
+                    : t("statusPricing.statusOptions.inactive")}
               </span>
             </div>
             <FiChevronDown
@@ -55,17 +57,17 @@ export default memo(function StatusPricingSection(props: Props) {
               {[
                 {
                   value: "ACTIVE",
-                  label: "Đang bán",
+                  label: t("statusPricing.statusOptions.active"),
                   color: "bg-emerald-500",
                 },
                 {
                   value: "DRAFT",
-                  label: "Bản nháp",
+                  label: t("statusPricing.statusOptions.draft"),
                   color: "bg-amber-500",
                 },
                 {
                   value: "INACTIVE",
-                  label: "Đã ẩn",
+                  label: t("statusPricing.statusOptions.inactive"),
                   color: "bg-slate-400",
                 },
               ].map((opt) => (
@@ -96,13 +98,13 @@ export default memo(function StatusPricingSection(props: Props) {
         </div>
         {!isEditMode && (
           <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
-            Tạo mới bước đầu luôn lưu dưới dạng bản nháp. Có thể đổi trạng thái sau khi cấu hình phân loại.
+            {t("statusPricing.draftHint")}
           </p>
         )}
       </div>
 
       <div>
-        <label className="block font-medium mb-2">Giá gốc (VNĐ)</label>
+        <label className="block font-medium mb-2">{t("statusPricing.originPrice")}</label>
         <input
           type="number"
           value={originPrice}
@@ -115,13 +117,13 @@ export default memo(function StatusPricingSection(props: Props) {
           className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
         />
         <p className="text-sm text-slate-400 mt-1">
-          Giá sale/giảm giá nằm ở từng phân loại (Giá gốc so sánh)
+          {t("statusPricing.originPriceHint")}
         </p>
       </div>
 
       {/* Featured toggle */}
       <div>
-        <label className="block font-medium mb-2">Sản phẩm nổi bật</label>
+        <label className="block font-medium mb-2">{t("statusPricing.featured")}</label>
         <button
           type="button"
           onClick={() => setIsFeatured(!isFeatured)}
@@ -146,7 +148,9 @@ export default memo(function StatusPricingSection(props: Props) {
                   : "text-slate-500"
               }
             >
-              {isFeatured ? "Đang hiện trên trang chủ" : "Không nổi bật"}
+              {isFeatured
+                ? t("statusPricing.featuredOn")
+                : t("statusPricing.featuredOff")}
             </span>
           </div>
           <div

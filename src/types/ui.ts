@@ -27,6 +27,8 @@ export interface VariantFormData {
   id?: string;
   uiKey?: string;
   displayOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
   sku: string;
   skuMode?: 'suggested' | 'manual';
   variantName: string;

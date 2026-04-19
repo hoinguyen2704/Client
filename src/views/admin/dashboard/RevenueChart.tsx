@@ -1,9 +1,12 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components';
+import { formatPrice } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 import ChartXAxisTick from './ChartXAxisTick';
 
 export default function RevenueChart({ stats }: DashboardChildProps) {
+  const { t } = useTranslation('adminDashboard');
   const chartData = (stats.revenueChart || []).map((item) => ({
     name: item.label,
     revenue: item.revenue,
@@ -19,25 +22,25 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
 
   return (
     <Card>
-      <h2 className="text-base sm:text-lg font-bold mb-4">Biểu đồ doanh thu</h2>
+      <h2 className="text-base sm:text-lg font-bold mb-4">{t('overview.charts.revenue.title')}</h2>
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Tổng doanh thu</p>
+          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryTotal')}</p>
           <p className="text-md sm:text-lg font-bold text-purple-700 dark:text-purple-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Trung bình</p>
+          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryAverage')}</p>
           <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{avg >= 1e6 ? `${(avg / 1e6).toFixed(0)}M` : avg.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">Cao nhất ({maxItem.name.split('|')[0]})</p>
+          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryPeak', { label: maxItem.name.split('|')[0] })}</p>
           <p className="text-md sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{maxItem.revenue >= 1e6 ? `${(maxItem.revenue / 1e6).toFixed(0)}M` : maxItem.revenue.toLocaleString()}</p>
         </div>
       </div>
 
       {chartData.length === 0 ? (
-        <div className="h-64 sm:h-80 flex items-center justify-center text-slate-400">Chưa có dữ liệu doanh thu</div>
+        <div className="h-64 sm:h-80 flex items-center justify-center text-slate-400">{t('overview.charts.revenue.empty')}</div>
       ) : (
         <div className="h-64 sm:h-80 min-w-0">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={256}>
@@ -57,7 +60,7 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                formatter={(value: number) => [`${value.toLocaleString()}đ`, 'Doanh thu']}
+                formatter={(value: number) => [formatPrice(value), t('overview.charts.revenue.tooltipSeries')]}
                 labelFormatter={(label: string) => {
                   const parts = label.replace('|_TODAY', '').split('|');
                   return parts.length > 1 ? `${parts[0]} - ${parts[1]}` : parts[0];

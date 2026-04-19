@@ -55,15 +55,137 @@
     "addCategory": "Add category",
     "editCategory": "Edit category",
     "deleteCategory": "Delete category",
-    "empty": "No categories found"
+    "empty": "No categories found",
+    "filters": {
+      "allBrands": "All brands"
+    },
+    "table": {
+      "index": "No.",
+      "category": "Category",
+      "slug": "Slug",
+      "specs": "Specs",
+      "productCount": "Products",
+      "status": "Status",
+      "actions": "Actions",
+      "empty": "No categories found"
+    },
+    "labels": {
+      "pagination": "categories"
+    },
+    "actions": {
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "confirmDelete": {
+      "title": "Delete category",
+      "message": "Are you sure you want to delete this category? This action cannot be undone.",
+      "confirm": "Delete"
+    },
+    "form": {
+      "loading": "Loading category data...",
+      "backToList": "Back to category list",
+      "createTitle": "Create category",
+      "editTitle": "Edit category",
+      "back": "Back",
+      "save": "Save category",
+      "basicTitle": "Basic information",
+      "basicDescription": "Set the display name for the category.",
+      "nameLabel": "Category name *",
+      "namePlaceholder": "E.g. Phones, Laptops...",
+      "variantTitle": "Variant attributes",
+      "variantDescription": "Define the attributes used to generate variants.",
+      "variantAdd": "Add attribute",
+      "variantCount": "{{count}} attributes",
+      "specTitle": "Technical specs",
+      "specDescription": "Suggested spec schema used when creating or editing products in this category.",
+      "specAdd": "Add spec",
+      "specCount": "{{count}} specs",
+      "expand": "Expand",
+      "collapse": "Collapse"
+    },
+    "variantAttributes": {
+      "header": "Variant attributes",
+      "count": "{{count}} attributes",
+      "add": "Add",
+      "empty": "No variant attributes yet",
+      "namePlaceholder": "Attribute name (e.g. Color)",
+      "codePlaceholder": "Code (e.g. COLOR)",
+      "optionsPlaceholder": "Options, comma separated (e.g. Black, White, Blue)"
+    },
+    "specTemplates": {
+      "header": "Suggested technical specs",
+      "count": "{{count}} specs",
+      "add": "Add",
+      "empty": "No suggested specs yet",
+      "firstAdd": "Add the first spec",
+      "nameHeader": "Spec name",
+      "hintHeader": "Hint (placeholder)",
+      "namePlaceholder": "E.g. Screen, RAM...",
+      "hintPlaceholder": "E.g. 6.7-inch OLED, 120Hz"
+    },
+    "toasts": {
+      "deleteSuccess": "Category deleted!",
+      "deleteFailed": "Unable to delete this category!",
+      "toggleSuccess": "Status updated successfully!",
+      "toggleFailed": "Failed to update status!",
+      "createSuccess": "Category created!",
+      "inlineCreateSuccess": "Created category \"{{name}}\"",
+      "updateSuccess": "Category updated!",
+      "saveFailed": "Failed to save category!",
+      "loadFailed": "Unable to load category data.",
+      "notFound": "Category not found.",
+      "nameRequired": "Category name is required.",
+      "attributeOptionsRequired": "Attribute \"{{name}}\" must have at least one option."
+    }
   },
   "brands": {
     "title": "Brand management",
-    "searchPlaceholder": "Search by brand name...",
+    "searchPlaceholder": "Search brands...",
     "addBrand": "Add brand",
     "editBrand": "Edit brand",
     "deleteBrand": "Delete brand",
-    "empty": "No brands found"
+    "empty": "No brands found",
+    "filters": {
+      "allCategories": "All categories"
+    },
+    "table": {
+      "index": "No.",
+      "brand": "Brand",
+      "slug": "Slug",
+      "productCount": "Products",
+      "actions": "Actions",
+      "empty": "No brands found"
+    },
+    "labels": {
+      "pagination": "brands"
+    },
+    "confirmDelete": {
+      "title": "Delete brand?",
+      "message": "This action cannot be undone. If the brand still has products, deletion will be rejected.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "form": {
+      "createTitle": "Create brand",
+      "editTitle": "Edit brand",
+      "closeAria": "Close form",
+      "nameLabel": "Brand name *",
+      "namePlaceholder": "E.g. Apple, Samsung...",
+      "logoLabel": "Logo URL",
+      "logoPlaceholder": "https://...",
+      "cancel": "Cancel",
+      "create": "Create brand",
+      "update": "Update brand"
+    },
+    "toasts": {
+      "nameRequired": "Brand name is required.",
+      "createSuccess": "Brand created!",
+      "inlineCreateSuccess": "Created brand \"{{name}}\"",
+      "updateSuccess": "Brand updated!",
+      "saveFailed": "Failed to save brand.",
+      "deleteSuccess": "Brand deleted!",
+      "deleteFailed": "Unable to delete this brand."
+    }
   },
   "variants": {
     "title": "Variants",
@@ -77,12 +199,227 @@
     "name": "Product name",
     "category": "Category",
     "brand": "Brand",
-    "description": "Description"
+    "description": "Description",
+    "selectCategory": "Select category",
+    "selectBrand": "Select brand",
+    "addCategory": "Add category",
+    "addBrand": "Add brand",
+    "categoryLocked": "Category cannot be changed once the product already has variants.",
+    "productCode": {
+      "label": "Product code",
+      "hint": "You can leave this blank and let the system generate it later.",
+      "locked": "Product code is locked in edit mode."
+    },
+    "placeholders": {
+      "name": "Enter product name",
+      "productCode": "E.g. IP15PMX",
+      "description": "Enter a short description or HTML content for the product",
+      "categorySearch": "Search categories...",
+      "brandSearch": "Search brands...",
+      "newCategory": "New category name",
+      "newBrand": "New brand name"
+    },
+    "specs": {
+      "title": "Technical specs",
+      "templateTitle": "Apply spec template from category",
+      "templateAction": "Choose template",
+      "templateModalTitle": "Apply category spec template",
+      "templateRequiresCategory": "Select a category before applying a spec template.",
+      "selectAll": "Select all",
+      "close": "Close",
+      "empty": "No specs yet.",
+      "expand": "Show more",
+      "collapse": "Show less"
+    }
+  },
+  "productForm": {
+    "loading": "Loading product...",
+    "createTitle": "Create product",
+    "editTitle": "Edit product",
+    "manageVariants": "Manage variants",
+    "cancel": "Cancel",
+    "save": "Save product",
+    "update": "Update",
+    "variantNoticeWithCount": "This product currently has {{count}} variants.",
+    "variantNoticeEmpty": "This product does not have any variants yet.",
+    "variantNoticeDescription": "SKU, price, stock, and variant images are managed on the dedicated screen.",
+    "specValueHint": "Enter value...",
+    "errors": {
+      "notFound": "Product not found",
+      "loadFailed": "Failed to load product",
+      "nameRequired": "Please enter the product name",
+      "categoryRequired": "Please select a category",
+      "brandRequired": "Please select a brand",
+      "saveFailed": "Failed to save product"
+    },
+    "toasts": {
+      "updateSuccess": "Product information updated successfully!",
+      "createDraftSuccess": "Product created as draft. Open \"Manage variants\" to configure SKU, pricing, and stock.",
+      "uploadSuccess": "Uploaded {{count}} images successfully!",
+      "uploadFailed": "Upload failed. Please try again.",
+      "deleteImageSuccess": "Image deleted successfully!",
+      "deleteImageFailed": "Failed to delete image."
+    }
+  },
+  "imageUpload": {
+    "title": "Product images",
+    "count": "{{count}} images",
+    "dropActive": "Drop images here!",
+    "dropIdle": "Drag and drop or click to choose images",
+    "formatHint": "PNG, JPG, WEBP (Max 5MB)",
+    "pendingBadge": "Not saved",
+    "primaryBadge": "Primary image"
+  },
+  "statusPricing": {
+    "title": "Status & pricing",
+    "status": "Status",
+    "draftHint": "New products are initially saved as draft. You can change the status after configuring variants.",
+    "originPrice": "Base price (VND)",
+    "originPriceHint": "Sale/discount pricing is configured per variant (compare-at price).",
+    "featured": "Featured product",
+    "featuredOn": "Visible on homepage",
+    "featuredOff": "Not featured",
+    "statusOptions": {
+      "active": "On sale",
+      "draft": "Draft",
+      "inactive": "Hidden"
+    }
+  },
+  "variantPage": {
+    "loading": "Loading product variants...",
+    "backToProduct": "Back to product information",
+    "title": "Manage variants",
+    "fallbackDescription": "Configure SKU, stock, pricing, and images per variant.",
+    "productInfo": "Product information",
+    "save": "Save variants",
+    "schemaHint": "Variants always follow the category schema. To change the category, go back to the product info screen first.",
+    "defaultVariant": "Default",
+    "errors": {
+      "notFound": "Product not found",
+      "loadFailed": "Failed to load product variants",
+      "missingProduct": "Cannot find the product to update variants.",
+      "invalidVariant": "Each variant must include an SKU and a complete attribute combination.",
+      "inactiveSelection": "One or more variants use inactive options. Please switch them to active options before saving.",
+      "duplicateCombination": "Unable to save because duplicate attribute combinations were found.",
+      "saveFailed": "Failed to save product variants"
+    },
+    "toasts": {
+      "uploadSuccess": "Uploaded {{count}} images for variant \"{{name}}\"",
+      "uploadFailed": "Failed to upload variant images.",
+      "deleteImageSuccess": "Variant image deleted successfully!",
+      "deleteImageFailed": "Failed to delete variant image.",
+      "updateSuccess": "Product variants updated successfully!"
+    },
+    "skuChange": {
+      "title": "Confirm SKU changes",
+      "confirmLabel": "Continue saving",
+      "emptySku": "(empty)",
+      "more": "... and {{count}} more SKUs",
+      "confirm": "You are about to change existing SKUs:\n{{preview}}{{more}}\n\nDo you want to continue?"
+    }
+  },
+  "variantSection": {
+    "title": "Product variants",
+    "count": "{{count}} variants",
+    "generate": "Generate combinations",
+    "generateTitle": "Quickly pick options by attribute to generate variants in bulk",
+    "sortLatestUpdated": "Latest updates first",
+    "sortLatestUpdatedTitle": "Keep variants ordered by most recently updated",
+    "add": "Add variant",
+    "emptyTitle": "No variants yet",
+    "emptyDescription": "Click \"Add variant\" to start"
+  },
+  "variantBulkGenerate": {
+    "description": "Select options per attribute to generate combinations automatically (existing combinations are skipped).",
+    "clearAll": "Clear all",
+    "selectAll": "Select all",
+    "generate": "Generate combinations"
+  },
+  "variantCard": {
+    "title": "Variant {{order}}",
+    "statusActive": "On sale",
+    "statusInactive": "Hidden",
+    "uploading": "Uploading images",
+    "sku": "SKU",
+    "price": "Price",
+    "stock": "Stock",
+    "net": "Net",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "remove": "Delete",
+    "skuPlaceholder": "E.g. IP15P-BLK-256",
+    "regenTitle": "Regenerate SKU from selected attributes",
+    "skuModeManual": "Manual",
+    "skuModeSuggested": "Suggested",
+    "autoName": "Generated variant name",
+    "defaultName": "Default",
+    "priceLabel": "Selling price (VND)",
+    "compareAtPriceLabel": "Compare-at price (VND)",
+    "compareAtPricePlaceholder": "Price before discount",
+    "stockLabel": "Stock quantity",
+    "salesLabel": "Gross / Return / Net",
+    "imagesTitle": "Variant images",
+    "imagesDescription": "Images in this section belong to SKU: {{sku}}",
+    "uploadImages": "Upload variant images",
+    "pendingBadge": "Pending save",
+    "primaryBadge": "Primary",
+    "notEntered": "Not set",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
+    "timeUnavailable": "Unavailable",
+    "variantImageAlt": "Variant image"
   },
   "productPicker": {
     "title": "Select products",
+    "heroTitle": "Select Flash Sale products",
+    "heroDescription": "Search, filter, and choose the variants to add to the campaign.",
     "searchPlaceholder": "Search products to add...",
-    "selectedLabel": "{{count}} products selected"
+    "selectedLabel": "{{count}} products selected",
+    "selectedVariants": "<strong>{{count}}</strong> variants selected",
+    "filtersTitle": "Filters",
+    "filters": {
+      "allCategories": "All categories",
+      "allBrands": "All brands",
+      "default": "Default",
+      "soldDesc": "Best selling",
+      "soldAsc": "Lowest selling",
+      "stockDesc": "Highest stock",
+      "stockAsc": "Lowest stock"
+    },
+    "clearFilters": "Clear filters",
+    "loading": "Loading data...",
+    "empty": "No matching products found",
+    "table": {
+      "product": "Product",
+      "sold": "Sold",
+      "stock": "Stock",
+      "actions": "Actions"
+    },
+    "paginationLabel": "variants",
+    "footerEmpty": "No variants selected yet.",
+    "footerSelected": "<strong>{{count}}</strong> variants selected for Flash Sale.",
+    "cancel": "Cancel",
+    "confirm": "Confirm ({{count}})",
+    "variantFallback": "Default",
+    "productRow": {
+      "loading": "Loading...",
+      "selectAll": "Select all",
+      "unselectAll": "Unselect all",
+      "sold": "Sold",
+      "stock": "Stock",
+      "loadFailed": "Unable to load variant list for this product.",
+      "noVariants": "This product has no available variants."
+    },
+    "variantRow": {
+      "defaultName": "Default",
+      "sku": "Code",
+      "alreadyInSale": "Already added",
+      "selected": "Selected",
+      "clickToSelect": "Click to select",
+      "gross": "Gross",
+      "netAndReturned": "N/R",
+      "stock": "Stock"
+    }
   },
   "flashSales": {
     "title": "Flash sale",
@@ -90,6 +427,103 @@
     "selectProducts": "Select products",
     "dateRange": "Date range",
     "discountType": "Discount type",
-    "discountValue": "Discount value"
+    "discountValue": "Discount value",
+    "list": {
+      "title": "Flash Sale management",
+      "create": "Create Flash Sale",
+      "loading": "Loading...",
+      "empty": "No Flash Sale campaigns yet",
+      "table": {
+        "index": "No.",
+        "name": "Campaign name",
+        "start": "Start",
+        "end": "End",
+        "products": "Products",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "scheduled": "Scheduled",
+        "active": "Active",
+        "ended": "Ended"
+      },
+      "productsCount": "{{count}} products",
+      "pagination": "flash sale campaigns",
+      "deleteDialog": {
+        "title": "Delete Flash Sale",
+        "message": "Are you sure you want to delete this Flash Sale? This action cannot be undone.",
+        "confirm": "Delete"
+      },
+      "toasts": {
+        "deleteSuccess": "Flash Sale deleted successfully!",
+        "deleteFailed": "Failed to delete Flash Sale!",
+        "statusSuccess": "Status updated successfully!",
+        "statusFailed": "Failed to update status!"
+      }
+    },
+    "form": {
+      "loading": "Loading data...",
+      "createTitle": "Create new Flash Sale",
+      "editTitle": "Edit Flash Sale",
+      "createDescription": "Fill in campaign details and choose the participating products",
+      "editDescription": "Adjust campaign information and participating products",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "create": "Create",
+      "update": "Update",
+      "eventInfoTitle": "Campaign information",
+      "nameLabel": "Campaign name *",
+      "namePlaceholder": "Example: Flash Sale 12.12",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Short campaign description...",
+      "startLabel": "Start *",
+      "endLabel": "End *",
+      "itemsTitle": "Participating products",
+      "itemCount": "{{count}} variants",
+      "addProducts": "Add products",
+      "table": {
+        "product": "Product",
+        "originalPrice": "Original price",
+        "flashPrice": "Flash Sale price",
+        "flashStock": "Flash Sale stock",
+        "remove": "Remove"
+      },
+      "empty": "No products selected yet",
+      "addNow": "Add products now",
+      "historyEmpty": "No historical data for this variant yet.",
+      "historyLabel": "History: G {{gross}} / R {{returned}} / N {{net}}",
+      "stockLabel": "Current stock: {{stock}}",
+      "pagination": "variants",
+      "summaryTitle": "Quick summary",
+      "scheduleStatus": "Schedule status",
+      "participatingVariants": "Participating variants",
+      "totalStock": "Total Flash Sale stock",
+      "originalValue": "Original value",
+      "flashValue": "Flash Sale value",
+      "estimatedSavings": "Estimated savings",
+      "validationTitle": "Validation",
+      "validationValid": "Current data is valid and ready to save.",
+      "validationTime": "End time must be after start time.",
+      "validationPrice": "{{count}} products have invalid Flash Sale prices (must be greater than 0 and less than the original price).",
+      "validationStock": "{{count}} products have invalid Flash Sale stock (must be greater than 0).",
+      "startAt": "Start: {{date}}",
+      "endAt": "End: {{date}}",
+      "schedule": {
+        "incomplete": "Incomplete schedule",
+        "invalid": "Invalid schedule",
+        "scheduled": "Scheduled",
+        "active": "Active",
+        "ended": "Ended"
+      }
+    },
+    "toasts": {
+      "loadFailed": "Unable to load Flash Sale data",
+      "nameRequired": "Please enter the campaign name",
+      "timeRequired": "Please select the start and end time",
+      "itemsRequired": "Please add at least one product",
+      "createSuccess": "Flash Sale created successfully!",
+      "updateSuccess": "Flash Sale updated successfully!",
+      "saveFailed": "Unable to save Flash Sale"
+    }
   }
 }

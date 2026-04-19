@@ -1,10 +1,12 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { Checkbox } from "@/components";
 import type { VariantBulkGeneratePanelProps } from "./types";
 
 export default memo(function VariantBulkGeneratePanel(
   props: VariantBulkGeneratePanelProps,
 ) {
+  const { t } = useTranslation("adminCatalog");
   const {
     variantSchema,
     bulkSelections,
@@ -18,7 +20,7 @@ export default memo(function VariantBulkGeneratePanel(
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-3 dark:border-slate-700 dark:bg-slate-800/30">
       <p className="text-sm font-semibold text-body-soft">
-        Chọn option theo từng thuộc tính để sinh tổ hợp (hệ thống tự bỏ qua tổ hợp đã tồn tại).
+        {t("variantBulkGenerate.description")}
       </p>
 
       <div className="space-y-3">
@@ -62,21 +64,21 @@ export default memo(function VariantBulkGeneratePanel(
           onClick={clearAllSelections}
           className={actionButtonClass}
         >
-          Bỏ chọn tất cả
+          {t("variantBulkGenerate.clearAll")}
         </button>
         <button
           type="button"
           onClick={selectAllSelections}
           className={actionButtonClass}
         >
-          Chọn tất cả
+          {t("variantBulkGenerate.selectAll")}
         </button>
         <button
           type="button"
           onClick={generateSelections}
           className="h-9 rounded-lg bg-purple-600 px-3 text-sm font-semibold text-white hover:bg-purple-700"
         >
-          Sinh tổ hợp
+          {t("variantBulkGenerate.generate")}
         </button>
       </div>
     </div>

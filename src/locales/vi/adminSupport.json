@@ -43,5 +43,122 @@
     "replyPlaceholder": "Nhập câu trả lời...",
     "send": "Gửi",
     "emptyDetail": "Chọn một ticket để xem chi tiết"
+  },
+  "chatbot": {
+    "title": "Quản lý AI Chatbot",
+    "subtitle": "Powered by Gemini AI - Model: {{model}}",
+    "actions": {
+      "reset": "Khôi phục mặc định",
+      "retry": "Thử lại",
+      "save": "Lưu cấu hình",
+      "saving": "Đang lưu...",
+      "addSuggestion": "Thêm",
+      "enable": "Bật chatbot",
+      "disable": "Tắt chatbot"
+    },
+    "states": {
+      "loading": "Đang tải cấu hình...",
+      "connectionFailed": "Không thể kết nối đến Chatbot Server",
+      "dirty": "Có thay đổi chưa lưu"
+    },
+    "tabs": {
+      "settings": "Cấu hình",
+      "overview": "Tổng quan"
+    },
+    "sections": {
+      "shopInfo": {
+        "title": "Thông tin cửa hàng",
+        "description": "Thông tin này được nhúng vào System Prompt để bot giới thiệu cho khách.",
+        "fields": {
+          "name": "Tên cửa hàng",
+          "slogan": "Slogan",
+          "address": "Địa chỉ",
+          "hotline": "Hotline",
+          "email": "Email hỗ trợ",
+          "website": "Website"
+        }
+      },
+      "ai": {
+        "title": "Cấu hình AI",
+        "description": "Điều chỉnh model, nhiệt độ sáng tạo và quy tắc hành vi của bot.",
+        "fields": {
+          "model": "Model AI",
+          "temperature": "Temperature: {{value}}",
+          "systemPrompt": "System Prompt (Quy tắc hành vi)"
+        },
+        "temperatureExact": "0 - Chính xác",
+        "temperatureCreative": "1 - Sáng tạo",
+        "systemPromptPlaceholder": "Nhập các quy tắc cho chatbot...",
+        "systemPromptHint": "Mỗi dòng bắt đầu bằng '-' là một quy tắc. Thay đổi sẽ ảnh hưởng trực tiếp đến cách bot trả lời."
+      },
+      "runtime": {
+        "title": "Thông số vận hành",
+        "fields": {
+          "maxProducts": "Số sản phẩm tối đa / lần trả lời",
+          "maxRetries": "Số lần retry khi AI lỗi",
+          "planTimeoutMs": "Timeout AI phân tích (ms)",
+          "dbTimeoutMs": "Timeout truy vấn DB (ms)"
+        },
+        "hints": {
+          "maxProducts": "Mặc định: 3. Giá trị càng cao thì câu trả lời càng dài và tốn token hơn; chỉ tăng khi thực sự cần nhiều kết quả.",
+          "maxRetries": "Mặc định: 1. Số lần thử lại khi Gemini API timeout hoặc gặp lỗi.",
+          "planTimeoutMs": "Mặc định: 25000ms. Thời gian chờ AI phân tích câu hỏi.",
+          "dbTimeoutMs": "Mặc định: 6000ms. Thời gian chờ truy vấn database."
+        }
+      },
+      "status": {
+        "title": "Trạng thái Chatbot",
+        "enabledDescription": "Chatbot đang hoạt động trên trang khách hàng.",
+        "disabledDescription": "Chatbot đang tắt - khách hàng không thấy widget."
+      },
+      "widget": {
+        "title": "Giao diện widget",
+        "fields": {
+          "botName": "Tên bot",
+          "subtitle": "Subtitle",
+          "themeColor": "Màu sắc chủ đạo",
+          "avatar": "Avatar bot"
+        },
+        "avatarPlaceholder": "URL ảnh avatar...",
+        "avatarAlt": "Avatar bot"
+      },
+      "welcome": {
+        "title": "Tin nhắn chào mừng",
+        "placeholder": "Tin nhắn chào khách khi mở chatbot...",
+        "hint": "Hỗ trợ Markdown: **bold**, *italic*, - danh sách"
+      },
+      "suggestions": {
+        "title": "Gợi ý nhanh",
+        "description": "Các chip gợi ý hiển thị dưới tin nhắn chào.",
+        "newPlaceholder": "Thêm gợi ý mới..."
+      }
+    },
+    "overview": {
+      "notAvailable": "N/A",
+      "configTitle": "Cấu hình hiện tại (JSON)",
+      "cards": {
+        "status": "Trạng thái",
+        "active": "Đang hoạt động",
+        "disabled": "Đã tắt",
+        "model": "Model AI",
+        "modelDescription": "Temperature: {{value}}",
+        "store": "Cửa hàng",
+        "storeDescription": "Hotline: {{value}}",
+        "suggestions": "Gợi ý nhanh",
+        "suggestionsDescription": "{{count}} gợi ý đang hoạt động"
+      }
+    },
+    "resetDialog": {
+      "title": "Khôi phục mặc định",
+      "message": "Bạn có chắc muốn khôi phục toàn bộ cấu hình về mặc định? Hành động này không thể hoàn tác.",
+      "confirm": "Khôi phục"
+    },
+    "toasts": {
+      "loadFailed": "Không thể tải cấu hình chatbot",
+      "saveSuccess": "Cập nhật cấu hình thành công!",
+      "saveFailed": "Lưu cấu hình thất bại",
+      "resetSuccess": "Đã khôi phục cấu hình mặc định!",
+      "resetFailed": "Khôi phục cấu hình thất bại"
+    }
   }
 }

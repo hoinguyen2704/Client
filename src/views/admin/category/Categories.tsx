@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { FiPlus, FiToggleLeft, FiToggleRight, FiList } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import adminBrandService from "@/apis/services/adminBrandService";
@@ -19,6 +20,7 @@ import {
 import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Categories() {
+  const { t } = useTranslation("adminCatalog");
   const [brandFilter, setBrandFilter] = useState("");
   const [brands, setBrands] = useState<BrandResponse[]>([]);
   const extraParams = useMemo(
@@ -56,20 +58,20 @@ export default function Categories() {
 
   const brandOptions = useMemo(
     () => [
-      { value: "", label: "Tất cả nhãn hàng" },
+      { value: "", label: t("categories.filters.allBrands") },
       ...brands.map((brand) => ({ value: brand.id, label: brand.name })),
     ],
-    [brands],
+    [brands, t],
   );
 
   const handleDelete = async (id: string) => {
     setDeleteTarget(null);
     try {
       await adminCategoryService.delete(id);
-      toast.success("Đã xóa danh mục!");
+      toast.success(t("categories.toasts.deleteSuccess"));
       fetchCategories({ silent: true });
     } catch (err) {
-      toast.error("Không thể xóa danh mục này!");
+      toast.error(t("categories.toasts.deleteFailed"));
       console.error("Delete failed:", err);
     }
   };
@@ -78,23 +80,23 @@ export default function Categories() {
     try {
       await adminCategoryService.toggleStatus(id);
       fetchCategories({ silent: true });
-      toast.success("Cập nhật trạng thái thành công!");
+      toast.success(t("categories.toasts.toggleSuccess"));
     } catch (err) {
       console.error("Toggle failed:", err);
-      toast.error("Cập nhật trạng thái thất bại!");
+      toast.error(t("categories.toasts.toggleFailed"));
     }
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý danh mục</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t("categories.title")}</h1>
         <PrimaryButton
           href="/admin/categories/new"
           icon={<FiPlus className="text-base" />}
           className="w-full sm:w-auto"
         >
-          Thêm danh mục
+          {t("categories.addCategory")}
         </PrimaryButton>
       </div>
 
@@ -103,7 +105,7 @@ export default function Categories() {
         <div className="flex-1">
           <AdminSearch
             boxed={false}
-            placeholder="Tìm kiếm danh mục..."
+            placeholder={t("categories.searchPlaceholder")}
             value={searchQuery}
             onChange={setSearchQuery}
           />
@@ -125,18 +127,18 @@ export default function Categories() {
           <table className="w-full min-w-[1040px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x-2 divide-slate-200 dark:divide-slate-700">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">STT</th>
-                <th className="p-3 sm:p-4 font-medium">Danh mục</th>
-                <th className="p-3 sm:p-4 font-medium">Slug</th>
-                <th className="p-3 sm:p-4 font-medium text-center">Thông số</th>
+                <th className="p-3 sm:p-4 font-medium text-center w-20">{t("categories.table.index")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("categories.table.category")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("categories.table.slug")}</th>
+                <th className="p-3 sm:p-4 font-medium text-center">{t("categories.table.specs")}</th>
                 <th className="p-3 sm:p-4 font-medium text-center">
-                  Số sản phẩm
+                  {t("categories.table.productCount")}
                 </th>
                 <th className="p-3 sm:p-4 font-medium text-center">
-                  Trạng thái
+                  {t("categories.table.status")}
                 </th>
                 <th className="p-3 sm:p-4 font-medium text-center w-[232px]">
-                  Thao tác
+                  {t("categories.table.actions")}
                 </th>
               </tr>
             </thead>
@@ -149,7 +151,7 @@ export default function Categories() {
                     colSpan={7}
                     className="p-12 text-center text-slate-400 border-b-2 border-slate-200 dark:border-slate-700"
                   >
-                    Không có danh mục nào
+                    {t("categories.table.empty")}
                   </td>
                 </tr>
               ) : (
@@ -194,7 +196,9 @@ export default function Categories() {
                         actions={[
                           {
                             type: "more",
-                            title: cat.active ? "Ẩn" : "Hiện",
+                            title: cat.active
+                              ? t("categories.actions.hide")
+                              : t("categories.actions.show"),
                             icon: cat.active ? (
                               <FiToggleRight className="text-green-500 text-[1.5rem]" />
                             ) : (
@@ -227,7 +231,7 @@ export default function Categories() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.LARGE}
-            label="danh mục"
+            label={t("categories.labels.pagination")}
             onPageChange={setPage}
           />
         )}
@@ -235,9 +239,9 @@ export default function Categories() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Xóa danh mục"
-        message="Bạn có chắc muốn xóa danh mục này? Thao tác này không thể hoàn tác."
-        confirmLabel="Xóa"
+        title={t("categories.confirmDelete.title")}
+        message={t("categories.confirmDelete.message")}
+        confirmLabel={t("categories.confirmDelete.confirm")}
         variant="danger"
         onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
         onCancel={() => setDeleteTarget(null)}

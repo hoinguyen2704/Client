@@ -1,6 +1,8 @@
 import { ChartXAxisTickProps } from './ChartXAxisTickProps';
+import { useTranslation } from 'react-i18next';
 
 export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTickProps) {
+  const { t } = useTranslation('adminDashboard');
   if (!payload) return null;
 
   const raw = payload.value;
@@ -8,7 +10,7 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
   const clean = raw.replace('|_TODAY', '');
   const parts = clean.split('|');
 
-  // WEEK format: "T2|6/4"
+  // WEEK format: "Mon|6/4"
   const isWeekLabel = parts.length >= 2;
   const line1 = isWeekLabel ? parts[0] : '';
 
@@ -17,8 +19,8 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
   const isMonthLabel = Boolean(monthMatch);
   const dayNumber = monthMatch ? Number(monthMatch[1]) : null;
 
-  // YEAR format: "Tháng 4"
-  const yearMatch = !isWeekLabel ? parts[0].match(/^Tháng\s+(\d{1,2})$/i) : null;
+  // YEAR format may arrive as "Month 4", "4", or a localized month label with a trailing number.
+  const yearMatch = !isWeekLabel ? parts[0].match(/(\d{1,2})$/) : null;
   const isYearLabel = Boolean(yearMatch);
   const monthNumber = yearMatch ? Number(yearMatch[1]) : null;
 
@@ -80,7 +82,7 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
         {line2}
       </text>
 
-      {/* "Hôm nay" label */}
+      {/* Today label */}
       {isToday && (
         <text
           x={0}
@@ -91,7 +93,7 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
           fontSize={9}
           fontWeight={700}
         >
-          Hôm nay
+          {t('overview.today')}
         </text>
       )}
     </g>

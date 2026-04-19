@@ -1,4 +1,4 @@
-import { memo, type ChangeEvent } from "react";
+import { memo, type ChangeEvent, useEffect, useRef } from "react";
 import {
   FiEye,
   FiEyeOff,
@@ -6,6 +6,8 @@ import {
   FiTrash2,
 } from "react-icons/fi";
 import { CustomSelect, ExpandToggle, TrashButton } from "@/components";
+import { useTranslation } from "react-i18next";
+import { formatDateFull as formatDateTime } from "@/utils/format";
 import { resolveVariantSalesMetrics } from "@/utils/variantSales";
 import type { VariantCardProps } from "./types";
 import {
@@ -17,6 +19,7 @@ const summaryChipClass =
   "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300";
 
 export default memo(function VariantCard(props: VariantCardProps) {
+  const { t, i18n } = useTranslation("adminCatalog");
   const {
     variant,
     index,
@@ -26,7 +29,9 @@ export default memo(function VariantCard(props: VariantCardProps) {
     isExpanded,
     isVariantUploading,
     canRemove,
+    autoFocusSku,
     variantFileInputRefs,
+    onAutoFocusHandled,
     onToggleExpanded,
     removeVariant,
     updateVariant,
@@ -38,9 +43,37 @@ export default memo(function VariantCard(props: VariantCardProps) {
   } = props;
 
   const sales = resolveVariantSalesMetrics(variant);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const skuInputRef = useRef<HTMLInputElement | null>(null);
+  const createdAtText = variant.createdAt
+    ? formatDateTime(variant.createdAt, i18n.language)
+    : t("variantCard.timeUnavailable");
+  const updatedAtText = variant.updatedAt
+    ? formatDateTime(variant.updatedAt, i18n.language)
+    : variant.createdAt
+      ? formatDateTime(variant.createdAt, i18n.language)
+      : t("variantCard.timeUnavailable");
+
+  useEffect(() => {
+    if (!autoFocusSku || !isExpanded) return;
+
+    rootRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const frame = window.requestAnimationFrame(() => {
+      skuInputRef.current?.focus();
+      skuInputRef.current?.select();
+      onAutoFocusHandled?.();
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [autoFocusSku, isExpanded, onAutoFocusHandled]);
 
   return (
     <div
+      ref={rootRef}
       className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${
         isExpanded
           ? "border-purple-200 shadow-[0_14px_36px_rgba(15,23,42,0.06)] dark:border-purple-800"
@@ -56,7 +89,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
               </span>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-md font-semibold text-body">
-                  {`Phân loại ${variantOrder}`}
+                  {t("variantCard.title", { order: variantOrder })}
                   {variant.variantName ? ` - ${variant.variantName}` : ""}
                 </span>
                 <span
@@ -66,12 +99,14 @@ export default memo(function VariantCard(props: VariantCardProps) {
                       : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
                   }`}
                 >
-                  {variant.active ? "Đang bán" : "Đã ẩn"}
+                  {variant.active
+                    ? t("variantCard.statusActive")
+                    : t("variantCard.statusInactive")}
                 </span>
                 {isVariantUploading && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-xs font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
                     <FiLoader className="animate-spin" />
-                    Đang tải ảnh
+                    {t("variantCard.uploading")}
                   </span>
                 )}
               </div>
@@ -79,16 +114,31 @@ export default memo(function VariantCard(props: VariantCardProps) {
 
             <div className="flex flex-wrap gap-2">
               <span className={summaryChipClass}>
-                SKU: {variant.sku || "Chưa có SKU"}
+                {t("variantCard.sku")}: {variant.sku || t("variantCard.notEntered")}
               </span>
               <span className={summaryChipClass}>
-                Giá: {formatVariantSummaryValue(variant.price)}
+                {t("variantCard.price")}: {formatVariantSummaryValue(
+                  variant.price,
+                  t("variantCard.notEntered"),
+                )}
               </span>
               <span className={summaryChipClass}>
-                Tồn: {formatVariantSummaryValue(variant.stock)}
+                {t("variantCard.stock")}: {formatVariantSummaryValue(
+                  variant.stock,
+                  t("variantCard.notEntered"),
+                )}
               </span>
               <span className={summaryChipClass}>
-                Net: {sales.net.toLocaleString("vi-VN")}
+                {t("variantCard.net")}: {sales.net.toLocaleString()}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+              <span>
+                {t("variantCard.createdAt")}: {createdAtText}
+              </span>
+              <span>
+                {t("variantCard.updatedAt")}: {updatedAtText}
               </span>
             </div>
           </div>
@@ -97,8 +147,8 @@ export default memo(function VariantCard(props: VariantCardProps) {
             <ExpandToggle
               expanded={isExpanded}
               onToggle={onToggleExpanded}
-              expandLabel="Mở rộng"
-              collapseLabel="Thu gọn"
+              expandLabel={t("variantCard.expand")}
+              collapseLabel={t("variantCard.collapse")}
               className="!rounded-xl border-slate-200 bg-white/90 dark:border-slate-700 dark:bg-slate-900/80"
             />
             {canRemove && (
@@ -106,7 +156,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 onClick={() => removeVariant(index)}
                 iconOnly={false}
               >
-                Xóa
+                {t("variantCard.remove")}
               </TrashButton>
             )}
           </div>
@@ -119,42 +169,45 @@ export default memo(function VariantCard(props: VariantCardProps) {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
-                  SKU
+                  {t("variantCard.sku")}
                 </label>
                 <div className="flex items-center gap-2">
                   <input
+                    ref={skuInputRef}
                     type="text"
                     value={variant.sku}
                     onChange={(e) =>
                       updateVariant(index, "sku", e.target.value)
                     }
-                    placeholder="VD: IP15P-BLK-256"
+                    placeholder={t("variantCard.skuPlaceholder")}
                     className="h-10 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 text-md outline-none transition-colors focus:border-purple-500 focus:ring-2 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
                   />
                   <button
                     type="button"
                     onClick={() => regenerateVariantSku(index)}
                     className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-purple-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-purple-600"
-                    title="Sinh lại SKU theo tổ hợp thuộc tính"
+                    title={t("variantCard.regenTitle")}
                   >
                     Regen
                   </button>
                 </div>
                 <p className="mt-1 text-xs text-slate-500">
-                  {variant.skuMode === "manual" ? "Manual" : "Suggested"}
+                  {variant.skuMode === "manual"
+                    ? t("variantCard.skuModeManual")
+                    : t("variantCard.skuModeSuggested")}
                 </p>
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
-                  Tên phân loại (tự dựng)
+                  {t("variantCard.autoName")}
                 </label>
                 <div className="flex h-10 w-full items-center rounded-lg border border-slate-200 bg-slate-100 px-3 text-md text-slate-700 transition-colors dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                  {variant.variantName || "Mặc định"}
+                  {variant.variantName || t("variantCard.defaultName")}
                 </div>
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
-                  Giá bán (VNĐ)
+                  {t("variantCard.priceLabel")}
                 </label>
                 <input
                   type="number"
@@ -168,7 +221,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
-                  Giá gốc so sánh (VNĐ)
+                  {t("variantCard.compareAtPriceLabel")}
                 </label>
                 <input
                   type="number"
@@ -176,7 +229,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   onChange={(e) =>
                     updateVariant(index, "compareAtPrice", e.target.value)
                   }
-                  placeholder="Giá trước giảm"
+                  placeholder={t("variantCard.compareAtPricePlaceholder")}
                   className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-md outline-none transition-colors focus:border-purple-500 focus:ring-2 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
                 />
               </div>
@@ -185,7 +238,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
-                  Tồn kho
+                  {t("variantCard.stockLabel")}
                 </label>
                 <input
                   type="number"
@@ -210,15 +263,17 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   }`}
                 >
                   {variant.active ? <FiEye /> : <FiEyeOff />}
-                  {variant.active ? "Đang bán" : "Đã ẩn"}
+                  {variant.active
+                    ? t("variantCard.statusActive")
+                    : t("variantCard.statusInactive")}
                 </button>
               </div>
               <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
                 <p className="text-xs uppercase tracking-wide text-muted">
-                  Gross / Return / Net
+                  {t("variantCard.salesLabel")}
                 </p>
                 <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
-                  {sales.gross.toLocaleString("vi-VN")} / {sales.returned.toLocaleString("vi-VN")} / {sales.net.toLocaleString("vi-VN")}
+                  {sales.gross.toLocaleString()} / {sales.returned.toLocaleString()} / {sales.net.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -256,13 +311,12 @@ export default memo(function VariantCard(props: VariantCardProps) {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-md font-semibold text-body">
-                    Ảnh theo phân loại
+                    {t("variantCard.imagesTitle")}
                   </p>
                   <p className="text-sm text-slate-500">
-                    Ảnh trong khung này thuộc riêng SKU:{" "}
-                    <span className="font-semibold">
-                      {variant.sku || "chưa có SKU"}
-                    </span>
+                    {t("variantCard.imagesDescription", {
+                      sku: variant.sku || t("variantCard.notEntered"),
+                    })}
                   </p>
                 </div>
                 {isVariantUploading && (
@@ -292,7 +346,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 }
                 className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-purple-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-purple-600"
               >
-                Tải ảnh cho phân loại
+                {t("variantCard.uploadImages")}
               </button>
 
               {variant.pendingFiles.length > 0 && (
@@ -308,7 +362,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                         className="h-full w-full object-cover"
                       />
                       <span className="absolute bottom-1.5 left-1.5 rounded bg-amber-500 px-1.5 py-0.5 text-10 font-bold text-white">
-                        Chờ lưu
+                        {t("variantCard.pendingBadge")}
                       </span>
                       <button
                         type="button"
@@ -333,12 +387,12 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     >
                       <img
                         src={img.imageUrl}
-                        alt={variant.variantName || variant.sku || "Variant image"}
+                        alt={variant.variantName || variant.sku || t("variantCard.variantImageAlt")}
                         className="h-full w-full object-cover"
                       />
                       {img.isPrimary && (
                         <span className="absolute left-1.5 top-1.5 rounded bg-gradient-to-r from-purple-500 to-indigo-500 px-1.5 py-0.5 text-10 font-bold text-white">
-                          Chính
+                          {t("variantCard.primaryBadge")}
                         </span>
                       )}
                       <button

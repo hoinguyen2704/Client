@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import adminProductService from '@/apis/services/adminProductService';
 import type { SelectedVariant } from '@/components/dialog/SelectedVariant';
 import type { AdminProductPickerItem, AdminProductVariantSummary } from '@/types';
@@ -25,6 +26,7 @@ export default function ProductPickerProductRow({
   onToggleSelectAll,
   onToggleVariant,
 }: ProductPickerProductRowProps) {
+  const { t } = useTranslation('adminCatalog');
   const variantsQuery = useQuery({
     queryKey: ['admin-product-picker-variants', product.id],
     queryFn: ({ signal }) =>
@@ -85,7 +87,7 @@ export default function ProductPickerProductRow({
           </button>
 
           <div className="hidden items-center justify-end border-l border-slate-200 px-4 py-4 text-right text-base font-bold text-slate-700 dark:border-slate-700 dark:text-slate-200 md:flex">
-            {totalSold.toLocaleString('vi-VN')}
+            {totalSold.toLocaleString()}
           </div>
           <div className="hidden items-center justify-end border-l border-slate-200 px-4 py-4 text-right dark:border-slate-700 md:flex">
             <span
@@ -93,7 +95,7 @@ export default function ProductPickerProductRow({
                 totalStock,
               )}`}
             >
-              {totalStock.toLocaleString('vi-VN')}
+              {totalStock.toLocaleString()}
             </span>
           </div>
 
@@ -113,7 +115,11 @@ export default function ProductPickerProductRow({
                   : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-purple-300 hover:text-purple-600 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-800'
               }`}
             >
-              {variantsQuery.isPending ? 'Đang tải...' : allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
+              {variantsQuery.isPending
+                ? t('productPicker.productRow.loading')
+                : allSelected
+                  ? t('productPicker.productRow.unselectAll')
+                  : t('productPicker.productRow.selectAll')}
             </button>
 
             {someSelected ? <div className="h-2 w-2 flex-shrink-0 rounded-full bg-purple-500" /> : null}
@@ -122,15 +128,15 @@ export default function ProductPickerProductRow({
 
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 pl-14 text-sm text-slate-500 md:hidden">
           <span>
-            Đã bán:{' '}
+            {t('productPicker.productRow.sold')}:{' '}
             <strong className="text-slate-700 dark:text-slate-200">
-              {totalSold.toLocaleString('vi-VN')}
+              {totalSold.toLocaleString()}
             </strong>
           </span>
           <span>
-            Tồn:{' '}
+            {t('productPicker.productRow.stock')}:{' '}
             <strong className="text-slate-700 dark:text-slate-200">
-              {totalStock.toLocaleString('vi-VN')}
+              {totalStock.toLocaleString()}
             </strong>
           </span>
         </div>
@@ -146,11 +152,11 @@ export default function ProductPickerProductRow({
             </div>
           ) : variantsQuery.isError ? (
             <div className="px-4 py-6 pl-14 text-sm text-rose-500">
-              Không thể tải danh sách phân loại cho sản phẩm này.
+              {t('productPicker.productRow.loadFailed')}
             </div>
           ) : variants.length === 0 ? (
             <div className="px-4 py-6 pl-14 text-sm text-slate-500">
-              Sản phẩm này chưa có phân loại khả dụng.
+              {t('productPicker.productRow.noVariants')}
             </div>
           ) : (
             <div className="divide-y divide-slate-100 dark:divide-slate-800/50">

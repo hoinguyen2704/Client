@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { FiPlus, FiTag, FiX } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import adminBrandService from "@/apis/services/adminBrandService";
 import adminCategoryService from "@/apis/services/adminCategoryService";
@@ -20,6 +21,7 @@ import {
 import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Brands() {
+  const { t } = useTranslation("adminCatalog");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const extraParams = useMemo(
@@ -65,10 +67,10 @@ export default function Brands() {
 
   const categoryOptions = useMemo(
     () => [
-      { value: "", label: "Tất cả danh mục" },
+      { value: "", label: t("brands.filters.allCategories") },
       ...categories.map((cat) => ({ value: cat.id, label: cat.name })),
     ],
-    [categories],
+    [categories, t],
   );
 
   const resetForm = () => {
@@ -80,7 +82,7 @@ export default function Brands() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      toast.error("Tên thương hiệu không được để trống.");
+      toast.error(t("brands.toasts.nameRequired"));
       return;
     }
 
@@ -94,16 +96,16 @@ export default function Brands() {
 
       if (editId) {
         await adminBrandService.update(editId, payload);
-        toast.success("Đã cập nhật thương hiệu!");
+        toast.success(t("brands.toasts.updateSuccess"));
       } else {
         await adminBrandService.create(payload);
-        toast.success("Đã tạo thương hiệu mới!");
+        toast.success(t("brands.toasts.createSuccess"));
       }
 
       resetForm();
       fetchBrands({ silent: true });
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, "Lưu thương hiệu thất bại."));
+      toast.error(getApiErrorMessage(err, t("brands.toasts.saveFailed")));
     } finally {
       setSaving(false);
     }
@@ -122,17 +124,17 @@ export default function Brands() {
     setDeleteTarget(null);
     try {
       await adminBrandService.delete(id);
-      toast.success("Đã xóa thương hiệu!");
+      toast.success(t("brands.toasts.deleteSuccess"));
       fetchBrands({ silent: true });
     } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, "Không thể xóa thương hiệu này."));
+      toast.error(getApiErrorMessage(err, t("brands.toasts.deleteFailed")));
     }
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý thương hiệu</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t("brands.title")}</h1>
         <PrimaryButton
           onClick={() => {
             resetForm();
@@ -141,7 +143,7 @@ export default function Brands() {
           icon={<FiPlus className="text-base" />}
           className="w-full sm:w-auto"
         >
-          Thêm thương hiệu
+          {t("brands.addBrand")}
         </PrimaryButton>
       </div>
 
@@ -149,7 +151,7 @@ export default function Brands() {
         <div className="flex-1">
           <AdminSearch
             boxed={false}
-            placeholder="Tìm kiếm thương hiệu..."
+            placeholder={t("brands.searchPlaceholder")}
             value={searchQuery}
             onChange={(val) => {
               setSearchQuery(val);
@@ -172,14 +174,14 @@ export default function Brands() {
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold">
-              {editId ? "Sửa thương hiệu" : "Thêm thương hiệu mới"}
+              {editId ? t("brands.form.editTitle") : t("brands.form.createTitle")}
             </h2>
             <Button
               onClick={resetForm}
               variant="ghost"
               size="sm"
               icon={<FiX />}
-              ariaLabel="Đóng form"
+              ariaLabel={t("brands.form.closeAria")}
             />
           </div>
 
@@ -187,11 +189,11 @@ export default function Brands() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
-                  Tên thương hiệu *
+                  {t("brands.form.nameLabel")}
                 </label>
                 <input
                   type="text"
-                  placeholder="VD: Apple, Samsung..."
+                  placeholder={t("brands.form.namePlaceholder")}
                   value={formData.name}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
@@ -202,11 +204,11 @@ export default function Brands() {
               </div>
               <div>
                 <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
-                  Logo URL
+                  {t("brands.form.logoLabel")}
                 </label>
                 <input
                   type="url"
-                  placeholder="https://..."
+                  placeholder={t("brands.form.logoPlaceholder")}
                   value={formData.logoUrl}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -227,7 +229,7 @@ export default function Brands() {
                 size="md"
                 className="w-full sm:w-auto"
               >
-                Hủy
+                {t("brands.form.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -236,7 +238,7 @@ export default function Brands() {
                 size="md"
                 className="w-full sm:w-auto"
               >
-                {editId ? "Cập nhật thương hiệu" : "Tạo thương hiệu"}
+                {editId ? t("brands.form.update") : t("brands.form.create")}
               </Button>
             </div>
           </form>
@@ -248,13 +250,13 @@ export default function Brands() {
           <table className="w-full min-w-[960px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">STT</th>
-                <th className="p-3 sm:p-4 font-medium">Thương hiệu</th>
-                <th className="p-3 sm:p-4 font-medium">Slug</th>
+                <th className="p-3 sm:p-4 font-medium text-center w-20">{t("brands.table.index")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("brands.table.brand")}</th>
+                <th className="p-3 sm:p-4 font-medium">{t("brands.table.slug")}</th>
                 <th className="p-3 sm:p-4 font-medium text-center">
-                  Số sản phẩm
+                  {t("brands.table.productCount")}
                 </th>
-                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium text-right">{t("brands.table.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -263,7 +265,7 @@ export default function Brands() {
               ) : brands.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-12 text-center text-slate-400">
-                    Không có thương hiệu nào
+                    {t("brands.table.empty")}
                   </td>
                 </tr>
               ) : (
@@ -325,7 +327,7 @@ export default function Brands() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.MEDIUM}
-            label="thương hiệu"
+            label={t("brands.labels.pagination")}
             onPageChange={setPage}
           />
         )}
@@ -333,10 +335,10 @@ export default function Brands() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Xóa thương hiệu?"
-        message="Thao tác này không thể hoàn tác. Nếu thương hiệu đang có sản phẩm, hệ thống sẽ từ chối xóa."
-        confirmLabel="Xóa"
-        cancelLabel="Hủy"
+        title={t("brands.confirmDelete.title")}
+        message={t("brands.confirmDelete.message")}
+        confirmLabel={t("brands.confirmDelete.confirm")}
+        cancelLabel={t("brands.confirmDelete.cancel")}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
       />

@@ -117,6 +117,8 @@ export interface ProductVariantResponse {
   displayName?: string;
   variantName?: string;
   variantSignature?: string;
+  createdAt?: string;
+  updatedAt?: string;
   price: number;
   compareAtPrice?: number;
   stockQuantity: number;

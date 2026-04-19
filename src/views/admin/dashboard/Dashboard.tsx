@@ -170,11 +170,17 @@ function padRevenueChartData(
       padded.push({ ...item, label });
     }
   } else {
+    const yearDataByMonth = new Map<number, RevenueChartItem>();
+    chartData.forEach((item) => {
+      const monthMatch = item.label.match(/(\d{1,2})$/);
+      if (monthMatch) {
+        yearDataByMonth.set(Number(monthMatch[1]), item);
+      }
+    });
+
     for (let month = 1; month <= 12; month += 1) {
-      const sourceLabel = `Tháng ${month}`;
-      const fallbackLabel = `Month ${month}`;
-      const item = chartMap.get(sourceLabel) || chartMap.get(fallbackLabel) || {
-        label: sourceLabel,
+      const item = yearDataByMonth.get(month) || {
+        label: String(month),
         revenue: 0,
         orders: 0,
       };
@@ -365,7 +371,7 @@ export default function Dashboard() {
               isPeriodPending ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            Đang cập nhật dữ liệu...
+            {t('overview.refreshing')}
           </p>
         </div>
 
@@ -516,7 +522,7 @@ export default function Dashboard() {
                   <tbody>
                     {loadingBottom ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={5}>Đang tải đơn hàng gần đây...</td>
+                        <td className="py-4 text-center text-slate-500" colSpan={5}>{t('overview.loading.recentOrders')}</td>
                       </tr>
                     ) : (
                       stats.recentOrders.map((order: RecentOrderItem, index: number) => (
@@ -545,7 +551,7 @@ export default function Dashboard() {
                   <tbody>
                     {loadingRevenue ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={3}>Đang tải dữ liệu doanh thu...</td>
+                        <td className="py-4 text-center text-slate-500" colSpan={3}>{t('overview.loading.revenue')}</td>
                       </tr>
                     ) : (
                       stats.revenueChart?.map((item: RevenueChartItem, index: number) => {
@@ -602,7 +608,7 @@ export default function Dashboard() {
                   <tbody>
                     {loadingTopLists ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={4}>Đang tải khách hàng nổi bật...</td>
+                        <td className="py-4 text-center text-slate-500" colSpan={4}>{t('overview.loading.customers')}</td>
                       </tr>
                     ) : (
                       stats.topCustomers?.map((customer: TopCustomerItem, index: number) => (
@@ -639,7 +645,7 @@ export default function Dashboard() {
                   <tbody>
                     {loadingTopLists ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={4}>Đang tải sản phẩm nổi bật...</td>
+                        <td className="py-4 text-center text-slate-500" colSpan={4}>{t('overview.loading.products')}</td>
                       </tr>
                     ) : (
                       stats.topProducts?.map((product: TopProductItem, index: number) => (
@@ -682,7 +688,7 @@ export default function Dashboard() {
                   <tbody>
                     {loadingTopVariants ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={7}>Đang tải top phân loại...</td>
+                        <td className="py-4 text-center text-slate-500" colSpan={7}>{t('overview.loading.variants')}</td>
                       </tr>
                     ) : (
                       (topVariantsQuery.data || []).map((variant: TopVariantItem, index: number) => {
@@ -723,7 +729,7 @@ export default function Dashboard() {
             ) : activeModal === 'reviews' ? (
               <div className="p-4 sm:p-8">
                 {loadingBottom ? (
-                  <div className="py-8 text-center text-slate-500">Đang tải thống kê đánh giá...</div>
+                  <div className="py-8 text-center text-slate-500">{t('overview.loading.reviews')}</div>
                 ) : (
                   <>
                     <div className="mb-6 flex items-center justify-center gap-5 border-b border-slate-100 pb-6 dark:border-slate-800 sm:mb-8 sm:gap-8 sm:pb-8">

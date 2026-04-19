@@ -16,7 +16,7 @@ import { PICKER_RESULT_KEY } from './ProductPicker';
 const ITEMS_PER_PAGE = PAGE_SIZE.LARGE;
 
 export default function FlashSaleForm() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['adminCatalog', 'common']);
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
@@ -58,7 +58,7 @@ export default function FlashSaleForm() {
               id: i.id,
               variantId: i.variantId,
               productName: i.productName,
-              variantName: i.variantName || 'Mặc định',
+              variantName: i.variantName || t('productPicker.variantFallback'),
               originalPrice: i.originalPrice,
               imageUrl: i.imageUrl || '',
               flashPrice: i.flashPrice,
@@ -72,7 +72,7 @@ export default function FlashSaleForm() {
         }
       } catch (err) {
         console.error(err);
-        toast.error('Không thể tải dữ liệu Flash Sale');
+        toast.error(t('flashSales.toasts.loadFailed'));
         navigate('/admin/flash-sales');
       } finally {
         setLoading(false);
@@ -143,15 +143,15 @@ export default function FlashSaleForm() {
   const handleSubmit = async () => {
     // Basic validation
     if (!form.name.trim()) {
-      toast.error('Vui lòng nhập tên sự kiện');
+      toast.error(t('flashSales.toasts.nameRequired'));
       return;
     }
     if (!form.startTime || !form.endTime) {
-      toast.error('Vui lòng chọn thời gian bắt đầu và kết thúc');
+      toast.error(t('flashSales.toasts.timeRequired'));
       return;
     }
     if (form.items.length === 0) {
-      toast.error('Vui lòng thêm ít nhất 1 sản phẩm');
+      toast.error(t('flashSales.toasts.itemsRequired'));
       return;
     }
 
@@ -168,15 +168,15 @@ export default function FlashSaleForm() {
 
       if (isEditing) {
         await adminFlashSaleService.update(id!, payload);
-        toast.success('Cập nhật Flash Sale thành công!');
+        toast.success(t('flashSales.toasts.updateSuccess'));
       } else {
         await adminFlashSaleService.create(payload);
-        toast.success('Tạo Flash Sale thành công!');
+        toast.success(t('flashSales.toasts.createSuccess'));
       }
       navigate('/admin/flash-sales');
     } catch (err: unknown) {
       console.error(err);
-      toast.error(getApiErrorMessage(err, translate, 'common:errors.saveFlashSaleFailed'));
+      toast.error(getApiErrorMessage(err, translate, 'adminCatalog:flashSales.toasts.saveFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -187,11 +187,11 @@ export default function FlashSaleForm() {
   const now = new Date();
 
   const scheduleStatus = (() => {
-    if (!startDate || !endDate) return 'Chưa đủ thời gian';
-    if (endDate <= startDate) return 'Thời gian không hợp lệ';
-    if (now < startDate) return 'Sắp diễn ra';
-    if (now >= startDate && now <= endDate) return 'Đang diễn ra';
-    return 'Đã kết thúc';
+    if (!startDate || !endDate) return t('flashSales.form.schedule.incomplete');
+    if (endDate <= startDate) return t('flashSales.form.schedule.invalid');
+    if (now < startDate) return t('flashSales.form.schedule.scheduled');
+    if (now >= startDate && now <= endDate) return t('flashSales.form.schedule.active');
+    return t('flashSales.form.schedule.ended');
   })();
 
   const totalStock = form.items.reduce((sum, item) => sum + Math.max(0, Number(item.flashStock) || 0), 0);
@@ -228,7 +228,7 @@ export default function FlashSaleForm() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center gap-3 text-slate-400">
           <div className="w-5 h-5 border-2 border-slate-300 border-t-yellow-500 rounded-full animate-spin" />
-          Đang tải dữ liệu...
+          {t('flashSales.form.loading')}
         </div>
       </div>
     );
@@ -248,10 +248,12 @@ export default function FlashSaleForm() {
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-strong flex items-center gap-2">
               <FiZap className="text-yellow-500" />
-              {isEditing ? 'Sửa Flash Sale' : 'Tạo Flash Sale mới'}
+              {isEditing ? t('flashSales.form.editTitle') : t('flashSales.form.createTitle')}
             </h1>
             <p className="text-sm text-slate-500 mt-0.5">
-              {isEditing ? 'Chỉnh sửa thông tin và sản phẩm tham gia' : 'Điền thông tin và chọn sản phẩm tham gia sự kiện'}
+              {isEditing
+                ? t('flashSales.form.editDescription')
+                : t('flashSales.form.createDescription')}
             </p>
           </div>
         </div>
@@ -262,7 +264,7 @@ export default function FlashSaleForm() {
             size="md"
             className="flex-1 sm:flex-none"
           >
-            Hủy
+            {t('flashSales.form.cancel')}
           </Button>
           <PrimaryButton
             onClick={handleSubmit}
@@ -271,10 +273,10 @@ export default function FlashSaleForm() {
             className="flex-1 sm:flex-none"
           >
             {submitting
-              ? 'Đang lưu...'
+              ? t('flashSales.form.saving')
               : isEditing
-                ? 'Cập nhật'
-                : 'Tạo mới'}
+                ? t('flashSales.form.update')
+                : t('flashSales.form.create')}
           </PrimaryButton>
         </div>
       </div>
@@ -282,31 +284,31 @@ export default function FlashSaleForm() {
         <div className="space-y-6">
           {/* ── Form Card ── */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
-            <h2 className="font-semibold text-lg text-strong">Thông tin sự kiện</h2>
+            <h2 className="font-semibold text-lg text-strong">{t('flashSales.form.eventInfoTitle')}</h2>
 
             <FormInput
-              label="Tên sự kiện *"
+              label={t('flashSales.form.nameLabel')}
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Ví dụ: Flash Sale 12.12"
+              placeholder={t('flashSales.form.namePlaceholder')}
             />
             <FormTextarea
-              label="Mô tả"
+              label={t('flashSales.form.descriptionLabel')}
               value={form.description || ''}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               inputClassName="h-24"
-              placeholder="Mô tả ngắn về sự kiện..."
+              placeholder={t('flashSales.form.descriptionPlaceholder')}
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormInput
-                label="Bắt đầu *"
+                label={t('flashSales.form.startLabel')}
                 type="datetime-local"
                 value={form.startTime}
                 onChange={(e) => setForm({ ...form, startTime: e.target.value })}
               />
               <FormInput
-                label="Kết thúc *"
+                label={t('flashSales.form.endLabel')}
                 type="datetime-local"
                 value={form.endTime}
                 onChange={(e) => setForm({ ...form, endTime: e.target.value })}
@@ -318,13 +320,15 @@ export default function FlashSaleForm() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <h2 className="font-semibold text-lg text-strong">
-                Sản phẩm tham gia
+                {t('flashSales.form.itemsTitle')}
                 {form.items.length > 0 && (
-                  <span className="ml-2 text-sm font-normal text-slate-500">({form.items.length} phân loại)</span>
+                  <span className="ml-2 text-sm font-normal text-slate-500">
+                    ({t('flashSales.form.itemCount', { count: form.items.length })})
+                  </span>
                 )}
               </h2>
               <PrimaryButton type="button" onClick={handleOpenPicker} icon={<FiPlus />} className="w-full sm:w-auto">
-                Thêm sản phẩm
+                {t('flashSales.form.addProducts')}
               </PrimaryButton>
             </div>
 
@@ -333,11 +337,11 @@ export default function FlashSaleForm() {
                 <table className="w-full min-w-[760px] text-left bg-white dark:bg-slate-900 text-md">
                   <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                     <tr>
-                      <th className="p-3 font-medium text-muted">Sản phẩm</th>
-                      <th className="p-3 font-medium text-muted w-32">Giá gốc</th>
-                      <th className="p-3 font-medium text-muted w-36">Giá Flash Sale</th>
-                      <th className="p-3 font-medium text-muted w-40">SL Flash Sale</th>
-                      <th className="p-3 font-medium text-muted w-16 text-center">Xóa</th>
+                      <th className="p-3 font-medium text-muted">{t('flashSales.form.table.product')}</th>
+                      <th className="p-3 font-medium text-muted w-32">{t('flashSales.form.table.originalPrice')}</th>
+                      <th className="p-3 font-medium text-muted w-36">{t('flashSales.form.table.flashPrice')}</th>
+                      <th className="p-3 font-medium text-muted w-40">{t('flashSales.form.table.flashStock')}</th>
+                      <th className="p-3 font-medium text-muted w-16 text-center">{t('flashSales.form.table.remove')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -346,12 +350,12 @@ export default function FlashSaleForm() {
                         <td colSpan={5} className="p-10 text-center">
                           <div className="text-slate-400">
                             <FiPlus className="mx-auto mb-2 text-slate-300" size={32} />
-                            <p>Chưa có sản phẩm nào được chọn</p>
+                            <p>{t('flashSales.form.empty')}</p>
                             <button
                               onClick={handleOpenPicker}
                               className="mt-2 text-sm text-purple-500 hover:underline font-medium"
                             >
-                              Thêm sản phẩm ngay
+                              {t('flashSales.form.addNow')}
                             </button>
                           </div>
                         </td>
@@ -373,7 +377,9 @@ export default function FlashSaleForm() {
                                 <div className="font-medium text-strong-soft truncate" title={item.productName}>
                                   {item.productName}
                                 </div>
-                                <div className="text-sm text-slate-500">{item.variantName}</div>
+                                <div className="text-sm text-slate-500">
+                                  {item.variantName || t('productPicker.variantFallback')}
+                                </div>
                               </div>
                             </div>
                           </td>
@@ -398,14 +404,20 @@ export default function FlashSaleForm() {
                               />
                               <div className="text-xs text-slate-500 leading-tight">
                                 {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
-                                  <div>Chưa có dữ liệu lịch sử cho phân loại này.</div>
+                                  <div>{t('flashSales.form.historyEmpty')}</div>
                                 ) : (
                                   <>
                                     <div>
-                                      Lịch sử: G {sales.gross.toLocaleString('vi-VN')} / R {sales.returned.toLocaleString('vi-VN')} / N {sales.net.toLocaleString('vi-VN')}
+                                      {t('flashSales.form.historyLabel', {
+                                        gross: sales.gross.toLocaleString(),
+                                        returned: sales.returned.toLocaleString(),
+                                        net: sales.net.toLocaleString(),
+                                      })}
                                     </div>
                                     <div>
-                                      Tồn hiện tại: {(item.stockQuantity ?? 0).toLocaleString('vi-VN')}
+                                      {t('flashSales.form.stockLabel', {
+                                        stock: (item.stockQuantity ?? 0).toLocaleString(),
+                                      })}
                                     </div>
                                   </>
                                 )}
@@ -430,7 +442,7 @@ export default function FlashSaleForm() {
                 onPageChange={setItemsPage}
                 totalItems={form.items.length}
                 perPage={ITEMS_PER_PAGE}
-                label="phân loại"
+                label={t('flashSales.form.pagination')}
               />
             )}
           </div>
@@ -441,34 +453,34 @@ export default function FlashSaleForm() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
             <h3 className="font-semibold text-strong mb-3 flex items-center gap-2">
               <FiClock className="text-slate-500" />
-              Tổng quan nhanh
+              {t('flashSales.form.summaryTitle')}
             </h3>
             <div className="space-y-2.5 text-md">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">Trạng thái lịch</span>
+                <span className="text-slate-500">{t('flashSales.form.scheduleStatus')}</span>
                 <span className="font-semibold text-slate-700 dark:text-slate-200">{scheduleStatus}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">Phân loại tham gia</span>
+                <span className="text-slate-500">{t('flashSales.form.participatingVariants')}</span>
                 <span className="font-semibold text-slate-700 dark:text-slate-200">{form.items.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">Tổng tồn Flash Sale</span>
-                <span className="font-semibold text-slate-700 dark:text-slate-200">{totalStock}</span>
+                <span className="text-slate-500">{t('flashSales.form.totalStock')}</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{totalStock.toLocaleString()}</span>
               </div>
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Giá trị gốc</span>
+                  <span className="text-slate-500">{t('flashSales.form.originalValue')}</span>
                   <span className="font-medium text-slate-700 dark:text-slate-200">{formatPrice(totalOriginalValue)}</span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-slate-500">Giá trị Flash Sale</span>
+                  <span className="text-slate-500">{t('flashSales.form.flashValue')}</span>
                   <span className="font-medium text-slate-700 dark:text-slate-200">{formatPrice(totalFlashValue)}</span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-slate-500 flex items-center gap-1">
                     <FiTrendingDown className="text-emerald-500" />
-                    Tiết kiệm ước tính
+                    {t('flashSales.form.estimatedSavings')}
                   </span>
                   <span className="font-semibold text-emerald-600">{formatPrice(totalDiscountValue)} ({discountRate}%)</span>
                 </div>
@@ -479,27 +491,27 @@ export default function FlashSaleForm() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
             <h3 className="font-semibold text-strong mb-3 flex items-center gap-2">
               <FiAlertTriangle className={hasWarnings ? 'text-amber-500' : 'text-emerald-500'} />
-              Kiểm tra dữ liệu
+              {t('flashSales.form.validationTitle')}
             </h3>
             {hasWarnings ? (
               <ul className="space-y-2 text-md text-body-soft">
                 {invalidTimeRange && (
-                  <li>Thời gian kết thúc phải sau thời gian bắt đầu.</li>
+                  <li>{t('flashSales.form.validationTime')}</li>
                 )}
                 {invalidPriceCount > 0 && (
-                  <li>Có {invalidPriceCount} sản phẩm có giá Flash Sale không hợp lệ (phải lớn hơn 0 và nhỏ hơn giá gốc).</li>
+                  <li>{t('flashSales.form.validationPrice', { count: invalidPriceCount })}</li>
                 )}
                 {invalidStockCount > 0 && (
-                  <li>Có {invalidStockCount} sản phẩm có số lượng bán không hợp lệ (phải lớn hơn 0).</li>
+                  <li>{t('flashSales.form.validationStock', { count: invalidStockCount })}</li>
                 )}
               </ul>
             ) : (
-              <p className="text-md text-emerald-600">Dữ liệu hiện tại hợp lệ để lưu sự kiện.</p>
+              <p className="text-md text-emerald-600">{t('flashSales.form.validationValid')}</p>
             )}
             {(startDate || endDate) && (
               <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-sm text-slate-500 space-y-1">
-                {startDate && <p>Bắt đầu: {formatDateTime(startDate)}</p>}
-                {endDate && <p>Kết thúc: {formatDateTime(endDate)}</p>}
+                {startDate && <p>{t('flashSales.form.startAt', { date: formatDateTime(startDate) })}</p>}
+                {endDate && <p>{t('flashSales.form.endAt', { date: formatDateTime(endDate) })}</p>}
               </div>
             )}
           </div>

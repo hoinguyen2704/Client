@@ -5,9 +5,61 @@
     "total": "Tổng cộng:",
     "noEmail": "Không có email",
     "defaultVariant": "Mặc định",
+    "refreshing": "Đang cập nhật dữ liệu...",
     "loadingVariants": "Đang tải dữ liệu phân loại...",
     "detailsVisible": "Dữ liệu chi tiết đang được hiển thị...",
     "reviewsSummary": "Từ {{count}} lượt đánh giá tổng hợp",
+    "charts": {
+      "orders": {
+        "title": "Thống kê đơn hàng",
+        "summaryTotal": "Tổng đơn (kỳ này)",
+        "summaryNew": "Đơn mới",
+        "summaryReturns": "Hủy/Trả",
+        "summaryPeak": "Cao nhất",
+        "empty": "Chưa có dữ liệu đơn hàng",
+        "tooltipSeries": "Đơn hàng"
+      },
+      "revenue": {
+        "title": "Biểu đồ doanh thu",
+        "summaryTotal": "Tổng doanh thu",
+        "summaryAverage": "Trung bình",
+        "summaryPeak": "Cao nhất ({{label}})",
+        "empty": "Chưa có dữ liệu doanh thu",
+        "tooltipSeries": "Doanh thu"
+      },
+      "categories": {
+        "title": "Thống kê số lượng hàng hóa bán theo danh mục",
+        "empty": "Chưa có dữ liệu danh mục",
+        "legendSold": "Số lượng bán",
+        "tooltipValue": "{{count}} sản phẩm",
+        "tooltipSeries": "Số lượng bán"
+      }
+    },
+    "lists": {
+      "topProductsTitle": "Top sản phẩm bán chạy",
+      "featuredCategoriesTitle": "Danh mục nổi bật",
+      "potentialCustomersTitle": "Khách hàng tiềm năng",
+      "empty": "Chưa có dữ liệu",
+      "soldSuffix": "{{count}} đã bán",
+      "categorySoldSuffix": "{{count}} SP ({{percent}}%)",
+      "ordersSuffix": "{{count}} đơn hàng",
+      "imageFallback": "N/A"
+    },
+    "bottom": {
+      "recentOrdersTitle": "Đơn hàng gần đây",
+      "reviewsTitle": "Thống kê đánh giá",
+      "emptyOrders": "Chưa có đơn hàng",
+      "totalReviews": "{{count}} đánh giá",
+      "monthThis": "Tháng này"
+    },
+    "loading": {
+      "recentOrders": "Đang tải đơn hàng gần đây...",
+      "revenue": "Đang tải dữ liệu doanh thu...",
+      "customers": "Đang tải khách hàng nổi bật...",
+      "products": "Đang tải sản phẩm nổi bật...",
+      "variants": "Đang tải top phân loại...",
+      "reviews": "Đang tải thống kê đánh giá..."
+    },
     "returns": {
       "cancelledTitle": "Đơn bị hủy",
       "cancelledDescription": "Khách hàng hủy hoặc không thanh toán thành công",

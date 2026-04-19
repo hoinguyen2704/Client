@@ -1,4 +1,5 @@
 import { FiCheck } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import type { AdminProductVariantSummary } from '@/types';
 import { formatPrice } from '@/utils/format';
 import { getInventoryBadgeClass } from './productPickerUtils';
@@ -18,6 +19,7 @@ export default function ProductPickerVariantRow({
   isNewlySelected,
   onToggle,
 }: ProductPickerVariantRowProps) {
+  const { t } = useTranslation('adminCatalog');
   const grossSoldQty = variant.grossSoldQty ?? 0;
   const returnedQty = variant.returnedQty ?? 0;
   const netSoldQty = variant.netSoldQty ?? Math.max(grossSoldQty - returnedQty, 0);
@@ -57,12 +59,14 @@ export default function ProductPickerVariantRow({
               isNewlySelected ? 'text-purple-800 dark:text-purple-200' : 'text-slate-700 dark:text-slate-200'
             }`}
           >
-            {variant.variantName || 'Mặc định'}
+            {variant.variantName || t('productPicker.variantRow.defaultName')}
           </div>
           <div className="text-sm text-slate-500">
-            Mã: {variant.sku}
+            {t('productPicker.variantRow.sku')}: {variant.sku}
             {isAlreadyInSale ? (
-              <span className="ml-2 font-medium text-amber-500">• Đã tham gia</span>
+              <span className="ml-2 font-medium text-amber-500">
+                • {t('productPicker.variantRow.alreadyInSale')}
+              </span>
             ) : null}
           </div>
         </div>
@@ -74,10 +78,10 @@ export default function ProductPickerVariantRow({
 
       <div className="hidden flex-col items-end justify-center border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex">
         <span className="font-semibold text-slate-700 dark:text-slate-200">
-          {grossSoldQty.toLocaleString('vi-VN')}
+          {grossSoldQty.toLocaleString()}
         </span>
         <span className="text-xs text-slate-500">
-          R {returnedQty.toLocaleString('vi-VN')} / N {netSoldQty.toLocaleString('vi-VN')}
+          R {returnedQty.toLocaleString()} / N {netSoldQty.toLocaleString()}
         </span>
       </div>
 
@@ -87,7 +91,7 @@ export default function ProductPickerVariantRow({
             stock,
           )}`}
         >
-          {stock.toLocaleString('vi-VN')}
+          {stock.toLocaleString()}
         </span>
       </div>
 
@@ -96,26 +100,28 @@ export default function ProductPickerVariantRow({
           isNewlySelected ? 'font-bold text-purple-700 dark:text-purple-200' : 'text-slate-500'
         }`}
       >
-        {isNewlySelected ? 'Đã chọn' : 'Nhấn để chọn'}
+        {isNewlySelected
+          ? t('productPicker.variantRow.selected')
+          : t('productPicker.variantRow.clickToSelect')}
       </div>
 
       <div className="flex items-center gap-4 px-14 pb-3 text-sm text-slate-500 md:hidden">
         <span>
-          Gross:{' '}
+          {t('productPicker.variantRow.gross')}:{' '}
           <strong className="text-slate-700 dark:text-slate-200">
-            {grossSoldQty.toLocaleString('vi-VN')}
+            {grossSoldQty.toLocaleString()}
           </strong>
         </span>
         <span>
-          N/R:{' '}
+          {t('productPicker.variantRow.netAndReturned')}:{' '}
           <strong className="text-slate-600 dark:text-slate-300">
-            {netSoldQty.toLocaleString('vi-VN')}/{returnedQty.toLocaleString('vi-VN')}
+            {netSoldQty.toLocaleString()}/{returnedQty.toLocaleString()}
           </strong>
         </span>
         <span>
-          Tồn:{' '}
+          {t('productPicker.variantRow.stock')}:{' '}
           <strong className="text-slate-700 dark:text-slate-200">
-            {stock.toLocaleString('vi-VN')}
+            {stock.toLocaleString()}
           </strong>
         </span>
       </div>

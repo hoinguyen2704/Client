@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import adminProductService from "@/apis/services/adminProductService";
@@ -18,16 +19,22 @@ import {
   buildVariantSignature,
   createEmptyVariant,
   createVariantUiKey,
-  getNextVariantDisplayOrder,
   getVariantSelectionRows,
   isSuggestedSkuPattern,
   normalizeSelectionsBySchema,
   parseVariantSignatureOptionCodes,
+  sortVariantsByUpdatedAt,
 } from "./productFormShared";
 
 export default function useProductVariantsForm() {
+  const { t } = useTranslation(["adminCatalog", "common"]);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const translate = useCallback(
+    (key: string, options?: Record<string, unknown>) =>
+      String(t(key, options as never)),
+    [t],
+  );
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -42,14 +49,23 @@ export default function useProductVariantsForm() {
   const [uploadingVariantKeys, setUploadingVariantKeys] = useState<Record<string, boolean>>({});
   const [skuChangeConfirmOpen, setSkuChangeConfirmOpen] = useState(false);
   const [skuChangeConfirmMessage, setSkuChangeConfirmMessage] = useState("");
+  const variantsRef = useRef<VariantFormData[]>([]);
 
   const variantFileInputRefs = useRef<Record<string, HTMLInputElement | null>>(
     {},
   );
 
+  useEffect(() => {
+    variantsRef.current = variants;
+  }, [variants]);
+
   const updateVariantDerived = useCallback(
     (variant: VariantFormData, usedSkus?: Set<string>): VariantFormData => {
-      const nextName = buildVariantDisplayName(variantSchema, variant.selections);
+      const nextName = buildVariantDisplayName(
+        variantSchema,
+        variant.selections,
+        t("variantPage.defaultVariant"),
+      );
       const nextSignature = buildVariantSignature(variantSchema, variant.selections);
 
       let nextSku = variant.sku;
@@ -66,26 +82,32 @@ export default function useProductVariantsForm() {
         skuMode: variant.skuMode === "manual" ? "manual" : "suggested",
       };
     },
-    [productCode, variantSchema],
+    [productCode, t, variantSchema],
   );
 
   const mapVariantsFromResponse = useCallback(
     (
       product: ProductResponse,
       schema: VariantAttributeSchemaResponse[],
+      previousVariants: VariantFormData[] = [],
     ): VariantFormData[] => {
       if (!product.variants || product.variants.length === 0) {
         const usedSkus = new Set<string>();
         return [
           {
-            ...createEmptyVariant(schema, product.productCode || "", usedSkus),
+            ...createEmptyVariant(
+              schema,
+              product.productCode || "",
+              usedSkus,
+              t("variantPage.defaultVariant"),
+            ),
             uiKey: createVariantUiKey(),
             displayOrder: 1,
           },
         ];
       }
 
-      return product.variants.map((variant, index) => {
+      const mappedVariants: VariantFormData[] = product.variants.map((variant, index): VariantFormData => {
         const selectionRows = getVariantSelectionRows(variant);
         const rawSelections = Object.fromEntries(
           selectionRows.map((attr) => [attr.variantAttributeId, attr.optionId]),
@@ -102,19 +124,40 @@ export default function useProductVariantsForm() {
           optionCodeByAttributeId,
           optionCodeByAttributeCode,
         );
-        const nextVariantName = buildVariantDisplayName(schema, selections);
+        const nextVariantName = buildVariantDisplayName(
+          schema,
+          selections,
+          t("variantPage.defaultVariant"),
+        );
         const nextVariantSignature = buildVariantSignature(schema, selections);
         const sales = resolveVariantSalesMetrics(variant);
         const nextSku = variant.sku ?? "";
+        const nextCreatedAt = variant.createdAt ?? product.createdAt;
+        const nextUpdatedAt = variant.updatedAt ?? variant.createdAt ?? product.createdAt;
+        const nextSkuMode: VariantFormData["skuMode"] = isSuggestedSkuPattern(
+          nextSku,
+          product.productCode || "",
+        )
+          ? "suggested"
+          : "manual";
+        const matchedPreviousVariant = previousVariants.find((candidate) => {
+          if (variant.id && candidate.id === variant.id) {
+            return true;
+          }
+          if (candidate.variantSignature === nextVariantSignature) {
+            return true;
+          }
+          return nextSku.length > 0 && candidate.sku === nextSku;
+        });
 
         return {
           id: variant.id,
-          uiKey: variant.id || createVariantUiKey(),
+          uiKey: matchedPreviousVariant?.uiKey || variant.id || createVariantUiKey(),
           displayOrder: index + 1,
+          createdAt: nextCreatedAt,
+          updatedAt: nextUpdatedAt,
           sku: nextSku,
-          skuMode: isSuggestedSkuPattern(nextSku, product.productCode || "")
-            ? "suggested"
-            : "manual",
+          skuMode: nextSkuMode,
           variantName: nextVariantName,
           variantSignature: nextVariantSignature,
           selections,
@@ -136,8 +179,10 @@ export default function useProductVariantsForm() {
           pendingFiles: [],
         };
       });
+
+      return sortVariantsByUpdatedAt(mappedVariants);
     },
-    [],
+    [t],
   );
 
   const fetchProduct = useCallback(async () => {
@@ -149,7 +194,7 @@ export default function useProductVariantsForm() {
       const productRes = await adminProductService.getById(id);
       const product = productRes.data;
       if (!product) {
-        setError("Không tìm thấy sản phẩm");
+        setError(t("variantPage.errors.notFound"));
         return;
       }
 
@@ -169,7 +214,7 @@ export default function useProductVariantsForm() {
       }
 
       setVariantSchema(schema);
-      setVariants(mapVariantsFromResponse(product, schema));
+      setVariants(mapVariantsFromResponse(product, schema, variantsRef.current));
       setOriginalSkuByVariantId(
         Object.fromEntries(
           (product.variants || [])
@@ -178,30 +223,36 @@ export default function useProductVariantsForm() {
         ),
       );
     } catch (err: unknown) {
-      setError(getApiErrorMessage(err, "Lỗi khi tải phân loại sản phẩm"));
+      setError(getApiErrorMessage(err, translate, "variantPage.errors.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, [id, mapVariantsFromResponse]);
+  }, [id, mapVariantsFromResponse, t, translate]);
 
   useEffect(() => {
     void fetchProduct();
   }, [fetchProduct]);
 
   const addVariant = useCallback(() => {
+    const nextUiKey = createVariantUiKey();
     setVariants((prev) => {
       const used = new Set<string>(prev.map((variant) => variant.sku).filter(Boolean));
-      const next = createEmptyVariant(variantSchema, productCode, used);
-      return [
+      const next = createEmptyVariant(
+        variantSchema,
+        productCode,
+        used,
+        t("variantPage.defaultVariant"),
+      );
+      return sortVariantsByUpdatedAt([
         {
           ...next,
-          uiKey: createVariantUiKey(),
-          displayOrder: getNextVariantDisplayOrder(prev),
+          uiKey: nextUiKey,
         },
         ...prev,
-      ];
+      ]);
     });
-  }, [productCode, variantSchema]);
+    return nextUiKey;
+  }, [productCode, t, variantSchema]);
 
   const generateVariantCombinations = useCallback(
     (selectedOptionsByAttribute: Record<string, string[]>) => {
@@ -245,8 +296,8 @@ export default function useProductVariantsForm() {
         };
         build(0, {});
 
-        let nextOrder = getNextVariantDisplayOrder(prev);
         const generated: VariantFormData[] = [];
+        const generatedAtBase = Date.now();
 
         combinations.forEach((selectionMap) => {
           const signature = buildVariantSignature(variantSchema, selectionMap);
@@ -254,7 +305,12 @@ export default function useProductVariantsForm() {
             return;
           }
           existingSignatures.add(signature);
-          const base = createEmptyVariant(variantSchema, productCode, usedSkus);
+          const base = createEmptyVariant(
+            variantSchema,
+            productCode,
+            usedSkus,
+            t("variantPage.defaultVariant"),
+          );
           const derived = updateVariantDerived(
             {
               ...base,
@@ -265,29 +321,20 @@ export default function useProductVariantsForm() {
           generated.push({
             ...derived,
             uiKey: createVariantUiKey(),
-            displayOrder: nextOrder++,
+            updatedAt: new Date(generatedAtBase + generated.length).toISOString(),
           });
         });
 
-        return generated.length > 0 ? [...generated, ...prev] : prev;
+        return generated.length > 0
+          ? sortVariantsByUpdatedAt([...generated, ...prev])
+          : prev;
       });
     },
-    [productCode, updateVariantDerived, variantSchema],
+    [productCode, t, updateVariantDerived, variantSchema],
   );
 
-  const sortVariantsByBestSelling = useCallback(() => {
-    setVariants((prev) =>
-      [...prev]
-        .sort((a, b) => {
-          const aScore = resolveVariantSalesMetrics(a).net;
-          const bScore = resolveVariantSalesMetrics(b).net;
-          return bScore - aScore;
-        })
-        .map((variant, index) => ({
-          ...variant,
-          displayOrder: index + 1,
-        })),
-    );
+  const sortVariantsByLatestUpdated = useCallback(() => {
+    setVariants((prev) => sortVariantsByUpdatedAt(prev));
   }, []);
 
   const removeVariant = useCallback((index: number) => {
@@ -364,7 +411,7 @@ export default function useProductVariantsForm() {
 
   const getVariantUiKey = useCallback(
     (variant: VariantFormData, index: number): string =>
-      variant.id || variant.uiKey || `variant-${index}`,
+      variant.uiKey || variant.id || `variant-${index}`,
     [],
   );
 
@@ -389,18 +436,29 @@ export default function useProductVariantsForm() {
             isPrimary: currentVariant.images.length === 0 && uploadedIndex === 0,
             variantId: currentVariant.id,
           }));
+          const updatedAt = new Date().toISOString();
           setVariants((prev) =>
-            prev.map((variant, variantIndex) =>
+            sortVariantsByUpdatedAt(prev.map((variant, variantIndex) =>
               variantIndex === index
-                ? { ...variant, images: [...variant.images, ...uploadedImages] }
+                ? {
+                  ...variant,
+                  updatedAt,
+                  images: [...variant.images, ...uploadedImages],
+                }
                 : variant,
-            ),
+            )),
           );
           toast.success(
-            `Đã tải ${files.length} ảnh cho phân loại "${currentVariant.variantName || currentVariant.sku}"`,
+            t("variantPage.toasts.uploadSuccess", {
+              count: files.length,
+              name:
+                currentVariant.variantName
+                || currentVariant.sku
+                || t("variantPage.defaultVariant"),
+            }),
           );
         } catch {
-          toast.error("Upload ảnh phân loại thất bại.");
+          toast.error(t("variantPage.toasts.uploadFailed"));
         } finally {
           setUploadingVariantKeys((prev) => ({ ...prev, [variantUiKey]: false }));
         }
@@ -410,12 +468,15 @@ export default function useProductVariantsForm() {
       setVariants((prev) =>
         prev.map((variant, variantIndex) =>
           variantIndex === index
-            ? { ...variant, pendingFiles: [...variant.pendingFiles, ...files] }
+            ? {
+              ...variant,
+              pendingFiles: [...variant.pendingFiles, ...files],
+            }
             : variant,
         ),
       );
     },
-    [getVariantUiKey, id, variants],
+    [getVariantUiKey, id, t, variants],
   );
 
   const removeVariantPendingFile = useCallback((variantIndex: number, fileIndex: number) => {
@@ -440,7 +501,10 @@ export default function useProductVariantsForm() {
         setVariants((prev) =>
           prev.map((variant, index) =>
             index === variantIndex
-              ? { ...variant, images: variant.images.filter((img) => img.id !== imageId) }
+              ? {
+                ...variant,
+                images: variant.images.filter((img) => img.id !== imageId),
+              }
               : variant,
           ),
         );
@@ -449,19 +513,24 @@ export default function useProductVariantsForm() {
 
       try {
         await adminProductService.deleteVariantImage(id, currentVariant.id, imageId);
+        const updatedAt = new Date().toISOString();
         setVariants((prev) =>
-          prev.map((variant, index) =>
+          sortVariantsByUpdatedAt(prev.map((variant, index) =>
             index === variantIndex
-              ? { ...variant, images: variant.images.filter((img) => img.id !== imageId) }
+              ? {
+                ...variant,
+                updatedAt,
+                images: variant.images.filter((img) => img.id !== imageId),
+              }
               : variant,
-          ),
+          )),
         );
-        toast.success("Xóa ảnh phân loại thành công!");
+        toast.success(t("variantPage.toasts.deleteImageSuccess"));
       } catch {
-        toast.error("Xóa ảnh phân loại thất bại.");
+        toast.error(t("variantPage.toasts.deleteImageFailed"));
       }
     },
-    [id, variants],
+    [id, t, variants],
   );
 
   const uploadPendingVariantImages = useCallback(
@@ -502,7 +571,7 @@ export default function useProductVariantsForm() {
 
   const submitVariants = useCallback(async (skipSkuChangeConfirmation = false) => {
     if (!id) {
-      setError("Không tìm thấy sản phẩm để cập nhật phân loại.");
+      setError(t("variantPage.errors.missingProduct"));
       return;
     }
     if (saving) return;
@@ -527,7 +596,7 @@ export default function useProductVariantsForm() {
           && variantSchema.some((attr) => !normalizedSelections[attr.id])),
     );
     if (invalidVariant) {
-      setError("Mỗi phân loại phải đủ SKU và đầy đủ tổ hợp thuộc tính.");
+      setError(t("variantPage.errors.invalidVariant"));
       return;
     }
 
@@ -540,7 +609,7 @@ export default function useProductVariantsForm() {
       }),
     );
     if (hasInactiveSelection) {
-      setError("Có phân loại đang dùng option đã ngưng hoạt động. Vui lòng đổi sang option đang hoạt động trước khi lưu.");
+      setError(t("variantPage.errors.inactiveSelection"));
       return;
     }
 
@@ -554,7 +623,7 @@ export default function useProductVariantsForm() {
       return false;
     });
     if (hasDuplicateCombination) {
-      setError("Không thể lưu: có phân loại bị trùng tổ hợp thuộc tính.");
+      setError(t("variantPage.errors.duplicateCombination"));
       return;
     }
 
@@ -567,15 +636,15 @@ export default function useProductVariantsForm() {
         .slice(0, 5)
         .map(
           (variant) =>
-            `${originalSkuByVariantId[variant.id!]} -> ${variant.sku.trim() || "(trống)"}`,
+            `${originalSkuByVariantId[variant.id!]} -> ${variant.sku.trim() || t("variantPage.skuChange.emptySku")}`,
         )
         .join("\n");
       const more = changedPersistedSku.length > 5
-        ? `\n... và ${changedPersistedSku.length - 5} SKU khác`
+        ? `\n${t("variantPage.skuChange.more", { count: changedPersistedSku.length - 5 })}`
         : "";
       if (!skipSkuChangeConfirmation) {
         setSkuChangeConfirmMessage(
-          `Bạn sắp đổi SKU đã tồn tại:\n${preview}${more}\n\nXác nhận tiếp tục?`,
+          t("variantPage.skuChange.confirm", { preview, more }),
         );
         setSkuChangeConfirmOpen(true);
         return;
@@ -608,10 +677,10 @@ export default function useProductVariantsForm() {
         variants: variantRequests,
       });
       await uploadPendingVariantImages(id, updated.data?.variants);
-      toast.success("Cập nhật phân loại sản phẩm thành công!");
+      toast.success(t("variantPage.toasts.updateSuccess"));
       await fetchProduct();
     } catch (err: unknown) {
-      setError(getApiErrorMessage(err, "Lỗi khi lưu phân loại sản phẩm"));
+      setError(getApiErrorMessage(err, translate, "variantPage.errors.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -620,6 +689,8 @@ export default function useProductVariantsForm() {
     id,
     originalSkuByVariantId,
     saving,
+    t,
+    translate,
     uploadPendingVariantImages,
     variantSchema,
     variants,
@@ -657,7 +728,7 @@ export default function useProductVariantsForm() {
     variantFileInputRefs,
     addVariant,
     generateVariantCombinations,
-    sortVariantsByBestSelling,
+    sortVariantsByLatestUpdated,
     removeVariant,
     updateVariant,
     updateVariantSelection,

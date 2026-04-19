@@ -16,17 +16,14 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
-  // Helper: lấy giá trị setting
   const val = useCallback((key: string, fallback = '') => settings[key] ?? fallback, [settings]);
   const bool = useCallback((key: string) => val(key) === 'true', [val]);
   const num = useCallback((key: string, fallback = 0) => Number(val(key)) || fallback, [val]);
 
-  // Helper: cập nhật giá trị setting
   const set = (key: string, value: string) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
-  // Load settings từ API
   useEffect(() => {
     const load = async () => {
       try {
@@ -47,15 +44,14 @@ export default function Settings() {
         setSettings(withDefaults);
         setOriginal(withDefaults);
       } catch {
-        toast.error('Không thể tải cấu hình hệ thống');
+        toast.error(t('loadError'));
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, []);
+  }, [t]);
 
-  // Lưu settings — chỉ gửi những key đã thay đổi
   const handleSave = async () => {
     const changed: SettingUpdateRequest[] = [];
     for (const key of Object.keys(settings)) {
@@ -64,22 +60,36 @@ export default function Settings() {
       }
     }
     if (changed.length === 0) {
-      toast.info('Không có thay đổi nào để lưu');
+      toast.info(t('noChanges'));
       return;
     }
     setSaving(true);
     try {
       await adminSettingService.batchUpdate(changed);
       setOriginal({ ...settings });
-      toast.success(`Đã lưu ${changed.length} cấu hình thành công!`);
+      toast.success(t('saveSuccess', { count: changed.length }));
     } catch {
-      toast.error('Lưu cấu hình thất bại!');
+      toast.error(t('saveError'));
     } finally {
       setSaving(false);
     }
   };
 
   const hasChanges = Object.keys(settings).some(k => settings[k] !== original[k]);
+  const currencyOptions = [
+    { value: 'VND', label: t('general.currencyVND') },
+    { value: 'USD', label: t('general.currencyUSD') },
+  ];
+  const taxModeOptions = [
+    { value: 'INCLUDED', label: t('general.taxModeIncluded') },
+    { value: 'EXCLUDED', label: t('general.taxModeExcluded') },
+  ];
+  const paymentMethods = [
+    { key: 'COD_ENABLED', title: t('payment.cod'), description: t('payment.codDesc') },
+    { key: 'VNPAY_ENABLED', title: t('payment.vnpay'), description: t('payment.vnpayDesc') },
+    { key: 'MOMO_ENABLED', title: t('payment.momo'), description: t('payment.momoDesc') },
+    { key: 'BANK_TRANSFER_ENABLED', title: t('payment.bank'), description: t('payment.bankDesc') },
+  ];
 
   const renderToggle = (
     settingKey: string,
@@ -105,7 +115,7 @@ export default function Settings() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Cài Đặt Hệ Thống & AI</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('title')}</h1>
         <Button
           onClick={handleSave}
           disabled={saving || !hasChanges}
@@ -114,16 +124,14 @@ export default function Settings() {
           size="md"
           className="w-full sm:w-auto"
         >
-          {saving ? 'Đang lưu...' : 'Lưu cấu hình'}
+          {saving ? t('saving') : t('save')}
         </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">
-        {/* Cột Trái */}
         <div className="space-y-4 sm:space-y-6">
-          {/* General Config */}
           <SectionCard
-            title="Cấu hình chung"
+            title={t('general.title')}
             icon={
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-xl text-blue-600">
                 <FiSettings />
@@ -132,63 +140,56 @@ export default function Settings() {
             headerSeparated
           >
             <div className="space-y-4">
-              <FormInput label="Tên cửa hàng" type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
+              <FormInput label={t('general.storeName')} type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-md font-medium text-slate-700 dark:text-slate-300">Đơn vị tiền tệ</label>
+                  <label className="text-md font-medium text-slate-700 dark:text-slate-300">{t('general.currency')}</label>
                   <CustomSelect
                     value={val('CURRENCY', 'VND')}
                     onChange={(v) => set('CURRENCY', v)}
-                    options={[
-                      { value: 'VND', label: 'VNĐ (Việt Nam Đồng)' },
-                      { value: 'USD', label: 'USD (Đô la Mỹ)' }
-                    ]}
+                    options={currencyOptions}
                     className="w-full"
                   />
                 </div>
-                <FormInput label="Thuế mặc định (%)" type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
+                <FormInput label={t('general.defaultTax')} type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
               </div>
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/40 space-y-4">
                 <div className="flex items-start sm:items-center justify-between gap-3">
                   <div>
-                    <h3 className="font-bold text-md">Bật áp dụng thuế</h3>
-                    <p className="text-sm text-slate-500 mt-1">Tính thuế ở bước checkout và lưu snapshot vào đơn hàng.</p>
+                    <h3 className="font-bold text-md">{t('general.enableTax')}</h3>
+                    <p className="text-sm text-slate-500 mt-1">{t('general.enableTaxDesc')}</p>
                   </div>
                   {renderToggle('TAX_ENABLED', 'primary')}
                 </div>
                 <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity ${!bool('TAX_ENABLED') ? 'opacity-50 pointer-events-none select-none' : ''}`}>
                   <div className="space-y-2">
-                    <label className="text-md font-medium text-slate-700 dark:text-slate-300">Chế độ thuế</label>
+                    <label className="text-md font-medium text-slate-700 dark:text-slate-300">{t('general.taxMode')}</label>
                     <CustomSelect
                       value={val('TAX_MODE', 'INCLUDED')}
                       onChange={(v) => set('TAX_MODE', v)}
-                      options={[
-                        { value: 'INCLUDED', label: 'Đã gồm trong giá' },
-                        { value: 'EXCLUDED', label: 'Cộng thêm vào tổng' }
-                      ]}
+                      options={taxModeOptions}
                       className="w-full"
                       disabled={!bool('TAX_ENABLED')}
                     />
                   </div>
                   <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900 flex items-start sm:items-center justify-between gap-3">
                     <div>
-                      <h4 className="font-semibold text-md">Áp thuế lên phí ship</h4>
-                      <p className="text-sm text-slate-500 mt-1">Nếu tắt, chỉ tính thuế trên tiền hàng.</p>
+                      <h4 className="font-semibold text-md">{t('general.taxOnShipping')}</h4>
+                      <p className="text-sm text-slate-500 mt-1">{t('general.taxOnShippingDesc')}</p>
                     </div>
                     {renderToggle('TAX_APPLY_ON_SHIPPING', 'primary', !bool('TAX_ENABLED'))}
                   </div>
                 </div>
               </div>
-              <FormInput label="Email liên hệ" type="email" value={val('SHOP_EMAIL')} onChange={(e) => set('SHOP_EMAIL', e.target.value)} />
-              <FormInput label="Email hỗ trợ" type="email" value={val('SUPPORT_EMAIL')} onChange={(e) => set('SUPPORT_EMAIL', e.target.value)} />
-              <FormInput label="Hotline" type="text" value={val('HOTLINE')} onChange={(e) => set('HOTLINE', e.target.value)} />
-              <FormInput label="Địa chỉ" type="text" value={val('SHOP_ADDRESS')} onChange={(e) => set('SHOP_ADDRESS', e.target.value)} />
+              <FormInput label={t('general.contactEmail')} type="email" value={val('SHOP_EMAIL')} onChange={(e) => set('SHOP_EMAIL', e.target.value)} />
+              <FormInput label={t('general.supportEmail')} type="email" value={val('SUPPORT_EMAIL')} onChange={(e) => set('SUPPORT_EMAIL', e.target.value)} />
+              <FormInput label={t('general.hotline')} type="text" value={val('HOTLINE')} onChange={(e) => set('HOTLINE', e.target.value)} />
+              <FormInput label={t('general.address')} type="text" value={val('SHOP_ADDRESS')} onChange={(e) => set('SHOP_ADDRESS', e.target.value)} />
             </div>
           </SectionCard>
 
-          {/* AI Dashboard */}
           <SectionCard
-            title="AI Dashboard (ML Ops)"
+            title={t('ai.title')}
             icon={
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-xl text-indigo-600">
                 <FiCpu />
@@ -204,17 +205,16 @@ export default function Settings() {
                 className="text-indigo-600"
                 disabled={AI_FEATURES_UNDER_DEVELOPMENT}
               >
-                {AI_FEATURES_UNDER_DEVELOPMENT ? 'Đang phát triển' : 'Cấu hình thuật toán'}
+                {AI_FEATURES_UNDER_DEVELOPMENT ? t('ai.underDevelopment') : t('ai.configure')}
               </Button>
             }
             headerSeparated
           >
             <div className="relative">
-              {/* The Overlay */}
               {AI_FEATURES_UNDER_DEVELOPMENT && (
                 <div className="absolute inset-x-0 inset-y-[-10px] z-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-[2px] flex items-center justify-center rounded-xl p-4">
                   <div className="px-6 py-4 rounded-xl shadow-lg border border-amber-200 bg-amber-50 text-amber-700 font-medium flex items-center gap-2">
-                    Tính năng AI Dashboard đang phát triển, tạm thời bị khóa.
+                    {t('ai.lockedMsg')}
                   </div>
                 </div>
               )}
@@ -222,16 +222,16 @@ export default function Settings() {
               <div className={`space-y-4 ${AI_FEATURES_UNDER_DEVELOPMENT ? 'pointer-events-none select-none' : ''}`}>
                 <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
                   <div>
-                    <h3 className="font-bold text-md">Recommendation Engine</h3>
-                    <p className="text-sm text-slate-500 mt-1">Hệ thống gợi ý sản phẩm tự động</p>
+                    <h3 className="font-bold text-md">{t('ai.recommendation')}</h3>
+                    <p className="text-sm text-slate-500 mt-1">{t('ai.recommendationDesc')}</p>
                   </div>
                   {renderToggle('RECOMMENDATION_ENABLED', 'blue', false)}
                 </div>
 
                 <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
                   <div>
-                    <h3 className="font-bold text-md">AI Content Generator</h3>
-                    <p className="text-sm text-slate-500 mt-1">Tự động tạo mô tả sản phẩm</p>
+                    <h3 className="font-bold text-md">{t('ai.aiContent')}</h3>
+                    <p className="text-sm text-slate-500 mt-1">{t('ai.aiContentDesc')}</p>
                   </div>
                   {renderToggle('AI_CONTENT_ENABLED', 'blue', false)}
                 </div>
@@ -240,17 +240,17 @@ export default function Settings() {
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                     <div className="text-indigo-500 mb-1 flex justify-center"><FiTrendingUp /></div>
                     <div className="text-xl font-bold">—</div>
-                    <div className="text-sm text-slate-500">Lần gợi ý</div>
+                    <div className="text-sm text-slate-500">{t('ai.suggestions')}</div>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                     <div className="text-blue-500 mb-1 flex justify-center"><FiMousePointer /></div>
                     <div className="text-xl font-bold">—</div>
-                    <div className="text-sm text-slate-500">Tỷ lệ click</div>
+                    <div className="text-sm text-slate-500">{t('ai.clickRate')}</div>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                     <div className="text-green-500 mb-1 flex justify-center"><FiShoppingCart /></div>
                     <div className="text-xl font-bold">—</div>
-                    <div className="text-sm text-slate-500">Chuyển đổi</div>
+                    <div className="text-sm text-slate-500">{t('ai.conversions')}</div>
                   </div>
                 </div>
               </div>
@@ -258,11 +258,9 @@ export default function Settings() {
           </SectionCard>
         </div>
 
-        {/* Cột Phải */}
         <div className="space-y-4 sm:space-y-6">
-          {/* Payment Config */}
           <SectionCard
-            title="Cấu hình Thanh toán"
+            title={t('payment.title')}
             icon={
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-xl text-purple-600">
                 <FiCreditCard />
@@ -271,26 +269,20 @@ export default function Settings() {
             headerSeparated
           >
             <div className="space-y-4">
-              {[
-                { key: 'COD_ENABLED', title: 'Thanh toán khi nhận hàng (COD)', desc: 'Cho phép khách hàng thanh toán tiền mặt' },
-                { key: 'VNPAY_ENABLED', title: 'Thanh toán qua VNPay', desc: 'Cổng thanh toán nội địa và quốc tế' },
-                { key: 'MOMO_ENABLED', title: 'Thanh toán qua MoMo', desc: 'Ví điện tử phổ biến tại Việt Nam' },
-                { key: 'BANK_TRANSFER_ENABLED', title: 'Chuyển khoản ngân hàng', desc: 'Chuyển khoản trực tiếp qua ngân hàng' },
-              ].map(pm => (
-                <div key={pm.key} className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
+              {paymentMethods.map((method) => (
+                <div key={method.key} className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
                   <div>
-                    <h3 className="font-bold text-md">{pm.title}</h3>
-                    <p className="text-sm text-slate-500 mt-1">{pm.desc}</p>
+                    <h3 className="font-bold text-md">{method.title}</h3>
+                    <p className="text-sm text-slate-500 mt-1">{method.description}</p>
                   </div>
-                  {renderToggle(pm.key)}
+                  {renderToggle(method.key)}
                 </div>
               ))}
             </div>
           </SectionCard>
 
-          {/* Shipping Config */}
           <SectionCard
-            title="Cấu hình Vận chuyển"
+            title={t('shipping.title')}
             icon={
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 text-xl text-orange-600">
                 <FiTruck />
@@ -299,10 +291,20 @@ export default function Settings() {
             headerSeparated
           >
             <div className="space-y-4">
-              <FormInput label="Phí ship mặc định (VNĐ)" type="number" value={val('DEFAULT_SHIPPING_FEE', '30000')} onChange={(e) => set('DEFAULT_SHIPPING_FEE', e.target.value)} />
+              <FormInput
+                label={`${t('shipping.defaultFee')} ${t('units.vnd')}`}
+                type="number"
+                value={val('DEFAULT_SHIPPING_FEE', '30000')}
+                onChange={(e) => set('DEFAULT_SHIPPING_FEE', e.target.value)}
+              />
               <div className="space-y-2">
-                <FormInput label="Ngưỡng Freeship (VNĐ)" type="number" value={val('FREE_SHIPPING_THRESHOLD', '500000')} onChange={(e) => set('FREE_SHIPPING_THRESHOLD', e.target.value)} />
-                <p className="text-sm text-slate-500">Đơn hàng có giá trị lớn hơn hoặc bằng ngưỡng này sẽ được miễn phí vận chuyển.</p>
+                <FormInput
+                  label={`${t('shipping.freeshipThreshold')} ${t('units.vnd')}`}
+                  type="number"
+                  value={val('FREE_SHIPPING_THRESHOLD', '500000')}
+                  onChange={(e) => set('FREE_SHIPPING_THRESHOLD', e.target.value)}
+                />
+                <p className="text-sm text-slate-500">{t('shipping.freeshipDesc')}</p>
               </div>
             </div>
           </SectionCard>
@@ -312,26 +314,26 @@ export default function Settings() {
       <Modal
         open={isAiModalOpen}
         onClose={() => setIsAiModalOpen(false)}
-        title="Cấu hình Thuật toán Gợi ý"
+        title={t('aiModal.title')}
         footer={
           <>
             <ModalCancelButton onClick={() => setIsAiModalOpen(false)} />
             <Button onClick={() => setIsAiModalOpen(false)} icon={<FiCheck />} size="md">
-              Đóng
+              {t('aiModal.close')}
             </Button>
           </>
         }
       >
         <div className="space-y-6">
           <div className="space-y-2">
-            <label className="text-md font-medium">Thuật toán cốt lõi</label>
+            <label className="text-md font-medium">{t('aiModal.coreAlgo')}</label>
             <CustomSelect
               value={val('ALGORITHM', 'COLLABORATIVE')}
               onChange={(v) => set('ALGORITHM', v)}
               options={[
-                { value: 'COLLABORATIVE', label: 'Collaborative Filtering' },
-                { value: 'CONTENT', label: 'Content-based Filtering' },
-                { value: 'HYBRID', label: 'Hybrid MLOps Model' }
+                { value: 'COLLABORATIVE', label: t('aiModal.algoCollab') },
+                { value: 'CONTENT', label: t('aiModal.algoContent') },
+                { value: 'HYBRID', label: t('aiModal.algoHybrid') }
               ]}
               className="w-full"
             />
@@ -340,7 +342,7 @@ export default function Settings() {
           <div className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between text-md">
-                <label className="font-medium">Độ ưu tiên sản phẩm mới</label>
+                <label className="font-medium">{t('aiModal.newProductPriority')}</label>
                 <span className="text-indigo-600 font-bold">{num('NEW_PRODUCT_PRIORITY', 70)}%</span>
               </div>
               <input type="range" min="0" max="100" value={num('NEW_PRODUCT_PRIORITY', 70)} onChange={(e) => set('NEW_PRODUCT_PRIORITY', e.target.value)} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
@@ -348,7 +350,7 @@ export default function Settings() {
 
             <div className="space-y-2">
               <div className="flex justify-between text-md">
-                <label className="font-medium">Độ đa dạng gợi ý (Exploration)</label>
+                <label className="font-medium">{t('aiModal.diversity')}</label>
                 <span className="text-indigo-600 font-bold">{num('EXPLORATION_RATE', 30)}%</span>
               </div>
               <input type="range" min="0" max="100" value={num('EXPLORATION_RATE', 30)} onChange={(e) => set('EXPLORATION_RATE', e.target.value)} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600" />

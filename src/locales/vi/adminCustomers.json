@@ -43,6 +43,29 @@
     "profile": "Thông tin hồ sơ",
     "orders": "Đơn hàng",
     "returns": "Yêu cầu trả hàng",
-    "activity": "Hoạt động gần đây"
+    "activity": "Hoạt động gần đây",
+    "notFound": "Không tìm thấy người dùng",
+    "accountInfo": "Thông tin tài khoản",
+    "fullName": "Họ tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "gender": "Giới tính",
+    "dateOfBirth": "Ngày sinh",
+    "createdAt": "Ngày tạo",
+    "joined": "Tham gia: {{date}}",
+    "phoneUpdateTitle": "Cập nhật số điện thoại (Admin)",
+    "newPhone": "Số điện thoại mới",
+    "newPhonePlaceholder": "Nhập số điện thoại",
+    "changeReason": "Lý do thay đổi",
+    "changeReasonPlaceholder": "Bắt buộc",
+    "savePhone": "Lưu số điện thoại",
+    "savingPhone": "Đang cập nhật...",
+    "toasts": {
+      "toggleSuccess": "Cập nhật trạng thái người dùng thành công!",
+      "toggleFailed": "Cập nhật trạng thái người dùng thất bại!",
+      "phoneRequired": "Vui lòng nhập số điện thoại.",
+      "reasonRequired": "Vui lòng nhập lý do thay đổi.",
+      "phoneUpdated": "Cập nhật số điện thoại thành công!"
+    }
   }
 }

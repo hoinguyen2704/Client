@@ -36,7 +36,7 @@ const createIdempotencyKey = () => {
 };
 
 export default function ReturnDetail() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['adminSales', 'common']);
   const { id } = useParams<{ id: string }>();
   const [returnRequest, setReturnRequest] = useState<ReturnRequestResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -86,7 +86,7 @@ export default function ReturnDetail() {
         colorClass: meta.className,
       };
     });
-  }, [returnRequest]);
+  }, [returnRequest, t]);
 
   const allowReview = returnRequest?.status === 'REQUESTED';
   const allowRefund = !!returnRequest && canProcessRefund(returnRequest.status) && returnRequest.refundStatus !== 'SUCCESS';
@@ -100,13 +100,13 @@ export default function ReturnDetail() {
       histories.push({
         id: `requested-${returnRequest.id}`,
         status: 'REQUESTED',
-        description: 'Yêu cầu mới',
+        description: t('returns.detail.timelineRequested'),
         createdAt: returnRequest.createdAt,
       });
     }
 
     return histories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [returnRequest]);
+  }, [returnRequest, t]);
 
   const applyUpdatedReturn = (updated: ReturnRequestResponse) => {
     setReturnRequest(updated);
@@ -122,7 +122,7 @@ export default function ReturnDetail() {
     if (approved && approvedAmount.trim()) {
       const numericAmount = Number(approvedAmount);
       if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
-        toast.error('Số tiền duyệt không hợp lệ');
+        toast.error(t('returns.detail.toasts.invalidApprovedAmount'));
         return;
       }
       payload.approvedAmount = numericAmount;
@@ -134,7 +134,11 @@ export default function ReturnDetail() {
       applyUpdatedReturn(res.data);
       setReviewNote('');
       setApprovedAmount('');
-      toast.success(approved ? 'Đã duyệt yêu cầu trả hàng' : 'Đã từ chối yêu cầu trả hàng');
+      toast.success(
+        approved
+          ? t('returns.detail.toasts.reviewApproved')
+          : t('returns.detail.toasts.reviewRejected'),
+      );
     } catch (err) {
       toast.error(getApiErrorMessage(err, translate, 'common:errors.reviewReturnFailed'));
     } finally {
@@ -145,7 +149,7 @@ export default function ReturnDetail() {
   const handleUpdateStatus = async () => {
     if (!returnRequest) return;
     if (!nextStatus || nextStatus === returnRequest.status) {
-      toast.error('Vui lòng chọn trạng thái mới');
+      toast.error(t('returns.detail.toasts.selectStatus'));
       return;
     }
 
@@ -157,7 +161,7 @@ export default function ReturnDetail() {
       });
       applyUpdatedReturn(res.data);
       setStatusNote('');
-      toast.success('Đã cập nhật trạng thái yêu cầu');
+      toast.success(t('returns.detail.toasts.statusUpdated'));
     } catch (err) {
       toast.error(getApiErrorMessage(err, translate, 'common:errors.updateStatusFailed'));
     } finally {
@@ -169,30 +173,30 @@ export default function ReturnDetail() {
     if (!returnRequest) return;
 
     if (!refundAmount.trim()) {
-      toast.error('Vui lòng nhập số tiền hoàn');
+      toast.error(t('returns.detail.toasts.refundAmountRequired'));
       return;
     }
     const amount = Number(refundAmount);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Số tiền hoàn không hợp lệ');
+      toast.error(t('returns.detail.toasts.invalidRefundAmount'));
       return;
     }
 
     const provider = refundProvider.trim().toUpperCase();
     if (!provider) {
-      toast.error('Vui lòng chọn provider hoàn tiền');
+      toast.error(t('returns.detail.toasts.refundProviderRequired'));
       return;
     }
 
     const normalizedTransactionId = transactionId.trim();
     if (!normalizedTransactionId) {
-      toast.error('Vui lòng nhập mã giao dịch hoàn tiền');
+      toast.error(t('returns.detail.toasts.refundTransactionRequired'));
       return;
     }
 
     const adminNote = refundAdminNote.trim();
     if (!adminNote) {
-      toast.error('Vui lòng nhập ghi chú xử lý hoàn tiền');
+      toast.error(t('returns.detail.toasts.refundAdminNoteRequired'));
       return;
     }
 
@@ -213,7 +217,7 @@ export default function ReturnDetail() {
       setTransactionId('');
       setRefundAdminNote('');
       setRawPayload('');
-      toast.success('Đã xử lý hoàn tiền thành công');
+      toast.success(t('returns.detail.toasts.refundSuccess'));
     } catch (err) {
       toast.error(getApiErrorMessage(err, translate, 'common:errors.processRefundFailed'));
     } finally {
@@ -239,7 +243,7 @@ export default function ReturnDetail() {
       <div className="space-y-4">
         <BackButton to="/admin/returns" />
         <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 text-slate-400">
-          Không tìm thấy yêu cầu trả hàng
+          {t('returns.detail.notFound')}
         </div>
       </div>
     );
@@ -256,7 +260,7 @@ export default function ReturnDetail() {
               <ReturnStatusBadge status={returnRequest.status} />
             </h1>
             <p className="text-slate-500 text-md mt-1">
-              Đơn hàng: <span className="font-semibold text-slate-700 dark:text-slate-200">{returnRequest.orderNumber}</span> | Tạo lúc{' '}
+              {t('returns.detail.orderLabel')}: <span className="font-semibold text-slate-700 dark:text-slate-200">{returnRequest.orderNumber}</span> | {t('returns.detail.createdAtLabel')}{' '}
               {formatDateTime(returnRequest.createdAt)}
             </p>
           </div>
@@ -280,10 +284,10 @@ export default function ReturnDetail() {
                       {/* Left: Time */}
                       <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
                         <div className="text-md font-medium text-slate-800 dark:text-slate-200">
-                          {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                          {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>
                         <div className="text-sm text-slate-500 mt-1">
-                          {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                          {time.toLocaleDateString()}
                         </div>
                       </div>
 
@@ -312,18 +316,18 @@ export default function ReturnDetail() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4">
               <FiPackage className="text-purple-600" />
-              Danh sách sản phẩm trả
+              {t('returns.detail.itemsTitle')}
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-left border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                    <th className="pb-3 font-medium">Sản phẩm</th>
-                    <th className="pb-3 font-medium">Phân loại</th>
-                    <th className="pb-3 font-medium text-right">Đơn giá</th>
-                    <th className="pb-3 font-medium text-center">SL yêu cầu</th>
-                    <th className="pb-3 font-medium text-center">SL duyệt</th>
-                    <th className="pb-3 font-medium text-right">Thành tiền</th>
+                    <th className="pb-3 font-medium">{t('returns.detail.table.product')}</th>
+                    <th className="pb-3 font-medium">{t('returns.detail.table.variant')}</th>
+                    <th className="pb-3 font-medium text-right">{t('returns.detail.table.unitPrice')}</th>
+                    <th className="pb-3 font-medium text-center">{t('returns.detail.table.requestedQty')}</th>
+                    <th className="pb-3 font-medium text-center">{t('returns.detail.table.approvedQty')}</th>
+                    <th className="pb-3 font-medium text-right">{t('returns.detail.table.subtotal')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -345,23 +349,23 @@ export default function ReturnDetail() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4">
               <FiCreditCard className="text-emerald-600" />
-              Lịch sử giao dịch hoàn tiền
+              {t('returns.detail.refundTransactionsTitle')}
             </h2>
 
             {returnRequest.refunds.length === 0 ? (
               <div className="p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-md text-slate-500">
-                Chưa có giao dịch hoàn tiền nào cho yêu cầu này.
+                {t('returns.detail.refundTransactionsEmpty')}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[740px] text-left border-collapse">
                   <thead>
                     <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                      <th className="pb-3 font-medium">Thời gian</th>
-                      <th className="pb-3 font-medium">Provider</th>
-                      <th className="pb-3 font-medium">Mã giao dịch</th>
-                      <th className="pb-3 font-medium text-right">Số tiền</th>
-                      <th className="pb-3 font-medium text-right">Trạng thái</th>
+                      <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.time')}</th>
+                      <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.provider')}</th>
+                      <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.transactionId')}</th>
+                      <th className="pb-3 font-medium text-right">{t('returns.detail.refundTransactionsTable.amount')}</th>
+                      <th className="pb-3 font-medium text-right">{t('returns.detail.refundTransactionsTable.status')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -387,30 +391,30 @@ export default function ReturnDetail() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
               <FiFileText className="text-blue-600" />
-              Thông tin yêu cầu
+              {t('returns.detail.requestInfoTitle')}
             </h2>
             <div className="space-y-3 text-md">
               <div>
-                <p className="text-slate-500">Khách hàng</p>
-                <p className="font-semibold">{returnRequest.userName || 'Không rõ'}</p>
+                <p className="text-slate-500">{t('returns.detail.customer')}</p>
+                <p className="font-semibold">{returnRequest.userName || t('returns.detail.unknown')}</p>
                 <p className="text-slate-500">{returnRequest.userEmail || '-'}</p>
               </div>
               <div>
-                <p className="text-slate-500">Lý do</p>
+                <p className="text-slate-500">{t('returns.detail.reason')}</p>
                 <p className="font-medium">{returnRequest.reason}</p>
               </div>
               <div>
-                <p className="text-slate-500">Ghi chú khách</p>
-                <p className="font-medium">{returnRequest.evidenceNote || 'Không có'}</p>
+                <p className="text-slate-500">{t('returns.detail.customerNote')}</p>
+                <p className="font-medium">{returnRequest.evidenceNote || t('returns.detail.none')}</p>
               </div>
               <div>
-                <p className="text-slate-500">Ghi chú admin</p>
-                <p className="font-medium">{returnRequest.adminNote || 'Chưa có'}</p>
+                <p className="text-slate-500">{t('returns.detail.adminNote')}</p>
+                <p className="font-medium">{returnRequest.adminNote || t('returns.detail.noAdminNote')}</p>
               </div>
               {returnRequest.resolvedAt && (
                 <div className="flex items-center gap-2 text-sm text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <FiClock />
-                  Đã xử lý lúc {formatDateTime(returnRequest.resolvedAt)}
+                  {t('returns.detail.resolvedAt', { date: formatDateTime(returnRequest.resolvedAt) })}
                 </div>
               )}
             </div>
@@ -419,23 +423,23 @@ export default function ReturnDetail() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
               <FiDollarSign className="text-purple-600" />
-              Số tiền
+              {t('returns.detail.amountsTitle')}
             </h2>
             <div className="space-y-2 text-md">
               <div className="flex justify-between">
-                <span className="text-slate-500">Yêu cầu hoàn</span>
+                <span className="text-slate-500">{t('returns.detail.requestedAmount')}</span>
                 <span className="font-semibold">{formatPrice(Number(returnRequest.requestedAmount || 0))}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Số tiền duyệt</span>
+                <span className="text-slate-500">{t('returns.detail.approvedAmount')}</span>
                 <span className="font-semibold">
                   {returnRequest.approvedAmount != null
                     ? formatPrice(Number(returnRequest.approvedAmount || 0))
-                    : 'Chưa duyệt'}
+                    : t('returns.detail.notApprovedYet')}
                 </span>
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Đã hoàn thực tế</span>
+                <span className="text-slate-500">{t('returns.detail.refundedAmount')}</span>
                 <span className="font-bold text-emerald-600">{formatPrice(Number(returnRequest.refundAmount || 0))}</span>
               </div>
             </div>
@@ -443,20 +447,20 @@ export default function ReturnDetail() {
 
           {allowReview && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
-              <h2 className="text-lg font-bold">Duyệt yêu cầu</h2>
+              <h2 className="text-lg font-bold">{t('returns.detail.reviewTitle')}</h2>
               <input
                 type="number"
                 min={0}
                 step="1000"
                 value={approvedAmount}
                 onChange={(e) => setApprovedAmount(e.target.value)}
-                placeholder="Số tiền duyệt (để trống = full)"
+                placeholder={t('returns.detail.approvedAmountPlaceholder')}
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <textarea
                 value={reviewNote}
                 onChange={(e) => setReviewNote(e.target.value)}
-                placeholder="Ghi chú duyệt/từ chối"
+                placeholder={t('returns.detail.reviewNotePlaceholder')}
                 className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -467,7 +471,7 @@ export default function ReturnDetail() {
                   loading={isReviewing}
                   fullWidth
                 >
-                  Duyệt
+                  {t('returns.detail.approve')}
                 </Button>
                 <Button
                   variant="danger"
@@ -476,14 +480,14 @@ export default function ReturnDetail() {
                   loading={isReviewing}
                   fullWidth
                 >
-                  Từ chối
+                  {t('returns.detail.reject')}
                 </Button>
               </div>
             </div>
           )}
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
-            <h2 className="text-lg font-bold">Cập nhật trạng thái</h2>
+            <h2 className="text-lg font-bold">{t('returns.detail.updateStatusTitle')}</h2>
             <CustomSelect
               value={nextStatus || returnRequest.status}
               onChange={setNextStatus}
@@ -494,7 +498,7 @@ export default function ReturnDetail() {
             <textarea
               value={statusNote}
               onChange={(e) => setStatusNote(e.target.value)}
-              placeholder="Ghi chú cập nhật trạng thái"
+              placeholder={t('returns.detail.statusNotePlaceholder')}
               className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
             />
             <Button
@@ -505,30 +509,30 @@ export default function ReturnDetail() {
               disabled={statusOptions.length <= 1}
               fullWidth
             >
-              Lưu trạng thái
+              {t('returns.detail.saveStatus')}
             </Button>
           </div>
 
           {allowRefund && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
-              <h2 className="text-lg font-bold">Xác nhận hoàn tiền thủ công</h2>
+              <h2 className="text-lg font-bold">{t('returns.detail.refundTitle')}</h2>
               <input
                 type="number"
                 min={0}
                 step="1000"
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(e.target.value)}
-                placeholder="Số tiền hoàn (bắt buộc)"
+                placeholder={t('returns.detail.refundAmountPlaceholder')}
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <CustomSelect
                 value={refundProvider}
                 onChange={setRefundProvider}
                 options={[
-                  { value: 'MANUAL', label: 'Hoàn tiền thủ công (Cash/Bank)' },
-                  { value: 'VNPAY', label: 'Qua VNPAY' },
-                  { value: 'MOMO', label: 'Qua MOMO' },
-                  { value: 'BANK_TRANSFER', label: 'Chuyển khoản Ngân Hàng' },
+                  { value: 'MANUAL', label: t('returns.detail.refundProviders.manual') },
+                  { value: 'VNPAY', label: t('returns.detail.refundProviders.vnpay') },
+                  { value: 'MOMO', label: t('returns.detail.refundProviders.momo') },
+                  { value: 'BANK_TRANSFER', label: t('returns.detail.refundProviders.bankTransfer') },
                 ]}
                 className="w-full"
               />
@@ -536,26 +540,26 @@ export default function ReturnDetail() {
                 type="text"
                 value={transactionId}
                 onChange={(e) => setTransactionId(e.target.value)}
-                placeholder="Mã giao dịch hoàn tiền"
+                placeholder={t('returns.detail.transactionIdPlaceholder')}
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <textarea
                 value={refundAdminNote}
                 onChange={(e) => setRefundAdminNote(e.target.value)}
-                placeholder="Ghi chú admin về giao dịch hoàn tiền (bắt buộc)"
+                placeholder={t('returns.detail.refundAdminNotePlaceholder')}
                 className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
               />
               <input
                 type="text"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value.toUpperCase())}
-                placeholder="Đơn vị tiền tệ"
+                placeholder={t('returns.detail.currencyPlaceholder')}
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
               />
               <textarea
                 value={rawPayload}
                 onChange={(e) => setRawPayload(e.target.value)}
-                placeholder="Raw payload (optional)"
+                placeholder={t('returns.detail.rawPayloadPlaceholder')}
                 className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
               />
               <Button
@@ -565,7 +569,7 @@ export default function ReturnDetail() {
                 loading={isRefunding}
                 fullWidth
               >
-                Xác nhận hoàn tiền thủ công
+                {t('returns.detail.confirmRefund')}
               </Button>
             </div>
           )}

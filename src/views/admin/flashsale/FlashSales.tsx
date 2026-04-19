@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiZap, FiPlus } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import { adminFlashSaleService } from "@/apis";
@@ -17,6 +18,7 @@ import useAdminList from "@/hooks/useAdminList";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function FlashSales() {
+  const { t } = useTranslation("adminCatalog");
   const navigate = useNavigate();
   const {
     items: sales,
@@ -35,22 +37,26 @@ export default function FlashSales() {
     setDeleteTarget(null);
     try {
       await adminFlashSaleService.delete(id);
-      toast.success("Xóa Flash Sale thành công!");
+      toast.success(t("flashSales.list.toasts.deleteSuccess"));
       fetchSales({ silent: true });
     } catch (err: unknown) {
       console.error(err);
-      toast.error(getApiErrorMessage(err, "Xóa Flash Sale thất bại!"));
+      toast.error(
+        getApiErrorMessage(err, t("flashSales.list.toasts.deleteFailed")),
+      );
     }
   };
 
   const handleUpdateStatus = async (id: string, status: FlashSaleStatus) => {
     try {
       await adminFlashSaleService.updateStatus(id, status);
-      toast.success("Cập nhật trạng thái thành công!");
+      toast.success(t("flashSales.list.toasts.statusSuccess"));
       fetchSales({ silent: true });
     } catch (err: unknown) {
       console.error("Update status failed:", err);
-      toast.error(getApiErrorMessage(err, "Cập nhật trạng thái thất bại!"));
+      toast.error(
+        getApiErrorMessage(err, t("flashSales.list.toasts.statusFailed")),
+      );
     }
   };
 
@@ -58,14 +64,14 @@ export default function FlashSales() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-          <FiZap className="text-yellow-500" /> Quản lý Flash Sale
+          <FiZap className="text-yellow-500" /> {t("flashSales.list.title")}
         </h1>
         <PrimaryButton
           onClick={() => navigate("/admin/flash-sales/new")}
           icon={<FiPlus className="text-base" />}
           className="w-full sm:w-auto"
         >
-          Tạo Flash Sale
+          {t("flashSales.list.create")}
         </PrimaryButton>
       </div>
 
@@ -74,26 +80,40 @@ export default function FlashSales() {
           <table className="w-full min-w-[960px] text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md bg-slate-50/50 dark:bg-slate-800/50">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">STT</th>
-                <th className="p-3 sm:p-4 font-medium">Tên sự kiện</th>
-                <th className="p-3 sm:p-4 font-medium">Bắt đầu</th>
-                <th className="p-3 sm:p-4 font-medium">Kết thúc</th>
-                <th className="p-3 sm:p-4 font-medium">Sản phẩm</th>
-                <th className="p-3 sm:p-4 font-medium">Trạng thái</th>
-                <th className="p-3 sm:p-4 font-medium text-right">Thao tác</th>
+                <th className="p-3 sm:p-4 font-medium text-center w-20">
+                  {t("flashSales.list.table.index")}
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  {t("flashSales.list.table.name")}
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  {t("flashSales.list.table.start")}
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  {t("flashSales.list.table.end")}
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  {t("flashSales.list.table.products")}
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  {t("flashSales.list.table.status")}
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-right">
+                  {t("flashSales.list.table.actions")}
+                </th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-slate-400">
-                    Đang tải...
+                    {t("flashSales.list.loading")}
                   </td>
                 </tr>
               ) : sales.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-slate-400">
-                    Chưa có Flash Sale nào
+                    {t("flashSales.list.empty")}
                   </td>
                 </tr>
               ) : (
@@ -114,32 +134,34 @@ export default function FlashSales() {
                       )}
                     </td>
                     <td className="p-3 sm:p-4 text-md text-slate-500">
-                      {new Date(sale.startTime).toLocaleString("vi-VN")}
+                      {new Date(sale.startTime).toLocaleString()}
                     </td>
                     <td className="p-3 sm:p-4 text-md text-slate-500">
-                      {new Date(sale.endTime).toLocaleString("vi-VN")}
+                      {new Date(sale.endTime).toLocaleString()}
                     </td>
                     <td className="p-3 sm:p-4 text-md font-medium">
-                      {sale.items?.length || 0} SP
+                      {t("flashSales.list.productsCount", {
+                        count: sale.items?.length || 0,
+                      })}
                     </td>
                     <td className="p-3 sm:p-4">
                       <CustomSelect
                         value={sale.status}
                         options={[
                           {
-                            label: "Sắp diễn ra",
+                            label: t("flashSales.list.status.scheduled"),
                             value: "SCHEDULED",
                             colorClass:
                               "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20 hover:bg-yellow-100",
                           },
                           {
-                            label: "Đang diễn ra",
+                            label: t("flashSales.list.status.active"),
                             value: "ACTIVE",
                             colorClass:
                               "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 hover:bg-emerald-100",
                           },
                           {
-                            label: "Đã kết thúc",
+                            label: t("flashSales.list.status.ended"),
                             value: "ENDED",
                             colorClass:
                               "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-100",
@@ -181,7 +203,7 @@ export default function FlashSales() {
             totalPages={pageData.lastPage}
             totalItems={pageData.total}
             perPage={PAGE_SIZE.LARGE}
-            label="flash sale"
+            label={t("flashSales.list.pagination")}
             onPageChange={setPage}
           />
         )}
@@ -189,9 +211,9 @@ export default function FlashSales() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Xóa Flash Sale"
-        message="Bạn có chắc muốn xóa Flash Sale này? Thao tác này không thể hoàn tác."
-        confirmLabel="Xóa"
+        title={t("flashSales.list.deleteDialog.title")}
+        message={t("flashSales.list.deleteDialog.message")}
+        confirmLabel={t("flashSales.list.deleteDialog.confirm")}
         variant="danger"
         onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
         onCancel={() => setDeleteTarget(null)}

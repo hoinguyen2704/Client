@@ -1,9 +1,11 @@
 import { FiStar } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { StatusBadge, Card } from '@/components';
 import { formatPrice, formatDate } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 
 export default function DashboardBottom({ stats }: DashboardChildProps) {
+  const { t } = useTranslation('adminDashboard');
   // Build rating distribution from API data
   const ratingDist = stats.ratingDistribution || {};
   const totalReviews = Object.values(ratingDist).reduce((s, c) => s + c, 0) || 1;
@@ -21,22 +23,26 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
       {/* Recent Orders */}
       <Card className="lg:col-span-2 overflow-hidden">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-base sm:text-lg font-bold">Đơn hàng gần đây</h2>
+          <h2 className="text-base sm:text-lg font-bold">{t('overview.bottom.recentOrdersTitle')}</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
-                <th className="pb-3 font-medium">Mã đơn</th>
-                <th className="pb-3 font-medium">Khách hàng</th>
-                <th className="pb-3 font-medium">Ngày đặt</th>
-                <th className="pb-3 font-medium">Tổng tiền</th>
-                <th className="pb-3 font-medium">Trạng thái</th>
+                <th className="pb-3 font-medium">{t('tables.orders.orderNumber')}</th>
+                <th className="pb-3 font-medium">{t('tables.orders.customer')}</th>
+                <th className="pb-3 font-medium">{t('tables.orders.orderDate')}</th>
+                <th className="pb-3 font-medium">{t('tables.orders.total')}</th>
+                <th className="pb-3 font-medium">{t('tables.orders.status')}</th>
               </tr>
             </thead>
             <tbody>
               {(stats.recentOrders || []).length === 0 ? (
-                <tr><td colSpan={5} className="py-8 text-center text-slate-400">Chưa có đơn hàng</td></tr>
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-slate-400">
+                    {t('overview.bottom.emptyOrders')}
+                  </td>
+                </tr>
               ) : (
                 stats.recentOrders.map((order, index) => (
                   <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
@@ -55,18 +61,18 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
 
       {/* Review Stats */}
       <Card>
-        <h2 className="text-base sm:text-lg font-bold mb-4 sm:mb-6">Thống kê đánh giá</h2>
+        <h2 className="text-base sm:text-lg font-bold mb-4 sm:mb-6">{t('overview.bottom.reviewsTitle')}</h2>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="text-center">
             <div className="text-4xl sm:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-1">{avgRating}</div>
             <div className="flex justify-center text-yellow-400 text-md mb-1">
               {Array.from({ length: 5 }).map((_, i) => <FiStar key={i} className="fill-current" />)}
             </div>
-            <div className="text-sm text-slate-500">{totalReviews} đánh giá</div>
+            <div className="text-sm text-slate-500">{t('overview.bottom.totalReviews', { count: totalReviews })}</div>
           </div>
           <div className="flex-1">
             <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
-              <div className="text-md text-slate-500 mb-1">Tháng này</div>
+              <div className="text-md text-slate-500 mb-1">{t('overview.bottom.monthThis')}</div>
               <div className="text-xl font-bold text-purple-600 dark:text-purple-400">+{stats.newFeedbacks}</div>
             </div>
           </div>

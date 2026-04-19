@@ -52,7 +52,9 @@
     "customerTitle": "Customer",
     "fullName": "Full name",
     "phone": "Phone",
+    "email": "Email",
     "shippingTitle": "Shipping",
+    "shippingAddressFallback": "Store pickup",
     "paymentTitle": "Payment",
     "paymentMethod": "Method",
     "paymentStatus": "Status",
@@ -78,7 +80,8 @@
       "buyer": "Buyer",
       "seller": "Seller",
       "signatureHint": "(Signature, full name)",
-      "thanks": "Thank you for shopping at {{shopName}}!"
+      "thanks": "Thank you for shopping at {{shopName}}!",
+      "variantPrefix": "Variant: {{name}}"
     },
     "toasts": {
       "statusUpdated": "Order status updated successfully!",
@@ -88,10 +91,56 @@
     }
   },
   "returns": {
+    "list": {
+      "title": "Returns / refunds",
+      "description": "Customer return requests and refund processing status.",
+      "export": "Export Excel",
+      "searchPlaceholder": "Search by return number, order number, customer name/email...",
+      "stats": {
+        "pageTotal": "Items on this page",
+        "pendingReview": "Pending review",
+        "inProgress": "In progress",
+        "refundPending": "Awaiting refund"
+      },
+      "table": {
+        "index": "No.",
+        "returnNumber": "Return number",
+        "orderNumber": "Order number",
+        "customer": "Customer",
+        "requestedAmount": "Requested refund",
+        "status": "Status",
+        "createdAt": "Created at",
+        "actions": "Actions"
+      },
+      "mobile": {
+        "returnNumber": "Return number:",
+        "orderNumber": "Order number:",
+        "customer": "Customer:",
+        "requestedAmount": "Requested refund:",
+        "status": "Status:",
+        "createdAt": "Created at:"
+      },
+      "empty": "No return requests found",
+      "unknownUser": "Unknown",
+      "quickApprove": "✓ Approve",
+      "quickReject": "✗ Reject",
+      "pagination": "return requests",
+      "notes": {
+        "quickApprove": "Quick approval from the list",
+        "quickReject": "Quick rejection from the list"
+      },
+      "toasts": {
+        "reviewApproved": "Return request approved",
+        "reviewRejected": "Return request rejected",
+        "exportSuccess": "Excel exported successfully!",
+        "exportFailed": "Failed to export Excel!"
+      }
+    },
     "detail": {
       "notFound": "Return request not found",
       "orderLabel": "Order",
       "createdAtLabel": "Created at",
+      "timelineRequested": "New request",
       "itemsTitle": "Returned items",
       "table": {
         "product": "Product",
@@ -105,6 +154,7 @@
       "refundTransactionsEmpty": "There are no refund transactions for this request yet.",
       "refundTransactionsTable": {
         "time": "Time",
+        "provider": "Provider",
         "transactionId": "Transaction ID",
         "amount": "Amount",
         "status": "Status"
@@ -136,9 +186,12 @@
       "transactionIdPlaceholder": "Refund transaction ID",
       "refundAdminNotePlaceholder": "Admin note for the refund transaction (required)",
       "currencyPlaceholder": "Currency",
+      "rawPayloadPlaceholder": "Raw payload (optional)",
       "confirmRefund": "Confirm manual refund",
       "refundProviders": {
         "manual": "Manual refund (Cash/Bank)",
+        "vnpay": "Via VNPAY",
+        "momo": "Via MOMO",
         "bankTransfer": "Bank transfer"
       },
       "toasts": {
@@ -154,6 +207,98 @@
         "refundAdminNoteRequired": "Please enter an admin note for the refund",
         "refundSuccess": "Manual refund processed successfully"
       }
+    }
+  },
+  "vouchers": {
+    "title": "Voucher management",
+    "create": "Create new voucher",
+    "searchPlaceholder": "Search by voucher code...",
+    "empty": "No vouchers found",
+    "pagination": "vouchers",
+    "table": {
+      "index": "No.",
+      "code": "Voucher code",
+      "typeValue": "Type / Value",
+      "used": "Used",
+      "time": "Time",
+      "visibility": "Visibility",
+      "scope": "Scope",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "meta": {
+      "product": "Product",
+      "freeship": "Free shipping",
+      "percentage": "Percent off",
+      "fixed": "Fixed amount",
+      "from": "From",
+      "to": "To",
+      "public": "Public",
+      "private": "Private",
+      "all": "All",
+      "active": "Active",
+      "inactive": "Paused",
+      "pause": "Pause",
+      "activate": "Activate",
+      "applyCount": "{{count}} items"
+    },
+    "modal": {
+      "createTitle": "Create new voucher",
+      "editTitle": "Edit voucher",
+      "cancel": "Cancel",
+      "save": "Save voucher",
+      "update": "Update"
+    },
+    "form": {
+      "codeLabel": "Voucher code",
+      "codePlaceholder": "E.g. SUMMER2024",
+      "discountTypeLabel": "Discount type",
+      "percentage": "Percentage",
+      "fixedAmount": "Fixed amount",
+      "couponCategoryLabel": "Voucher group",
+      "productVoucher": "Product voucher (platform / shop)",
+      "shippingVoucher": "Shipping voucher",
+      "shippingCapLabel": "Max shipping support",
+      "shippingCapPlaceholder": "Empty = 100% free shipping",
+      "discountValueLabel": "Discount value",
+      "discountValuePlaceholder": "E.g. 10",
+      "minOrderValueLabel": "Minimum order value",
+      "usageLimitLabel": "Usage limit",
+      "maxDiscountAmountLabel": "Maximum discount (percentage only)",
+      "maxDiscountAmountPlaceholder": "Empty = unlimited",
+      "startDateLabel": "Start time",
+      "endDateLabel": "End time",
+      "visibilityTitle": "Public visibility",
+      "visibilityPublicDescription": "The voucher is visible on customer pages so they can save and use it.",
+      "visibilityPrivateDescription": "The voucher only works when customers enter the exact code.",
+      "applyScopeLabel": "Apply scope",
+      "applyAllTitle": "🛒 All products",
+      "applyAllDescription": "Applies to the whole order",
+      "applySpecificTitle": "📦 Specific products",
+      "applySpecificDescription": "Only discounts selected products",
+      "applySpecificHint": "💡 Specific product selection will be added in a later release. For now the voucher still applies to all products."
+    },
+    "toasts": {
+      "toggleSuccess": "Voucher status updated successfully!",
+      "toggleFailed": "Failed to update voucher status!",
+      "updateSuccess": "Voucher updated successfully!",
+      "createSuccess": "Voucher created successfully!",
+      "saveFailed": "Voucher action failed!"
+    }
+  },
+  "feedbacks": {
+    "title": "Review moderation",
+    "empty": "No reviews found",
+    "productLabel": "Product",
+    "adminLabel": "Admin",
+    "reply": "Reply",
+    "replyPlaceholder": "Enter your reply...",
+    "send": "Send",
+    "pagination": "reviews",
+    "toasts": {
+      "loadFailed": "Failed to load review list!",
+      "statusFailed": "Failed to update review status!",
+      "replyFailed": "Failed to send review reply!"
     }
   }
 }

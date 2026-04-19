@@ -5,9 +5,61 @@
     "total": "Total:",
     "noEmail": "No email",
     "defaultVariant": "Default",
+    "refreshing": "Refreshing data...",
     "loadingVariants": "Loading variant data...",
     "detailsVisible": "Detailed data is being displayed...",
     "reviewsSummary": "Based on {{count}} aggregated reviews",
+    "charts": {
+      "orders": {
+        "title": "Order overview",
+        "summaryTotal": "Total orders (period)",
+        "summaryNew": "New orders",
+        "summaryReturns": "Cancelled/Returned",
+        "summaryPeak": "Peak",
+        "empty": "No order data yet",
+        "tooltipSeries": "Orders"
+      },
+      "revenue": {
+        "title": "Revenue chart",
+        "summaryTotal": "Total revenue",
+        "summaryAverage": "Average",
+        "summaryPeak": "Peak ({{label}})",
+        "empty": "No revenue data yet",
+        "tooltipSeries": "Revenue"
+      },
+      "categories": {
+        "title": "Units sold by category",
+        "empty": "No category data yet",
+        "legendSold": "Units sold",
+        "tooltipValue": "{{count}} products",
+        "tooltipSeries": "Units sold"
+      }
+    },
+    "lists": {
+      "topProductsTitle": "Top-selling products",
+      "featuredCategoriesTitle": "Featured categories",
+      "potentialCustomersTitle": "High-value customers",
+      "empty": "No data yet",
+      "soldSuffix": "{{count}} sold",
+      "categorySoldSuffix": "{{count}} items ({{percent}}%)",
+      "ordersSuffix": "{{count}} orders",
+      "imageFallback": "N/A"
+    },
+    "bottom": {
+      "recentOrdersTitle": "Recent orders",
+      "reviewsTitle": "Review stats",
+      "emptyOrders": "No recent orders",
+      "totalReviews": "{{count}} reviews",
+      "monthThis": "This month"
+    },
+    "loading": {
+      "recentOrders": "Loading recent orders...",
+      "revenue": "Loading revenue data...",
+      "customers": "Loading top customers...",
+      "products": "Loading top products...",
+      "variants": "Loading top variants...",
+      "reviews": "Loading review stats..."
+    },
     "returns": {
       "cancelledTitle": "Cancelled orders",
       "cancelledDescription": "Customers cancelled or failed to complete payment",

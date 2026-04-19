@@ -1,11 +1,13 @@
 import { FiLoader, FiSave } from "react-icons/fi";
 import { Button, PrimaryButton, BackButton } from "@/components";
+import { useTranslation } from "react-i18next";
 import useProductForm from "./hooks/useProductForm";
 import BasicInfoSection from "./sections/BasicInfoSection";
 import ImageUploadSection from "./sections/ImageUploadSection";
 import StatusPricingSection from "./sections/StatusPricingSection";
 
 export default function ProductForm() {
+  const { t } = useTranslation("adminCatalog");
   const form = useProductForm();
   const basicInfoSectionProps = {
     name: form.name, setName: form.setName,
@@ -46,7 +48,7 @@ export default function ProductForm() {
         <div className="flex flex-col items-center gap-3">
           <FiLoader className="text-3xl text-purple-500 animate-spin" />
           <span className="text-slate-500 font-medium">
-            Đang tải sản phẩm...
+            {t("productForm.loading")}
           </span>
         </div>
       </div>
@@ -60,7 +62,9 @@ export default function ProductForm() {
         <div className="flex items-center gap-3 sm:gap-4">
           <BackButton to="/admin/products" />
           <h1 className="text-xl sm:text-2xl font-bold">
-            {form.isEditMode ? "Sửa sản phẩm" : "Thêm sản phẩm mới"}
+            {form.isEditMode
+              ? t("productForm.editTitle")
+              : t("productForm.createTitle")}
           </h1>
         </div>
         <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
@@ -71,7 +75,7 @@ export default function ProductForm() {
               size="md"
               className="flex-1 sm:flex-none"
             >
-              Quản lý phân loại
+              {t("productForm.manageVariants")}
             </Button>
           )}
           <Button
@@ -80,7 +84,7 @@ export default function ProductForm() {
             size="md"
             className="flex-1 sm:flex-none"
           >
-            Hủy
+            {t("productForm.cancel")}
           </Button>
           <PrimaryButton
             onClick={form.handleSubmit}
@@ -88,7 +92,7 @@ export default function ProductForm() {
             icon={form.saving ? <FiLoader className="animate-spin" /> : <FiSave />}
             className="flex-1 sm:flex-none"
           >
-            {form.isEditMode ? "Cập nhật" : "Lưu sản phẩm"}
+            {form.isEditMode ? t("productForm.update") : t("productForm.save")}
           </PrimaryButton>
         </div>
       </div>
@@ -109,11 +113,13 @@ export default function ProductForm() {
                 <div>
                   <p className="font-semibold">
                     {form.hasVariants
-                      ? `Sản phẩm đang có ${form.variantCount} phân loại.`
-                      : "Sản phẩm chưa có phân loại nào."}
+                      ? t("productForm.variantNoticeWithCount", {
+                          count: form.variantCount,
+                        })
+                      : t("productForm.variantNoticeEmpty")}
                   </p>
                   <p className="text-sm">
-                    SKU, giá bán, tồn kho và ảnh theo phân loại được quản lý ở màn riêng.
+                    {t("productForm.variantNoticeDescription")}
                   </p>
                 </div>
                 <Button
@@ -122,7 +128,7 @@ export default function ProductForm() {
                   size="md"
                   className="w-full sm:w-auto"
                 >
-                  Quản lý phân loại
+                  {t("productForm.manageVariants")}
                 </Button>
               </div>
             </div>

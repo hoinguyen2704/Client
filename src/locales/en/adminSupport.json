@@ -43,5 +43,122 @@
     "replyPlaceholder": "Type your reply...",
     "send": "Send",
     "emptyDetail": "Choose a ticket to view details"
+  },
+  "chatbot": {
+    "title": "AI Chatbot Management",
+    "subtitle": "Powered by Gemini AI - Model: {{model}}",
+    "actions": {
+      "reset": "Restore defaults",
+      "retry": "Retry",
+      "save": "Save configuration",
+      "saving": "Saving...",
+      "addSuggestion": "Add",
+      "enable": "Enable chatbot",
+      "disable": "Disable chatbot"
+    },
+    "states": {
+      "loading": "Loading configuration...",
+      "connectionFailed": "Unable to connect to the Chatbot Server",
+      "dirty": "You have unsaved changes"
+    },
+    "tabs": {
+      "settings": "Settings",
+      "overview": "Overview"
+    },
+    "sections": {
+      "shopInfo": {
+        "title": "Store information",
+        "description": "This information is injected into the system prompt so the bot can introduce the store to customers.",
+        "fields": {
+          "name": "Store name",
+          "slogan": "Slogan",
+          "address": "Address",
+          "hotline": "Hotline",
+          "email": "Support email",
+          "website": "Website"
+        }
+      },
+      "ai": {
+        "title": "AI configuration",
+        "description": "Adjust the model, creativity temperature, and the bot behavior rules.",
+        "fields": {
+          "model": "AI model",
+          "temperature": "Temperature: {{value}}",
+          "systemPrompt": "System prompt (behavior rules)"
+        },
+        "temperatureExact": "0 - Precise",
+        "temperatureCreative": "1 - Creative",
+        "systemPromptPlaceholder": "Enter chatbot rules...",
+        "systemPromptHint": "Each line that starts with '-' is treated as a rule. Changes immediately affect how the bot responds."
+      },
+      "runtime": {
+        "title": "Runtime parameters",
+        "fields": {
+          "maxProducts": "Maximum products per reply",
+          "maxRetries": "Retry attempts when AI fails",
+          "planTimeoutMs": "AI analysis timeout (ms)",
+          "dbTimeoutMs": "Database query timeout (ms)"
+        },
+        "hints": {
+          "maxProducts": "Default: 3. Higher values make replies longer and consume more tokens; increase only when you really need more results.",
+          "maxRetries": "Default: 1. Number of retries when the Gemini API times out or fails.",
+          "planTimeoutMs": "Default: 25000ms. Time allowed for AI analysis.",
+          "dbTimeoutMs": "Default: 6000ms. Time allowed for database queries."
+        }
+      },
+      "status": {
+        "title": "Chatbot status",
+        "enabledDescription": "The chatbot is active on the customer-facing site.",
+        "disabledDescription": "The chatbot is off - customers cannot see the widget."
+      },
+      "widget": {
+        "title": "Widget appearance",
+        "fields": {
+          "botName": "Bot name",
+          "subtitle": "Subtitle",
+          "themeColor": "Primary color",
+          "avatar": "Bot avatar"
+        },
+        "avatarPlaceholder": "Avatar image URL...",
+        "avatarAlt": "Bot avatar"
+      },
+      "welcome": {
+        "title": "Welcome message",
+        "placeholder": "Greeting shown when the chatbot opens...",
+        "hint": "Markdown is supported: **bold**, *italic*, - list"
+      },
+      "suggestions": {
+        "title": "Quick suggestions",
+        "description": "Suggestion chips displayed under the welcome message.",
+        "newPlaceholder": "Add a new suggestion..."
+      }
+    },
+    "overview": {
+      "notAvailable": "N/A",
+      "configTitle": "Current configuration (JSON)",
+      "cards": {
+        "status": "Status",
+        "active": "Active",
+        "disabled": "Disabled",
+        "model": "AI model",
+        "modelDescription": "Temperature: {{value}}",
+        "store": "Store",
+        "storeDescription": "Hotline: {{value}}",
+        "suggestions": "Quick suggestions",
+        "suggestionsDescription": "{{count}} active suggestions"
+      }
+    },
+    "resetDialog": {
+      "title": "Restore defaults",
+      "message": "Are you sure you want to restore the entire configuration to its default values? This action cannot be undone.",
+      "confirm": "Restore"
+    },
+    "toasts": {
+      "loadFailed": "Unable to load chatbot configuration",
+      "saveSuccess": "Configuration updated successfully!",
+      "saveFailed": "Failed to save configuration",
+      "resetSuccess": "Default configuration restored!",
+      "resetFailed": "Failed to restore configuration"
+    }
   }
 }
