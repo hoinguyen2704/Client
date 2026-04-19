@@ -1,13 +1,8 @@
 import {
-  FiPlus,
   FiCheckSquare,
   FiSquare,
-  FiChevronDown,
-  FiCheck,
-  FiSearch,
-  FiLoader,
 } from "react-icons/fi";
-import { ExpandToggle } from "@/components";
+import { ExpandToggle, SearchableDropdown } from "@/components";
 import type { BasicInfoSectionProps } from "./types";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,19 +26,9 @@ export default memo(function BasicInfoSection(props: Props) {
     specs, setSpecs,
     categories,
     brands,
-    showCategoryDropdown, setShowCategoryDropdown,
-    showBrandDropdown, setShowBrandDropdown,
-    categorySearch, setCategorySearch,
-    brandSearch, setBrandSearch,
-    categoryDropdownRef,
-    brandDropdownRef,
     showTemplatePopup, setShowTemplatePopup,
     templatePopupRef,
-    isCreatingCategory, setIsCreatingCategory,
-    newCategoryName, setNewCategoryName,
     savingCategory,
-    isCreatingBrand, setIsCreatingBrand,
-    newBrandName, setNewBrandName,
     savingBrand,
     getTemplateKeys,
     getHintForSpec,
@@ -107,320 +92,33 @@ export default memo(function BasicInfoSection(props: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Category Dropdown */}
-          <div>
-            <label className="block font-medium mb-2">{t("basicInfo.category")} *</label>
-            <div className="relative" ref={categoryDropdownRef}>
-              <button
-                type="button"
-                onClick={() => {
-                  if (categoryLocked) return;
-                  setShowCategoryDropdown(!showCategoryDropdown);
-                  setCategorySearch("");
-                }}
-                disabled={categoryLocked}
-                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                <span
-                  className={
-                    categoryId
-                      ? "text-slate-900 dark:text-slate-100"
-                      : "text-slate-400"
-                  }
-                >
-                  {categoryId
-                    ? categories.find((c) => c.id === categoryId)?.name ||
-                      t("basicInfo.selectCategory")
-                    : t("basicInfo.selectCategory")}
-                </span>
-                <FiChevronDown
-                  className={`text-slate-400 transition-transform ${showCategoryDropdown ? "rotate-180" : ""}`}
-                />
-              </button>
-              {showCategoryDropdown && (
-                <div className="absolute left-0 top-full mt-2 w-full bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
-                  <div className="p-2 border-b border-slate-100 dark:border-slate-700">
-                    <div className="relative">
-                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-md" />
-                      <input
-                        type="text"
-                        value={categorySearch}
-                        onChange={(e) => setCategorySearch(e.target.value)}
-                        placeholder={t("basicInfo.placeholders.categorySearch")}
-                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
-                        autoFocus
-                      />
-                    </div>
-                  </div>
-                  <div className="max-h-48 overflow-y-auto p-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCategoryId("");
-                        setShowCategoryDropdown(false);
-                      }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
-                        !categoryId
-                          ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
-                          : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
-                      }`}
-                    >
-                      {!categoryId && (
-                        <FiCheck className="text-purple-500 flex-shrink-0" />
-                      )}
-                      <span className={!categoryId ? "" : "ml-5"}>
-                        {t("basicInfo.selectCategory")}
-                      </span>
-                    </button>
-                    {categories
-                      .filter((c) =>
-                        c.name
-                          .toLowerCase()
-                          .includes(categorySearch.toLowerCase()),
-                      )
-                      .map((cat) => (
-                        <button
-                          type="button"
-                          key={cat.id}
-                          onClick={() => {
-                            setCategoryId(cat.id);
-                            setShowCategoryDropdown(false);
-                            setCategorySearch("");
-                          }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
-                            categoryId === cat.id
-                              ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
-                              : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
-                          }`}
-                        >
-                          {categoryId === cat.id && (
-                            <FiCheck className="text-purple-500 flex-shrink-0" />
-                          )}
-                          <span
-                            className={categoryId === cat.id ? "" : "ml-5"}
-                          >
-                            {cat.name}
-                          </span>
-                        </button>
-                      ))}
-                  </div>
-                  {/* Inline create category */}
-                  <div className="border-t border-slate-100 dark:border-slate-700 p-2">
-                    {isCreatingCategory ? (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={newCategoryName}
-                          onChange={(e) =>
-                            setNewCategoryName(e.target.value)
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              handleCreateCategory();
-                            }
-                            if (e.key === "Escape")
-                              setIsCreatingCategory(false);
-                          }}
-                          placeholder={t("basicInfo.placeholders.newCategory")}
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
-                          autoFocus
-                        />
-                        <button
-                          type="button"
-                          onClick={handleCreateCategory}
-                          disabled={
-                            savingCategory || !newCategoryName.trim()
-                          }
-                          className="h-8 px-3 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
-                        >
-                          {savingCategory ? (
-                            <FiLoader className="animate-spin text-sm" />
-                          ) : (
-                            <FiCheck className="text-sm" />
-                          )}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsCreatingCategory(false);
-                            setNewCategoryName("");
-                          }}
-                          className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm transition-colors"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setIsCreatingCategory(true)}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-                      >
-                        <FiPlus className="text-sm" /> {t("basicInfo.addCategory")}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-            {categoryLocked && (
-              <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
-                {t("basicInfo.categoryLocked")}
-              </p>
-            )}
-          </div>
+          <SearchableDropdown
+            label={t("basicInfo.category")}
+            value={categoryId}
+            onChange={setCategoryId}
+            items={categories}
+            placeholder={t("basicInfo.selectCategory")}
+            searchPlaceholder={t("basicInfo.placeholders.categorySearch")}
+            disabled={categoryLocked}
+            lockedMessage={t("basicInfo.categoryLocked")}
+            onCreateNew={handleCreateCategory}
+            isCreatingProcess={savingCategory}
+            createPlaceholder={t("basicInfo.placeholders.newCategory")}
+            createAddLabel={t("basicInfo.addCategory")}
+          />
           {/* Brand Dropdown */}
-          <div>
-            <label className="block font-medium mb-2">{t("basicInfo.brand")} *</label>
-            <div className="relative" ref={brandDropdownRef}>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowBrandDropdown(!showBrandDropdown);
-                  setBrandSearch("");
-                }}
-                className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
-              >
-                <span
-                  className={
-                    brandId
-                      ? "text-slate-900 dark:text-slate-100"
-                      : "text-slate-400"
-                  }
-                >
-                  {brandId
-                    ? brands.find((b) => b.id === brandId)?.name ||
-                      t("basicInfo.selectBrand")
-                    : t("basicInfo.selectBrand")}
-                </span>
-                <FiChevronDown
-                  className={`text-slate-400 transition-transform ${showBrandDropdown ? "rotate-180" : ""}`}
-                />
-              </button>
-              {showBrandDropdown && (
-                <div className="absolute left-0 top-full mt-2 w-full bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
-                  <div className="p-2 border-b border-slate-100 dark:border-slate-700">
-                    <div className="relative">
-                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-md" />
-                      <input
-                        type="text"
-                        value={brandSearch}
-                        onChange={(e) => setBrandSearch(e.target.value)}
-                        placeholder={t("basicInfo.placeholders.brandSearch")}
-                        className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
-                        autoFocus
-                      />
-                    </div>
-                  </div>
-                  <div className="max-h-48 overflow-y-auto p-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setBrandId("");
-                        setShowBrandDropdown(false);
-                      }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
-                        !brandId
-                          ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
-                          : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
-                      }`}
-                    >
-                      {!brandId && (
-                        <FiCheck className="text-purple-500 flex-shrink-0" />
-                      )}
-                      <span className={!brandId ? "" : "ml-5"}>
-                        {t("basicInfo.selectBrand")}
-                      </span>
-                    </button>
-                    {brands
-                      .filter((b) =>
-                        b.name
-                          .toLowerCase()
-                          .includes(brandSearch.toLowerCase()),
-                      )
-                      .map((brand) => (
-                        <button
-                          type="button"
-                          key={brand.id}
-                          onClick={() => {
-                            setBrandId(brand.id);
-                            setShowBrandDropdown(false);
-                            setBrandSearch("");
-                          }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
-                            brandId === brand.id
-                              ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
-                              : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
-                          }`}
-                        >
-                          {brandId === brand.id && (
-                            <FiCheck className="text-purple-500 flex-shrink-0" />
-                          )}
-                          <span
-                            className={brandId === brand.id ? "" : "ml-5"}
-                          >
-                            {brand.name}
-                          </span>
-                        </button>
-                      ))}
-                  </div>
-                  {/* Inline create brand */}
-                  <div className="border-t border-slate-100 dark:border-slate-700 p-2">
-                    {isCreatingBrand ? (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={newBrandName}
-                          onChange={(e) => setNewBrandName(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              handleCreateBrand();
-                            }
-                            if (e.key === "Escape")
-                              setIsCreatingBrand(false);
-                          }}
-                          placeholder={t("basicInfo.placeholders.newBrand")}
-                          className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
-                          autoFocus
-                        />
-                        <button
-                          type="button"
-                          onClick={handleCreateBrand}
-                          disabled={savingBrand || !newBrandName.trim()}
-                          className="h-8 px-3 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
-                        >
-                          {savingBrand ? (
-                            <FiLoader className="animate-spin text-sm" />
-                          ) : (
-                            <FiCheck className="text-sm" />
-                          )}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsCreatingBrand(false);
-                            setNewBrandName("");
-                          }}
-                          className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm transition-colors"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setIsCreatingBrand(true)}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-                      >
-                        <FiPlus className="text-sm" /> {t("basicInfo.addBrand")}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <SearchableDropdown
+            label={t("basicInfo.brand")}
+            value={brandId}
+            onChange={setBrandId}
+            items={brands}
+            placeholder={t("basicInfo.selectBrand")}
+            searchPlaceholder={t("basicInfo.placeholders.brandSearch")}
+            onCreateNew={handleCreateBrand}
+            isCreatingProcess={savingBrand}
+            createPlaceholder={t("basicInfo.placeholders.newBrand")}
+            createAddLabel={t("basicInfo.addBrand")}
+          />
         </div>
 
         <div>

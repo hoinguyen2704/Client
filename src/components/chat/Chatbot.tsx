@@ -18,6 +18,12 @@ import type {
 import type { Message } from "../ui/types";
 import { SHOP } from "@/constants/shopConstants";
 
+interface ChatbotProps {
+  isOpen: boolean;
+  isAnotherChatOpen?: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
 const DEFAULT_CONFIG: WidgetConfig = {
   bot: {
     name: `${SHOP.name} AI`,
@@ -43,9 +49,12 @@ function clipHistoryContent(input: string, maxChars: number): string {
   return `${normalized.slice(0, Math.max(0, maxChars - 1)).trimEnd()}…`;
 }
 
-export default function Chatbot() {
+export default function Chatbot({
+  isOpen,
+  isAnotherChatOpen = false,
+  onOpenChange,
+}: ChatbotProps) {
   const { t } = useTranslation("layout");
-  const [isOpen, setIsOpen] = useState(false);
   const [widgetConfig, setWidgetConfig] =
     useState<WidgetConfig>(DEFAULT_CONFIG);
   const [configLoaded, setConfigLoaded] = useState(false);
@@ -231,10 +240,10 @@ export default function Chatbot() {
     <>
       {/* Floating Button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => onOpenChange(true)}
         className={
-          "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-50 overflow-hidden " +
-          (isOpen ? "hidden" : "")
+          "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-[60] overflow-hidden " +
+          (isOpen || isAnotherChatOpen ? "hidden" : "")
         }
         style={{ ...gradientStyle, ...shadowStyle }}
         aria-label={t("chatbot.openAria")}
@@ -260,7 +269,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed z-50 bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden right-3 bottom-16 w-[280px] max-w-[82vw] h-[min(70dvh,560px)] sm:right-6 sm:bottom-6 sm:w-[420px] sm:h-[560px] sm:max-w-[90vw] sm:max-h-[90vh] resize-none sm:resize"
+            className="fixed z-[70] bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden right-3 bottom-16 w-[280px] max-w-[82vw] h-[min(70dvh,560px)] sm:right-6 sm:bottom-6 sm:w-[420px] sm:h-[560px] sm:max-w-[90vw] sm:max-h-[90vh] resize-none sm:resize"
           >
             {/* Header */}
             <div
@@ -295,7 +304,7 @@ export default function Chatbot() {
                   <FiTrash2 className="text-base" />
                 </button>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => onOpenChange(false)}
                   className="w-8 h-8 flex items-center justify-center hover:bg-white/20 rounded-full transition-colors"
                 >
                   <FiX className="text-xl" />

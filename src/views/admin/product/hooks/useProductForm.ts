@@ -60,20 +60,10 @@ export default function useProductForm() {
 
   const [showTemplatePopup, setShowTemplatePopup] = useState(false);
   const templatePopupRef = useRef<HTMLDivElement>(null);
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [showBrandDropdown, setShowBrandDropdown] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-  const [categorySearch, setCategorySearch] = useState("");
-  const [brandSearch, setBrandSearch] = useState("");
-  const categoryDropdownRef = useRef<HTMLDivElement>(null);
-  const brandDropdownRef = useRef<HTMLDivElement>(null);
   const statusDropdownRef = useRef<HTMLDivElement>(null);
 
-  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState("");
   const [savingCategory, setSavingCategory] = useState(false);
-  const [isCreatingBrand, setIsCreatingBrand] = useState(false);
-  const [newBrandName, setNewBrandName] = useState("");
   const [savingBrand, setSavingBrand] = useState(false);
 
   const selectedCategory = useMemo(
@@ -119,20 +109,6 @@ export default function useProductForm() {
         setShowTemplatePopup(false);
       }
       if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(e.target as Node)
-      ) {
-        setShowCategoryDropdown(false);
-        setCategorySearch("");
-      }
-      if (
-        brandDropdownRef.current &&
-        !brandDropdownRef.current.contains(e.target as Node)
-      ) {
-        setShowBrandDropdown(false);
-        setBrandSearch("");
-      }
-      if (
         statusDropdownRef.current &&
         !statusDropdownRef.current.contains(e.target as Node)
       ) {
@@ -175,18 +151,16 @@ export default function useProductForm() {
     }
   }, []);
 
-  const handleCreateCategory = async () => {
-    if (!newCategoryName.trim()) return;
+  const handleCreateCategory = async (name: string) => {
+    if (!name.trim()) return;
     setSavingCategory(true);
     try {
       const res = await adminCategoryService.create({
-        name: newCategoryName.trim(),
+        name: name.trim(),
       });
       const newCat = res.data;
       setCategories((prev) => [...prev, newCat]);
       setCategoryId(newCat.id);
-      setNewCategoryName("");
-      setIsCreatingCategory(false);
       toast.success(
         t("categories.toasts.inlineCreateSuccess", { name: newCat.name }),
       );
@@ -197,16 +171,14 @@ export default function useProductForm() {
     }
   };
 
-  const handleCreateBrand = async () => {
-    if (!newBrandName.trim()) return;
+  const handleCreateBrand = async (name: string) => {
+    if (!name.trim()) return;
     setSavingBrand(true);
     try {
-      const res = await adminBrandService.create({ name: newBrandName.trim() });
+      const res = await adminBrandService.create({ name: name.trim() });
       const newBrand = res.data;
       setBrands((prev) => [...prev, newBrand]);
       setBrandId(newBrand.id);
-      setNewBrandName("");
-      setIsCreatingBrand(false);
       toast.success(
         t("brands.toasts.inlineCreateSuccess", { name: newBrand.name }),
       );
@@ -437,29 +409,11 @@ export default function useProductForm() {
     showTemplatePopup,
     setShowTemplatePopup,
     templatePopupRef,
-    showCategoryDropdown,
-    setShowCategoryDropdown,
-    showBrandDropdown,
-    setShowBrandDropdown,
     showStatusDropdown,
     setShowStatusDropdown,
-    categorySearch,
-    setCategorySearch,
-    brandSearch,
-    setBrandSearch,
-    categoryDropdownRef,
-    brandDropdownRef,
     statusDropdownRef,
 
-    isCreatingCategory,
-    setIsCreatingCategory,
-    newCategoryName,
-    setNewCategoryName,
     savingCategory,
-    isCreatingBrand,
-    setIsCreatingBrand,
-    newBrandName,
-    setNewBrandName,
     savingBrand,
 
     getSelectedCategoryTemplates,

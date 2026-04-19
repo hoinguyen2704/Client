@@ -10,9 +10,12 @@ import useAuthStore from '@/stores/useAuthStore';
 import useUIStore from '@/stores/useUIStore';
 import { useScrollToTop } from '@/hooks';
 
+type ActiveChatWidget = 'chatbot' | 'support' | null;
+
 export default function MainLayout() {
   useScrollToTop();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeChatWidget, setActiveChatWidget] = useState<ActiveChatWidget>(null);
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const darkMode = useUIStore((s) => s.darkMode);
@@ -59,8 +62,18 @@ export default function MainLayout() {
 
       <Footer />
       <RealtimeBridge />
-      {user?.role !== 'ADMIN' && <SupportChatWidget />}
-      <Chatbot />
+      {user?.role !== 'ADMIN' && (
+        <SupportChatWidget
+          isOpen={activeChatWidget === 'support'}
+          isAnotherChatOpen={activeChatWidget === 'chatbot'}
+          onOpenChange={(open) => setActiveChatWidget(open ? 'support' : null)}
+        />
+      )}
+      <Chatbot
+        isOpen={activeChatWidget === 'chatbot'}
+        isAnotherChatOpen={activeChatWidget === 'support'}
+        onOpenChange={(open) => setActiveChatWidget(open ? 'chatbot' : null)}
+      />
     </div>
   );
 }

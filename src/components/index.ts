@@ -40,6 +40,7 @@ export { default as Radio } from "./input/Radio";
 export { default as QuantitySelector } from "./input/QuantitySelector";
 export { StatusTimeline } from "./ui/StatusTimeline";
 export { default as SlidingTabs } from "./ui/SlidingTabs";
+export { default as SearchableDropdown } from "./input/SearchableDropdown";
 
 //  Types (re-export for convenience)
 export * from "./ui/types";
