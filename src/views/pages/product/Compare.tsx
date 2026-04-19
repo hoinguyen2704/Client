@@ -23,7 +23,7 @@ const toCompareSpecs = (
   if (!specs || specs.length === 0) return {};
   return Object.fromEntries(
     specs
-      .filter((spec) => spec?.name)
+      .filter((spec) => spec?.name && spec?.value?.trim())
       .map((spec) => [spec.name, spec.value ?? ""]),
   );
 };

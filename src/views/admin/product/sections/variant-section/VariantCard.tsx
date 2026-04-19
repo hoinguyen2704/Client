@@ -1,19 +1,11 @@
 import { memo, type ChangeEvent, useEffect, useRef } from "react";
-import {
-  FiEye,
-  FiEyeOff,
-  FiLoader,
-  FiTrash2,
-} from "react-icons/fi";
+import { FiEye, FiEyeOff, FiLoader, FiTrash2 } from "react-icons/fi";
 import { CustomSelect, ExpandToggle, TrashButton } from "@/components";
 import { useTranslation } from "react-i18next";
 import { formatDateFull as formatDateTime } from "@/utils/format";
 import { resolveVariantSalesMetrics } from "@/utils/variantSales";
 import type { VariantCardProps } from "./types";
-import {
-  formatVariantSummaryValue,
-  getVariantSelectOptions,
-} from "./utils";
+import { formatVariantSummaryValue, getVariantSelectOptions } from "./utils";
 
 const summaryChipClass =
   "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-sm font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300";
@@ -59,11 +51,8 @@ export default memo(function VariantCard(props: VariantCardProps) {
 
     const rootElement = rootRef.current;
     if (rootElement) {
-      const topOffset = window.innerWidth >= 1280
-        ? 176
-        : window.innerWidth >= 768
-          ? 148
-          : 124;
+      const topOffset =
+        window.innerWidth >= 1280 ? 176 : window.innerWidth >= 768 ? 148 : 124;
       const nextTop = Math.max(
         window.scrollY + rootElement.getBoundingClientRect().top - topOffset,
         0,
@@ -87,54 +76,76 @@ export default memo(function VariantCard(props: VariantCardProps) {
     <div
       ref={rootRef}
       style={{ scrollMarginTop: "11rem" }}
-      className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${isExpanded
+      className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${
+        isExpanded
           ? "border-purple-200 shadow-[0_14px_36px_rgba(15,23,42,0.06)] dark:border-purple-800"
           : "border-slate-200 shadow-sm dark:border-slate-700"
-        }`}
+      }`}
     >
       <div className="bg-gradient-to-r from-white via-slate-50 to-purple-50/70 px-4 py-3.5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 sm:px-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-sm font-bold text-white shadow-sm">
-                {variantOrder}
-              </span>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-md font-semibold text-body">
-                  {t("variantCard.title", { order: variantOrder })}
-                  {variant.variantName ? ` - ${variant.variantName}` : ""}
+          <div className="space-y-3 flex-1 min-w-0 pr-0 xl:pr-4">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="flex shrink-0 h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-sm font-bold text-white shadow-sm">
+                  {variantOrder}
                 </span>
-                <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-sm font-semibold ${variant.active
-                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
-                      : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-                    }`}
-                >
-                  {variant.active
-                    ? t("variantCard.statusActive")
-                    : t("variantCard.statusInactive")}
-                </span>
-                {isVariantUploading && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
-                    <FiLoader className="animate-spin" />
-                    {t("variantCard.uploading")}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-md font-semibold text-body">
+                    {t("variantCard.title", { order: variantOrder })}
+                    {variant.variantName ? ` - ${variant.variantName}` : ""}
                   </span>
-                )}
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-sm font-semibold ${
+                      variant.active
+                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                        : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                    }`}
+                  >
+                    {variant.active
+                      ? t("variantCard.statusActive")
+                      : t("variantCard.statusInactive")}
+                  </span>
+                  {isVariantUploading && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                      <FiLoader className="animate-spin" />
+                      {t("variantCard.uploading")}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="hidden xl:flex items-center gap-x-4 text-sm font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                <span>
+                  {t("variantCard.createdAt")}:{" "}
+                  <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                    {createdAtText}
+                  </strong>
+                </span>
+                <span>
+                  {t("variantCard.updatedAt")}:{" "}
+                  <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                    {updatedAtText}
+                  </strong>
+                </span>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-2">
               <span className={summaryChipClass}>
-                {t("variantCard.sku")}: {variant.sku || t("variantCard.notEntered")}
+                {t("variantCard.sku")}:{" "}
+                {variant.sku || t("variantCard.notEntered")}
               </span>
               <span className={summaryChipClass}>
-                {t("variantCard.price")}: {formatVariantSummaryValue(
+                {t("variantCard.price")}:{" "}
+                {formatVariantSummaryValue(
                   variant.price,
                   t("variantCard.notEntered"),
                 )}
               </span>
               <span className={summaryChipClass}>
-                {t("variantCard.stock")}: {formatVariantSummaryValue(
+                {t("variantCard.stock")}:{" "}
+                {formatVariantSummaryValue(
                   variant.stock,
                   t("variantCard.notEntered"),
                 )}
@@ -144,12 +155,19 @@ export default memo(function VariantCard(props: VariantCardProps) {
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
+            {/* Mobile fallback for dates */}
+            <div className="flex xl:hidden flex-wrap gap-x-4 gap-y-1 text-sm font-medium text-slate-500 dark:text-slate-400">
               <span>
-                {t("variantCard.createdAt")}: {createdAtText}
+                {t("variantCard.createdAt")}:{" "}
+                <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                  {createdAtText}
+                </strong>
               </span>
               <span>
-                {t("variantCard.updatedAt")}: {updatedAtText}
+                {t("variantCard.updatedAt")}:{" "}
+                <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                  {updatedAtText}
+                </strong>
               </span>
             </div>
           </div>
@@ -267,10 +285,11 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   onClick={() =>
                     updateVariant(index, "active", !variant.active)
                   }
-                  className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-md font-medium transition-colors ${variant.active
+                  className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-md font-medium transition-colors ${
+                    variant.active
                       ? "border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400"
                       : "border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800"
-                    }`}
+                  }`}
                 >
                   {variant.active ? <FiEye /> : <FiEyeOff />}
                   {variant.active
@@ -278,24 +297,27 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     : t("variantCard.statusInactive")}
                 </button>
               </div>
-              <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
-                <p className="text-sm uppercase tracking-wide text-muted">
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
                   {t("variantCard.salesLabel")}
-                </p>
-                <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
-                  {sales.gross.toLocaleString()} / {sales.returned.toLocaleString()} / {sales.net.toLocaleString()}
-                </p>
+                </label>
+                <div className="flex h-10 w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-3 dark:border-slate-700 dark:bg-slate-800">
+                  <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
+                    {sales.gross.toLocaleString()} /{" "}
+                    {sales.returned.toLocaleString()} /{" "}
+                    {sales.net.toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
 
             {variantSchema.length > 0 && (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {variantSchema.map((attribute) => {
-                  const selectedOptionId = variant.selections?.[attribute.id] || "";
-                  const { selectOptions, selectedValue } = getVariantSelectOptions(
-                    attribute,
-                    selectedOptionId,
-                  );
+                  const selectedOptionId =
+                    variant.selections?.[attribute.id] || "";
+                  const { selectOptions, selectedValue } =
+                    getVariantSelectOptions(attribute, selectedOptionId);
 
                   return (
                     <div key={`${variantUiKey}-${attribute.id}`}>
@@ -397,7 +419,11 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     >
                       <img
                         src={img.imageUrl}
-                        alt={variant.variantName || variant.sku || t("variantCard.variantImageAlt")}
+                        alt={
+                          variant.variantName ||
+                          variant.sku ||
+                          t("variantCard.variantImageAlt")
+                        }
                         className="h-full w-full object-cover"
                       />
                       {img.isPrimary && (
@@ -407,9 +433,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                       )}
                       <button
                         type="button"
-                        onClick={() =>
-                          deleteVariantImage(index, img.id)
-                        }
+                        onClick={() => deleteVariantImage(index, img.id)}
                         className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-md bg-red-500/90 text-white"
                       >
                         <FiTrash2 className="text-sm" />

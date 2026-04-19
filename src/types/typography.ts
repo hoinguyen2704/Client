@@ -4,4 +4,16 @@ export type TypographyTextSizeKey =
   | 'md'
   | 'lg'
   | 'xl'
-  | '2xl';
+  | '2xl'
+  | 'caption'
+  | 'label'
+  | 'body'
+  | 'sectionTitle'
+  | 'displayIcon';
+
+export type TypographyFontWeightKey =
+  | 'normal'
+  | 'medium'
+  | 'semibold'
+  | 'bold'
+  | 'black';

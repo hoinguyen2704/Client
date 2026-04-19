@@ -203,10 +203,17 @@ export default function ProductInfo({
   }, [resolvedVariantIdx, selectedVariantIdx, setSelectedVariantIdx]);
 
   const handleSelectOption = useCallback((attributeId: string, optionId: string) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [attributeId]: optionId,
-    }));
+    setSelectedOptions((prev) => {
+      if (!optionId) {
+        const next = { ...prev };
+        delete next[attributeId];
+        return next;
+      }
+      return {
+        ...prev,
+        [attributeId]: optionId,
+      };
+    });
   }, []);
 
   const handleClearSelections = useCallback(() => {
@@ -274,6 +281,7 @@ export default function ProductInfo({
 
   const highlightSpecs = useMemo(() => {
     return (product.specs || [])
+      .filter((spec) => spec?.name && spec?.value?.trim())
       .slice(0, 4)
       .map((spec) => [spec.name, spec.value] as [string, string]);
   }, [product.specs]);
@@ -397,27 +405,20 @@ export default function ProductInfo({
             <span className="font-medium">{rating.toFixed(1)}/5</span>
             <span className="text-slate-300 dark:text-slate-600">•</span>
             <span className="text-slate-500">{t('productDetail.meta.reviewsCount', { ns: 'catalog', count: reviews })}</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
           </>
         )}
-        {totalSold > 0 && (
-          <>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-slate-500">
-              {t('productDetail.meta.sold', { ns: 'catalog', count: formatCompactValue(totalSold, numberLocale) })}
-            </span>
-          </>
-        )}
-        {isSelectionComplete && activeVariant && (
-          <>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-slate-500">
-              {t('productDetail.meta.selectedVariantSold', {
+        <span className="text-slate-500">
+          {isSelectionComplete && activeVariant
+            ? t('productDetail.meta.selectedVariantSold', {
                 ns: 'catalog',
                 count: (activeVariant.grossSoldQty ?? 0).toLocaleString(numberLocale),
+              })
+            : t('productDetail.meta.sold', {
+                ns: 'catalog',
+                count: totalSold > 0 ? formatCompactValue(totalSold, numberLocale) : '0',
               })}
-            </span>
-          </>
-        )}
+        </span>
         {product.brandName && (
           <>
             <span className="text-slate-300 dark:text-slate-600">•</span>
@@ -465,14 +466,6 @@ export default function ProductInfo({
               {chip}
             </span>
           ))}
-        </div>
-      )}
-      {isSelectionRequired && !isSelectionComplete && (
-        <div className="text-sm text-slate-500">
-          {t('productDetail.quantity.soldCount', {
-            ns: 'catalog',
-            count: totalSold.toLocaleString(numberLocale),
-          })}
         </div>
       )}
       {canShowVariantPrice && pricing?.isFlashSale && (

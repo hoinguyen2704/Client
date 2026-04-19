@@ -25,7 +25,9 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
 
   // Parse specs
   const specEntries = useMemo(() => {
-    return (product.specs || []).map((spec) => [spec.name, spec.value] as [string, string]);
+    return (product.specs || [])
+      .filter((spec) => spec?.name && spec?.value?.trim())
+      .map((spec) => [spec.name, spec.value] as [string, string]);
   }, [product.specs]);
 
   // Fetch reviews khi chuyển sang tab đánh giá

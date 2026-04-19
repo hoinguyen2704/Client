@@ -202,12 +202,14 @@ function VariantSelector({
                 <button
                   key={`${group.id}-${option.id}`}
                   onClick={() => {
-                    if (targetVariantIdx !== -1) {
+                    if (isActive) {
+                      onSelectOption(group.id, '');
+                    } else if (targetVariantIdx !== -1) {
                       onSelectOption(group.id, option.id);
                       onSelect(targetVariantIdx);
                     }
                   }}
-                  disabled={isDisabled}
+                  disabled={isDisabled && !isActive}
                   className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-center min-w-[110px] ${
                     isDisabled
                       ? 'border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/30'
