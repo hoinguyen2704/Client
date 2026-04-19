@@ -1,0 +1,23 @@
+{
+  "hero": {
+    "searchPlaceholder": "Tìm kiếm điện thoại, laptop, phụ kiện...",
+    "searchButton": "Tìm kiếm",
+    "fallbackBanners": {
+      "primary": {
+        "title": "Công nghệ mới nhất",
+        "subtitle": "Khám phá sản phẩm hot nhất tại {{shopName}}"
+      },
+      "secondary": {
+        "title": "Laptop cao cấp",
+        "subtitle": "Hiệu năng vượt trội, giá tốt nhất"
+      }
+    }
+  },
+  "sections": {
+    "seeAll": "Xem tất cả",
+    "featuredTitle": "Sản phẩm nổi bật",
+    "featuredSubtitle": "Được đề xuất cho bạn",
+    "bestSellersTitle": "Bán chạy nhất",
+    "newArrivalsTitle": "Hàng mới về"
+  }
+}

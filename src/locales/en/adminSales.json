@@ -32,5 +32,128 @@
       "updated": "Order status updated!",
       "invalidTransition": "Cannot update to this status from the current state"
     }
+  },
+  "orderDetail": {
+    "notFound": "Order not found",
+    "title": "Order {{orderNumber}}",
+    "statusLabel": "Order status",
+    "downloadInvoice": "Download PDF invoice",
+    "timelineDelivered": "Delivery completed",
+    "timelineDeliveredDescription": "The order was delivered successfully",
+    "itemsTitle": "Items ({{count}})",
+    "table": {
+      "product": "Product",
+      "unitPrice": "Unit price",
+      "quantity": "Qty",
+      "subtotal": "Line total"
+    },
+    "noteTitle": "Notes",
+    "noNote": "No notes.",
+    "customerTitle": "Customer",
+    "fullName": "Full name",
+    "phone": "Phone",
+    "shippingTitle": "Shipping",
+    "paymentTitle": "Payment",
+    "paymentMethod": "Method",
+    "paymentStatus": "Status",
+    "couponCode": "Coupon code",
+    "summaryTitle": "Payment summary",
+    "summary": {
+      "subtotal": "Subtotal",
+      "shippingFee": "Shipping fee",
+      "productDiscount": "Product discount",
+      "shippingDiscount": "Shipping discount",
+      "vat": "VAT ({{percent}}%{{suffix}})",
+      "vatIncluded": ", included",
+      "total": "Total"
+    },
+    "invoice": {
+      "title": "Invoice",
+      "date": "Date",
+      "customer": "Customer",
+      "pickupFallback": "Store pickup",
+      "paymentShipping": "Payment & shipping",
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "buyer": "Buyer",
+      "seller": "Seller",
+      "signatureHint": "(Signature, full name)",
+      "thanks": "Thank you for shopping at {{shopName}}!"
+    },
+    "toasts": {
+      "statusUpdated": "Order status updated successfully!",
+      "statusFailed": "Failed to update order status!",
+      "invoiceSuccess": "PDF invoice exported successfully!",
+      "invoiceFailed": "Failed to export invoice!"
+    }
+  },
+  "returns": {
+    "detail": {
+      "notFound": "Return request not found",
+      "orderLabel": "Order",
+      "createdAtLabel": "Created at",
+      "itemsTitle": "Returned items",
+      "table": {
+        "product": "Product",
+        "variant": "Variant",
+        "unitPrice": "Unit price",
+        "requestedQty": "Requested qty",
+        "approvedQty": "Approved qty",
+        "subtotal": "Subtotal"
+      },
+      "refundTransactionsTitle": "Refund transactions",
+      "refundTransactionsEmpty": "There are no refund transactions for this request yet.",
+      "refundTransactionsTable": {
+        "time": "Time",
+        "transactionId": "Transaction ID",
+        "amount": "Amount",
+        "status": "Status"
+      },
+      "requestInfoTitle": "Request information",
+      "customer": "Customer",
+      "reason": "Reason",
+      "customerNote": "Customer note",
+      "adminNote": "Admin note",
+      "unknown": "Unknown",
+      "none": "None",
+      "noAdminNote": "Not provided yet",
+      "resolvedAt": "Processed at {{date}}",
+      "amountsTitle": "Amounts",
+      "requestedAmount": "Requested refund",
+      "approvedAmount": "Approved amount",
+      "notApprovedYet": "Not approved yet",
+      "refundedAmount": "Actual refunded",
+      "reviewTitle": "Review request",
+      "approvedAmountPlaceholder": "Approved amount (leave blank = full)",
+      "reviewNotePlaceholder": "Review / rejection note",
+      "approve": "Approve",
+      "reject": "Reject",
+      "updateStatusTitle": "Update status",
+      "statusNotePlaceholder": "Status update note",
+      "saveStatus": "Save status",
+      "refundTitle": "Manual refund confirmation",
+      "refundAmountPlaceholder": "Refund amount (required)",
+      "transactionIdPlaceholder": "Refund transaction ID",
+      "refundAdminNotePlaceholder": "Admin note for the refund transaction (required)",
+      "currencyPlaceholder": "Currency",
+      "confirmRefund": "Confirm manual refund",
+      "refundProviders": {
+        "manual": "Manual refund (Cash/Bank)",
+        "bankTransfer": "Bank transfer"
+      },
+      "toasts": {
+        "invalidApprovedAmount": "Invalid approved amount",
+        "reviewApproved": "Return request approved",
+        "reviewRejected": "Return request rejected",
+        "selectStatus": "Please choose a new status",
+        "statusUpdated": "Return request status updated",
+        "refundAmountRequired": "Please enter the refund amount",
+        "invalidRefundAmount": "Invalid refund amount",
+        "refundProviderRequired": "Please choose a refund provider",
+        "refundTransactionRequired": "Please enter the refund transaction code",
+        "refundAdminNoteRequired": "Please enter an admin note for the refund",
+        "refundSuccess": "Manual refund processed successfully"
+      }
+    }
   }
 }

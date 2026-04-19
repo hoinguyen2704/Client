@@ -68,6 +68,8 @@
     "unknown": "Đã có lỗi xảy ra",
     "timeout": "Yêu cầu quá thời gian chờ. Vui lòng thử lại.",
     "network": "Không thể kết nối tới máy chủ. Vui lòng kiểm tra mạng và thử lại.",
+    "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+    "refreshFailed": "Gia hạn đăng nhập thất bại. Vui lòng đăng nhập lại.",
     "contactSubmitFailed": "Gửi tin nhắn thất bại. Vui lòng thử lại.",
     "addToCartFailed": "Thêm giỏ hàng thất bại!",
     "reviewReturnFailed": "Thao tác duyệt trả hàng thất bại",

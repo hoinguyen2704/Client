@@ -1,12 +1,37 @@
 import { adminAxios } from '../axios';
-import type { ApiResponse, DashboardStatsResponse, TopVariantItem } from '@/types';
+import type { AxiosRequestConfig } from 'axios';
+import type {
+  ApiResponse,
+  DashboardRevenueResponse,
+  DashboardReviewStatsResponse,
+  DashboardStatsResponse,
+  DashboardSummaryResponse,
+  DashboardTopListsResponse,
+  RecentOrderItem,
+  TopVariantItem,
+} from '@/types';
 
 const adminDashboardService = {
-  getStats: (period: string = 'MONTH'): Promise<ApiResponse<DashboardStatsResponse>> =>
-    adminAxios.get('/dashboard/stats', { params: { period } }),
+  getStats: (period: string = 'MONTH', config?: AxiosRequestConfig): Promise<ApiResponse<DashboardStatsResponse>> =>
+    adminAxios.get('/dashboard/stats', { ...(config || {}), params: { period } }),
 
-  getTopVariants: (period: string = 'MONTH', limit: number = 50): Promise<ApiResponse<TopVariantItem[]>> =>
-    adminAxios.get('/dashboard/top-variants', { params: { period, limit } }),
+  getSummary: (period: string = 'MONTH', config?: AxiosRequestConfig): Promise<ApiResponse<DashboardSummaryResponse>> =>
+    adminAxios.get('/dashboard/summary', { ...(config || {}), params: { period } }),
+
+  getRevenue: (period: string = 'MONTH', config?: AxiosRequestConfig): Promise<ApiResponse<DashboardRevenueResponse>> =>
+    adminAxios.get('/dashboard/revenue', { ...(config || {}), params: { period } }),
+
+  getTopLists: (period: string = 'MONTH', config?: AxiosRequestConfig): Promise<ApiResponse<DashboardTopListsResponse>> =>
+    adminAxios.get('/dashboard/top-lists', { ...(config || {}), params: { period } }),
+
+  getRecentOrders: (config?: AxiosRequestConfig): Promise<ApiResponse<RecentOrderItem[]>> =>
+    adminAxios.get('/dashboard/recent-orders', config),
+
+  getReviews: (period: string = 'MONTH', config?: AxiosRequestConfig): Promise<ApiResponse<DashboardReviewStatsResponse>> =>
+    adminAxios.get('/dashboard/reviews', { ...(config || {}), params: { period } }),
+
+  getTopVariants: (period: string = 'MONTH', limit: number = 50, config?: AxiosRequestConfig): Promise<ApiResponse<TopVariantItem[]>> =>
+    adminAxios.get('/dashboard/top-variants', { ...(config || {}), params: { period, limit } }),
 
   /** Xuất báo cáo doanh thu Excel */
   exportReport: (period: string = 'MONTH'): Promise<Blob> =>

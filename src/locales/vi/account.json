@@ -6,6 +6,15 @@
     "supportStatusUpdated": "Yêu cầu hỗ trợ đã cập nhật trạng thái",
     "newNotification": "Thông báo mới"
   },
+  "notificationsPage": {
+    "title": "Thông báo",
+    "markAllRead": "Đọc tất cả ({{count}})",
+    "empty": {
+      "title": "Không có thông báo",
+      "description": "Bạn sẽ nhận thông báo khi có cập nhật mới."
+    },
+    "markReadTitle": "Đánh dấu đã đọc"
+  },
   "orders": {
     "title": "Quản lý đơn hàng",
     "searchPlaceholder": "Tìm kiếm theo mã đơn hàng...",

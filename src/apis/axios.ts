@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
+import i18n from "@/i18n";
 import useAuthStore from "@/stores/useAuthStore";
 
 let isLoggingOut = false;
@@ -81,7 +82,7 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
           const shouldForceLogout = Boolean(state.token || state.isAuthenticated);
           if (shouldForceLogout && !isLoggingOut) {
             isLoggingOut = true;
-            toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+            toast.error(i18n.t("common:errors.sessionExpired"));
             useAuthStore.getState().logout();
             setTimeout(() => {
               isLoggingOut = false;
@@ -132,9 +133,7 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
             onRefreshFailed(refreshErr);
             if (!isLoggingOut) {
               isLoggingOut = true;
-              toast.error(
-                "Gia hạn đăng nhập thất bại. Vui lòng đăng nhập lại.",
-              );
+              toast.error(i18n.t("common:errors.refreshFailed"));
               useAuthStore.getState().logout();
               setTimeout(() => {
                 isLoggingOut = false;

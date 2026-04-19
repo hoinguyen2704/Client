@@ -3,7 +3,7 @@
   "saving": "Saving...",
   "save": "Save settings",
   "noChanges": "No changes to save",
-  "saveSuccess": "Successfully saved settings!",
+  "saveSuccess": "Successfully saved {{count}} settings!",
   "saveError": "Failed to save settings!",
   "loadError": "Failed to load system settings",
   
@@ -69,5 +69,8 @@
     "algoHybrid": "Hybrid MLOps Model",
     "newProductPriority": "New Product Priority",
     "diversity": "Recommendation Diversity (Exploration)"
+  },
+  "units": {
+    "vnd": "(VND)"
   }
 }

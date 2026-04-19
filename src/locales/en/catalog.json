@@ -34,10 +34,85 @@
     "endsIn": "Ends in:",
     "remainingProducts": "{{count}} items left",
     "soldOut": "Sold out",
+    "status": {
+      "scheduled": "Upcoming",
+      "ended": "Ended",
+      "active": "Live now"
+    },
+    "soldPercent": "{{percent}}% sold",
+    "defaultVariant": "Default variant",
+    "savedAmount": "Save {{amount}}",
+    "progressLabel": "Deal progress",
+    "soldCount": "{{count}} sold",
+    "dealSlots": "{{count}} deal slots",
+    "heroEyebrow": "Tech lightning deals",
+    "heroTitle": "Flash Sale is live",
+    "heroDescription": "Sharp prices by campaign window, limited quantities, and live stock updates for each promotion.",
+    "activeCampaigns": "{{count}} active campaigns",
+    "summaryFallback": "Hunt limited deals with the best prices of the day and stock that changes in realtime.",
+    "campaignProducts": "{{count}} products in this sale",
+    "campaignRemaining": "{{count}} deal slots left",
+    "emptyProducts": "There are no products in this campaign yet.",
+    "actions": {
+      "viewDetails": "View details",
+      "grabDeal": "Grab this deal"
+    },
     "countdown": {
       "hours": "hours",
       "minutes": "minutes",
       "seconds": "seconds"
+    }
+  },
+  "compare": {
+    "title": "Compare products",
+    "descriptionWithCategory": "Compare products in <strong>{{category}}</strong> · Up to 4 products",
+    "descriptionDefault": "Choose products for a detailed comparison · Only compare products in the same category",
+    "selectedCount": "{{count}}/4 products",
+    "clearAll": "Clear all",
+    "empty": {
+      "title": "No products selected yet",
+      "description": "Add at least 2 products from the same category to compare specifications, pricing, and ratings.",
+      "action": "Add your first product"
+    },
+    "table": {
+      "title": "Compare",
+      "category": "Category",
+      "brand": "Brand",
+      "price": "Price",
+      "rating": "Rating",
+      "specs": "Technical specifications",
+      "bestPrice": "Best price",
+      "highestRating": "Highest",
+      "addProduct": "Add item"
+    },
+    "modal": {
+      "title": "Select products",
+      "lockedCategory": "Only products in <strong>{{category}}</strong> are shown.",
+      "searchPlaceholderWithCategory": "Search in {{category}}...",
+      "searchPlaceholder": "Search products...",
+      "loading": "Searching...",
+      "emptyWithQuery": "No products found",
+      "emptyDefault": "Type a product name to search",
+      "selected": "Selected",
+      "select": "Select",
+      "differentCategory": "Different category"
+    }
+  },
+  "search": {
+    "breadcrumbCurrent": "Search products",
+    "filterToggle": "Filter products",
+    "filterTitle": "Filters",
+    "categoryTitle": "Categories",
+    "brandTitle": "Brands",
+    "resultsFor": "Results for \"{{query}}\"",
+    "allProducts": "All products",
+    "sortBy": "Sort by:",
+    "empty": {
+      "title": "No products found",
+      "description": "Please try a different set of filters."
+    },
+    "toasts": {
+      "loadFailed": "Search failed!"
     }
   },
   "productDetail": {

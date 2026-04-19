@@ -3,7 +3,7 @@
   "saving": "Đang lưu...",
   "save": "Lưu cấu hình",
   "noChanges": "Không có thay đổi nào để lưu",
-  "saveSuccess": "Đã lưu thành công!",
+  "saveSuccess": "Đã lưu {{count}} cấu hình thành công!",
   "saveError": "Lưu cấu hình thất bại!",
   "loadError": "Không thể tải cấu hình hệ thống",
   
@@ -69,5 +69,8 @@
     "algoHybrid": "Hybrid MLOps Model",
     "newProductPriority": "Độ ưu tiên sản phẩm mới",
     "diversity": "Độ đa dạng gợi ý (Exploration)"
+  },
+  "units": {
+    "vnd": "(VNĐ)"
   }
 }

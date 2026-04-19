@@ -1,5 +1,35 @@
 {
   "title": "Checkout",
+  "cart": {
+    "title": "Your cart",
+    "itemsCount": "({{count}} products)",
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "It looks like you have not added any products yet. Explore thousands of great deals today!",
+      "action": "Shop now"
+    },
+    "toasts": {
+      "itemUnavailable": "This product is no longer available",
+      "updateQtyFailed": "Failed to update quantity!",
+      "removeSuccess": "Removed product from cart",
+      "removeFailed": "Failed to remove product!",
+      "clearSuccess": "Cleared the cart",
+      "actionFailed": "Action failed!",
+      "selectItemsWarning": "Please choose at least 1 product to continue!"
+    },
+    "clearConfirm": "Confirm clearing the entire cart?",
+    "clearAction": "Clear all",
+    "selectAll": "Select all ({{count}})",
+    "changeConfigTitle": "Click to switch to another configuration",
+    "changeConfig": "Change",
+    "summary": {
+      "title": "Order summary",
+      "selectedItems": "Selected items",
+      "subtotal": "Subtotal",
+      "total": "Total"
+    },
+    "checkout": "Checkout ({{count}})"
+  },
   "address": {
     "title": "Shipping address",
     "addNew": "Add new address",
@@ -113,5 +143,31 @@
     "cartUnavailable": "Some products in your cart are no longer available. Please refresh your cart.",
     "orderSuccess": "Order placed successfully!",
     "orderFailed": "Failed to place order!"
+  },
+  "vnpayReturn": {
+    "documentTitle": "VNPAY payment result",
+    "errors": {
+      "missingTransaction": "Transaction details were not found.",
+      "success": "The VNPAY payment transaction was successful.",
+      "cancelled": "You cancelled the transaction.",
+      "insufficientFunds": "Your account does not have sufficient balance for this transaction.",
+      "dailyLimitExceeded": "The customer exceeded the daily transaction limit.",
+      "failed": "Payment failed due to a banking or VNPAY error."
+    },
+    "success": {
+      "title": "Order placed successfully!",
+      "orderCode": "Your order number is <strong>#{{txnRef}}</strong>.",
+      "amount": "Amount",
+      "bank": "Bank",
+      "trackOrder": "Track order",
+      "continueShopping": "Continue shopping"
+    },
+    "failed": {
+      "title": "Payment failed",
+      "description": "{{message}} Please try again or choose another payment method.",
+      "orderCode": "Order number",
+      "retry": "Retry payment",
+      "backToCart": "Back to cart"
+    }
   }
 }

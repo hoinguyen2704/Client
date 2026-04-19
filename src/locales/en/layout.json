@@ -125,5 +125,22 @@
     "loginRequiredToast": "Please log in with a customer account to chat directly with admin",
     "createdToast": "Support conversation created",
     "sendError": "Unable to send message"
+  },
+  "chatbot": {
+    "openAria": "Open AI assistant",
+    "avatarAlt": "AI assistant avatar",
+    "defaultSubtitle": "Product assistant 24/7",
+    "welcomeMessage": "Hello! I am the AI assistant for **{{shopName}}**.\n\nI can help you:\n- Find and recommend tech products\n- Check prices, promotions, and flash sales\n- Compare product reviews\n- Look up order information\n\nHow can I help you today?",
+    "suggestions": {
+      "featured": "Featured products",
+      "phoneBudget": "Phones under 10 million",
+      "coupon": "Any discount codes?",
+      "recommend": "Recommend a product for me"
+    },
+    "fallbackAnswer": "Sorry, I cannot answer right now.",
+    "connectionError": "Sorry, there was a connection error. Please try again later or contact **{{hotline}}** for support.",
+    "clearConversation": "The conversation has been cleared. How can I help you now?",
+    "clearConversationTitle": "Clear conversation",
+    "inputPlaceholder": "Ask about products, pricing, or promotions..."
   }
 }

@@ -1,0 +1,170 @@
+{
+  "aboutPage": {
+    "title": "About {{shopName}}",
+    "sections": {
+      "aboutUs": {
+        "title": "About us",
+        "paragraphs": [
+          "{{shopName}} is an e-commerce platform specializing in genuine tech products, consumer electronics, computer components, and accessories. We are committed to delivering high-quality products at competitive prices.",
+          "Founded with the mission of connecting people with the latest technology, {{shopName}} continuously improves service quality, product diversity, and the online shopping experience."
+        ]
+      },
+      "visionMission": {
+        "title": "Vision & mission",
+        "vision": "<strong>Vision:</strong> Become the go-to destination for technology shopping in Vietnam, where customers can find everything they need with complete peace of mind.",
+        "mission": "<strong>Mission:</strong> Bring technology closer to everyone by providing quality products, dedicated service, and an outstanding shopping experience."
+      },
+      "ownership": {
+        "title": "Who we are",
+        "paragraphs": [
+          "{{shopName}} is founded and operated by a team of technology enthusiasts with years of experience in electronics retail and e-commerce. We understand customer needs and always put customer value first."
+        ]
+      },
+      "whyChoose": {
+        "title": "Why choose {{shopName}}?",
+        "items": [
+          "100% genuine products with transparent origins.",
+          "Reliable warranty policies and convenient returns.",
+          "Dedicated consultants with strong product expertise.",
+          "Fast delivery nationwide.",
+          "Attractive promotions and exclusive offers."
+        ]
+      }
+    },
+    "contactAction": "Contact us"
+  },
+  "contactPage": {
+    "title": "Contact us",
+    "description": "{{shopName}} is always ready to listen and answer your questions. Reach out through the channels below or fill in the contact form.",
+    "contactInfoTitle": "Contact information",
+    "addressLabel": "Address",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "hoursLabel": "Business hours",
+    "support247": "Support 24/7",
+    "messagingApps": "Zalo / Viber",
+    "weekdayHours": "Mon - Fri: 8:00 - 20:00",
+    "weekendHours": "Sat - Sun: 9:00 - 18:00",
+    "formTitle": "Send us a message",
+    "form": {
+      "nameLabel": "Full name *",
+      "namePlaceholder": "Enter your full name",
+      "emailLabel": "Email *",
+      "emailPlaceholder": "Enter your email address",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter your phone number",
+      "subjectLabel": "Subject *",
+      "subjectPlaceholder": "Enter your subject",
+      "messageLabel": "Message *",
+      "messagePlaceholder": "Enter your message...",
+      "sending": "Sending...",
+      "submit": "Send message"
+    },
+    "toasts": {
+      "success": "Thanks for contacting us. We will get back to you as soon as possible!"
+    }
+  },
+  "termsPage": {
+    "title": "Terms of service",
+    "intro": "Welcome to {{shopName}}. By accessing and using our website, you agree to comply with the terms and conditions below. Please read them carefully before using the service.",
+    "sections": [
+      {
+        "title": "1. Acceptance of terms",
+        "paragraphs": [
+          "By accessing, browsing, or using the {{shopName}} website, you confirm that you have read, understood, and agreed to be bound by these Terms of Service and our Privacy Policy. If you do not agree with any part of these terms, please do not use the website."
+        ]
+      },
+      {
+        "title": "2. User rights and responsibilities",
+        "items": [
+          "Provide accurate, complete, and up-to-date information when registering or placing orders.",
+          "Keep your account and password information secure.",
+          "Do not use the website for illegal, fraudulent, or third-party rights-violating purposes.",
+          "Do not interfere with, damage, or disrupt the operation of the website or server systems."
+        ]
+      },
+      {
+        "title": "3. Product information and pricing",
+        "paragraphs": [
+          "We strive to provide the most accurate product information and pricing. However, errors may still occur. If a displayed price is incorrect due to a system issue, we reserve the right to refuse or cancel orders for that product and notify you accordingly."
+        ]
+      },
+      {
+        "title": "4. Payment and shipping policies",
+        "paragraphs": [
+          "Detailed rules regarding payment methods, delivery time, and shipping costs are described on the relevant policy pages of our website. By placing an order, you agree to those policies."
+        ]
+      },
+      {
+        "title": "5. Intellectual property",
+        "paragraphs": [
+          "All content on this website, including but not limited to text, images, logos, videos, and source code, belongs to {{shopName}} or our content providers and is protected by intellectual property laws."
+        ]
+      },
+      {
+        "title": "6. Changes to the terms",
+        "paragraphs": [
+          "{{shopName}} may revise or update these Terms of Service at any time without prior notice. Your continued use of the website after changes are published means you accept the updated terms."
+        ]
+      }
+    ],
+    "lastUpdated": "Last updated: {{date}}"
+  },
+  "privacyPage": {
+    "title": "Privacy policy",
+    "intro": "{{shopName}} respects and is committed to protecting user personal data. This policy explains how we collect, use, share, and protect your personal information when you use our website and services.",
+    "sections": [
+      {
+        "title": "1. Personal information we collect",
+        "lead": "We may collect the following information from you:",
+        "items": [
+          "<strong>Identity information:</strong> Full name, email address, phone number, shipping address.",
+          "<strong>Account information:</strong> Username, encrypted password, purchase history.",
+          "<strong>Payment information:</strong> Credit/debit card details or bank account information processed securely via third-party payment gateways.",
+          "<strong>Technical information:</strong> IP address, browser type, operating system, device information, and cookie data."
+        ]
+      },
+      {
+        "title": "2. Purposes of use",
+        "lead": "Your personal information is used for:",
+        "items": [
+          "Processing orders, delivering goods, and providing customer support.",
+          "Managing user accounts and identity verification.",
+          "Improving user experience and optimizing the website interface.",
+          "Sending updates about order status, policy changes, or promotions if you agree to receive them.",
+          "Detecting and preventing fraud while protecting system security."
+        ]
+      },
+      {
+        "title": "3. Information sharing",
+        "paragraphs": [
+          "We do not sell, exchange, or rent your personal information to third parties. We only share information in the following cases:"
+        ],
+        "items": [
+          "With service providers such as shipping partners and payment gateways to fulfill your order.",
+          "When required by competent authorities in accordance with the law.",
+          "To protect the rights, property, or safety of {{shopName}} and other users."
+        ]
+      },
+      {
+        "title": "4. Data security",
+        "paragraphs": [
+          "We apply suitable technical and security measures to protect your personal data from unauthorized access, use, modification, or disclosure. However, no internet transmission method is 100% secure, so absolute security cannot be guaranteed."
+        ]
+      },
+      {
+        "title": "5. User rights",
+        "paragraphs": [
+          "You may access, update, or request deletion of your personal data at any time through account management or by contacting our support team directly."
+        ]
+      },
+      {
+        "title": "6. Contact",
+        "paragraphs": [
+          "If you have any questions about this Privacy Policy, please contact us through the Contact page or send an email to {{shopName}} support."
+        ]
+      }
+    ],
+    "lastUpdated": "Last updated: {{date}}"
+  }
+}

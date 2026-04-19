@@ -13,6 +13,7 @@
     "audit:i18n-literals": "node scripts/audit-i18n-literals.mjs"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.5",
     "@google/genai": "^1.29.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.14",

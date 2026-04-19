@@ -4,5 +4,44 @@
     "newSupportRequest": "There is a new support request from a user",
     "customerReplyTicket": "{{ticketNumber}} has a new customer reply",
     "customerReply": "A customer just sent a new reply"
+  },
+  "tickets": {
+    "title": "Support requests",
+    "groupOptions": {
+      "none": "No grouping",
+      "date": "By date",
+      "customer": "By customer"
+    },
+    "dateUnknown": "Unknown date",
+    "todayLabel": "Today · {{date}}",
+    "unknownCustomer": "Unknown customer",
+    "customerGroup": "Grouped by customer",
+    "identifiedCustomer": "Identified customer",
+    "missingAccountInfo": "No account information",
+    "allTickets": "All tickets",
+    "groupByCreatedDate": "Grouped by created date",
+    "toasts": {
+      "loadFailed": "Failed to load support requests!",
+      "loadDetailFailed": "Unable to load ticket details",
+      "replyFailed": "Failed to send reply!",
+      "statusFailed": "Failed to update status!",
+      "copyEmailMissing": "This customer does not have an email to copy.",
+      "copyEmailSuccess": "Customer email copied.",
+      "copyEmailFailed": "Unable to copy customer email."
+    },
+    "empty": "No tickets found",
+    "sectionToggle": {
+      "expand": "Expand group {{title}}",
+      "collapse": "Collapse group {{title}}"
+    },
+    "requestsCount": "{{count}} requests",
+    "paginationLabel": "requests",
+    "copyEmailAria": "Copy customer email",
+    "copyEmailTitle": "Copy customer email",
+    "copied": "Copied",
+    "copyEmail": "Copy email",
+    "replyPlaceholder": "Type your reply...",
+    "send": "Send",
+    "emptyDetail": "Choose a ticket to view details"
   }
 }

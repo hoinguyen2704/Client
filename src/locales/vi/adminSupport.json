@@ -4,5 +4,44 @@
     "newSupportRequest": "Có yêu cầu hỗ trợ mới từ người dùng",
     "customerReplyTicket": "{{ticketNumber}} có phản hồi mới từ khách hàng",
     "customerReply": "Khách hàng vừa gửi phản hồi mới"
+  },
+  "tickets": {
+    "title": "Quản lý yêu cầu hỗ trợ",
+    "groupOptions": {
+      "none": "Không nhóm",
+      "date": "Theo ngày",
+      "customer": "Theo khách hàng"
+    },
+    "dateUnknown": "Không rõ ngày",
+    "todayLabel": "Hôm nay · {{date}}",
+    "unknownCustomer": "Khách chưa xác định",
+    "customerGroup": "Nhóm theo khách hàng",
+    "identifiedCustomer": "Khách hàng đã định danh",
+    "missingAccountInfo": "Chưa có thông tin tài khoản",
+    "allTickets": "Tất cả ticket",
+    "groupByCreatedDate": "Nhóm theo ngày tạo",
+    "toasts": {
+      "loadFailed": "Tải danh sách hỗ trợ thất bại!",
+      "loadDetailFailed": "Không thể tải chi tiết ticket",
+      "replyFailed": "Gửi phản hồi thất bại!",
+      "statusFailed": "Cập nhật trạng thái thất bại!",
+      "copyEmailMissing": "Khách hàng chưa có email để sao chép.",
+      "copyEmailSuccess": "Đã sao chép email khách hàng.",
+      "copyEmailFailed": "Không thể sao chép email khách hàng."
+    },
+    "empty": "Không có ticket nào",
+    "sectionToggle": {
+      "expand": "Mở rộng nhóm {{title}}",
+      "collapse": "Thu gọn nhóm {{title}}"
+    },
+    "requestsCount": "{{count}} yêu cầu",
+    "paginationLabel": "yêu cầu",
+    "copyEmailAria": "Sao chép email khách hàng",
+    "copyEmailTitle": "Sao chép email khách hàng",
+    "copied": "Đã copy",
+    "copyEmail": "Copy email",
+    "replyPlaceholder": "Nhập câu trả lời...",
+    "send": "Gửi",
+    "emptyDetail": "Chọn một ticket để xem chi tiết"
   }
 }

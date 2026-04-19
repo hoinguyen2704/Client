@@ -1,5 +1,35 @@
 {
   "title": "Thông tin thanh toán",
+  "cart": {
+    "title": "Giỏ hàng của bạn",
+    "itemsCount": "({{count}} sản phẩm)",
+    "empty": {
+      "title": "Giỏ hàng trống",
+      "description": "Có vẻ như bạn chưa thêm sản phẩm nào vào giỏ. Khám phá hàng ngàn deal hot ngay hôm nay!",
+      "action": "Mua sắm ngay"
+    },
+    "toasts": {
+      "itemUnavailable": "Sản phẩm hiện không còn khả dụng",
+      "updateQtyFailed": "Cập nhật số lượng thất bại!",
+      "removeSuccess": "Đã xóa sản phẩm khỏi giỏ hàng",
+      "removeFailed": "Xóa sản phẩm thất bại!",
+      "clearSuccess": "Đã xóa toàn bộ giỏ hàng",
+      "actionFailed": "Thao tác thất bại!",
+      "selectItemsWarning": "Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!"
+    },
+    "clearConfirm": "Xác nhận xóa toàn bộ giỏ hàng?",
+    "clearAction": "Xóa tất cả",
+    "selectAll": "Chọn tất cả ({{count}})",
+    "changeConfigTitle": "Nhấn để đổi cấu hình khác",
+    "changeConfig": "Thay đổi",
+    "summary": {
+      "title": "Tóm tắt đơn hàng",
+      "selectedItems": "Sản phẩm đã chọn",
+      "subtotal": "Tạm tính",
+      "total": "Tổng cộng"
+    },
+    "checkout": "Thanh toán ({{count}})"
+  },
   "address": {
     "title": "Địa chỉ giao hàng",
     "addNew": "Thêm địa chỉ mới",
@@ -113,5 +143,31 @@
     "cartUnavailable": "Có sản phẩm trong giỏ không còn khả dụng. Vui lòng cập nhật lại giỏ hàng.",
     "orderSuccess": "Đặt hàng thành công!",
     "orderFailed": "Đặt hàng thất bại!"
+  },
+  "vnpayReturn": {
+    "documentTitle": "Kết quả thanh toán VNPAY",
+    "errors": {
+      "missingTransaction": "Không tìm thấy thông tin giao dịch.",
+      "success": "Giao dịch thanh toán VNPAY thành công.",
+      "cancelled": "Bạn đã hủy giao dịch.",
+      "insufficientFunds": "Tài khoản không đủ số dư để thực hiện giao dịch.",
+      "dailyLimitExceeded": "Khách hàng vượt quá hạn mức giao dịch trong ngày.",
+      "failed": "Thanh toán thất bại. Lỗi từ phía ngân hàng hoặc VNPAY."
+    },
+    "success": {
+      "title": "Đặt hàng thành công!",
+      "orderCode": "Mã đơn hàng của bạn là <strong>#{{txnRef}}</strong>.",
+      "amount": "Số tiền",
+      "bank": "Ngân hàng",
+      "trackOrder": "Theo dõi đơn hàng",
+      "continueShopping": "Tiếp tục mua sắm"
+    },
+    "failed": {
+      "title": "Thanh toán thất bại",
+      "description": "{{message}} Vui lòng thử lại hoặc chọn phương thức thanh toán khác.",
+      "orderCode": "Mã đơn hàng",
+      "retry": "Thanh toán lại",
+      "backToCart": "Quay lại giỏ hàng"
+    }
   }
 }

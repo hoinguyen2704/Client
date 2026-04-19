@@ -68,6 +68,8 @@
     "unknown": "Something went wrong",
     "timeout": "The request timed out. Please try again.",
     "network": "Unable to connect to the server. Please check your network and try again.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "refreshFailed": "Session refresh failed. Please sign in again.",
     "contactSubmitFailed": "Unable to send your message. Please try again.",
     "addToCartFailed": "Unable to add this item to cart.",
     "reviewReturnFailed": "Unable to review the return request.",

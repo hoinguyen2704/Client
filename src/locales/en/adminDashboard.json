@@ -26,6 +26,26 @@
     },
     "empty": "Unable to load dashboard data"
   },
+  "stats": {
+    "revenue": "Revenue",
+    "orders": {
+      "label": "Total orders",
+      "sub": "+{{count}} new"
+    },
+    "customers": {
+      "label": "Total customers",
+      "sub": "+{{count}} new"
+    },
+    "productsSold": "Products sold",
+    "returns": {
+      "label": "Return / Cancel",
+      "sub": "Cancelled: {{cancelled}} | Returned: {{returned}}"
+    },
+    "reviews": {
+      "label": "Total reviews",
+      "sub": "+{{count}} new"
+    }
+  },
   "modals": {
     "orders": "Recent orders",
     "revenue": "Revenue details",

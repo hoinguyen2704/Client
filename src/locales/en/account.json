@@ -6,6 +6,15 @@
     "supportStatusUpdated": "Your support request status was updated",
     "newNotification": "New notification"
   },
+  "notificationsPage": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read ({{count}})",
+    "empty": {
+      "title": "No notifications",
+      "description": "You will receive notifications when there are new updates."
+    },
+    "markReadTitle": "Mark as read"
+  },
   "orders": {
     "title": "Order management",
     "searchPlaceholder": "Search by order number...",

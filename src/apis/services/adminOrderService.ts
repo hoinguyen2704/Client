@@ -1,10 +1,23 @@
 import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { ApiResponse, OrderResponse } from '@/types';
+import type { AxiosRequestConfig } from 'axios';
+import type { AdminOrderListItem, ApiResponse, OrderResponse, PageResponse } from '@/types';
 
 class AdminOrderService extends BaseService<OrderResponse> {
   constructor() {
     super('/orders', adminAxios);
+  }
+
+  async getList(
+    params?: {
+      status?: string;
+      keyword?: string;
+      page?: number;
+      size?: number;
+    },
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<PageResponse<AdminOrderListItem>>> {
+    return this.http.get(this.endpoint, { ...(config || {}), params });
   }
 
   async getByNumber(orderNumber: string): Promise<ApiResponse<OrderResponse>> {

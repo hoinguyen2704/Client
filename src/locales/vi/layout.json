@@ -125,5 +125,22 @@
     "loginRequiredToast": "Vui lòng đăng nhập tài khoản khách hàng để chat trực tiếp với admin",
     "createdToast": "Đã tạo cuộc trò chuyện hỗ trợ",
     "sendError": "Không thể gửi tin nhắn"
+  },
+  "chatbot": {
+    "openAria": "Mở trợ lý AI",
+    "avatarAlt": "Avatar trợ lý AI",
+    "defaultSubtitle": "Trợ lý tư vấn sản phẩm 24/7",
+    "welcomeMessage": "Xin chào! Tôi là trợ lý AI của **{{shopName}}**.\n\nTôi có thể giúp bạn:\n- Tìm kiếm và tư vấn sản phẩm công nghệ\n- Xem giá, khuyến mãi, flash sale\n- So sánh đánh giá sản phẩm\n- Tra cứu thông tin đơn hàng\n\nBạn cần hỗ trợ gì ạ?",
+    "suggestions": {
+      "featured": "Sản phẩm nổi bật",
+      "phoneBudget": "Điện thoại giá dưới 10 triệu",
+      "coupon": "Có mã giảm giá nào không?",
+      "recommend": "Gợi ý sản phẩm cho mình"
+    },
+    "fallbackAnswer": "Xin lỗi, tôi không thể trả lời lúc này.",
+    "connectionError": "Xin lỗi, đã có lỗi kết nối đến hệ thống. Vui lòng thử lại sau hoặc liên hệ hotline **{{hotline}}** để được hỗ trợ.",
+    "clearConversation": "Cuộc trò chuyện đã được xóa. Tôi có thể giúp gì cho bạn?",
+    "clearConversationTitle": "Xóa cuộc trò chuyện",
+    "inputPlaceholder": "Hỏi về sản phẩm, giá cả hoặc khuyến mãi..."
   }
 }

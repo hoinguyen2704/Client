@@ -32,5 +32,128 @@
       "updated": "Đã cập nhật trạng thái!",
       "invalidTransition": "Không thể cập nhật trạng thái theo thứ tự này"
     }
+  },
+  "orderDetail": {
+    "notFound": "Không tìm thấy đơn hàng",
+    "title": "Đơn hàng {{orderNumber}}",
+    "statusLabel": "Trạng thái đơn hàng",
+    "downloadInvoice": "Tải hóa đơn PDF",
+    "timelineDelivered": "Giao hàng thành công",
+    "timelineDeliveredDescription": "Đơn hàng đã được giao thành công",
+    "itemsTitle": "Sản phẩm ({{count}})",
+    "table": {
+      "product": "Sản phẩm",
+      "unitPrice": "Đơn giá",
+      "quantity": "SL",
+      "subtotal": "Thành tiền"
+    },
+    "noteTitle": "Ghi chú",
+    "noNote": "Không có ghi chú.",
+    "customerTitle": "Khách hàng",
+    "fullName": "Họ tên",
+    "phone": "SĐT",
+    "shippingTitle": "Giao hàng",
+    "paymentTitle": "Thanh toán",
+    "paymentMethod": "Phương thức",
+    "paymentStatus": "Trạng thái",
+    "couponCode": "Mã giảm giá",
+    "summaryTitle": "Tổng thanh toán",
+    "summary": {
+      "subtotal": "Tạm tính",
+      "shippingFee": "Phí vận chuyển",
+      "productDiscount": "Giảm giá sản phẩm",
+      "shippingDiscount": "Giảm phí vận chuyển",
+      "vat": "Thuế VAT ({{percent}}%{{suffix}})",
+      "vatIncluded": ", đã gồm",
+      "total": "Tổng cộng"
+    },
+    "invoice": {
+      "title": "Hóa Đơn",
+      "date": "Ngày",
+      "customer": "Khách hàng",
+      "pickupFallback": "Nhận tại cửa hàng",
+      "paymentShipping": "Thanh toán & Giao hàng",
+      "paid": "Đã thanh toán",
+      "unpaid": "Chưa thu tiền",
+      "buyer": "Người mua hàng",
+      "seller": "Người bán hàng",
+      "signatureHint": "(Ký, ghi rõ họ tên)",
+      "thanks": "Cảm ơn quý khách đã mua bán tại {{shopName}}!"
+    },
+    "toasts": {
+      "statusUpdated": "Cập nhật trạng thái đơn hàng thành công!",
+      "statusFailed": "Cập nhật trạng thái đơn hàng thất bại!",
+      "invoiceSuccess": "Xuất hóa đơn PDF thành công!",
+      "invoiceFailed": "Xuất hóa đơn thất bại!"
+    }
+  },
+  "returns": {
+    "detail": {
+      "notFound": "Không tìm thấy yêu cầu trả hàng",
+      "orderLabel": "Đơn hàng",
+      "createdAtLabel": "Tạo lúc",
+      "itemsTitle": "Danh sách sản phẩm trả",
+      "table": {
+        "product": "Sản phẩm",
+        "variant": "Phân loại",
+        "unitPrice": "Đơn giá",
+        "requestedQty": "SL yêu cầu",
+        "approvedQty": "SL duyệt",
+        "subtotal": "Thành tiền"
+      },
+      "refundTransactionsTitle": "Lịch sử giao dịch hoàn tiền",
+      "refundTransactionsEmpty": "Chưa có giao dịch hoàn tiền nào cho yêu cầu này.",
+      "refundTransactionsTable": {
+        "time": "Thời gian",
+        "transactionId": "Mã giao dịch",
+        "amount": "Số tiền",
+        "status": "Trạng thái"
+      },
+      "requestInfoTitle": "Thông tin yêu cầu",
+      "customer": "Khách hàng",
+      "reason": "Lý do",
+      "customerNote": "Ghi chú khách",
+      "adminNote": "Ghi chú admin",
+      "unknown": "Không rõ",
+      "none": "Không có",
+      "noAdminNote": "Chưa có",
+      "resolvedAt": "Đã xử lý lúc {{date}}",
+      "amountsTitle": "Số tiền",
+      "requestedAmount": "Yêu cầu hoàn",
+      "approvedAmount": "Số tiền duyệt",
+      "notApprovedYet": "Chưa duyệt",
+      "refundedAmount": "Đã hoàn thực tế",
+      "reviewTitle": "Duyệt yêu cầu",
+      "approvedAmountPlaceholder": "Số tiền duyệt (để trống = full)",
+      "reviewNotePlaceholder": "Ghi chú duyệt/từ chối",
+      "approve": "Duyệt",
+      "reject": "Từ chối",
+      "updateStatusTitle": "Cập nhật trạng thái",
+      "statusNotePlaceholder": "Ghi chú cập nhật trạng thái",
+      "saveStatus": "Lưu trạng thái",
+      "refundTitle": "Xác nhận hoàn tiền thủ công",
+      "refundAmountPlaceholder": "Số tiền hoàn (bắt buộc)",
+      "transactionIdPlaceholder": "Mã giao dịch hoàn tiền",
+      "refundAdminNotePlaceholder": "Ghi chú admin về giao dịch hoàn tiền (bắt buộc)",
+      "currencyPlaceholder": "Đơn vị tiền tệ",
+      "confirmRefund": "Xác nhận hoàn tiền thủ công",
+      "refundProviders": {
+        "manual": "Hoàn tiền thủ công (Cash/Bank)",
+        "bankTransfer": "Chuyển khoản Ngân Hàng"
+      },
+      "toasts": {
+        "invalidApprovedAmount": "Số tiền duyệt không hợp lệ",
+        "reviewApproved": "Đã duyệt yêu cầu trả hàng",
+        "reviewRejected": "Đã từ chối yêu cầu trả hàng",
+        "selectStatus": "Vui lòng chọn trạng thái mới",
+        "statusUpdated": "Đã cập nhật trạng thái yêu cầu",
+        "refundAmountRequired": "Vui lòng nhập số tiền hoàn",
+        "invalidRefundAmount": "Số tiền hoàn không hợp lệ",
+        "refundProviderRequired": "Vui lòng chọn provider hoàn tiền",
+        "refundTransactionRequired": "Vui lòng nhập mã giao dịch hoàn tiền",
+        "refundAdminNoteRequired": "Vui lòng nhập ghi chú xử lý hoàn tiền",
+        "refundSuccess": "Đã xử lý hoàn tiền thành công"
+      }
+    }
   }
 }

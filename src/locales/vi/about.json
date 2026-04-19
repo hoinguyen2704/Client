@@ -1,0 +1,170 @@
+{
+  "aboutPage": {
+    "title": "Giới thiệu về {{shopName}}",
+    "sections": {
+      "aboutUs": {
+        "title": "Về chúng tôi",
+        "paragraphs": [
+          "{{shopName}} là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm công nghệ, thiết bị điện tử, linh kiện máy tính và phụ kiện chính hãng. Chúng tôi cam kết mang đến cho khách hàng những sản phẩm chất lượng cao với giá cả cạnh tranh nhất trên thị trường.",
+          "Được thành lập với sứ mệnh kết nối người tiêu dùng với những công nghệ tiên tiến nhất, {{shopName}} không ngừng nỗ lực cải thiện chất lượng dịch vụ, đa dạng hóa sản phẩm và tối ưu hóa trải nghiệm mua sắm trực tuyến."
+        ]
+      },
+      "visionMission": {
+        "title": "Tầm nhìn & Sứ mệnh",
+        "vision": "<strong>Tầm nhìn:</strong> Trở thành điểm đến mua sắm công nghệ số 1 tại Việt Nam, nơi khách hàng có thể tìm thấy mọi thứ họ cần với sự an tâm tuyệt đối.",
+        "mission": "<strong>Sứ mệnh:</strong> Mang công nghệ đến gần hơn với mọi người bằng cách cung cấp các sản phẩm chất lượng, dịch vụ tận tâm và trải nghiệm mua sắm tuyệt vời."
+      },
+      "ownership": {
+        "title": "Về chủ sở hữu",
+        "paragraphs": [
+          "{{shopName}} được sáng lập và điều hành bởi đội ngũ những người đam mê công nghệ, có nhiều năm kinh nghiệm trong lĩnh vực bán lẻ thiết bị điện tử và thương mại điện tử. Chúng tôi hiểu rõ nhu cầu của khách hàng và luôn đặt lợi ích của người tiêu dùng lên hàng đầu."
+        ]
+      },
+      "whyChoose": {
+        "title": "Tại sao chọn {{shopName}}?",
+        "items": [
+          "Sản phẩm chính hãng 100%, nguồn gốc xuất xứ rõ ràng.",
+          "Chính sách bảo hành uy tín, hỗ trợ đổi trả dễ dàng.",
+          "Đội ngũ tư vấn nhiệt tình, chuyên môn cao.",
+          "Giao hàng nhanh chóng trên toàn quốc.",
+          "Nhiều chương trình khuyến mãi và ưu đãi hấp dẫn."
+        ]
+      }
+    },
+    "contactAction": "Liên hệ với chúng tôi"
+  },
+  "contactPage": {
+    "title": "Liên hệ với chúng tôi",
+    "description": "{{shopName}} luôn sẵn sàng lắng nghe và giải đáp mọi thắc mắc của bạn. Hãy liên hệ với chúng tôi qua các kênh dưới đây hoặc điền vào form liên hệ.",
+    "contactInfoTitle": "Thông tin liên hệ",
+    "addressLabel": "Địa chỉ",
+    "phoneLabel": "Điện thoại",
+    "emailLabel": "Email",
+    "hoursLabel": "Giờ làm việc",
+    "support247": "Hỗ trợ 24/7",
+    "messagingApps": "Zalo / Viber",
+    "weekdayHours": "Thứ 2 - Thứ 6: 8:00 - 20:00",
+    "weekendHours": "Thứ 7 - CN: 9:00 - 18:00",
+    "formTitle": "Gửi tin nhắn cho chúng tôi",
+    "form": {
+      "nameLabel": "Họ và tên *",
+      "namePlaceholder": "Nhập họ và tên",
+      "emailLabel": "Email *",
+      "emailPlaceholder": "Nhập địa chỉ email",
+      "phoneLabel": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "subjectLabel": "Chủ đề *",
+      "subjectPlaceholder": "Nhập chủ đề liên hệ",
+      "messageLabel": "Nội dung tin nhắn *",
+      "messagePlaceholder": "Nhập nội dung tin nhắn của bạn...",
+      "sending": "Đang gửi...",
+      "submit": "Gửi tin nhắn"
+    },
+    "toasts": {
+      "success": "Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!"
+    }
+  },
+  "termsPage": {
+    "title": "Điều khoản sử dụng",
+    "intro": "Chào mừng bạn đến với {{shopName}}. Khi truy cập và sử dụng trang web của chúng tôi, bạn đồng ý tuân thủ các điều khoản và điều kiện dưới đây. Vui lòng đọc kỹ trước khi sử dụng dịch vụ.",
+    "sections": [
+      {
+        "title": "1. Chấp nhận điều khoản",
+        "paragraphs": [
+          "Bằng việc truy cập, duyệt hoặc sử dụng trang web {{shopName}}, bạn xác nhận rằng bạn đã đọc, hiểu và đồng ý bị ràng buộc bởi các Điều khoản sử dụng này cũng như Chính sách bảo mật của chúng tôi. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng không sử dụng trang web."
+        ]
+      },
+      {
+        "title": "2. Quyền và trách nhiệm của người dùng",
+        "items": [
+          "Bạn cam kết cung cấp thông tin chính xác, đầy đủ và cập nhật khi đăng ký tài khoản hoặc đặt hàng.",
+          "Bạn chịu trách nhiệm bảo mật thông tin tài khoản và mật khẩu của mình.",
+          "Không sử dụng trang web cho các mục đích bất hợp pháp, lừa đảo hoặc vi phạm quyền của bên thứ ba.",
+          "Không can thiệp, phá hoại hoặc làm gián đoạn hoạt động của trang web và hệ thống máy chủ."
+        ]
+      },
+      {
+        "title": "3. Thông tin sản phẩm và giá cả",
+        "paragraphs": [
+          "Chúng tôi luôn cố gắng cung cấp thông tin sản phẩm và giá cả chính xác nhất. Tuy nhiên, sai sót vẫn có thể xảy ra. Trong trường hợp giá sản phẩm hiển thị không chính xác do lỗi hệ thống, chúng tôi có quyền từ chối hoặc hủy các đơn hàng đối với sản phẩm đó và sẽ thông báo cho bạn."
+        ]
+      },
+      {
+        "title": "4. Chính sách thanh toán và giao hàng",
+        "paragraphs": [
+          "Các quy định chi tiết về phương thức thanh toán, thời gian và chi phí giao hàng được quy định cụ thể tại các trang chính sách tương ứng trên website. Bằng việc đặt hàng, bạn đồng ý với các chính sách này."
+        ]
+      },
+      {
+        "title": "5. Quyền sở hữu trí tuệ",
+        "paragraphs": [
+          "Mọi nội dung trên trang web này, bao gồm nhưng không giới hạn ở văn bản, hình ảnh, logo, video và mã nguồn, đều thuộc sở hữu của {{shopName}} hoặc các nhà cung cấp nội dung của chúng tôi và được bảo vệ bởi luật sở hữu trí tuệ."
+        ]
+      },
+      {
+        "title": "6. Thay đổi điều khoản",
+        "paragraphs": [
+          "{{shopName}} có quyền sửa đổi, cập nhật các Điều khoản sử dụng này bất cứ lúc nào mà không cần báo trước. Việc bạn tiếp tục sử dụng trang web sau khi các thay đổi được đăng tải đồng nghĩa với việc bạn chấp nhận các điều khoản mới."
+        ]
+      }
+    ],
+    "lastUpdated": "Cập nhật lần cuối: {{date}}"
+  },
+  "privacyPage": {
+    "title": "Chính sách bảo mật",
+    "intro": "{{shopName}} tôn trọng và cam kết bảo vệ dữ liệu cá nhân của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng, chia sẻ và bảo vệ thông tin cá nhân của bạn khi bạn sử dụng trang web và dịch vụ của chúng tôi.",
+    "sections": [
+      {
+        "title": "1. Thu thập thông tin cá nhân",
+        "lead": "Chúng tôi có thể thu thập các thông tin sau từ bạn:",
+        "items": [
+          "<strong>Thông tin định danh:</strong> Họ tên, địa chỉ email, số điện thoại, địa chỉ giao hàng.",
+          "<strong>Thông tin tài khoản:</strong> Tên đăng nhập, mật khẩu (được mã hóa), lịch sử mua hàng.",
+          "<strong>Thông tin thanh toán:</strong> Chi tiết thẻ tín dụng/ghi nợ hoặc thông tin tài khoản ngân hàng (được xử lý an toàn qua cổng thanh toán của bên thứ ba).",
+          "<strong>Thông tin kỹ thuật:</strong> Địa chỉ IP, loại trình duyệt, hệ điều hành, thông tin thiết bị và dữ liệu cookie."
+        ]
+      },
+      {
+        "title": "2. Mục đích sử dụng thông tin",
+        "lead": "Thông tin cá nhân của bạn được sử dụng cho các mục đích:",
+        "items": [
+          "Xử lý đơn hàng, giao hàng và cung cấp dịch vụ hỗ trợ khách hàng.",
+          "Quản lý tài khoản người dùng và xác thực danh tính.",
+          "Cải thiện trải nghiệm người dùng và tối ưu hóa giao diện trang web.",
+          "Gửi thông báo về tình trạng đơn hàng, cập nhật chính sách hoặc các chương trình khuyến mãi (nếu bạn đồng ý nhận).",
+          "Phát hiện, ngăn chặn các hoạt động gian lận và bảo vệ an ninh hệ thống."
+        ]
+      },
+      {
+        "title": "3. Chia sẻ thông tin",
+        "paragraphs": [
+          "Chúng tôi không bán, trao đổi hoặc cho thuê thông tin cá nhân của bạn cho bên thứ ba. Chúng tôi chỉ chia sẻ thông tin trong các trường hợp sau:"
+        ],
+        "items": [
+          "Với các đối tác cung cấp dịch vụ (đơn vị vận chuyển, cổng thanh toán) để thực hiện đơn hàng.",
+          "Khi có yêu cầu hợp pháp từ các cơ quan chức năng có thẩm quyền theo quy định của pháp luật.",
+          "Để bảo vệ quyền lợi, tài sản hoặc sự an toàn của {{shopName}} và người dùng khác."
+        ]
+      },
+      {
+        "title": "4. Bảo mật dữ liệu",
+        "paragraphs": [
+          "Chúng tôi áp dụng các biện pháp kỹ thuật và an ninh phù hợp để bảo vệ thông tin cá nhân của bạn khỏi việc truy cập, sử dụng, thay đổi hoặc tiết lộ trái phép. Tuy nhiên, không có phương thức truyền tải dữ liệu qua internet nào là an toàn 100%, do đó chúng tôi không thể đảm bảo an ninh tuyệt đối."
+        ]
+      },
+      {
+        "title": "5. Quyền của người dùng",
+        "paragraphs": [
+          "Bạn có quyền truy cập, chỉnh sửa hoặc yêu cầu xóa thông tin cá nhân của mình bất cứ lúc nào thông qua phần quản lý tài khoản hoặc bằng cách liên hệ trực tiếp với bộ phận hỗ trợ khách hàng của chúng tôi."
+        ]
+      },
+      {
+        "title": "6. Liên hệ",
+        "paragraphs": [
+          "Nếu bạn có bất kỳ câu hỏi hoặc thắc mắc nào về Chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua trang Liên hệ hoặc gửi email đến địa chỉ hỗ trợ của {{shopName}}."
+        ]
+      }
+    ],
+    "lastUpdated": "Cập nhật lần cuối: {{date}}"
+  }
+}

@@ -34,10 +34,85 @@
     "endsIn": "Kết thúc sau:",
     "remainingProducts": "Còn {{count}} sản phẩm",
     "soldOut": "Đã hết",
+    "status": {
+      "scheduled": "Sắp diễn ra",
+      "ended": "Đã kết thúc",
+      "active": "Đang diễn ra"
+    },
+    "soldPercent": "{{percent}}% đã bán",
+    "defaultVariant": "Phiên bản mặc định",
+    "savedAmount": "Tiết kiệm {{amount}}",
+    "progressLabel": "Tiến độ ưu đãi",
+    "soldCount": "{{count}} đã bán",
+    "dealSlots": "{{count}} suất",
+    "heroEyebrow": "Chớp deal công nghệ",
+    "heroTitle": "Flash Sale đang diễn ra",
+    "heroDescription": "Giá sốc theo từng khung giờ, số lượng có hạn và cập nhật trực tiếp theo tồn kho từng chiến dịch.",
+    "activeCampaigns": "{{count}} chiến dịch đang hoạt động",
+    "summaryFallback": "Săn deal giới hạn với mức giá tốt nhất trong ngày và số lượng thay đổi theo thời gian thực.",
+    "campaignProducts": "{{count}} sản phẩm trong đợt sale",
+    "campaignRemaining": "Còn {{count}} suất ưu đãi",
+    "emptyProducts": "Chưa có sản phẩm nào trong chương trình này.",
+    "actions": {
+      "viewDetails": "Xem chi tiết",
+      "grabDeal": "Chớp deal ngay"
+    },
     "countdown": {
       "hours": "giờ",
       "minutes": "phút",
       "seconds": "giây"
+    }
+  },
+  "compare": {
+    "title": "So sánh sản phẩm",
+    "descriptionWithCategory": "So sánh trong danh mục <strong>{{category}}</strong> · Tối đa 4 sản phẩm",
+    "descriptionDefault": "Chọn sản phẩm để so sánh chi tiết · Chỉ so sánh cùng danh mục",
+    "selectedCount": "{{count}}/4 sản phẩm",
+    "clearAll": "Xóa tất cả",
+    "empty": {
+      "title": "Chưa có sản phẩm nào",
+      "description": "Thêm ít nhất 2 sản phẩm cùng danh mục để so sánh chi tiết thông số kỹ thuật, giá cả và đánh giá.",
+      "action": "Thêm sản phẩm đầu tiên"
+    },
+    "table": {
+      "title": "So sánh",
+      "category": "Danh mục",
+      "brand": "Thương hiệu",
+      "price": "Giá bán",
+      "rating": "Đánh giá",
+      "specs": "Thông số kỹ thuật",
+      "bestPrice": "Giá tốt nhất",
+      "highestRating": "Cao nhất",
+      "addProduct": "Thêm SP"
+    },
+    "modal": {
+      "title": "Chọn sản phẩm",
+      "lockedCategory": "Chỉ hiển thị sản phẩm trong danh mục <strong>{{category}}</strong>.",
+      "searchPlaceholderWithCategory": "Tìm trong {{category}}...",
+      "searchPlaceholder": "Tìm sản phẩm...",
+      "loading": "Đang tìm...",
+      "emptyWithQuery": "Không tìm thấy sản phẩm",
+      "emptyDefault": "Nhập tên sản phẩm để tìm",
+      "selected": "Đã chọn",
+      "select": "Chọn",
+      "differentCategory": "Khác danh mục"
+    }
+  },
+  "search": {
+    "breadcrumbCurrent": "Tìm kiếm sản phẩm",
+    "filterToggle": "Lọc sản phẩm",
+    "filterTitle": "Bộ lọc",
+    "categoryTitle": "Danh mục",
+    "brandTitle": "Thương hiệu",
+    "resultsFor": "Kết quả cho \"{{query}}\"",
+    "allProducts": "Tất cả sản phẩm",
+    "sortBy": "Sắp xếp:",
+    "empty": {
+      "title": "Không tìm thấy sản phẩm nào",
+      "description": "Vui lòng thử lại với các tiêu chí khác."
+    },
+    "toasts": {
+      "loadFailed": "Tìm kiếm thất bại!"
     }
   },
   "productDetail": {

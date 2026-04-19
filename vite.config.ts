@@ -7,6 +7,22 @@ export default defineConfig(({mode}) => {
   loadEnv(mode, '.', '');
   return {
     plugins: [react(), tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('recharts')) return 'vendor-recharts';
+              if (id.includes('react-icons')) return 'vendor-icons';
+              if (id.includes('react-i18next') || id.includes('/i18next/')) return 'vendor-i18n';
+              if (id.includes('@tanstack/react-query')) return 'vendor-query';
+              if (id.includes('motion') || id.includes('framer-motion')) return 'vendor-motion';
+              return 'vendor';
+            }
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),

@@ -1,0 +1,23 @@
+{
+  "hero": {
+    "searchPlaceholder": "Search phones, laptops, accessories...",
+    "searchButton": "Search",
+    "fallbackBanners": {
+      "primary": {
+        "title": "Latest technology",
+        "subtitle": "Discover the hottest products at {{shopName}}"
+      },
+      "secondary": {
+        "title": "Premium laptops",
+        "subtitle": "Top-tier performance at the best value"
+      }
+    }
+  },
+  "sections": {
+    "seeAll": "View all",
+    "featuredTitle": "Featured products",
+    "featuredSubtitle": "Recommended for you",
+    "bestSellersTitle": "Best sellers",
+    "newArrivalsTitle": "New arrivals"
+  }
+}

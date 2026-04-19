@@ -26,6 +26,26 @@
     },
     "empty": "Không thể tải dữ liệu dashboard"
   },
+  "stats": {
+    "revenue": "Doanh thu",
+    "orders": {
+      "label": "Tổng đơn hàng",
+      "sub": "+{{count}} mới"
+    },
+    "customers": {
+      "label": "Tổng khách hàng",
+      "sub": "+{{count}} mới"
+    },
+    "productsSold": "SP bán ra",
+    "returns": {
+      "label": "Hoàn / Hủy",
+      "sub": "Hủy: {{cancelled}} | Hoàn: {{returned}}"
+    },
+    "reviews": {
+      "label": "Tổng đánh giá",
+      "sub": "+{{count}} mới"
+    }
+  },
   "modals": {
     "orders": "Đơn hàng gần đây",
     "revenue": "Chi tiết doanh thu",
