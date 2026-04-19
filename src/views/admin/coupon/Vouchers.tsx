@@ -40,6 +40,7 @@ export default function AdminVouchers() {
     setPage,
     refetch: fetchVouchers,
   } = useAdminList<CouponResponse>(adminCouponService.getAll, {
+    queryKey: "admin-vouchers",
     size: PAGE_SIZE.MEDIUM,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);

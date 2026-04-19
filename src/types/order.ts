@@ -30,6 +30,21 @@ export interface OrderResponse {
   updatedAt?: string;
 }
 
+export interface AdminOrderListItem {
+  id: string;
+  orderNumber: string;
+  orderStatus: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  totalAmount: number;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  itemCount?: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface OrderStatusHistory {
   id: string;
   status: string;

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import type { TFunction } from 'i18next';
 import { FiCalendar, FiCheck, FiChevronDown, FiCopy, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -27,22 +28,14 @@ type TicketGroupSection = {
   tickets: TicketResponse[];
 };
 
-const TICKET_GROUP_OPTIONS = [
-  { value: 'NONE', label: 'Không nhóm' },
-  { value: 'DATE', label: 'Theo ngày' },
-  { value: 'CUSTOMER', label: 'Theo khách hàng' },
-] as const;
-
-const DATE_GROUP_FORMATTER = new Intl.DateTimeFormat('vi-VN', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-});
-
-function formatDateGroupLabel(rawDate: string): string {
+function formatDateGroupLabel(
+  rawDate: string,
+  formatter: Intl.DateTimeFormat,
+  t: TFunction,
+): string {
   const date = new Date(rawDate);
   if (Number.isNaN(date.getTime())) {
-    return 'Không rõ ngày';
+    return t('tickets.dateUnknown');
   }
 
   const now = new Date();
@@ -51,10 +44,12 @@ function formatDateGroupLabel(rawDate: string): string {
     && date.getMonth() === now.getMonth()
     && date.getFullYear() === now.getFullYear();
 
-  return isToday ? `Hôm nay · ${DATE_GROUP_FORMATTER.format(date)}` : DATE_GROUP_FORMATTER.format(date);
+  return isToday
+    ? t('tickets.todayLabel', { date: formatter.format(date) })
+    : formatter.format(date);
 }
 
-function formatCustomerGroupLabel(ticket: TicketResponse): string {
+function formatCustomerGroupLabel(ticket: TicketResponse, t: TFunction): string {
   const userName = ticket.userName?.trim();
   const userEmail = ticket.userEmail?.trim();
 
@@ -68,10 +63,10 @@ function formatCustomerGroupLabel(ticket: TicketResponse): string {
     return userEmail;
   }
 
-  return 'Khách chưa xác định';
+  return t('tickets.unknownCustomer');
 }
 
-function getCustomerGroupSubtitle(ticket: TicketResponse): string | undefined {
+function getCustomerGroupSubtitle(ticket: TicketResponse, t: TFunction): string | undefined {
   const userName = ticket.userName?.trim();
   const userEmail = ticket.userEmail?.trim();
 
@@ -80,19 +75,24 @@ function getCustomerGroupSubtitle(ticket: TicketResponse): string | undefined {
   }
 
   if (userEmail) {
-    return 'Nhóm theo khách hàng';
+    return t('tickets.customerGroup');
   }
 
   if (userName) {
-    return 'Khách hàng đã định danh';
+    return t('tickets.identifiedCustomer');
   }
 
-  return 'Chưa có thông tin tài khoản';
+  return t('tickets.missingAccountInfo');
 }
 
-function buildTicketSections(tickets: TicketResponse[], groupMode: TicketGroupMode): TicketGroupSection[] {
+function buildTicketSections(
+  tickets: TicketResponse[],
+  groupMode: TicketGroupMode,
+  formatter: Intl.DateTimeFormat,
+  t: TFunction,
+): TicketGroupSection[] {
   if (groupMode === 'NONE') {
-    return [{ key: 'all-tickets', title: 'Tất cả ticket', tickets }];
+    return [{ key: 'all-tickets', title: t('tickets.allTickets'), tickets }];
   }
 
   const sections = new Map<string, TicketGroupSection>();
@@ -100,10 +100,12 @@ function buildTicketSections(tickets: TicketResponse[], groupMode: TicketGroupMo
   tickets.forEach((ticket) => {
     const key =
       groupMode === 'DATE'
-        ? formatDateGroupLabel(ticket.createdAt)
+        ? formatDateGroupLabel(ticket.createdAt, formatter, t)
         : (ticket.userId || ticket.userEmail || ticket.userName || 'guest').toLowerCase();
-    const title = groupMode === 'DATE' ? formatDateGroupLabel(ticket.createdAt) : formatCustomerGroupLabel(ticket);
-    const subtitle = groupMode === 'DATE' ? 'Nhóm theo ngày tạo' : getCustomerGroupSubtitle(ticket);
+    const title = groupMode === 'DATE'
+      ? formatDateGroupLabel(ticket.createdAt, formatter, t)
+      : formatCustomerGroupLabel(ticket, t);
+    const subtitle = groupMode === 'DATE' ? t('tickets.groupByCreatedDate') : getCustomerGroupSubtitle(ticket, t);
 
     if (!sections.has(key)) {
       sections.set(key, { key, title, subtitle, tickets: [] });
@@ -116,7 +118,7 @@ function buildTicketSections(tickets: TicketResponse[], groupMode: TicketGroupMo
 }
 
 export default function Tickets() {
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation(['adminSupport', 'common']);
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -129,7 +131,27 @@ export default function Tickets() {
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const copyResetTimerRef = useRef<number | null>(null);
-  const ticketSections = useMemo(() => buildTicketSections(tickets, groupMode), [tickets, groupMode]);
+  const dateGroupFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }),
+    [i18n.language],
+  );
+  const ticketGroupOptions = useMemo(
+    () => [
+      { value: 'NONE', label: t('tickets.groupOptions.none') },
+      { value: 'DATE', label: t('tickets.groupOptions.date') },
+      { value: 'CUSTOMER', label: t('tickets.groupOptions.customer') },
+    ],
+    [t],
+  );
+  const ticketSections = useMemo(
+    () => buildTicketSections(tickets, groupMode, dateGroupFormatter, t),
+    [dateGroupFormatter, groupMode, t, tickets],
+  );
 
   useEffect(() => {
     if (groupMode === 'NONE') {
@@ -169,9 +191,9 @@ export default function Tickets() {
       setPageData(res.data);
       setTickets(nextTickets);
     } catch (err) { console.error('Failed to fetch tickets:', err); 
-      toast.error('Tải danh sách hỗ trợ thất bại!'); }
+      toast.error(t('tickets.toasts.loadFailed')); }
     finally { setLoading(false); }
-  }, [statusFilter, page]);
+  }, [page, statusFilter, t]);
 
   const fetchSelectedTicket = useCallback(async (opts?: { silent?: boolean }) => {
     if (!selectedTicket?.id) return;
@@ -179,9 +201,9 @@ export default function Tickets() {
       const res = await adminTicketService.getById(selectedTicket.id);
       setSelectedTicket(res.data);
     } catch {
-      if (!opts?.silent) toast.error('Không thể tải chi tiết ticket');
+      if (!opts?.silent) toast.error(t('tickets.toasts.loadDetailFailed'));
     }
-  }, [selectedTicket?.id]);
+  }, [selectedTicket?.id, t]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
 
@@ -225,7 +247,7 @@ export default function Tickets() {
       setReplyText('');
       await fetchTickets({ silent: true });
     } catch (err) { console.error('Reply failed:', err); 
-      toast.error('Gửi phản hồi thất bại!'); }
+      toast.error(t('tickets.toasts.replyFailed')); }
   };
 
   const handleStatusChange = async (id: string, status: string) => {
@@ -234,20 +256,20 @@ export default function Tickets() {
       setSelectedTicket(res.data);
       await fetchTickets({ silent: true });
     } catch (err) { console.error('Status update failed:', err); 
-      toast.error('Cập nhật trạng thái thất bại!'); }
+      toast.error(t('tickets.toasts.statusFailed')); }
   };
 
   const handleCopyCustomerEmail = useCallback(async (email?: string | null) => {
     const normalizedEmail = email?.trim();
     if (!normalizedEmail) {
-      toast.error('Khách hàng chưa có email để sao chép.');
+      toast.error(t('tickets.toasts.copyEmailMissing'));
       return;
     }
 
     try {
       await navigator.clipboard.writeText(normalizedEmail);
       setCopiedEmail(normalizedEmail);
-      toast.success('Đã sao chép email khách hàng.');
+      toast.success(t('tickets.toasts.copyEmailSuccess'));
 
       if (copyResetTimerRef.current !== null) {
         window.clearTimeout(copyResetTimerRef.current);
@@ -257,9 +279,9 @@ export default function Tickets() {
         copyResetTimerRef.current = null;
       }, 1800);
     } catch {
-      toast.error('Không thể sao chép email khách hàng.');
+      toast.error(t('tickets.toasts.copyEmailFailed'));
     }
-  }, []);
+  }, [t]);
 
   const toggleSection = useCallback((sectionKey: string) => {
     setExpandedSections((prev) => ({
@@ -271,12 +293,12 @@ export default function Tickets() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Quản lý yêu cầu hỗ trợ</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('tickets.title')}</h1>
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
           <CustomSelect
             value={groupMode}
             onChange={(val) => setGroupMode(val as TicketGroupMode)}
-            options={TICKET_GROUP_OPTIONS.map((option) => ({ ...option }))}
+            options={ticketGroupOptions.map((option) => ({ ...option }))}
             className="w-full sm:w-44 z-20"
           />
           <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
@@ -293,7 +315,7 @@ export default function Tickets() {
                 <div key={i} className="p-4 animate-pulse"><div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded mb-2" /><div className="h-3 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></div>
               ))
             ) : tickets.length === 0 ? (
-              <div className="p-12 text-center text-slate-400">Không có ticket nào</div>
+              <div className="p-12 text-center text-slate-400">{t('tickets.empty')}</div>
             ) : (
               ticketSections.map((section) => {
                 const stateKey = `${groupMode}:${section.key}`;
@@ -307,7 +329,7 @@ export default function Tickets() {
                         variant="ghost"
                         fullWidth
                         onClick={() => toggleSection(stateKey)}
-                        ariaLabel={`${isExpanded ? 'Thu gọn' : 'Mở rộng'} nhóm ${section.title}`}
+                        ariaLabel={t(`tickets.sectionToggle.${isExpanded ? 'collapse' : 'expand'}`, { title: section.title })}
                         className="group sticky top-0 z-10 !h-auto !justify-start rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-left shadow-sm backdrop-blur transition-all hover:border-purple-200 hover:bg-purple-50/80 dark:border-slate-700 dark:bg-slate-900/95 dark:hover:border-purple-500/40 dark:hover:bg-slate-900"
                       >
                         <div className="flex w-full items-center gap-3">
@@ -324,7 +346,7 @@ export default function Tickets() {
                           </div>
                           <div className="flex shrink-0 items-center gap-2">
                             <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-purple-50 group-hover:text-purple-700 group-hover:ring-purple-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-purple-500/10 dark:group-hover:text-purple-300 dark:group-hover:ring-purple-500/30">
-                              {section.tickets.length} yêu cầu
+                              {t('tickets.requestsCount', { count: section.tickets.length })}
                             </span>
                             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-purple-50 group-hover:text-purple-700 group-hover:ring-purple-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-purple-500/10 dark:group-hover:text-purple-300 dark:group-hover:ring-purple-500/30">
                               <FiChevronDown
@@ -362,7 +384,7 @@ export default function Tickets() {
                 totalPages={pageData.lastPage}
                 totalItems={pageData.total}
                 perPage={PAGE_SIZE.LARGE}
-                label="yêu cầu"
+                label={t('tickets.paginationLabel')}
                 onPageChange={setPage}
               />
             </div>
@@ -383,11 +405,11 @@ export default function Tickets() {
                         type="button"
                         onClick={() => handleCopyCustomerEmail(selectedTicket.userEmail)}
                         className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-sm font-medium text-slate-600 transition-colors hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700"
-                        aria-label="Sao chép email khách hàng"
-                        title="Sao chép email khách hàng"
+                        aria-label={t('tickets.copyEmailAria')}
+                        title={t('tickets.copyEmailTitle')}
                       >
                         {copiedEmail === selectedTicket.userEmail ? <FiCheck className="text-sm" /> : <FiCopy className="text-sm" />}
-                        {copiedEmail === selectedTicket.userEmail ? 'Đã copy' : 'Copy email'}
+                        {copiedEmail === selectedTicket.userEmail ? t('tickets.copied') : t('tickets.copyEmail')}
                       </button>
                     </div>
                   </div>
@@ -409,16 +431,16 @@ export default function Tickets() {
                 <div ref={messagesEndRef} />
               </div>
               <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-2">
-                <input type="text" placeholder="Nhập câu trả lời..." value={replyText} onChange={(e) => setReplyText(e.target.value)}
+                <input type="text" placeholder={t('tickets.replyPlaceholder')} value={replyText} onChange={(e) => setReplyText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleReply()}
                   className="flex-1 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md sm:text-base" />
                 <Button onClick={handleReply} size="md" icon={<FiMessageCircle />} className="w-full sm:w-auto">
-                Gửi
+                {t('tickets.send')}
                 </Button>
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-400 p-12">Chọn một ticket để xem chi tiết</div>
+            <div className="flex-1 flex items-center justify-center text-slate-400 p-12">{t('tickets.emptyDetail')}</div>
           )}
         </div>
       </div>

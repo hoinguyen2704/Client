@@ -1,11 +1,10 @@
-import { FiCheck } from "react-icons/fi";
-import type { ProductVariantResponse } from "@/types";
-import { formatPrice } from "@/utils/format";
-import { resolveVariantSalesMetrics } from "@/utils/variantSales";
-import { getInventoryBadgeClass } from "./productPickerUtils";
+import { FiCheck } from 'react-icons/fi';
+import type { AdminProductVariantSummary } from '@/types';
+import { formatPrice } from '@/utils/format';
+import { getInventoryBadgeClass } from './productPickerUtils';
 
 interface ProductPickerVariantRowProps {
-  variant: ProductVariantResponse;
+  variant: AdminProductVariantSummary;
   isAlreadyInSale: boolean;
   isChecked: boolean;
   isNewlySelected: boolean;
@@ -19,7 +18,9 @@ export default function ProductPickerVariantRow({
   isNewlySelected,
   onToggle,
 }: ProductPickerVariantRowProps) {
-  const sales = resolveVariantSalesMetrics(variant);
+  const grossSoldQty = variant.grossSoldQty ?? 0;
+  const returnedQty = variant.returnedQty ?? 0;
+  const netSoldQty = variant.netSoldQty ?? Math.max(grossSoldQty - returnedQty, 0);
   const stock = variant.stockQuantity || 0;
 
   return (
@@ -27,10 +28,10 @@ export default function ProductPickerVariantRow({
       className={`grid grid-cols-1 items-stretch gap-0 transition-colors md:grid-cols-[minmax(0,1fr)_170px_140px_170px]
         ${
           isAlreadyInSale
-            ? "cursor-not-allowed bg-amber-50/40 opacity-50 dark:bg-amber-500/5"
+            ? 'cursor-not-allowed bg-amber-50/40 opacity-50 dark:bg-amber-500/5'
             : isNewlySelected
-              ? "cursor-pointer border-y border-purple-200/90 bg-purple-100/80 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] hover:bg-purple-100 dark:border-purple-400/30 dark:bg-purple-500/25 dark:hover:bg-purple-500/30"
-              : "cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30"
+              ? 'cursor-pointer border-y border-purple-200/90 bg-purple-100/80 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] hover:bg-purple-100 dark:border-purple-400/30 dark:bg-purple-500/25 dark:hover:bg-purple-500/30'
+              : 'cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30'
         }`}
       onClick={() => !isAlreadyInSale && onToggle()}
     >
@@ -40,10 +41,10 @@ export default function ProductPickerVariantRow({
             className={`flex h-[22px] w-[22px] items-center justify-center rounded-md border-2 transition-all duration-150
               ${
                 isAlreadyInSale
-                  ? "border-slate-300 bg-slate-200 dark:border-slate-500 dark:bg-slate-600"
+                  ? 'border-slate-300 bg-slate-200 dark:border-slate-500 dark:bg-slate-600'
                   : isChecked
-                    ? "border-purple-600 bg-purple-600 shadow-[0_0_0_2px_rgba(147,51,234,0.15)]"
-                    : "border-slate-300 bg-white hover:border-purple-400 dark:border-slate-600 dark:bg-slate-800"
+                    ? 'border-purple-600 bg-purple-600 shadow-[0_0_0_2px_rgba(147,51,234,0.15)]'
+                    : 'border-slate-300 bg-white hover:border-purple-400 dark:border-slate-600 dark:bg-slate-800'
               }`}
           >
             {isChecked ? <FiCheck className="text-white" size={14} strokeWidth={3} /> : null}
@@ -53,10 +54,10 @@ export default function ProductPickerVariantRow({
         <div className="min-w-0 flex-1">
           <div
             className={`text-md font-semibold ${
-              isNewlySelected ? "text-purple-800 dark:text-purple-200" : "text-slate-700 dark:text-slate-200"
+              isNewlySelected ? 'text-purple-800 dark:text-purple-200' : 'text-slate-700 dark:text-slate-200'
             }`}
           >
-            {variant.variantName || "Mặc định"}
+            {variant.variantName || 'Mặc định'}
           </div>
           <div className="text-sm text-slate-500">
             Mã: {variant.sku}
@@ -73,10 +74,10 @@ export default function ProductPickerVariantRow({
 
       <div className="hidden flex-col items-end justify-center border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex">
         <span className="font-semibold text-slate-700 dark:text-slate-200">
-          {sales.gross.toLocaleString("vi-VN")}
+          {grossSoldQty.toLocaleString('vi-VN')}
         </span>
         <span className="text-xs text-slate-500">
-          R {sales.returned.toLocaleString("vi-VN")} / N {sales.net.toLocaleString("vi-VN")}
+          R {returnedQty.toLocaleString('vi-VN')} / N {netSoldQty.toLocaleString('vi-VN')}
         </span>
       </div>
 
@@ -86,35 +87,35 @@ export default function ProductPickerVariantRow({
             stock,
           )}`}
         >
-          {stock.toLocaleString("vi-VN")}
+          {stock.toLocaleString('vi-VN')}
         </span>
       </div>
 
       <div
         className={`hidden items-center justify-end border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex ${
-          isNewlySelected ? "font-bold text-purple-700 dark:text-purple-200" : "text-slate-500"
+          isNewlySelected ? 'font-bold text-purple-700 dark:text-purple-200' : 'text-slate-500'
         }`}
       >
-        {isNewlySelected ? "Đã chọn" : "Nhấn để chọn"}
+        {isNewlySelected ? 'Đã chọn' : 'Nhấn để chọn'}
       </div>
 
       <div className="flex items-center gap-4 px-14 pb-3 text-sm text-slate-500 md:hidden">
         <span>
-          Gross:{" "}
+          Gross:{' '}
           <strong className="text-slate-700 dark:text-slate-200">
-            {sales.gross.toLocaleString("vi-VN")}
+            {grossSoldQty.toLocaleString('vi-VN')}
           </strong>
         </span>
         <span>
-          N/R:{" "}
+          N/R:{' '}
           <strong className="text-slate-600 dark:text-slate-300">
-            {sales.net.toLocaleString("vi-VN")}/{sales.returned.toLocaleString("vi-VN")}
+            {netSoldQty.toLocaleString('vi-VN')}/{returnedQty.toLocaleString('vi-VN')}
           </strong>
         </span>
         <span>
-          Tồn:{" "}
+          Tồn:{' '}
           <strong className="text-slate-700 dark:text-slate-200">
-            {stock.toLocaleString("vi-VN")}
+            {stock.toLocaleString('vi-VN')}
           </strong>
         </span>
       </div>

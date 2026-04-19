@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
   FiPlus,
   FiX,
@@ -7,14 +8,12 @@ import {
   FiSearch,
   FiInfo,
   FiShoppingCart,
-  FiCopy,
   FiTrash2,
 } from "react-icons/fi";
 import { formatPrice } from "@/utils/format";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import productService from "@/apis/services/productService";
-import { toast } from "sonner";
 import { Modal } from "@/components";
 import type { CompareProduct } from "@/types";
 
@@ -32,6 +31,7 @@ const toCompareSpecs = (
 
 
 export default function Compare() {
+  const { t } = useTranslation(["catalog", "common"]);
   const [compareItems, setCompareItems] = useState<CompareProduct[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<CompareProduct[]>([]);
@@ -110,24 +110,22 @@ export default function Compare() {
     return keys;
   }, [compareItems]);
 
-  const colCount = compareItems.length + (compareItems.length < 4 ? 1 : 0); // +1 for add button col
-
   return (
     <div className="w-full px-2.5 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="text-center mb-5 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent inline-block">
-          So sánh sản phẩm
+          {t("catalog:compare.title")}
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mt-2 text-md">
           {lockedCategoryName ? (
-            <>
-              So sánh trong danh mục{" "}
-              <strong className="text-purple-600">{lockedCategoryName}</strong>{" "}
-              · Tối đa 4 sản phẩm
-            </>
+            <Trans
+              i18nKey="catalog:compare.descriptionWithCategory"
+              values={{ category: lockedCategoryName }}
+              components={{ strong: <strong className="text-purple-600" /> }}
+            />
           ) : (
-            "Chọn sản phẩm để so sánh chi tiết · Chỉ so sánh cùng danh mục"
+            t("catalog:compare.descriptionDefault")
           )}
         </p>
       </div>
@@ -137,14 +135,14 @@ export default function Compare() {
         <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
           <span className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 text-purple-600 text-sm sm:text-md font-medium border border-purple-100 dark:border-purple-800/50">
             <FiInfo className="text-sm shrink-0" />
-            {compareItems.length}/4 sản phẩm
+            {t("catalog:compare.selectedCount", { count: compareItems.length })}
           </span>
           {compareItems.length > 1 && (
             <button
               onClick={clearAll}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-2xl text-sm sm:text-md text-red-500 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100 transition-colors"
             >
-              <FiTrash2 className="text-sm" /> Xóa tất cả
+              <FiTrash2 className="text-sm" /> {t("catalog:compare.clearAll")}
             </button>
           )}
         </div>
@@ -161,20 +159,19 @@ export default function Compare() {
             <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 flex items-center justify-center rotate-6 shadow-lg">
               <FiShoppingCart className="text-3xl sm:text-4xl text-purple-500" />
             </div>
-            <div className="absolute -top-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white text-lg shadow-md -rotate-12">
-              <FiPlus />
-            </div>
+          <div className="absolute -top-2 -right-2 w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white text-lg shadow-md -rotate-12">
+            <FiPlus />
           </div>
-          <h3 className="text-lg sm:text-xl font-bold mb-2">Chưa có sản phẩm nào</h3>
+        </div>
+          <h3 className="text-lg sm:text-xl font-bold mb-2">{t("catalog:compare.empty.title")}</h3>
           <p className="text-slate-500 mb-5 sm:mb-6 max-w-sm text-md">
-            Thêm ít nhất 2 sản phẩm cùng danh mục để so sánh chi tiết thông số
-            kỹ thuật, giá cả và đánh giá
+            {t("catalog:compare.empty.description")}
           </p>
           <button
             onClick={() => setIsModalOpen(true)}
             className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-md sm:text-base font-bold hover:shadow-lg hover:shadow-purple-500/25 hover:-translate-y-0.5 transition-all"
           >
-            Thêm sản phẩm đầu tiên
+            {t("catalog:compare.empty.action")}
           </button>
         </motion.div>
       ) : (
@@ -199,10 +196,10 @@ export default function Compare() {
                   <tr className="border-b border-slate-200 dark:border-slate-700">
                     <th className="p-2.5 sm:p-4 border-r border-slate-200 dark:border-slate-700 align-middle">
                       <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
-                        So sánh
+                        {t("catalog:compare.table.title")}
                       </span>
                     </th>
-                    {compareItems.map((item, idx) => (
+                    {compareItems.map((item) => (
                       <th
                         key={item.id}
                         className="p-2.5 sm:p-4 border-r border-slate-200 dark:border-slate-700 last:border-r-0 align-top"
@@ -254,7 +251,7 @@ export default function Compare() {
                           className="w-full py-4 sm:py-8 rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400 hover:text-purple-600 hover:border-purple-400 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all"
                         >
                           <FiPlus className="text-xl sm:text-2xl mb-1" />
-                          <span className="text-sm font-medium">Thêm SP</span>
+                          <span className="text-sm font-medium">{t("catalog:compare.table.addProduct")}</span>
                         </button>
                       </th>
                     )}
@@ -266,7 +263,7 @@ export default function Compare() {
                   {/* Category */}
                   <tr className="bg-slate-50 dark:bg-slate-800/40">
                     <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
-                      Danh mục
+                      {t("catalog:compare.table.category")}
                     </td>
                     {compareItems.map((item) => (
                       <td
@@ -286,7 +283,7 @@ export default function Compare() {
                   {/* Brand */}
                   <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/20 transition-colors">
                     <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
-                      Thương hiệu
+                      {t("catalog:compare.table.brand")}
                     </td>
                     {compareItems.map((item) => (
                       <td
@@ -304,7 +301,7 @@ export default function Compare() {
                   {/* Price */}
                   <tr className="bg-gradient-to-r from-purple-50/40 to-blue-50/40 dark:from-purple-950/10 dark:to-blue-950/10">
                     <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
-                      Giá bán
+                      {t("catalog:compare.table.price")}
                     </td>
                     {compareItems.map((item) => {
                       const best = isBest("price", item.price);
@@ -320,7 +317,7 @@ export default function Compare() {
                           </span>
                           {best && (
                             <div className="text-10 text-green-500 font-bold mt-0.5">
-                              ✓ Giá tốt nhất
+                              ✓ {t("catalog:compare.table.bestPrice")}
                             </div>
                           )}
                         </td>
@@ -334,7 +331,7 @@ export default function Compare() {
                   {/* Rating */}
                   <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/20 transition-colors">
                     <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
-                      Đánh giá
+                      {t("catalog:compare.table.rating")}
                     </td>
                     {compareItems.map((item) => {
                       const best = isBest("rating", item.rating || 0);
@@ -355,7 +352,7 @@ export default function Compare() {
                               </div>
                               {best && (
                                 <div className="text-10 text-amber-500 font-bold mt-0.5">
-                                  ✓ Cao nhất
+                                  ✓ {t("catalog:compare.table.highestRating")}
                                 </div>
                               )}
                             </>
@@ -381,7 +378,7 @@ export default function Compare() {
                         className="px-3 sm:px-5 py-2.5 sm:py-3 bg-slate-100 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700"
                       >
                         <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
-                          Thông số kỹ thuật
+                          {t("catalog:compare.table.specs")}
                         </span>
                       </td>
                     </tr>
@@ -437,7 +434,7 @@ export default function Compare() {
       <Modal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Chọn sản phẩm"
+        title={t("catalog:compare.modal.title")}
         size="lg"
         scrollable
       >
@@ -445,8 +442,11 @@ export default function Compare() {
           {lockedCategoryName && (
             <div className="flex items-center gap-2 text-sm text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-xl">
               <FiInfo className="shrink-0" />
-              Chỉ hiển thị sản phẩm trong danh mục{" "}
-              <strong>{lockedCategoryName}</strong>
+              <Trans
+                i18nKey="catalog:compare.modal.lockedCategory"
+                values={{ category: lockedCategoryName }}
+                components={{ strong: <strong /> }}
+              />
             </div>
           )}
           <div className="relative">
@@ -455,8 +455,8 @@ export default function Compare() {
               type="text"
               placeholder={
                 lockedCategoryName
-                  ? `Tìm trong ${lockedCategoryName}...`
-                  : "Tìm sản phẩm..."
+                  ? t("catalog:compare.modal.searchPlaceholderWithCategory", { category: lockedCategoryName })
+                  : t("catalog:compare.modal.searchPlaceholder")
               }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -470,15 +470,15 @@ export default function Compare() {
           {searching ? (
             <div className="flex flex-col items-center py-12 text-slate-400">
               <div className="w-8 h-8 border-2 border-purple-300 border-t-purple-600 rounded-full animate-spin mb-3" />
-              <span className="text-md">Đang tìm...</span>
+              <span className="text-md">{t("catalog:compare.modal.loading")}</span>
             </div>
           ) : searchResults.length === 0 ? (
             <div className="flex flex-col items-center py-12 text-slate-400">
               <FiSearch className="text-3xl mb-3" />
               <span className="text-md">
                 {searchQuery
-                  ? "Không tìm thấy sản phẩm"
-                  : "Nhập tên sản phẩm để tìm"}
+                  ? t("catalog:compare.modal.emptyWithQuery")
+                  : t("catalog:compare.modal.emptyDefault")}
               </span>
             </div>
           ) : (
@@ -530,7 +530,7 @@ export default function Compare() {
                     </div>
                     {isDiffCat && (
                       <span className="text-11 text-red-400">
-                        Khác danh mục
+                        {t("catalog:compare.modal.differentCategory")}
                       </span>
                     )}
                   </div>

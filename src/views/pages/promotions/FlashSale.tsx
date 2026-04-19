@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { TFunction } from 'i18next';
 import { FiArrowRight, FiClock, FiTrendingUp, FiZap } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -17,21 +18,21 @@ const getTimeLeft = (endTime: string, nowMs: number): TimeLeft => {
 
 const clampPercent = (value: number) => Math.min(100, Math.max(0, value));
 
-const getSaleStatusMeta = (status?: string) => {
+const getSaleStatusMeta = (status: string | undefined, t: TFunction<'catalog'>) => {
   switch (status) {
     case 'SCHEDULED':
       return {
-        label: 'Sắp diễn ra',
+        label: t('flashSale.status.scheduled'),
         className: 'bg-white/15 text-white/90 border-white/20',
       };
     case 'ENDED':
       return {
-        label: 'Đã kết thúc',
+        label: t('flashSale.status.ended'),
         className: 'bg-slate-900/15 text-white/90 border-white/20',
       };
     default:
       return {
-        label: 'Đang diễn ra',
+        label: t('flashSale.status.active'),
         className: 'bg-white text-red-600 border-white/80 shadow-lg shadow-red-900/10',
       };
   }
@@ -85,7 +86,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
               : 'border-slate-900/10 bg-slate-950/78 text-white shadow-black/20'
           }`}>
             {!soldOut ? <span className="h-2 w-2 rounded-full bg-orange-400 shadow-[0_0_12px_rgba(251,146,60,0.9)]" /> : null}
-            {soldOut ? t('flashSale.soldOut') : `${soldPercent}% đã bán`}
+            {soldOut ? t('flashSale.soldOut') : t('flashSale.soldPercent', { percent: soldPercent })}
           </span>
         </div>
 
@@ -98,7 +99,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
             {item.productName}
           </h3>
           <p className="mt-1.5 min-h-[36px] line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm">
-            {item.variantName || 'Phiên bản mặc định'}
+            {item.variantName || t('flashSale.defaultVariant')}
           </p>
         </div>
 
@@ -115,14 +116,14 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
           </div>
           {savedAmount > 0 ? (
             <p className="text-xs font-semibold text-red-500 sm:text-sm">
-              Tiết kiệm {formatPrice(savedAmount)}
+              {t('flashSale.savedAmount', { amount: formatPrice(savedAmount) })}
             </p>
           ) : null}
         </div>
 
         <div className="mt-auto rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-red-50/60 p-3 dark:border-orange-900/30 dark:from-orange-950/20 dark:to-red-950/10">
           <div className="mb-2 flex items-center justify-between gap-2 text-[11px] font-semibold sm:text-xs">
-            <span className="text-slate-600 dark:text-slate-300">Tiến độ ưu đãi</span>
+            <span className="text-slate-600 dark:text-slate-300">{t('flashSale.progressLabel')}</span>
             <div className="flex items-center gap-2">
               <span className={`rounded-full px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] sm:text-[11px] ${
                 soldOut
@@ -143,13 +144,13 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
             />
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-            <span>{safeSoldCount} đã bán</span>
-            <span>{safeFlashStock} suất</span>
+            <span>{t('flashSale.soldCount', { count: safeSoldCount })}</span>
+            <span>{t('flashSale.dealSlots', { count: safeFlashStock })}</span>
           </div>
         </div>
 
         <div className="flex items-center justify-between pt-0.5 text-xs font-semibold text-slate-600 transition-colors group-hover:text-red-500 dark:text-slate-300 sm:text-sm">
-          <span>{soldOut ? 'Xem chi tiết' : 'Chớp deal ngay'}</span>
+          <span>{soldOut ? t('flashSale.actions.viewDetails') : t('flashSale.actions.grabDeal')}</span>
           <FiArrowRight className="text-base transition-transform group-hover:translate-x-1" />
         </div>
       </div>
@@ -253,27 +254,27 @@ export default function FlashSale() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-red-600 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
               <FiZap className="text-sm" />
-              Chớp deal công nghệ
+              {t('flashSale.heroEyebrow')}
             </span>
             <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-              Flash Sale đang diễn ra
+              {t('flashSale.heroTitle')}
             </h1>
             <p className="mt-2 max-w-3xl text-md leading-relaxed text-slate-500 dark:text-slate-400 sm:text-base">
-              Giá sốc theo từng khung giờ, số lượng có hạn và cập nhật trực tiếp theo tồn kho từng chiến dịch.
+              {t('flashSale.heroDescription')}
             </p>
           </div>
 
           <div className="inline-flex items-center gap-2 self-start rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
             <FiTrendingUp className="text-red-500" />
-            {activeSalesCount} chiến dịch đang hoạt động
+            {t('flashSale.activeCampaigns', { count: activeSalesCount })}
           </div>
         </div>
 
         {sales.map((sale) => {
-          const status = getSaleStatusMeta(sale.status);
+          const status = getSaleStatusMeta(sale.status, t);
           const itemCount = sale.items?.length || 0;
           const totalRemaining = (sale.items || []).reduce((sum, item) => sum + Math.max(0, item.remainingStock || 0), 0);
-          const summaryText = sale.description || 'Săn deal giới hạn với mức giá tốt nhất trong ngày và số lượng thay đổi theo thời gian thực.';
+          const summaryText = sale.description || t('flashSale.summaryFallback');
 
           return (
             <section
@@ -307,10 +308,10 @@ export default function FlashSale() {
 
                     <div className="flex flex-wrap gap-2.5 text-sm font-semibold text-white/85">
                       <span className="inline-flex items-center rounded-full border border-white/16 bg-white/10 px-3 py-1.5 backdrop-blur-md">
-                        {itemCount} sản phẩm trong đợt sale
+                        {t('flashSale.campaignProducts', { count: itemCount })}
                       </span>
                       <span className="inline-flex items-center rounded-full border border-white/16 bg-white/10 px-3 py-1.5 backdrop-blur-md">
-                        Còn {totalRemaining} suất ưu đãi
+                        {t('flashSale.campaignRemaining', { count: totalRemaining })}
                       </span>
                     </div>
                   </div>
@@ -334,7 +335,7 @@ export default function FlashSale() {
                   </div>
                 ) : (
                   <div className="rounded-[24px] border border-dashed border-slate-200 bg-white/80 px-6 py-10 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-400">
-                    Chưa có sản phẩm nào trong chương trình này.
+                    {t('flashSale.emptyProducts')}
                   </div>
                 )}
               </div>

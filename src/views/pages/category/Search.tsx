@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiFilter, FiX, FiSearch } from 'react-icons/fi';
 import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { Button, Checkbox, Pagination, ProductCard, CustomSelect } from '@/compo
 import { toast } from 'sonner';
 
 export default function Search() {
+  const { t } = useTranslation(['catalog', 'layout']);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || searchParams.get('keyword') || '';
 
@@ -59,8 +61,8 @@ export default function Search() {
         setTotalPages(pageData?.lastPage || 0);
         setTotalElements(pageData?.total || 0);
       } catch (err) {
-        console.error('Lỗi tìm kiếm:', err);
-        toast.error('Tìm kiếm thất bại!');
+        console.error('Search failed:', err);
+        toast.error(t('catalog:search.toasts.loadFailed'));
         setProducts([]);
       } finally {
         setLoading(false);
@@ -115,9 +117,9 @@ export default function Search() {
       {/* Breadcrumb */}
       <nav className="flex text-sm sm:text-md text-slate-500 mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
-          <li><Link to="/" className="hover:text-purple-600">Trang chủ</Link></li>
+          <li><Link to="/" className="hover:text-purple-600">{t('layout:navigation.home')}</Link></li>
           <li><span className="mx-2">/</span></li>
-          <li><span className="text-slate-900 dark:text-slate-100 font-medium">Tìm kiếm sản phẩm</span></li>
+          <li><span className="text-slate-900 dark:text-slate-100 font-medium">{t('catalog:search.breadcrumbCurrent')}</span></li>
         </ol>
       </nav>
 
@@ -127,14 +129,14 @@ export default function Search() {
           className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-md font-semibold"
           onClick={() => setIsFilterOpen(true)}
         >
-          <FiFilter /> Lọc sản phẩm
+          <FiFilter /> {t('catalog:search.filterToggle')}
         </button>
 
         {/* Sidebar Filters */}
         <aside className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-0 custom-scrollbar">
             <div className="flex items-center justify-between mb-6 lg:hidden">
-              <h2 className="text-lg font-bold">Bộ lọc</h2>
+              <h2 className="text-lg font-bold">{t('catalog:search.filterTitle')}</h2>
               <button onClick={() => setIsFilterOpen(false)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full">
                 <FiX />
               </button>
@@ -143,7 +145,7 @@ export default function Search() {
             <div className="space-y-8 pb-8">
               {/* Categories */}
               <div>
-                <h3 className="font-bold mb-4 text-lg">Danh mục</h3>
+                <h3 className="font-bold mb-4 text-lg">{t('catalog:search.categoryTitle')}</h3>
                 <div className="space-y-2">
                   {categories.map(cat => (
                     <button
@@ -159,7 +161,7 @@ export default function Search() {
 
               {/* Brands */}
               <div>
-                <h3 className="font-bold mb-4 text-lg">Thương hiệu</h3>
+                <h3 className="font-bold mb-4 text-lg">{t('catalog:search.brandTitle')}</h3>
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
                   {brands.map(brand => (
                     <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
@@ -186,12 +188,12 @@ export default function Search() {
         <main className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
             <h1 className="text-xl sm:text-2xl font-bold">
-              {query ? `Kết quả cho "${query}"` : 'Tất cả sản phẩm'} 
+              {query ? t('catalog:search.resultsFor', { query }) : t('catalog:search.allProducts')} 
               <span className="text-slate-500 text-md sm:text-lg font-normal"> ({totalElements})</span>
             </h1>
             
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-sm sm:text-md text-slate-500">Sắp xếp:</span>
+              <span className="text-sm sm:text-md text-slate-500">{t('catalog:search.sortBy')}</span>
               <div>
                 <CustomSelect 
                   value={sortBy === 'price' ? (sortDir === 'asc' ? 'price-asc' : 'price-desc') : 'newest'}
@@ -199,9 +201,9 @@ export default function Search() {
                   dropdownAlign="right"
                   className="w-40 sm:w-48 h-9 sm:h-10"
                   options={[
-                    { value: 'newest', label: 'Mới nhất' },
-                    { value: 'price-asc', label: 'Giá tăng dần' },
-                    { value: 'price-desc', label: 'Giá giảm dần' }
+                    { value: 'newest', label: t('catalog:products.sortOptions.newest') },
+                    { value: 'price-asc', label: t('catalog:products.sortOptions.priceAsc') },
+                    { value: 'price-desc', label: t('catalog:products.sortOptions.priceDesc') }
                   ]}
                 />
               </div>
@@ -237,12 +239,12 @@ export default function Search() {
               <div className="w-28 h-28 sm:w-40 sm:h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
                 <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold mb-2">Không tìm thấy sản phẩm nào</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-2">{t('catalog:search.empty.title')}</h2>
               <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
-                Vui lòng thử lại với các tiêu chí khác.
+                {t('catalog:search.empty.description')}
               </p>
               <Button onClick={clearFilters} size="md">
-                Xóa bộ lọc
+                {t('catalog:products.clearFilters')}
               </Button>
             </motion.div>
           )}

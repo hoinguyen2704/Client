@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import useAuthStore from '@/stores/useAuthStore';
+import useNotificationStore from '@/stores/useNotificationStore';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { emitRealtimeEvent } from '@/realtime/realtimeBus';
 import type { RealtimeEventEnvelope, SupportRealtimePayload, UserNotificationRealtimePayload } from '@/types';
@@ -47,9 +48,7 @@ function handleUserToast(
   if (event.type === REALTIME_EVENT_TYPES.USER_NOTIFICATION_CREATED) {
     const payload = (event.data || {}) as UserNotificationRealtimePayload;
     // Update global badge count immediately
-    import('@/stores/useNotificationStore').then(({ default: store }) =>
-      store.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse)
-    );
+    useNotificationStore.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse);
     if (payload.type === 'SUPPORT') return;
     toast.info(payload.title || t('realtime.newNotification', { ns: 'account' }), {
       description: payload.content || '',
@@ -81,9 +80,7 @@ function handleAdminToast(
   // Admin also receives notification events — update badge
   if (event.type === REALTIME_EVENT_TYPES.USER_NOTIFICATION_CREATED) {
     const payload = (event.data || {}) as UserNotificationRealtimePayload;
-    import('@/stores/useNotificationStore').then(({ default: store }) =>
-      store.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse)
-    );
+    useNotificationStore.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse);
   }
 }
 

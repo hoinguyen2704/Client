@@ -39,6 +39,61 @@ export interface ProductResponse {
   stockQuantity?: number;
 }
 
+export interface AdminProductListItem {
+  id: string;
+  name: string;
+  slug: string;
+  brandId?: string;
+  brandName?: string;
+  categoryId?: string;
+  categoryName?: string;
+  categorySlug?: string;
+  productCode?: string;
+  originPrice: number;
+  lowestPrice?: number;
+  status: string;
+  isFeatured?: boolean;
+  totalSold?: number;
+  totalStock?: number;
+  outOfStock?: boolean;
+  mainImageUrl?: string;
+  createdAt: string;
+}
+
+export interface AdminProductPickerItem {
+  id: string;
+  name: string;
+  slug: string;
+  brandId?: string;
+  brandName?: string;
+  categoryId?: string;
+  categoryName?: string;
+  categorySlug?: string;
+  productCode?: string;
+  originPrice: number;
+  lowestPrice?: number;
+  status: string;
+  totalSold?: number;
+  totalStock?: number;
+  outOfStock?: boolean;
+  mainImageUrl?: string;
+  createdAt: string;
+}
+
+export interface AdminProductVariantSummary {
+  id: string;
+  productId: string;
+  variantName?: string;
+  sku: string;
+  price: number;
+  stockQuantity: number;
+  grossSoldQty?: number;
+  returnedQty?: number;
+  netSoldQty?: number;
+  active?: boolean;
+  imageUrl?: string;
+}
+
 export interface ProductSpecValueResponse {
   specAttributeId: string;
   name: string;
@@ -161,8 +216,6 @@ export interface CategoryResponse {
   id: string;
   name: string;
   slug: string;
-  description?: string;
-  imageUrl?: string;
   active: boolean;
   productCount?: number;
   createdAt?: string;
@@ -184,8 +237,6 @@ export interface CategorySpecAttributeResponse {
 export interface CategoryRequest {
   name: string;
   parentId?: string;
-  description?: string;
-  imageUrl?: string;
   active?: boolean;
   variantAttributes?: CategoryVariantAttributeRequest[];
   specAttributes?: CategorySpecAttributeRequest[];

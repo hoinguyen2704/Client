@@ -1,4 +1,5 @@
 import { ProductCard } from '@/components';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { ProductResponse } from '@/types';
 
@@ -8,13 +9,15 @@ interface ProductSectionProps {
   subtitle?: React.ReactNode;
   products: ProductResponse[];
   seeAllLink?: string;
+  seeAllLabel?: string;
   layout?: 'grid' | 'scroll';
   bgClassName?: string;
 }
 
 export default function ProductSection({ 
-  icon, title, subtitle, products, seeAllLink, layout = 'grid', bgClassName = '' 
+  icon, title, subtitle, products, seeAllLink, seeAllLabel, layout = 'grid', bgClassName = '' 
 }: ProductSectionProps) {
+  const { t } = useTranslation('home');
   if (!products.length) return null;
 
   return (
@@ -28,7 +31,9 @@ export default function ProductSection({
           </div>
         </div>
         {seeAllLink && (
-          <Link to={seeAllLink} className="text-purple-600 font-medium hover:underline">Xem tất cả</Link>
+          <Link to={seeAllLink} className="text-purple-600 font-medium hover:underline">
+            {seeAllLabel || t('sections.seeAll')}
+          </Link>
         )}
       </div>
       

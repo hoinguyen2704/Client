@@ -7,6 +7,8 @@ export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export const I18N_NAMESPACES = [
   'common',
   'layout',
+  'home',
+  'about',
   'auth',
   'catalog',
   'checkout',

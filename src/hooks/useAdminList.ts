@@ -1,9 +1,14 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, useTransition } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import type { AxiosRequestConfig } from 'axios';
 import type { PageResponse, ApiResponse, PaginationParams } from '@/types';
+import { useDebounce } from './useDebounce';
 
 interface UseAdminListOptions {
   size?: number;
   extraParams?: Record<string, any>;
+  queryKey: string;
+  staleTime?: number;
   /** Whether to fetch on mount (default: true) */
   fetchOnMount?: boolean;
 }
@@ -21,20 +26,23 @@ interface UseAdminListReturn<T> {
 }
 
 type FetchFn<T> = (params: PaginationParams & Record<string, any>) => Promise<ApiResponse<PageResponse<T>>>;
+type FetchConfigurableFn<T> = (
+  params: PaginationParams & Record<string, any>,
+  config?: AxiosRequestConfig,
+) => Promise<ApiResponse<PageResponse<T>>>;
 
 export default function useAdminList<T>(
-  fetchFn: FetchFn<T>,
-  options: UseAdminListOptions = {},
+  fetchFn: FetchFn<T> | FetchConfigurableFn<T>,
+  options: UseAdminListOptions,
 ): UseAdminListReturn<T> {
-  const { size = 10, extraParams, fetchOnMount = true } = options;
+  const { size = 10, extraParams, fetchOnMount = true, queryKey, staleTime = 30_000 } = options;
 
-  const [items, setItems] = useState<T[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [page, setPage] = useState(1);
-  const [pageData, setPageData] = useState<PageResponse<T> | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const deferredSearchInput = useDeferredValue(searchInput);
+  const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
 
-  // Stable serialization key — only recompute when extraParams reference changes
   const extraParamsKey = useMemo(() => JSON.stringify(extraParams ?? {}), [extraParams]);
   const prevExtraParamsKey = useRef(extraParamsKey);
   const extraParamsRef = useRef(extraParams);
@@ -48,44 +56,51 @@ export default function useAdminList<T>(
     }
   }, [extraParamsKey]);
 
-  const fetchData = useCallback(async (opts?: { silent?: boolean }) => {
-    if (opts?.silent !== true) {
-      setLoading(true);
-    }
-    try {
-      const res = await fetchFn({
-        keyword: searchQuery || undefined,
-        page,
-        size,
-        ...(extraParamsRef.current ?? {}),
-      });
-      setPageData(res.data);
-      setItems(res.data?.data || []);
-    } catch (err) {
-      console.error('useAdminList fetch error:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchFn, searchQuery, page, size, extraParamsKey]);
-
-  useEffect(() => {
-    if (fetchOnMount) fetchData();
-  }, [fetchData, fetchOnMount]);
-
-  // Reset to page 1 when search query changes
   const handleSetSearchQuery = useCallback((q: string) => {
-    setSearchQuery(q);
-    setPage(1);
-  }, []);
+    startTransition(() => {
+      setSearchInput(q);
+      setPage(1);
+    });
+  }, [startTransition]);
+
+  const handleSetPage = useCallback((nextPage: number) => {
+    startTransition(() => {
+      setPage(nextPage);
+    });
+  }, [startTransition]);
+
+  const query = useQuery({
+    queryKey: ['admin-list', queryKey, page, size, debouncedSearchQuery, extraParamsKey],
+    queryFn: async ({ signal }) => {
+      const fn = fetchFn as FetchConfigurableFn<T>;
+      const res = await fn(
+        {
+          keyword: debouncedSearchQuery || undefined,
+          page,
+          size,
+          ...(extraParamsRef.current ?? {}),
+        },
+        { signal },
+      );
+      return res.data;
+    },
+    enabled: fetchOnMount,
+    staleTime,
+    placeholderData: (previousData) => previousData,
+  });
+
+  const refetch = useCallback(async (_options?: { silent?: boolean }) => {
+    await query.refetch();
+  }, [query]);
 
   return {
-    items,
-    loading,
-    pageData,
-    searchQuery,
+    items: query.data?.data || [],
+    loading: query.isPending || (isPending && !query.data),
+    pageData: query.data || null,
+    searchQuery: searchInput,
     setSearchQuery: handleSetSearchQuery,
     page,
-    setPage,
-    refetch: fetchData,
+    setPage: handleSetPage,
+    refetch,
   };
 }

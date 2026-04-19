@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FiX,
   FiSend,
@@ -17,21 +18,15 @@ import type {
 import type { Message } from "../ui/types";
 import { SHOP } from "@/constants/shopConstants";
 
-/*  Defaults nếu API chưa tải được  */
 const DEFAULT_CONFIG: WidgetConfig = {
   bot: {
     name: `${SHOP.name} AI`,
-    subtitle: "Trợ lý tư vấn sản phẩm 24/7",
-    welcomeMessage: `Xin chào! Tôi là trợ lý AI của **${SHOP.name}** 🤖\n\nTôi có thể giúp bạn:\n- 🔍 Tìm kiếm & tư vấn sản phẩm công nghệ\n- 💰 Xem giá, khuyến mãi, flash sale\n- ⭐ So sánh đánh giá sản phẩm\n- 📦 Tra cứu thông tin đơn hàng\n\nBạn cần hỗ trợ gì ạ?`,
+    subtitle: "",
+    welcomeMessage: "",
     themeColor: "#9333ea",
     avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=TechStore",
   },
-  suggestions: [
-    "Sản phẩm nổi bật",
-    "Điện thoại giá dưới 10 triệu",
-    "Có mã giảm giá nào không?",
-    "Gợi ý sản phẩm cho mình",
-  ],
+  suggestions: [],
   isEnabled: true,
 };
 
@@ -49,6 +44,7 @@ function clipHistoryContent(input: string, maxChars: number): string {
 }
 
 export default function Chatbot() {
+  const { t } = useTranslation("layout");
   const [isOpen, setIsOpen] = useState(false);
   const [widgetConfig, setWidgetConfig] =
     useState<WidgetConfig>(DEFAULT_CONFIG);
@@ -57,6 +53,23 @@ export default function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fallbackConfig = useMemo<WidgetConfig>(
+    () => ({
+      bot: {
+        ...DEFAULT_CONFIG.bot,
+        subtitle: t("chatbot.defaultSubtitle"),
+        welcomeMessage: t("chatbot.welcomeMessage", { shopName: SHOP.name }),
+      },
+      suggestions: [
+        t("chatbot.suggestions.featured"),
+        t("chatbot.suggestions.phoneBudget"),
+        t("chatbot.suggestions.coupon"),
+        t("chatbot.suggestions.recommend"),
+      ],
+      isEnabled: true,
+    }),
+    [t],
+  );
 
   /*  Load widget config from server  */
   useEffect(() => {
@@ -80,11 +93,11 @@ export default function Chatbot() {
           role: "model",
           text:
             widgetConfig.bot?.welcomeMessage ||
-            DEFAULT_CONFIG.bot.welcomeMessage,
+            fallbackConfig.bot.welcomeMessage,
         },
       ]);
     }
-  }, [configLoaded]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [configLoaded, fallbackConfig.bot.welcomeMessage, widgetConfig.bot?.welcomeMessage, messages.length]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -95,14 +108,14 @@ export default function Chatbot() {
   }, [messages]);
 
   // Memoize config values — avoid re-computation on every render
-  const botName = useMemo(() => widgetConfig.bot?.name || DEFAULT_CONFIG.bot.name, [widgetConfig.bot?.name]);
-  const botSubtitle = useMemo(() => widgetConfig.bot?.subtitle || DEFAULT_CONFIG.bot.subtitle, [widgetConfig.bot?.subtitle]);
-  const themeColor = useMemo(() => widgetConfig.bot?.themeColor || DEFAULT_CONFIG.bot.themeColor, [widgetConfig.bot?.themeColor]);
+  const botName = useMemo(() => widgetConfig.bot?.name || fallbackConfig.bot.name, [fallbackConfig.bot.name, widgetConfig.bot?.name]);
+  const botSubtitle = useMemo(() => widgetConfig.bot?.subtitle || fallbackConfig.bot.subtitle, [fallbackConfig.bot.subtitle, widgetConfig.bot?.subtitle]);
+  const themeColor = useMemo(() => widgetConfig.bot?.themeColor || fallbackConfig.bot.themeColor, [fallbackConfig.bot.themeColor, widgetConfig.bot?.themeColor]);
   const avatarUrl = widgetConfig.bot?.avatarUrl || "";
   const launcherAvatarUrl = avatarUrl || "/logo.svg";
   const suggestions = useMemo(
-    () => widgetConfig.suggestions?.length ? widgetConfig.suggestions : DEFAULT_CONFIG.suggestions,
-    [widgetConfig.suggestions],
+    () => widgetConfig.suggestions?.length ? widgetConfig.suggestions : fallbackConfig.suggestions,
+    [fallbackConfig.suggestions, widgetConfig.suggestions],
   );
 
   /**
@@ -162,7 +175,7 @@ export default function Chatbot() {
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "model",
-        text: response.answer || "Xin lỗi, tôi không thể trả lời lúc này.",
+        text: response.answer || t("chatbot.fallbackAnswer"),
       };
 
       setMessages((prev) => [...prev, botMessage]);
@@ -171,16 +184,13 @@ export default function Chatbot() {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "model",
-        text:
-          "Xin lỗi, đã có lỗi kết nối đến hệ thống. Vui lòng thử lại sau hoặc liên hệ hotline **" +
-          SHOP.hotline +
-          "** để được hỗ trợ.",
+        text: t("chatbot.connectionError", { hotline: SHOP.hotline }),
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, buildHistory]);
+  }, [isLoading, buildHistory, t]);
 
   const handleSend = () => sendMessage(input);
 
@@ -196,7 +206,7 @@ export default function Chatbot() {
       {
         id: "welcome",
         role: "model",
-        text: "Cuộc trò chuyện đã được xóa. Tôi có thể giúp gì cho bạn?",
+        text: t("chatbot.clearConversation"),
       },
     ]);
   };
@@ -227,15 +237,15 @@ export default function Chatbot() {
           (isOpen ? "hidden" : "")
         }
         style={{ ...gradientStyle, ...shadowStyle }}
-        aria-label="Mở chatbot"
+        aria-label={t("chatbot.openAria")}
       >
         <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/18 ring-1 ring-white/30 backdrop-blur">
           {launcherAvatarUrl ? (
-            <img
-              src={launcherAvatarUrl}
-              alt={botName}
-              className="h-6 w-6 sm:h-7 sm:w-7 rounded-full object-cover"
-            />
+                    <img
+                      src={launcherAvatarUrl}
+                      alt={t("chatbot.avatarAlt")}
+                      className="h-6 w-6 sm:h-7 sm:w-7 rounded-full object-cover"
+                    />
           ) : (
             <FiCpu className="text-xl sm:text-2xl" />
           )}
@@ -262,7 +272,7 @@ export default function Chatbot() {
                   {avatarUrl ? (
                     <img
                       src={avatarUrl}
-                      alt="Bot"
+                      alt={t("chatbot.avatarAlt")}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -279,7 +289,7 @@ export default function Chatbot() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={handleClearChat}
-                  title="Xóa cuộc trò chuyện"
+                  title={t("chatbot.clearConversationTitle")}
                   className="w-8 h-8 flex items-center justify-center hover:bg-white/20 rounded-full transition-colors"
                 >
                   <FiTrash2 className="text-base" />
@@ -388,7 +398,7 @@ export default function Chatbot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Hỏi về sản phẩm, giá cả, khuyến mãi..."
+                  placeholder={t("chatbot.inputPlaceholder")}
                   className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-3 sm:pl-4 pr-12 py-2.5 sm:py-3 text-md focus:ring-2 focus:ring-purple-500 resize-none h-[40px] sm:h-[44px] max-h-[120px] overflow-y-auto"
                   rows={1}
                 />

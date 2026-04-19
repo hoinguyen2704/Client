@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { productService } from '@/apis';
+import { formatPrice } from '@/utils/format';
 import type { ProductResponse, Banner } from '@/types';
 
 
@@ -13,6 +15,7 @@ interface HeroBannerProps {
 
 // Isolated search bar — NOT affected by banner rotation re-renders
 const HeroSearchBar = memo(function HeroSearchBar() {
+  const { t } = useTranslation('home');
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -55,7 +58,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
         </div>
         <input
           type="text"
-          placeholder="Tìm kiếm điện thoại, laptop, phụ kiện..."
+          placeholder={t('hero.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
@@ -70,7 +73,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
           type="submit"
           className="h-14 px-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold flex-shrink-0 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 transition-all active:scale-95"
         >
-          Tìm kiếm
+          {t('hero.searchButton')}
         </button>
       </form>
 
@@ -92,7 +95,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
                 <div>
                   <h4 className="font-medium text-slate-900 dark:text-white line-clamp-1">{product.name}</h4>
                   <p className="text-md text-purple-600 font-bold">
-                    {(product.variants?.[0]?.price || product.originPrice || 0).toLocaleString('vi-VN')}đ
+                    {formatPrice(product.variants?.[0]?.price || product.originPrice || 0)}
                   </p>
                 </div>
               </Link>

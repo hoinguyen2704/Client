@@ -1,36 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  FiPlus,
-  FiToggleLeft,
-  FiToggleRight,
-  FiX,
-  FiList,
-} from "react-icons/fi";
+import { FiPlus, FiToggleLeft, FiToggleRight, FiList } from "react-icons/fi";
 import { toast } from "sonner";
-import { getApiErrorMessage } from "@/utils/error";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import adminBrandService from "@/apis/services/adminBrandService";
-import type { BrandResponse, CategoryResponse, SpecTemplateRow } from "@/types";
+import type { BrandResponse, CategoryResponse } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import useAdminList from "@/hooks/useAdminList";
 import {
-  Button,
-  IconButton,
   PrimaryButton,
-  TrashButton,
   AdminSearch,
   CustomSelect,
   Pagination,
   ActionButtons,
   ConfirmDialog,
-  FormInput,
-  SectionCard,
   StatusBadge,
   TableRowSkeleton,
 } from "@/components";
-import CategorySpecTemplatesSection from "./components/CategorySpecTemplatesSection";
-import CategoryVariantAttributesSection from "./components/CategoryVariantAttributesSection";
-import type { VariantAttributeRow } from "./types";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Categories() {
@@ -51,22 +36,10 @@ export default function Categories() {
     setPage,
     refetch: fetchCategories,
   } = useAdminList<CategoryResponse>(adminCategoryService.getAll, {
+    queryKey: "admin-categories",
     size: PAGE_SIZE.LARGE,
     extraParams,
   });
-  const [showForm, setShowForm] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    imageUrl: "",
-    parentId: "",
-  });
-  const [specTemplates, setSpecTemplates] = useState<SpecTemplateRow[]>([]);
-  const [variantAttributes, setVariantAttributes] = useState<
-    VariantAttributeRow[]
-  >([]);
-  const [saving, setSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   useEffect(() => {
@@ -88,91 +61,6 @@ export default function Categories() {
     ],
     [brands],
   );
-
-  const resetForm = () => {
-    setShowForm(false);
-    setEditId(null);
-    setFormData({ name: "", description: "", imageUrl: "", parentId: "" });
-    setSpecTemplates([]);
-    setVariantAttributes([]);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const payload = {
-        ...formData,
-        specAttributes: specTemplates
-          .filter((t) => t.specKey.trim())
-          .map((t, i) => ({
-            name: t.specKey.trim(),
-            code: t.specKey.trim(),
-            hint: t.hint.trim() || undefined,
-            sortOrder: i,
-          })),
-        variantAttributes: variantAttributes
-          .filter((attr) => attr.name.trim())
-          .map((attr, index) => ({
-            name: attr.name.trim(),
-            code: attr.code.trim() || attr.name.trim(),
-            sortOrder: attr.sortOrder ?? index,
-            options: attr.optionsText
-              .split(",")
-              .map((opt, optIndex) => opt.trim())
-              .filter(Boolean)
-              .map((label, optIndex) => ({
-                label,
-                code: label,
-                sortOrder: optIndex,
-                active: true,
-              })),
-          })),
-      };
-      if (editId) {
-        await adminCategoryService.update(editId, payload);
-        toast.success("Đã cập nhật danh mục!");
-      } else {
-        await adminCategoryService.create(payload);
-        toast.success("Đã tạo danh mục mới!");
-      }
-      resetForm();
-      fetchCategories({ silent: true });
-    } catch (err: unknown) {
-      toast.error(getApiErrorMessage(err, "Lưu danh mục thất bại!"));
-      console.error("Lưu danh mục thất bại:", err);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleEdit = (cat: CategoryResponse) => {
-    setEditId(cat.id);
-    setFormData({
-      name: cat.name,
-      description: cat.description || "",
-      imageUrl: cat.imageUrl || "",
-      parentId: "",
-    });
-    setSpecTemplates(
-      (cat.specAttributes || []).map((t, i) => ({
-        specKey: t.name,
-        hint: t.hint || "",
-        sortOrder: t.sortOrder ?? i,
-      })),
-    );
-    setVariantAttributes(
-      (cat.variantAttributes || []).map((attr, index) => ({
-        name: attr.name,
-        code: attr.code || "",
-        optionsText: (attr.options || [])
-          .map((option) => option.label)
-          .join(", "),
-        sortOrder: attr.sortOrder ?? index,
-      })),
-    );
-    setShowForm(true);
-  };
 
   const handleDelete = async (id: string) => {
     setDeleteTarget(null);
@@ -197,143 +85,18 @@ export default function Categories() {
     }
   };
 
-  //  Spec template helpers
-  const addSpecRow = () => {
-    setSpecTemplates((prev) => [
-      ...prev,
-      { specKey: "", hint: "", sortOrder: prev.length },
-    ]);
-  };
-
-  const removeSpecRow = (index: number) => {
-    setSpecTemplates((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateSpecRow = (
-    index: number,
-    field: "specKey" | "hint",
-    value: string,
-  ) => {
-    setSpecTemplates((prev) =>
-      prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)),
-    );
-  };
-
-  const addVariantAttributeRow = () => {
-    setVariantAttributes((prev) => [
-      ...prev,
-      { name: "", code: "", optionsText: "", sortOrder: prev.length },
-    ]);
-  };
-
-  const removeVariantAttributeRow = (index: number) => {
-    setVariantAttributes((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateVariantAttributeRow = (
-    index: number,
-    field: keyof VariantAttributeRow,
-    value: string | number,
-  ) => {
-    setVariantAttributes((prev) =>
-      prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)),
-    );
-  };
-
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">Quản lý danh mục</h1>
         <PrimaryButton
-          onClick={() => {
-            resetForm();
-            setShowForm(true);
-          }}
+          href="/admin/categories/new"
           icon={<FiPlus className="text-base" />}
           className="w-full sm:w-auto"
         >
           Thêm danh mục
         </PrimaryButton>
       </div>
-
-      {/* Add/Edit Form */}
-      {showForm && (
-        <SectionCard
-          title={editId ? "Sửa danh mục" : "Thêm danh mục mới"}
-          className="border-2 border-slate-200 dark:border-slate-700"
-          action={
-            <IconButton
-              onClick={resetForm}
-              icon={<FiX />}
-              variant="neutral"
-              title="Đóng"
-            />
-          }
-        >
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-            {/* Basic info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
-                label="Tên danh mục *"
-                type="text"
-                placeholder="VD: Điện thoại, Laptop..."
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                required
-                inputClassName="h-11 border-2 border-slate-200 dark:border-slate-700"
-              />
-              <FormInput
-                label="Mô tả"
-                type="text"
-                placeholder="Mô tả ngắn về danh mục..."
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                inputClassName="h-11 border-2 border-slate-200 dark:border-slate-700"
-              />
-            </div>
-
-            <CategorySpecTemplatesSection
-              rows={specTemplates}
-              onAdd={addSpecRow}
-              onRemove={removeSpecRow}
-              onChange={updateSpecRow}
-            />
-
-            <CategoryVariantAttributesSection
-              rows={variantAttributes}
-              onAdd={addVariantAttributeRow}
-              onRemove={removeVariantAttributeRow}
-              onChange={updateVariantAttributeRow}
-            />
-
-            {/* Actions */}
-            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 justify-end">
-              <Button
-                type="button"
-                onClick={resetForm}
-                variant="secondary"
-                size="md"
-                className="w-full sm:w-auto"
-              >
-                Hủy
-              </Button>
-              <Button
-                type="submit"
-                disabled={saving}
-                loading={saving}
-                size="md"
-                className="w-full sm:w-auto"
-              >
-                {editId ? "Cập nhật" : "Tạo danh mục"}
-              </Button>
-            </div>
-          </form>
-        </SectionCard>
-      )}
 
       {/* Search + Filter */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border-2 border-slate-200 dark:border-slate-700 flex flex-col md:flex-row gap-3 sm:gap-4">
@@ -399,23 +162,7 @@ export default function Categories() {
                       {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
                     </td>
                     <td className="p-3 sm:p-4">
-                      <div className="flex items-center gap-3">
-                        {cat.imageUrl && (
-                          <img
-                            src={cat.imageUrl}
-                            alt={cat.name}
-                            className="w-8 h-8 rounded-lg object-cover"
-                          />
-                        )}
-                        <div>
-                          <span className="font-bold">{cat.name}</span>
-                          {cat.description && (
-                            <span className="text-sm text-slate-400 block">
-                              {cat.description}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                      <span className="font-bold">{cat.name}</span>
                     </td>
                     <td className="p-3 sm:p-4 text-slate-500 font-mono text-md">
                       {cat.slug}
@@ -457,7 +204,7 @@ export default function Categories() {
                           },
                           {
                             type: "edit",
-                            onClick: () => handleEdit(cat),
+                            href: `/admin/categories/${cat.id}/edit`,
                           },
                           {
                             type: "delete",

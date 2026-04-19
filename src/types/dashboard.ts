@@ -19,6 +19,35 @@ export interface DashboardStatsResponse {
   ratingDistribution?: Record<number, number>;
 }
 
+export interface DashboardSummaryResponse {
+  totalRevenue: number;
+  totalOrders: number;
+  newOrders: number;
+  totalCustomers: number;
+  newCustomers: number;
+  productsSold: number;
+  cancelledOrders: number;
+  returnedOrders: number;
+  totalFeedbacks: number;
+  newFeedbacks: number;
+}
+
+export interface DashboardRevenueResponse {
+  revenueChart: RevenueChartItem[];
+}
+
+export interface DashboardTopListsResponse {
+  topProducts?: TopProductItem[];
+  topCategories?: TopCategoryItem[];
+  topCustomers?: TopCustomerItem[];
+}
+
+export interface DashboardReviewStatsResponse {
+  totalFeedbacks: number;
+  newFeedbacks: number;
+  ratingDistribution?: Record<number, number>;
+}
+
 export interface RevenueChartItem {
   label: string;
   revenue: number;

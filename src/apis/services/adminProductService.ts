@@ -1,7 +1,12 @@
 import BaseService from './baseService';
 import { adminAxios } from '../axios';
+import type { AxiosRequestConfig } from 'axios';
 import type {
+  AdminProductListItem,
+  AdminProductPickerItem,
+  AdminProductVariantSummary,
   ApiResponse,
+  PageResponse,
   ProductBasicRequest,
   ProductResponse,
   ProductRequest,
@@ -11,6 +16,40 @@ import type {
 class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
   constructor() {
     super('/products', adminAxios);
+  }
+
+  async getList(
+    params?: {
+      keyword?: string;
+      categoryId?: string;
+      status?: string;
+      page?: number;
+      size?: number;
+      sortBy?: string;
+      sortDir?: 'ASC' | 'DESC';
+    },
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<PageResponse<AdminProductListItem>>> {
+    return this.http.get(this.endpoint, { ...(config || {}), params });
+  }
+
+  async getPickerList(
+    params?: {
+      keyword?: string;
+      categoryId?: string;
+      brandId?: string;
+      page?: number;
+      size?: number;
+      sortBy?: string;
+      sortDir?: 'ASC' | 'DESC';
+    },
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<PageResponse<AdminProductPickerItem>>> {
+    return this.http.get(`${this.endpoint}/picker`, { ...(config || {}), params });
+  }
+
+  async getVariantSummaries(productId: string, config?: AxiosRequestConfig): Promise<ApiResponse<AdminProductVariantSummary[]>> {
+    return this.http.get(`${this.endpoint}/${productId}/variants/summary`, config);
   }
 
   async toggleStatus(id: string): Promise<ApiResponse<ProductResponse>> {

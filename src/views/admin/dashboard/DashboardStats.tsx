@@ -1,9 +1,11 @@
-import { FiTrendingUp, FiDollarSign, FiShoppingBag, FiUsers, FiBox, FiRefreshCcw, FiStar } from 'react-icons/fi';
+import { FiDollarSign, FiShoppingBag, FiUsers, FiBox, FiRefreshCcw, FiStar } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import { formatPrice } from '@/utils/format';
 import type { DashboardStatsProps } from './types';
 
 export default function DashboardStats({ stats, onOpenModal }: DashboardStatsProps) {
-  const fmt = (n: number) => {
+  const { t } = useTranslation('adminDashboard');
+  const fmt = (n: number = 0) => {
     if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)}B`;
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
     if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
@@ -11,12 +13,12 @@ export default function DashboardStats({ stats, onOpenModal }: DashboardStatsPro
   };
 
   const cards = [
-    { key: 'revenue', label: 'Doanh thu', value: formatPrice(stats.totalRevenue), icon: FiDollarSign, color: 'purple' },
-    { key: 'orders', label: 'Tổng đơn hàng', value: fmt(stats.totalOrders), sub: `+${stats.newOrders} mới`, icon: FiShoppingBag, color: 'blue' },
-    { key: 'customers', label: 'Tổng khách hàng', value: fmt(stats.totalCustomers), sub: `+${stats.newCustomers} mới`, icon: FiUsers, color: 'orange' },
-    { key: 'products', label: 'SP bán ra', value: fmt(stats.productsSold), icon: FiBox, color: 'emerald' },
-    { key: 'returns', label: 'Hoàn / Hủy', value: `${stats.cancelledOrders + stats.returnedOrders}`, sub: `Hủy: ${stats.cancelledOrders} | Hoàn: ${stats.returnedOrders}`, icon: FiRefreshCcw, color: 'red' },
-    { key: 'reviews', label: 'Tổng đánh giá', value: fmt(stats.totalFeedbacks), sub: `+${stats.newFeedbacks} mới`, icon: FiStar, color: 'yellow' },
+    { key: 'revenue', label: t('stats.revenue'), value: formatPrice(stats.totalRevenue ?? 0), icon: FiDollarSign, color: 'purple' },
+    { key: 'orders', label: t('stats.orders.label'), value: fmt(stats.totalOrders ?? 0), sub: t('stats.orders.sub', { count: stats.newOrders ?? 0 }), icon: FiShoppingBag, color: 'blue' },
+    { key: 'customers', label: t('stats.customers.label'), value: fmt(stats.totalCustomers ?? 0), sub: t('stats.customers.sub', { count: stats.newCustomers ?? 0 }), icon: FiUsers, color: 'orange' },
+    { key: 'products', label: t('stats.productsSold'), value: fmt(stats.productsSold ?? 0), icon: FiBox, color: 'emerald' },
+    { key: 'returns', label: t('stats.returns.label'), value: `${(stats.cancelledOrders ?? 0) + (stats.returnedOrders ?? 0)}`, sub: t('stats.returns.sub', { cancelled: stats.cancelledOrders ?? 0, returned: stats.returnedOrders ?? 0 }), icon: FiRefreshCcw, color: 'red' },
+    { key: 'reviews', label: t('stats.reviews.label'), value: fmt(stats.totalFeedbacks ?? 0), sub: t('stats.reviews.sub', { count: stats.newFeedbacks ?? 0 }), icon: FiStar, color: 'yellow' },
   ];
 
   const colorMap: Record<string, { bg: string; text: string; border: string }> = {

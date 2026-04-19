@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import useCartStore from './useCartStore';
+import useWishlistStore from './useWishlistStore';
+import useNotificationStore from './useNotificationStore';
 
 interface User {
   id: string;
@@ -61,29 +64,16 @@ const useAuthStore = create<AuthState>()(
         }
         set({ token, refreshToken, user, isAuthenticated: true });
         
-        // Sync cart and wishlist from server after successful login
-        // Use lazy require-style to avoid circular import at module level
-        Promise.resolve().then(async () => {
-          const { default: useCartStore } = await import('./useCartStore');
-          const { default: useWishlistStore } = await import('./useWishlistStore');
-          const { default: useNotificationStore } = await import('./useNotificationStore');
-          useCartStore.getState().syncFromServer();
-          useWishlistStore.getState().syncFromServer();
-          useNotificationStore.getState().syncFromServer();
-        });
+        useCartStore.getState().syncFromServer();
+        useWishlistStore.getState().syncFromServer();
+        useNotificationStore.getState().syncFromServer();
       },
 
       logout: () => {
         sessionStorage.removeItem('auth-session-only');
-        // Clear cart and wishlist stores
-        Promise.resolve().then(async () => {
-          const { default: useCartStore } = await import('./useCartStore');
-          const { default: useWishlistStore } = await import('./useWishlistStore');
-          const { default: useNotificationStore } = await import('./useNotificationStore');
-          useCartStore.getState().clearCart();
-          useWishlistStore.getState().clearWishlist();
-          useNotificationStore.getState().reset();
-        });
+        useCartStore.getState().clearCart();
+        useWishlistStore.getState().clearWishlist();
+        useNotificationStore.getState().reset();
         set({ token: null, refreshToken: null, user: null, isAuthenticated: false });
         window.location.href = '/login';
       },

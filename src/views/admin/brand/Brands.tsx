@@ -37,6 +37,7 @@ export default function Brands() {
     setPage,
     refetch: fetchBrands,
   } = useAdminList<BrandResponse>(adminBrandService.getAll, {
+    queryKey: "admin-brands",
     size: PAGE_SIZE.MEDIUM,
     extraParams,
   });
@@ -196,7 +197,7 @@ export default function Brands() {
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
                   required
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
+                  className="w-full h-11 px-4 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none text-md transition-colors"
                 />
               </div>
               <div>
@@ -213,7 +214,7 @@ export default function Brands() {
                       logoUrl: e.target.value,
                     }))
                   }
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md"
+                  className="w-full h-11 px-4 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none text-md transition-colors"
                 />
               </div>
             </div>

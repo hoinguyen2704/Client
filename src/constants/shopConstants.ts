@@ -5,7 +5,7 @@
 export const SHOP = {
   name: 'Hozitech',
   fullName: 'HoziTech',
-  slogan: 'Cửa hàng công nghệ hàng đầu',
+  slogan: 'Leading tech store',
   email: 'hozinium@gmail.com',
   supportEmail: 'support@hozitech.com',
   hotline: '0828443833',

@@ -12,6 +12,7 @@ const Products = lazy(() => import('@/views/admin/product/Products'));
 const ProductForm = lazy(() => import('@/views/admin/product/ProductForm'));
 const ProductVariantsPage = lazy(() => import('@/views/admin/product/ProductVariantsPage'));
 const Categories = lazy(() => import('@/views/admin/category/Categories'));
+const CategoryFormPage = lazy(() => import('@/views/admin/category/CategoryFormPage'));
 const Brands = lazy(() => import('@/views/admin/brand/Brands'));
 const Customers = lazy(() => import('@/views/admin/user/Customers'));
 const CustomerDetail = lazy(() => import('@/views/admin/user/CustomerDetail'));
@@ -38,6 +39,8 @@ export const adminRoutes = (
     <Route path="products/:id" element={<ProductForm />} />
     <Route path="products/:id/variants" element={<ProductVariantsPage />} />
     <Route path="categories" element={<Categories />} />
+    <Route path="categories/new" element={<CategoryFormPage />} />
+    <Route path="categories/:id/edit" element={<CategoryFormPage />} />
     <Route path="brands" element={<Brands />} />
     <Route path="customers" element={<Customers />} />
     <Route path="customers/:id" element={<CustomerDetail />} />

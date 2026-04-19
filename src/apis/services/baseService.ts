@@ -1,4 +1,4 @@
-import type { AxiosInstance } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import clientAxios from '../axios';
 import type { ApiResponse, PageResponse, PaginationParams } from '@/types';
 
@@ -12,12 +12,15 @@ class BaseService<T, C = Partial<T>> {
     protected http: AxiosInstance = clientAxios,
   ) {}
 
-  getAll = async (params?: PaginationParams & Record<string, unknown>): Promise<ApiResponse<PageResponse<T>>> => {
-    return this.http.get(this.endpoint, { params });
+  getAll = async (
+    params?: PaginationParams & Record<string, unknown>,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<PageResponse<T>>> => {
+    return this.http.get(this.endpoint, { ...(config || {}), params });
   };
 
-  getById = async (id: string): Promise<ApiResponse<T>> => {
-    return this.http.get(`${this.endpoint}/${id}`);
+  getById = async (id: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+    return this.http.get(`${this.endpoint}/${id}`, config);
   };
 
   create = async (data: C): Promise<ApiResponse<T>> => {

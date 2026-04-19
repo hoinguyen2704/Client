@@ -26,6 +26,7 @@ export default function FlashSales() {
     setPage,
     refetch: fetchSales,
   } = useAdminList<FlashSaleResponse>(adminFlashSaleService.getAll, {
+    queryKey: "admin-flash-sales",
     size: PAGE_SIZE.LARGE,
   });
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);

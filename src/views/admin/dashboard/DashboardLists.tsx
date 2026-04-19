@@ -1,6 +1,5 @@
 import { Card, UserAvatar } from '@/components';
 import { formatPrice } from '@/utils/format';
-import { resolveVariantSalesMetrics } from '@/utils/variantSales';
 import type { DashboardChildProps } from './types';
 
 export default function DashboardLists({ stats }: DashboardChildProps) {
@@ -34,38 +33,6 @@ export default function DashboardLists({ stats }: DashboardChildProps) {
 
       {/* Right Column */}
       <div className="space-y-4 sm:space-y-6">
-        {/* Top Variants */}
-        <Card>
-          <h2 className="text-base sm:text-lg font-bold mb-4 sm:mb-6">Top phân loại bán chạy</h2>
-          <div className="space-y-3 sm:space-y-4">
-            {(stats.topVariants || []).length === 0 ? (
-              <div className="text-center text-slate-400 py-6">Chưa có dữ liệu</div>
-            ) : (
-              stats.topVariants.slice(0, 5).map((variant, idx) => {
-                const sales = resolveVariantSalesMetrics(variant);
-                return (
-                <div key={variant.variantId} className="flex items-start gap-3 p-2.5 sm:p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <div className="w-6 text-center font-bold text-slate-400">{idx + 1}</div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-md truncate">{variant.variantName || 'Mặc định'}</h4>
-                    <p className="text-sm text-slate-500 truncate">{variant.productName}</p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="font-bold text-md text-purple-600 dark:text-purple-400">
-                      Net {sales.net.toLocaleString('vi-VN')}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      Gross {sales.gross.toLocaleString('vi-VN')} • Return {sales.returned.toLocaleString('vi-VN')}
-                    </p>
-                    <p className="text-sm text-slate-500">{formatPrice(variant.revenue)}</p>
-                  </div>
-                </div>
-                );
-              })
-            )}
-          </div>
-        </Card>
-
         {/* Top Categories */}
         <Card>
           <h2 className="text-base sm:text-lg font-bold mb-4 sm:mb-6">Danh mục nổi bật</h2>

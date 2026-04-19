@@ -10,6 +10,7 @@ import {
 import { ExpandToggle } from "@/components";
 import type { BasicInfoSectionProps } from "./types";
 import { memo, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const SPEC_COLLAPSE_THRESHOLD = 6;
 
@@ -19,6 +20,7 @@ type Props = BasicInfoSectionProps & {
 };
 
 export default memo(function BasicInfoSection(props: Props) {
+  const { t } = useTranslation("adminCatalog");
   const {
     name, setName,
     description, setDescription,
@@ -73,40 +75,40 @@ export default memo(function BasicInfoSection(props: Props) {
       {/* Basic Info Card */}
       {showBasicInfo && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
-        <h2 className="text-lg font-bold mb-4">Thông tin cơ bản</h2>
+        <h2 className="text-lg font-bold mb-4">{t("basicInfo.title")}</h2>
 
         <div>
-          <label className="block font-medium mb-2">Tên sản phẩm *</label>
+          <label className="block font-medium mb-2">{t("basicInfo.name")} *</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Nhập tên sản phẩm..."
+            placeholder={t("basicInfo.placeholders.name")}
             className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Mã sản phẩm (productCode)</label>
+          <label className="block font-medium mb-2">{t("basicInfo.productCode.label")} (productCode)</label>
           <input
             type="text"
             value={productCode}
             onChange={(e) => setProductCode(e.target.value)}
-            placeholder="Để trống để hệ thống tự sinh"
+            placeholder={t("basicInfo.placeholders.productCode")}
             readOnly={isEditMode}
             className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-70"
           />
           <p className="mt-1 text-sm text-slate-500">
             {isEditMode
-              ? "ProductCode đã khóa sau khi tạo, muốn đổi cần action riêng."
-              : "Dùng làm prefix ổn định cho SKU, tối đa 12 ký tự."}
+              ? t("basicInfo.productCode.locked")
+              : t("basicInfo.productCode.hint")}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Category Dropdown */}
           <div>
-            <label className="block font-medium mb-2">Danh mục *</label>
+            <label className="block font-medium mb-2">{t("basicInfo.category")} *</label>
             <div className="relative" ref={categoryDropdownRef}>
               <button
                 type="button"
@@ -127,8 +129,8 @@ export default memo(function BasicInfoSection(props: Props) {
                 >
                   {categoryId
                     ? categories.find((c) => c.id === categoryId)?.name ||
-                      "Chọn danh mục"
-                    : "Chọn danh mục"}
+                      t("basicInfo.selectCategory")
+                    : t("basicInfo.selectCategory")}
                 </span>
                 <FiChevronDown
                   className={`text-slate-400 transition-transform ${showCategoryDropdown ? "rotate-180" : ""}`}
@@ -143,7 +145,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         type="text"
                         value={categorySearch}
                         onChange={(e) => setCategorySearch(e.target.value)}
-                        placeholder="Tìm danh mục..."
+                        placeholder={t("basicInfo.placeholders.categorySearch")}
                         className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                         autoFocus
                       />
@@ -166,7 +168,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         <FiCheck className="text-purple-500 flex-shrink-0" />
                       )}
                       <span className={!categoryId ? "" : "ml-5"}>
-                        Chọn danh mục
+                        {t("basicInfo.selectCategory")}
                       </span>
                     </button>
                     {categories
@@ -219,7 +221,7 @@ export default memo(function BasicInfoSection(props: Props) {
                             if (e.key === "Escape")
                               setIsCreatingCategory(false);
                           }}
-                          placeholder="Tên danh mục mới..."
+                          placeholder={t("basicInfo.placeholders.newCategory")}
                           className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           autoFocus
                         />
@@ -254,7 +256,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         onClick={() => setIsCreatingCategory(true)}
                         className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
                       >
-                        <FiPlus className="text-sm" /> Thêm danh mục mới
+                        <FiPlus className="text-sm" /> {t("basicInfo.addCategory")}
                       </button>
                     )}
                   </div>
@@ -263,13 +265,13 @@ export default memo(function BasicInfoSection(props: Props) {
             </div>
             {categoryLocked && (
               <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
-                Danh mục đã bị khóa vì sản phẩm đã có phân loại. Muốn đổi danh mục, cần xử lý phân loại hiện có trước.
+                {t("basicInfo.categoryLocked")}
               </p>
             )}
           </div>
           {/* Brand Dropdown */}
           <div>
-            <label className="block font-medium mb-2">Thương hiệu *</label>
+            <label className="block font-medium mb-2">{t("basicInfo.brand")} *</label>
             <div className="relative" ref={brandDropdownRef}>
               <button
                 type="button"
@@ -288,8 +290,8 @@ export default memo(function BasicInfoSection(props: Props) {
                 >
                   {brandId
                     ? brands.find((b) => b.id === brandId)?.name ||
-                      "Chọn thương hiệu"
-                    : "Chọn thương hiệu"}
+                      t("basicInfo.selectBrand")
+                    : t("basicInfo.selectBrand")}
                 </span>
                 <FiChevronDown
                   className={`text-slate-400 transition-transform ${showBrandDropdown ? "rotate-180" : ""}`}
@@ -304,7 +306,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         type="text"
                         value={brandSearch}
                         onChange={(e) => setBrandSearch(e.target.value)}
-                        placeholder="Tìm thương hiệu..."
+                        placeholder={t("basicInfo.placeholders.brandSearch")}
                         className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                         autoFocus
                       />
@@ -327,7 +329,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         <FiCheck className="text-purple-500 flex-shrink-0" />
                       )}
                       <span className={!brandId ? "" : "ml-5"}>
-                        Chọn thương hiệu
+                        {t("basicInfo.selectBrand")}
                       </span>
                     </button>
                     {brands
@@ -378,7 +380,7 @@ export default memo(function BasicInfoSection(props: Props) {
                             if (e.key === "Escape")
                               setIsCreatingBrand(false);
                           }}
-                          placeholder="Tên thương hiệu mới..."
+                          placeholder={t("basicInfo.placeholders.newBrand")}
                           className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md focus:outline-none outline-none focus:ring-1 focus:outline-none outline-none focus:ring-purple-500"
                           autoFocus
                         />
@@ -411,7 +413,7 @@ export default memo(function BasicInfoSection(props: Props) {
                         onClick={() => setIsCreatingBrand(true)}
                         className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
                       >
-                        <FiPlus className="text-sm" /> Thêm thương hiệu mới
+                        <FiPlus className="text-sm" /> {t("basicInfo.addBrand")}
                       </button>
                     )}
                   </div>
@@ -422,11 +424,11 @@ export default memo(function BasicInfoSection(props: Props) {
         </div>
 
         <div>
-          <label className="block font-medium mb-2">Mô tả sản phẩm</label>
+          <label className="block font-medium mb-2">{t("basicInfo.description")}</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Nhập mô tả chi tiết sản phẩm..."
+            placeholder={t("basicInfo.placeholders.description")}
             className="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 resize-y outline-none"
           />
         </div>
@@ -437,23 +439,23 @@ export default memo(function BasicInfoSection(props: Props) {
       {showSpecs && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold">Thông số kỹ thuật</h2>
+          <h2 className="text-lg font-bold">{t("basicInfo.specs.title")}</h2>
           <div className="relative" ref={templatePopupRef}>
             <button
               onClick={() => setShowTemplatePopup(!showTemplatePopup)}
               className="text-md font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
-              title="Chọn các thông số gợi ý theo Danh mục"
+              title={t("basicInfo.specs.templateTitle")}
             >
-              Gợi ý mẫu
+              {t("basicInfo.specs.templateAction")}
             </button>
             {showTemplatePopup && (
               <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 p-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
                 <p className="text-sm text-slate-400 font-medium uppercase tracking-wider mb-2">
-                  Chọn thông số muốn thêm
+                  {t("basicInfo.specs.templateModalTitle")}
                 </p>
                 {!categoryId ? (
                   <p className="text-md text-amber-600 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
-                    Vui lòng chọn Danh mục trước!
+                    {t("basicInfo.specs.templateRequiresCategory")}
                   </p>
                 ) : (
                   <>
@@ -517,13 +519,13 @@ export default memo(function BasicInfoSection(props: Props) {
                           }}
                           className="text-sm font-medium text-blue-600 hover:underline"
                         >
-                          Chọn tất cả
+                          {t("basicInfo.specs.selectAll")}
                         </button>
                         <button
                           onClick={() => setShowTemplatePopup(false)}
                           className="text-sm font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                         >
-                          Đóng
+                          {t("basicInfo.specs.close")}
                         </button>
                       </div>
                     </div>
@@ -559,7 +561,7 @@ export default memo(function BasicInfoSection(props: Props) {
 
           {specs.length === 0 && (
             <div className="text-center py-6 text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-              <p className="text-md">Chưa có thông số kỹ thuật nào.</p>
+              <p className="text-md">{t("basicInfo.specs.empty")}</p>
             </div>
           )}
         </div>
@@ -568,8 +570,8 @@ export default memo(function BasicInfoSection(props: Props) {
           <ExpandToggle
             expanded={showAllSpecs}
             onToggle={() => setShowAllSpecs((prev) => !prev)}
-            expandLabel="Xem thêm"
-            collapseLabel="Thu gọn"
+            expandLabel={t("basicInfo.specs.expand")}
+            collapseLabel={t("basicInfo.specs.collapse")}
             className="mt-1"
           />
         )}

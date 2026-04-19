@@ -6,9 +6,10 @@ import { Button, FormInput, FormTextarea } from '@/components';
 import { toast } from 'sonner';
 import ticketService from '@/apis/services/ticketService';
 import { getApiErrorMessage } from '@/utils/error';
+import { SHOP } from '@/constants/shopConstants';
 
 export default function Contact() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['about', 'common']);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,7 +27,7 @@ export default function Contact() {
     try {
       setLoading(true);
       await ticketService.submitContact(formData);
-      toast.success('Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!');
+      toast.success(t('contactPage.toasts.success', { ns: 'about' }));
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, translate, 'common:errors.contactSubmitFailed'));
@@ -49,7 +50,7 @@ export default function Contact() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-4xl font-bold mb-4"
           >
-            Liên hệ với chúng tôi
+            {t('contactPage.title', { ns: 'about' })}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -57,7 +58,7 @@ export default function Contact() {
             transition={{ delay: 0.1 }}
             className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto"
           >
-            Hozitech luôn sẵn sàng lắng nghe và giải đáp mọi thắc mắc của bạn. Hãy liên hệ với chúng tôi qua các kênh dưới đây hoặc điền vào form liên hệ.
+            {t('contactPage.description', { ns: 'about', shopName: SHOP.name })}
           </motion.p>
         </div>
 
@@ -70,7 +71,7 @@ export default function Contact() {
               transition={{ delay: 0.2 }}
               className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800"
             >
-              <h3 className="text-xl font-bold mb-6">Thông tin liên hệ</h3>
+              <h3 className="text-xl font-bold mb-6">{t('contactPage.contactInfoTitle', { ns: 'about' })}</h3>
               
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
@@ -78,8 +79,8 @@ export default function Contact() {
                     <FiMapPin className="text-xl" />
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">Địa chỉ</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">132/72/6 đường Cầu Diễn, Nguyên Xá, phường Tây Tựu, Thành phố Hà Nội</p>
+                    <h4 className="font-bold mb-1">{t('contactPage.addressLabel', { ns: 'about' })}</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.address}</p>
                   </div>
                 </div>
 
@@ -88,9 +89,9 @@ export default function Contact() {
                     <FiPhone className="text-xl" />
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">Điện thoại</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">0828443833 (Hỗ trợ 24/7)</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">0828443833 (Zalo/Viber)</p>
+                    <h4 className="font-bold mb-1">{t('contactPage.phoneLabel', { ns: 'about' })}</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.hotline} ({t('contactPage.support247', { ns: 'about' })})</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.hotline} ({t('contactPage.messagingApps', { ns: 'about' })})</p>
                   </div>
                 </div>
 
@@ -99,9 +100,9 @@ export default function Contact() {
                     <FiMail className="text-xl" />
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">Email</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">hozinium@gmail.com</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">hozinium@gmail.com</p>
+                    <h4 className="font-bold mb-1">{t('contactPage.emailLabel', { ns: 'about' })}</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.email}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.supportEmail}</p>
                   </div>
                 </div>
 
@@ -110,9 +111,9 @@ export default function Contact() {
                     <FiClock className="text-xl" />
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">Giờ làm việc</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">Thứ 2 - Thứ 6: 8:00 - 20:00</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">Thứ 7 - CN: 9:00 - 18:00</p>
+                    <h4 className="font-bold mb-1">{t('contactPage.hoursLabel', { ns: 'about' })}</h4>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">{t('contactPage.weekdayHours', { ns: 'about' })}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-md">{t('contactPage.weekendHours', { ns: 'about' })}</p>
                   </div>
                 </div>
               </div>
@@ -127,63 +128,63 @@ export default function Contact() {
               transition={{ delay: 0.3 }}
               className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800"
             >
-              <h3 className="text-2xl font-bold mb-6">Gửi tin nhắn cho chúng tôi</h3>
+              <h3 className="text-2xl font-bold mb-6">{t('contactPage.formTitle', { ns: 'about' })}</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormInput
-                    label="Họ và tên *"
+                    label={t('contactPage.form.nameLabel', { ns: 'about' })}
                     type="text"
                     name="name"
                     required
                     value={formData.name}
                     onChange={handleChange}
                     inputClassName="h-12"
-                    placeholder="Nhập họ và tên"
+                    placeholder={t('contactPage.form.namePlaceholder', { ns: 'about' })}
                   />
                   <FormInput
-                    label="Email *"
+                    label={t('contactPage.form.emailLabel', { ns: 'about' })}
                     type="email"
                     name="email"
                     required
                     value={formData.email}
                     onChange={handleChange}
                     inputClassName="h-12"
-                    placeholder="Nhập địa chỉ email"
+                    placeholder={t('contactPage.form.emailPlaceholder', { ns: 'about' })}
                   />
 
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormInput
-                    label="Số điện thoại"
+                    label={t('contactPage.form.phoneLabel', { ns: 'about' })}
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     inputClassName="h-12"
-                    placeholder="Nhập số điện thoại"
+                    placeholder={t('contactPage.form.phonePlaceholder', { ns: 'about' })}
                   />
                   <FormInput
-                    label="Chủ đề *"
+                    label={t('contactPage.form.subjectLabel', { ns: 'about' })}
                     type="text"
                     name="subject"
                     required
                     value={formData.subject}
                     onChange={handleChange}
                     inputClassName="h-12"
-                    placeholder="Nhập chủ đề liên hệ"
+                    placeholder={t('contactPage.form.subjectPlaceholder', { ns: 'about' })}
                   />
 
                 </div>
 
                 <FormTextarea
-                  label="Nội dung tin nhắn *"
+                  label={t('contactPage.form.messageLabel', { ns: 'about' })}
                   name="message"
                   required
                   value={formData.message}
                   onChange={handleChange}
                   rows={5}
-                  placeholder="Nhập nội dung tin nhắn của bạn..."
+                  placeholder={t('contactPage.form.messagePlaceholder', { ns: 'about' })}
                 />
 
                 <Button
@@ -193,7 +194,7 @@ export default function Contact() {
                   className="w-full md:w-auto"
                   disabled={loading}
                 >
-                  {loading ? 'Đang gửi...' : 'Gửi tin nhắn'}
+                  {loading ? t('contactPage.form.sending', { ns: 'about' }) : t('contactPage.form.submit', { ns: 'about' })}
                 </Button>
               </form>
             </motion.div>

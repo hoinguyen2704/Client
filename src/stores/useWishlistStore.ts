@@ -4,6 +4,11 @@ import wishlistService from '@/apis/services/wishlistService';
 import type { WishlistResponse } from '@/types';
 import { toast } from 'sonner';
 
+function getPersistedAuthToken() {
+  const raw = localStorage.getItem('auth') || sessionStorage.getItem('auth');
+  return raw ? JSON.parse(raw)?.state?.token : null;
+}
+
 interface WishlistStore {
   items: WishlistResponse[];
   loading: boolean;
@@ -22,8 +27,7 @@ const useWishlistStore = create<WishlistStore>()(
 
       syncFromServer: async () => {
         try {
-          const authStore = (await import('@/stores/useAuthStore')).default;
-          if (!authStore.getState().token) {
+          if (!getPersistedAuthToken()) {
             set({ items: [], totalItems: 0 }); // reset if guest
             return;
           }
@@ -46,8 +50,7 @@ const useWishlistStore = create<WishlistStore>()(
         const exists = items.find(i => i.productId === productId);
         
         // Optimistic UI update
-        const authStore = (await import('@/stores/useAuthStore')).default;
-        if (!authStore.getState().token) {
+        if (!getPersistedAuthToken()) {
           toast.error('Vui lòng đăng nhập để thêm vào mục yêu thích');
           return false;
         }
