@@ -190,8 +190,10 @@ export default function Tickets() {
       const nextTickets = res.data.data || [];
       setPageData(res.data);
       setTickets(nextTickets);
-    } catch (err) { console.error('Failed to fetch tickets:', err); 
-      toast.error(t('tickets.toasts.loadFailed')); }
+    } catch (err) {
+      console.error('Failed to fetch tickets:', err);
+      toast.error(t('tickets.toasts.loadFailed'));
+    }
     finally { setLoading(false); }
   }, [page, statusFilter, t]);
 
@@ -246,8 +248,10 @@ export default function Tickets() {
       setSelectedTicket(res.data);
       setReplyText('');
       await fetchTickets({ silent: true });
-    } catch (err) { console.error('Reply failed:', err); 
-      toast.error(t('tickets.toasts.replyFailed')); }
+    } catch (err) {
+      console.error('Reply failed:', err);
+      toast.error(t('tickets.toasts.replyFailed'));
+    }
   };
 
   const handleStatusChange = async (id: string, status: string) => {
@@ -255,8 +259,10 @@ export default function Tickets() {
       const res = await adminTicketService.updateStatus(id, status);
       setSelectedTicket(res.data);
       await fetchTickets({ silent: true });
-    } catch (err) { console.error('Status update failed:', err); 
-      toast.error(t('tickets.toasts.statusFailed')); }
+    } catch (err) {
+      console.error('Status update failed:', err);
+      toast.error(t('tickets.toasts.statusFailed'));
+    }
   };
 
   const handleCopyCustomerEmail = useCallback(async (email?: string | null) => {
@@ -340,19 +346,18 @@ export default function Tickets() {
                             <p className="truncate text-sm font-semibold text-slate-800 transition-colors group-hover:text-purple-700 dark:text-slate-100 dark:group-hover:text-purple-300">
                               {section.title}
                             </p>
-                            <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
+                            <p className="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">
                               {section.subtitle}
                             </p>
                           </div>
                           <div className="flex shrink-0 items-center gap-2">
-                            <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-purple-50 group-hover:text-purple-700 group-hover:ring-purple-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-purple-500/10 dark:group-hover:text-purple-300 dark:group-hover:ring-purple-500/30">
+                            <span className="rounded-full bg-white px-2.5 py-1 text-sm font-semibold text-slate-600 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-purple-50 group-hover:text-purple-700 group-hover:ring-purple-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-purple-500/10 dark:group-hover:text-purple-300 dark:group-hover:ring-purple-500/30">
                               {t('tickets.requestsCount', { count: section.tickets.length })}
                             </span>
                             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-purple-50 group-hover:text-purple-700 group-hover:ring-purple-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-purple-500/10 dark:group-hover:text-purple-300 dark:group-hover:ring-purple-500/30">
                               <FiChevronDown
-                                className={`text-sm transition-transform duration-200 ${
-                                isExpanded ? 'rotate-180' : ''
-                              }`}
+                                className={`text-sm transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                                  }`}
                               />
                             </span>
                           </div>
@@ -420,9 +425,8 @@ export default function Tickets() {
               <div className="flex-1 p-3 sm:p-6 overflow-y-auto space-y-3 sm:space-y-4 min-h-0">
                 {selectedTicket.messages?.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.senderType === 'ADMIN' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[92%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-md sm:text-base ${
-                      msg.senderType === 'ADMIN' ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
-                    }`}>
+                    <div className={`max-w-[92%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-md sm:text-base ${msg.senderType === 'ADMIN' ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
+                      }`}>
                       <p>{msg.content}</p>
                       <p className={`text-10 mt-1 ${msg.senderType === 'ADMIN' ? 'text-purple-200' : 'text-slate-400'}`}>{formatDate(msg.createdAt)}</p>
                     </div>
@@ -435,7 +439,7 @@ export default function Tickets() {
                   onKeyDown={(e) => e.key === 'Enter' && handleReply()}
                   className="flex-1 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-md sm:text-base" />
                 <Button onClick={handleReply} size="md" icon={<FiMessageCircle />} className="w-full sm:w-auto">
-                {t('tickets.send')}
+                  {t('tickets.send')}
                 </Button>
               </div>
             </>

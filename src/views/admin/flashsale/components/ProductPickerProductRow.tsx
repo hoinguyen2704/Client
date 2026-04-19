@@ -49,16 +49,14 @@ export default function ProductPickerProductRow({
 
   return (
     <div
-      className={`flex flex-col transition-all ${
-        someSelected ? 'bg-purple-50/25 ring-1 ring-inset ring-purple-200 dark:bg-purple-500/5 dark:ring-purple-500/30' : ''
-      }`}
+      className={`flex flex-col transition-all ${someSelected ? 'bg-purple-50/25 ring-1 ring-inset ring-purple-200 dark:bg-purple-500/5 dark:ring-purple-500/30' : ''
+        }`}
     >
       <div
-        className={`px-0 py-0 transition-colors ${
-          someSelected
+        className={`px-0 py-0 transition-colors ${someSelected
             ? 'bg-purple-50/45 hover:bg-purple-50/70 dark:bg-purple-500/10'
             : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
-        }`}
+          }`}
       >
         <div className="grid grid-cols-1 items-stretch gap-0 md:grid-cols-[minmax(0,1fr)_170px_140px_170px]">
           <button
@@ -109,11 +107,10 @@ export default function ProductPickerProductRow({
                 onToggleSelectAll(variants);
               }}
               disabled={!canSelectAll}
-              className={`flex-shrink-0 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
-                allSelected
+              className={`flex-shrink-0 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all ${allSelected
                   ? 'border-purple-300 bg-purple-100 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/20 dark:text-purple-300'
                   : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-purple-300 hover:text-purple-600 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-800'
-              }`}
+                }`}
             >
               {variantsQuery.isPending
                 ? t('productPicker.productRow.loading')

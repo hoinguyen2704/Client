@@ -16,7 +16,7 @@ import {
 } from "./utils";
 
 const summaryChipClass =
-  "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300";
+  "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-sm font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300";
 
 export default memo(function VariantCard(props: VariantCardProps) {
   const { t, i18n } = useTranslation("adminCatalog");
@@ -57,10 +57,22 @@ export default memo(function VariantCard(props: VariantCardProps) {
   useEffect(() => {
     if (!autoFocusSku || !isExpanded) return;
 
-    rootRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    const rootElement = rootRef.current;
+    if (rootElement) {
+      const topOffset = window.innerWidth >= 1280
+        ? 176
+        : window.innerWidth >= 768
+          ? 148
+          : 124;
+      const nextTop = Math.max(
+        window.scrollY + rootElement.getBoundingClientRect().top - topOffset,
+        0,
+      );
+      window.scrollTo({
+        top: nextTop,
+        behavior: "smooth",
+      });
+    }
 
     const frame = window.requestAnimationFrame(() => {
       skuInputRef.current?.focus();
@@ -74,11 +86,11 @@ export default memo(function VariantCard(props: VariantCardProps) {
   return (
     <div
       ref={rootRef}
-      className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${
-        isExpanded
+      style={{ scrollMarginTop: "11rem" }}
+      className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${isExpanded
           ? "border-purple-200 shadow-[0_14px_36px_rgba(15,23,42,0.06)] dark:border-purple-800"
           : "border-slate-200 shadow-sm dark:border-slate-700"
-      }`}
+        }`}
     >
       <div className="bg-gradient-to-r from-white via-slate-50 to-purple-50/70 px-4 py-3.5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 sm:px-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -93,18 +105,17 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   {variant.variantName ? ` - ${variant.variantName}` : ""}
                 </span>
                 <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
-                    variant.active
+                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-sm font-semibold ${variant.active
                       ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
                       : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-                  }`}
+                    }`}
                 >
                   {variant.active
                     ? t("variantCard.statusActive")
                     : t("variantCard.statusInactive")}
                 </span>
                 {isVariantUploading && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-xs font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
                     <FiLoader className="animate-spin" />
                     {t("variantCard.uploading")}
                   </span>
@@ -133,7 +144,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
               <span>
                 {t("variantCard.createdAt")}: {createdAtText}
               </span>
@@ -191,7 +202,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     Regen
                   </button>
                 </div>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-sm text-slate-500">
                   {variant.skuMode === "manual"
                     ? t("variantCard.skuModeManual")
                     : t("variantCard.skuModeSuggested")}
@@ -256,11 +267,10 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   onClick={() =>
                     updateVariant(index, "active", !variant.active)
                   }
-                  className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-md font-medium transition-colors ${
-                    variant.active
+                  className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-md font-medium transition-colors ${variant.active
                       ? "border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400"
                       : "border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800"
-                  }`}
+                    }`}
                 >
                   {variant.active ? <FiEye /> : <FiEyeOff />}
                   {variant.active
@@ -269,7 +279,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 </button>
               </div>
               <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
-                <p className="text-xs uppercase tracking-wide text-muted">
+                <p className="text-sm uppercase tracking-wide text-muted">
                   {t("variantCard.salesLabel")}
                 </p>
                 <p className="text-md font-semibold text-slate-700 dark:text-slate-200">

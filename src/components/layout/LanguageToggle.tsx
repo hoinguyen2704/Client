@@ -35,7 +35,7 @@ export default function LanguageToggle({ className }: LanguageToggleProps) {
       })}
     >
       <FiGlobe className="hidden sm:block text-base shrink-0" />
-      <span className="text-xs font-black uppercase tracking-[0.18em]">
+      <span className="text-sm font-black uppercase tracking-[0.18em]">
         {t(`languageSwitcher.short.${language}`)}
       </span>
     </button>

@@ -80,11 +80,10 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
             <span />
           )}
 
-          <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-black tracking-tight shadow-lg backdrop-blur-md sm:text-sm ${
-            soldOut
+          <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-black tracking-tight shadow-lg backdrop-blur-md sm:text-sm ${soldOut
               ? 'border-red-200/80 bg-red-500/95 text-white shadow-red-500/25'
               : 'border-slate-900/10 bg-slate-950/78 text-white shadow-black/20'
-          }`}>
+            }`}>
             {!soldOut ? <span className="h-2 w-2 rounded-full bg-orange-400 shadow-[0_0_12px_rgba(251,146,60,0.9)]" /> : null}
             {soldOut ? t('flashSale.soldOut') : t('flashSale.soldPercent', { percent: soldPercent })}
           </span>
@@ -98,7 +97,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
           <h3 className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 transition-colors group-hover:text-red-600 dark:text-white sm:text-[15px]">
             {item.productName}
           </h3>
-          <p className="mt-1.5 min-h-[36px] line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm">
+          <p className="mt-1.5 min-h-[36px] line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm">
             {item.variantName || t('flashSale.defaultVariant')}
           </p>
         </div>
@@ -109,27 +108,26 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
               {formatPrice(item.flashPrice)}
             </span>
             {item.originalPrice > 0 ? (
-              <span className="pb-0.5 text-xs text-slate-400 line-through sm:text-sm">
+              <span className="pb-0.5 text-sm text-slate-400 line-through sm:text-sm">
                 {formatPrice(item.originalPrice)}
               </span>
             ) : null}
           </div>
           {savedAmount > 0 ? (
-            <p className="text-xs font-semibold text-red-500 sm:text-sm">
+            <p className="text-sm font-semibold text-red-500 sm:text-sm">
               {t('flashSale.savedAmount', { amount: formatPrice(savedAmount) })}
             </p>
           ) : null}
         </div>
 
         <div className="mt-auto rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-red-50/60 p-3 dark:border-orange-900/30 dark:from-orange-950/20 dark:to-red-950/10">
-          <div className="mb-2 flex items-center justify-between gap-2 text-[11px] font-semibold sm:text-xs">
+          <div className="mb-2 flex items-center justify-between gap-2 text-[11px] font-semibold sm:text-sm">
             <span className="text-slate-600 dark:text-slate-300">{t('flashSale.progressLabel')}</span>
             <div className="flex items-center gap-2">
-              <span className={`rounded-full px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] sm:text-[11px] ${
-                soldOut
+              <span className={`rounded-full px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] sm:text-[11px] ${soldOut
                   ? 'bg-red-500/12 text-red-500'
                   : 'bg-orange-500/12 text-orange-600 dark:text-orange-300'
-              }`}>
+                }`}>
                 {soldPercent}%
               </span>
               <span className={soldOut ? 'text-red-500' : 'text-orange-600 dark:text-orange-400'}>
@@ -149,7 +147,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-0.5 text-xs font-semibold text-slate-600 transition-colors group-hover:text-red-500 dark:text-slate-300 sm:text-sm">
+        <div className="flex items-center justify-between pt-0.5 text-sm font-semibold text-slate-600 transition-colors group-hover:text-red-500 dark:text-slate-300 sm:text-sm">
           <span>{soldOut ? t('flashSale.actions.viewDetails') : t('flashSale.actions.grabDeal')}</span>
           <FiArrowRight className="text-base transition-transform group-hover:translate-x-1" />
         </div>
@@ -183,7 +181,7 @@ function SaleCountdown({ endTime }: { endTime: string }) {
           <div className="text-2xl font-black leading-none text-white sm:text-[2rem]">
             {String(part.val).padStart(2, '0')}
           </div>
-          <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/65 sm:text-xs">
+          <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/65 sm:text-sm">
             {part.label}
           </div>
         </div>
@@ -252,7 +250,7 @@ export default function FlashSale() {
       <div className="space-y-8 md:space-y-10">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-red-600 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-sm font-bold uppercase tracking-[0.18em] text-red-600 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
               <FiZap className="text-sm" />
               {t('flashSale.heroEyebrow')}
             </span>
@@ -287,7 +285,7 @@ export default function FlashSale() {
 
                 <div className="relative grid gap-5 px-5 py-5 md:px-8 md:py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
                   <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-white/95 backdrop-blur-md">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-3 py-1.5 text-sm font-black uppercase tracking-[0.18em] text-white/95 backdrop-blur-md">
                       <FiZap className="text-yellow-200" />
                       Flash Sale
                     </div>

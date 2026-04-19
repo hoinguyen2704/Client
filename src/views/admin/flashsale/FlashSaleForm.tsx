@@ -365,70 +365,71 @@ export default function FlashSaleForm() {
                         const actualIndex = startIndex + idx;
                         const sales = resolveVariantSalesMetrics(item);
                         return (
-                        <tr key={`${item.variantId}-${actualIndex}`} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                          <td className="p-3">
-                            <div className="flex items-center gap-3">
-                              <img
-                                src={item.imageUrl || '/placeholder.png'}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0"
-                              />
-                              <div className="min-w-0">
-                                <div className="font-medium text-strong-soft truncate" title={item.productName}>
-                                  {item.productName}
-                                </div>
-                                <div className="text-sm text-slate-500">
-                                  {item.variantName || t('productPicker.variantFallback')}
+                          <tr key={`${item.variantId}-${actualIndex}`} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td className="p-3">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={item.imageUrl || '/placeholder.png'}
+                                  alt=""
+                                  className="w-10 h-10 object-cover rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0"
+                                />
+                                <div className="min-w-0">
+                                  <div className="font-medium text-strong-soft truncate" title={item.productName}>
+                                    {item.productName}
+                                  </div>
+                                  <div className="text-sm text-slate-500">
+                                    {item.variantName || t('productPicker.variantFallback')}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="p-3 text-slate-500">{formatPrice(item.originalPrice)}</td>
-                          <td className="p-3">
-                            <input
-                              type="number"
-                              min="0"
-                              className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
-                              value={item.flashPrice}
-                              onChange={(e) => handleChangeItem(actualIndex, 'flashPrice', Number(e.target.value))}
-                            />
-                          </td>
-                          <td className="p-3">
-                            <div className="space-y-1.5">
+                            </td>
+                            <td className="p-3 text-slate-500">{formatPrice(item.originalPrice)}</td>
+                            <td className="p-3">
                               <input
                                 type="number"
                                 min="0"
                                 className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
-                                value={item.flashStock}
-                                onChange={(e) => handleChangeItem(actualIndex, 'flashStock', Number(e.target.value))}
+                                value={item.flashPrice}
+                                onChange={(e) => handleChangeItem(actualIndex, 'flashPrice', Number(e.target.value))}
                               />
-                              <div className="text-xs text-slate-500 leading-tight">
-                                {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
-                                  <div>{t('flashSales.form.historyEmpty')}</div>
-                                ) : (
-                                  <>
-                                    <div>
-                                      {t('flashSales.form.historyLabel', {
-                                        gross: sales.gross.toLocaleString(),
-                                        returned: sales.returned.toLocaleString(),
-                                        net: sales.net.toLocaleString(),
-                                      })}
-                                    </div>
-                                    <div>
-                                      {t('flashSales.form.stockLabel', {
-                                        stock: (item.stockQuantity ?? 0).toLocaleString(),
-                                      })}
-                                    </div>
-                                  </>
-                                )}
+                            </td>
+                            <td className="p-3">
+                              <div className="space-y-1.5">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
+                                  value={item.flashStock}
+                                  onChange={(e) => handleChangeItem(actualIndex, 'flashStock', Number(e.target.value))}
+                                />
+                                <div className="text-sm text-slate-500 leading-tight">
+                                  {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
+                                    <div>{t('flashSales.form.historyEmpty')}</div>
+                                  ) : (
+                                    <>
+                                      <div>
+                                        {t('flashSales.form.historyLabel', {
+                                          gross: sales.gross.toLocaleString(),
+                                          returned: sales.returned.toLocaleString(),
+                                          net: sales.net.toLocaleString(),
+                                        })}
+                                      </div>
+                                      <div>
+                                        {t('flashSales.form.stockLabel', {
+                                          stock: (item.stockQuantity ?? 0).toLocaleString(),
+                                        })}
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="p-3 text-center">
-                            <TrashButton onClick={() => handleRemoveItem(actualIndex)} />
-                          </td>
-                        </tr>
-                      )})
+                            </td>
+                            <td className="p-3 text-center">
+                              <TrashButton onClick={() => handleRemoveItem(actualIndex)} />
+                            </td>
+                          </tr>
+                        )
+                      })
                     )}
                   </tbody>
                 </table>

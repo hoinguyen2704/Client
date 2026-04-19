@@ -28,6 +28,7 @@ export default function ProductVariantsPage() {
           <BackButton
             to={`/admin/products/${form.id}`}
             label={t("variantPage.backToProduct")}
+            className="text-xl font-bold"
           />
           <div>
             <h1 className="text-xl sm:text-2xl font-bold">

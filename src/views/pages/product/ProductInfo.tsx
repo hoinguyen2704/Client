@@ -436,7 +436,7 @@ export default function ProductInfo({
               <>
                 <span className="mb-0.5 whitespace-nowrap text-lg text-slate-400 line-through md:text-xl">{formatPrice(comparePrice)}</span>
                 {discountPercent > 0 ? (
-                  <span className="mb-0.5 inline-flex whitespace-nowrap rounded-xl bg-gradient-to-r from-red-500 to-orange-500 px-2.5 py-1 text-xs font-black uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_rgba(239,68,68,0.22)] md:text-sm">
+                  <span className="mb-0.5 inline-flex whitespace-nowrap rounded-xl bg-gradient-to-r from-red-500 to-orange-500 px-2.5 py-1 text-sm font-black uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_rgba(239,68,68,0.22)] md:text-sm">
                     {discountPercent}% giảm
                   </span>
                 ) : null}
@@ -551,11 +551,10 @@ export default function ProductInfo({
             if (product.id) await toggleWishlist(product.id);
           }}
           title={t('productDetail.actions.wishlist', { ns: 'catalog' })}
-          className={`h-12 w-12 shrink-0 rounded-xl border-2 flex items-center justify-center transition-all ${
-            liked
+          className={`h-12 w-12 shrink-0 rounded-xl border-2 flex items-center justify-center transition-all ${liked
               ? 'border-red-200 bg-red-50 text-red-500 dark:border-red-800 dark:bg-red-900/20'
               : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
-          }`}
+            }`}
         >
           <FiHeart className={`text-2xl ${liked ? 'fill-red-500 cursor-pointer' : ''}`} />
         </button>

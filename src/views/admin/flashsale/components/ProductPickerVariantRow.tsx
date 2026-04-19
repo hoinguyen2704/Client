@@ -28,12 +28,11 @@ export default function ProductPickerVariantRow({
   return (
     <div
       className={`grid grid-cols-1 items-stretch gap-0 transition-colors md:grid-cols-[minmax(0,1fr)_170px_140px_170px]
-        ${
-          isAlreadyInSale
-            ? 'cursor-not-allowed bg-amber-50/40 opacity-50 dark:bg-amber-500/5'
-            : isNewlySelected
-              ? 'cursor-pointer border-y border-purple-200/90 bg-purple-100/80 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] hover:bg-purple-100 dark:border-purple-400/30 dark:bg-purple-500/25 dark:hover:bg-purple-500/30'
-              : 'cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30'
+        ${isAlreadyInSale
+          ? 'cursor-not-allowed bg-amber-50/40 opacity-50 dark:bg-amber-500/5'
+          : isNewlySelected
+            ? 'cursor-pointer border-y border-purple-200/90 bg-purple-100/80 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] hover:bg-purple-100 dark:border-purple-400/30 dark:bg-purple-500/25 dark:hover:bg-purple-500/30'
+            : 'cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30'
         }`}
       onClick={() => !isAlreadyInSale && onToggle()}
     >
@@ -41,12 +40,11 @@ export default function ProductPickerVariantRow({
         <div className="flex-shrink-0">
           <div
             className={`flex h-[22px] w-[22px] items-center justify-center rounded-md border-2 transition-all duration-150
-              ${
-                isAlreadyInSale
-                  ? 'border-slate-300 bg-slate-200 dark:border-slate-500 dark:bg-slate-600'
-                  : isChecked
-                    ? 'border-purple-600 bg-purple-600 shadow-[0_0_0_2px_rgba(147,51,234,0.15)]'
-                    : 'border-slate-300 bg-white hover:border-purple-400 dark:border-slate-600 dark:bg-slate-800'
+              ${isAlreadyInSale
+                ? 'border-slate-300 bg-slate-200 dark:border-slate-500 dark:bg-slate-600'
+                : isChecked
+                  ? 'border-purple-600 bg-purple-600 shadow-[0_0_0_2px_rgba(147,51,234,0.15)]'
+                  : 'border-slate-300 bg-white hover:border-purple-400 dark:border-slate-600 dark:bg-slate-800'
               }`}
           >
             {isChecked ? <FiCheck className="text-white" size={14} strokeWidth={3} /> : null}
@@ -55,9 +53,8 @@ export default function ProductPickerVariantRow({
 
         <div className="min-w-0 flex-1">
           <div
-            className={`text-md font-semibold ${
-              isNewlySelected ? 'text-purple-800 dark:text-purple-200' : 'text-slate-700 dark:text-slate-200'
-            }`}
+            className={`text-md font-semibold ${isNewlySelected ? 'text-purple-800 dark:text-purple-200' : 'text-slate-700 dark:text-slate-200'
+              }`}
           >
             {variant.variantName || t('productPicker.variantRow.defaultName')}
           </div>
@@ -80,7 +77,7 @@ export default function ProductPickerVariantRow({
         <span className="font-semibold text-slate-700 dark:text-slate-200">
           {grossSoldQty.toLocaleString()}
         </span>
-        <span className="text-xs text-slate-500">
+        <span className="text-sm text-slate-500">
           R {returnedQty.toLocaleString()} / N {netSoldQty.toLocaleString()}
         </span>
       </div>
@@ -96,9 +93,8 @@ export default function ProductPickerVariantRow({
       </div>
 
       <div
-        className={`hidden items-center justify-end border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex ${
-          isNewlySelected ? 'font-bold text-purple-700 dark:text-purple-200' : 'text-slate-500'
-        }`}
+        className={`hidden items-center justify-end border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex ${isNewlySelected ? 'font-bold text-purple-700 dark:text-purple-200' : 'text-slate-500'
+          }`}
       >
         {isNewlySelected
           ? t('productPicker.variantRow.selected')

@@ -89,7 +89,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   const isOutOfStock = product.outOfStock === true || product.status === 'OUT_OF_STOCK';
   const isInactive = product.status === 'INACTIVE';
   const isComingSoon = product.status === 'COMING_SOON';
-  
+
   const stock: number = isOutOfStock ? 0 : (product.stockQuantity ?? (product.variants?.reduce((acc: number, v) => acc + (v.stockQuantity || 0), 0)) ?? 10);
 
   let statusText = t('productCard.status.available', { ns: 'catalog' }).toUpperCase();
@@ -121,7 +121,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
 
 
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -4 }}
       className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-3xl p-1.5 sm:p-3 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 border border-slate-100 dark:border-slate-800 transition-all group relative flex flex-col h-full"
     >
@@ -141,9 +141,9 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
 
       {/* Image Container */}
       <Link to={`/product/${slug}`} className="relative aspect-square rounded-lg sm:rounded-2xl overflow-hidden mb-1.5 sm:mb-3 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 sm:p-4 cursor-pointer">
-        <img 
-          src={image} 
-          alt={name} 
+        <img
+          src={image}
+          alt={name}
           className={`w-full h-full object-contain transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal ${!canAddToCart ? 'opacity-50' : 'group-hover:scale-110'}`}
           referrerPolicy="no-referrer"
           onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/f1f5f9/94a3b8?text=No+Image'; }}
@@ -159,13 +159,13 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
 
       {/* Content */}
       <div className="flex flex-col flex-1 px-0 pb-0">
-        
+
         {/* Label bao quanh Tên */}
         <Link to={`/product/${slug}`} title={name} className="block w-full bg-transparent sm:bg-slate-50 sm:dark:bg-slate-800/50 hover:bg-transparent sm:hover:bg-slate-100 sm:dark:hover:bg-slate-800 p-0 sm:p-3 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-100 sm:dark:border-slate-800 transition-colors mb-1.5 sm:mb-3 mt-0">
           <h3 className="font-bold text-12 sm:text-lg text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug">
             {name}
           </h3>
-          
+
           {(rating > 0 || totalSold > 0) && (
             <div className="mt-1.5 sm:mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
               {rating > 0 && (
@@ -173,7 +173,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                   <FiStar className="shrink-0 text-11 sm:text-base text-yellow-500 fill-yellow-500" />
                   <span className="font-black text-slate-800 dark:text-slate-100">{rating.toFixed(1)}</span>
                   {reviews > 0 && (
-                    <span className="text-10 sm:text-xs font-semibold text-slate-400">({reviews})</span>
+                    <span className="text-10 sm:text-sm font-semibold text-slate-400">({reviews})</span>
                   )}
                 </div>
               )}
@@ -188,7 +188,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
             </div>
           )}
         </Link>
-        
+
         {/* Price & Status — same row */}
         <div className="bg-slate-50 dark:bg-slate-800/40 sm:bg-gradient-to-br sm:from-purple-50 sm:to-blue-50 sm:dark:from-purple-900/20 sm:dark:to-blue-900/20 p-2 sm:p-3 rounded-lg sm:rounded-2xl border border-slate-100 sm:border-purple-100 dark:border-slate-700 sm:dark:border-purple-800/30 mb-1.5 sm:mb-4 mt-auto">
           {originPrice > 0 ? (
@@ -231,59 +231,58 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
 
         {/* Nút hành động nổi bật ở đáy */}
         <div className="flex items-center gap-1.5 sm:gap-2 mt-1">
-           <button 
-             onClick={async (e) => {
-               e.preventDefault();
-               if (!isAuthenticated) {
-                 toast.error(t('productCard.actions.loginWishlist', { ns: 'catalog' }));
-                 navigate('/login');
-                 return;
-               }
-               if (!productId) return;
-               await toggleWishlist(productId);
-             }}
-             className={`w-9 h-9 sm:w-12 sm:h-12 shrink-0 border rounded-lg sm:rounded-2xl flex justify-center items-center transition-all shadow-sm group/heart ${
-               liked
-                 ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
-                 : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
-             }`}
-             title={t('productCard.actions.wishlist', { ns: 'catalog' })}
-           >
-             <FiHeart className={`text-base sm:text-xl group-hover/heart:scale-110 transition-transform ${liked ? 'fill-red-500 text-red-500' : ''}`} />
-           </button>
-           
-           <button 
-             disabled={!canAddToCart || addingToCart}
-             onClick={async (e) => {
-               e.preventDefault();
-               if (!isAuthenticated) {
-                 toast.error(t('productCard.actions.loginCart', { ns: 'catalog' }));
-                 navigate('/login');
-                 return;
-               }
-               if (!firstVariantId) {
-                 // No variant — navigate to product detail to choose
-                 navigate(`/product/${slug}`);
-                 return;
-               }
-               setAddingToCart(true);
-               try {
-                  await cartService.addToCart({ variantId: firstVariantId, quantity: 1 });
-                  await syncFromServer();
-                  toast.success(t('productCard.actions.addedToCart', { ns: 'catalog', name }));
-                } catch (error) {
-                  toast.error(getApiErrorMessage(error, translate, 'catalog:productCard.actions.addToCartFailed'));
-               } finally { setAddingToCart(false); }
-             }}
-             className="flex-1 h-9 sm:h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg sm:rounded-2xl font-bold text-11 sm:text-md flex justify-center items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-purple-500/25 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed group/cart"
-           >
-             <FiShoppingCart className="text-md sm:text-lg group-hover/cart:-rotate-12 transition-transform" />
-             <span className="truncate">
-               {addingToCart
-                 ? t('productCard.actions.adding', { ns: 'catalog' })
-                 : (canAddToCart ? t('productCard.actions.addToCart', { ns: 'catalog' }) : statusText)}
-             </span>
-           </button>
+          <button
+            onClick={async (e) => {
+              e.preventDefault();
+              if (!isAuthenticated) {
+                toast.error(t('productCard.actions.loginWishlist', { ns: 'catalog' }));
+                navigate('/login');
+                return;
+              }
+              if (!productId) return;
+              await toggleWishlist(productId);
+            }}
+            className={`w-9 h-9 sm:w-12 sm:h-12 shrink-0 border rounded-lg sm:rounded-2xl flex justify-center items-center transition-all shadow-sm group/heart ${liked
+                ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
+                : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
+              }`}
+            title={t('productCard.actions.wishlist', { ns: 'catalog' })}
+          >
+            <FiHeart className={`text-base sm:text-xl group-hover/heart:scale-110 transition-transform ${liked ? 'fill-red-500 text-red-500' : ''}`} />
+          </button>
+
+          <button
+            disabled={!canAddToCart || addingToCart}
+            onClick={async (e) => {
+              e.preventDefault();
+              if (!isAuthenticated) {
+                toast.error(t('productCard.actions.loginCart', { ns: 'catalog' }));
+                navigate('/login');
+                return;
+              }
+              if (!firstVariantId) {
+                // No variant — navigate to product detail to choose
+                navigate(`/product/${slug}`);
+                return;
+              }
+              setAddingToCart(true);
+              try {
+                await cartService.addToCart({ variantId: firstVariantId, quantity: 1 });
+                await syncFromServer();
+                toast.success(t('productCard.actions.addedToCart', { ns: 'catalog', name }));
+              } catch (error) {
+                toast.error(getApiErrorMessage(error, translate, 'catalog:productCard.actions.addToCartFailed'));
+              } finally { setAddingToCart(false); }
+            }}
+            className="flex-1 h-9 sm:h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg sm:rounded-2xl font-bold text-11 sm:text-md flex justify-center items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-purple-500/25 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed group/cart"
+          >
+            <FiShoppingCart className="text-md sm:text-lg group-hover/cart:-rotate-12 transition-transform" />
+            <span className="truncate">
+              {addingToCart
+                ? t('productCard.actions.adding', { ns: 'catalog' })
+                : (canAddToCart ? t('productCard.actions.addToCart', { ns: 'catalog' }) : statusText)}
+            </span>
+          </button>
         </div>
       </div>
     </motion.div>

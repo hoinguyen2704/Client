@@ -139,9 +139,8 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                   <div
                     key={n.id}
                     onClick={() => !n.isRead && handleMarkRead(n.id)}
-                    className={`px-5 py-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 ${
-                      !n.isRead ? 'bg-purple-50/40 dark:bg-purple-900/10' : ''
-                    }`}
+                    className={`px-5 py-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 ${!n.isRead ? 'bg-purple-50/40 dark:bg-purple-900/10' : ''
+                      }`}
                   >
                     <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 text-base">
                       {typeIcons[n.type] || <FiBell className="text-slate-400" />}
@@ -176,7 +175,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                 className="flex items-center justify-center gap-2 text-sm font-semibold text-purple-600 hover:text-purple-700 transition-colors"
               >
                 {t('notifications.viewAll', { ns: 'layout' })}
-                <FiExternalLink className="text-xs" />
+                <FiExternalLink className="text-sm" />
               </Link>
             </div>
           </motion.div>
