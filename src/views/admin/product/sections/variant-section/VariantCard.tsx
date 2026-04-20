@@ -1,6 +1,6 @@
 import { memo, type ChangeEvent, useEffect, useRef } from "react";
 import { FiEye, FiEyeOff, FiLoader, FiTrash2 } from "react-icons/fi";
-import { CustomSelect, ExpandToggle, TrashButton } from "@/components";
+import { ExpandToggle, SearchableDropdown, TrashButton } from "@/components";
 import { useTranslation } from "react-i18next";
 import { formatDateFull as formatDateTime } from "@/utils/format";
 import { resolveVariantSalesMetrics } from "@/utils/variantSales";
@@ -28,6 +28,8 @@ export default memo(function VariantCard(props: VariantCardProps) {
     removeVariant,
     updateVariant,
     updateVariantSelection,
+    createVariantAttributeOption,
+    creatingOptionByFieldKey,
     regenerateVariantSku,
     handleVariantFilesSelected,
     removeVariantPendingFile,
@@ -318,20 +320,44 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     variant.selections?.[attribute.id] || "";
                   const { selectOptions, selectedValue } =
                     getVariantSelectOptions(attribute, selectedOptionId);
+                  const fieldKey = `${variantUiKey}:${attribute.id}`;
 
                   return (
                     <div key={`${variantUiKey}-${attribute.id}`}>
-                      <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
-                        {attribute.name}
-                      </label>
-                      <CustomSelect
+                      <SearchableDropdown
+                        label={attribute.name}
                         value={selectedValue}
                         onChange={(optionId) =>
                           updateVariantSelection(index, attribute.id, optionId)
                         }
-                        options={selectOptions}
-                        className="h-10 w-full"
-                        disabled={selectOptions.length === 0}
+                        items={selectOptions.map((option) => ({
+                          id: option.value,
+                          name: option.label,
+                        }))}
+                        onCreateNew={(label) =>
+                          createVariantAttributeOption(
+                            index,
+                            variantUiKey,
+                            attribute.id,
+                            label,
+                          )
+                        }
+                        isCreatingProcess={Boolean(creatingOptionByFieldKey[fieldKey])}
+                        allowClear={false}
+                        required={false}
+                        labelClassName="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted"
+                        buttonClassName="h-10"
+                        placeholder={attribute.name}
+                        searchPlaceholder={t("variantCard.searchPlaceholder", {
+                          attribute: attribute.name,
+                        })}
+                        createPlaceholder={t("variantCard.newValuePlaceholder", {
+                          attribute: attribute.name,
+                        })}
+                        createAddLabel={t("variantCard.addValue")}
+                        emptyLabel={t("variantCard.emptyOptions")}
+                        duplicateCreateHint={t("variantCard.valueDuplicateHint")}
+                        renderMode="portal"
                       />
                     </div>
                   );

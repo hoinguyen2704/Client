@@ -76,6 +76,7 @@ export default function ProductVariantsPage() {
         variants={form.variants}
         variantSchema={form.variantSchema}
         uploadingVariantKeys={form.uploadingVariantKeys}
+        creatingOptionByFieldKey={form.creatingOptionByFieldKey}
         variantFileInputRefs={form.variantFileInputRefs}
         addVariant={form.addVariant}
         generateVariantCombinations={form.generateVariantCombinations}
@@ -83,6 +84,7 @@ export default function ProductVariantsPage() {
         removeVariant={form.removeVariant}
         updateVariant={form.updateVariant}
         updateVariantSelection={form.updateVariantSelection}
+        createVariantAttributeOption={form.createVariantAttributeOption}
         regenerateVariantSku={form.regenerateVariantSku}
         getVariantUiKey={form.getVariantUiKey}
         handleVariantFilesSelected={form.handleVariantFilesSelected}

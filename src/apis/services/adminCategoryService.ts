@@ -1,6 +1,12 @@
 import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { ApiResponse, CategoryResponse, CategoryRequest } from '@/types';
+import type {
+  ApiResponse,
+  CategoryResponse,
+  CategoryRequest,
+  CreateVariantOptionRequest,
+  VariantOptionResponse,
+} from '@/types';
 
 class AdminCategoryService extends BaseService<CategoryResponse, CategoryRequest> {
   constructor() {
@@ -9,6 +15,17 @@ class AdminCategoryService extends BaseService<CategoryResponse, CategoryRequest
 
   getSchema = async (id: string): Promise<ApiResponse<CategoryResponse>> => {
     return this.http.get(`${this.endpoint}/${id}/schema`);
+  };
+
+  createVariantAttributeOption = async (
+    categoryId: string,
+    attributeId: string,
+    data: CreateVariantOptionRequest,
+  ): Promise<ApiResponse<VariantOptionResponse>> => {
+    return this.http.post(
+      `${this.endpoint}/${categoryId}/variant-attributes/${attributeId}/options`,
+      data,
+    );
   };
 
   toggleStatus = async (id: string): Promise<ApiResponse<CategoryResponse>> => {

@@ -30,6 +30,8 @@ export interface VariantCardProps {
   removeVariant: VariantSectionProps["removeVariant"];
   updateVariant: VariantSectionProps["updateVariant"];
   updateVariantSelection: VariantSectionProps["updateVariantSelection"];
+  createVariantAttributeOption: VariantSectionProps["createVariantAttributeOption"];
+  creatingOptionByFieldKey: VariantSectionProps["creatingOptionByFieldKey"];
   regenerateVariantSku: VariantSectionProps["regenerateVariantSku"];
   handleVariantFilesSelected: VariantSectionProps["handleVariantFilesSelected"];
   removeVariantPendingFile: VariantSectionProps["removeVariantPendingFile"];

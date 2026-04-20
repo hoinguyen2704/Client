@@ -14,6 +14,7 @@ export default memo(function VariantSection(props: Props) {
     variants,
     variantSchema,
     uploadingVariantKeys,
+    creatingOptionByFieldKey,
     variantFileInputRefs,
     addVariant,
     generateVariantCombinations,
@@ -21,6 +22,7 @@ export default memo(function VariantSection(props: Props) {
     removeVariant,
     updateVariant,
     updateVariantSelection,
+    createVariantAttributeOption,
     regenerateVariantSku,
     getVariantUiKey,
     handleVariantFilesSelected,
@@ -203,6 +205,8 @@ export default memo(function VariantSection(props: Props) {
               removeVariant={removeVariant}
               updateVariant={updateVariant}
               updateVariantSelection={updateVariantSelection}
+              createVariantAttributeOption={createVariantAttributeOption}
+              creatingOptionByFieldKey={creatingOptionByFieldKey}
               regenerateVariantSku={regenerateVariantSku}
               handleVariantFilesSelected={handleVariantFilesSelected}
               removeVariantPendingFile={removeVariantPendingFile}

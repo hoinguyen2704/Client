@@ -47,6 +47,7 @@ export default function useProductVariantsForm() {
   const [variants, setVariants] = useState<VariantFormData[]>([]);
   const [originalSkuByVariantId, setOriginalSkuByVariantId] = useState<Record<string, string>>({});
   const [uploadingVariantKeys, setUploadingVariantKeys] = useState<Record<string, boolean>>({});
+  const [creatingOptionByFieldKey, setCreatingOptionByFieldKey] = useState<Record<string, boolean>>({});
   const [skuChangeConfirmOpen, setSkuChangeConfirmOpen] = useState(false);
   const [skuChangeConfirmMessage, setSkuChangeConfirmMessage] = useState("");
   const variantsRef = useRef<VariantFormData[]>([]);
@@ -59,19 +60,28 @@ export default function useProductVariantsForm() {
     variantsRef.current = variants;
   }, [variants]);
 
+  const getVariantFieldKey = useCallback(
+    (variantUiKey: string, attributeId: string) => `${variantUiKey}:${attributeId}`,
+    [],
+  );
+
   const updateVariantDerived = useCallback(
-    (variant: VariantFormData, usedSkus?: Set<string>): VariantFormData => {
+    (
+      variant: VariantFormData,
+      usedSkus?: Set<string>,
+      schemaOverride: VariantAttributeSchemaResponse[] = variantSchema,
+    ): VariantFormData => {
       const nextName = buildVariantDisplayName(
-        variantSchema,
+        schemaOverride,
         variant.selections,
         t("variantPage.defaultVariant"),
       );
-      const nextSignature = buildVariantSignature(variantSchema, variant.selections);
+      const nextSignature = buildVariantSignature(schemaOverride, variant.selections);
 
       let nextSku = variant.sku;
       if (!variant.sku || variant.skuMode !== "manual") {
         const source = usedSkus ?? new Set<string>();
-        nextSku = buildSkuSuggestion(productCode, variantSchema, variant.selections, source);
+        nextSku = buildSkuSuggestion(productCode, schemaOverride, variant.selections, source);
       }
 
       return {
@@ -83,6 +93,56 @@ export default function useProductVariantsForm() {
       };
     },
     [productCode, t, variantSchema],
+  );
+
+  const applySchemaToVariants = useCallback(
+    (
+      currentVariants: VariantFormData[],
+      schema: VariantAttributeSchemaResponse[],
+      selectionOverride?: { index: number; attributeId: string; optionId: string },
+    ): VariantFormData[] => {
+      const used = new Set<string>();
+      return currentVariants.map((variant, variantIndex) => {
+        const nextSelections = normalizeSelectionsBySchema(
+          schema,
+          variant.selections,
+        );
+
+        if (selectionOverride && selectionOverride.index === variantIndex) {
+          nextSelections[selectionOverride.attributeId] = selectionOverride.optionId;
+        }
+
+        const nextVariant = updateVariantDerived(
+          {
+            ...variant,
+            selections: nextSelections,
+          },
+          used,
+          schema,
+        );
+
+        if (nextVariant.sku) {
+          used.add(nextVariant.sku);
+        }
+
+        return nextVariant;
+      });
+    },
+    [updateVariantDerived],
+  );
+
+  const refreshVariantSchema = useCallback(
+    async (
+      targetCategoryId: string,
+      selectionOverride?: { index: number; attributeId: string; optionId: string },
+    ) => {
+      const schemaRes = await adminCategoryService.getSchema(targetCategoryId);
+      const nextSchema = schemaRes.data?.variantAttributes || [];
+      setVariantSchema(nextSchema);
+      setVariants((prev) => applySchemaToVariants(prev, nextSchema, selectionOverride));
+      return nextSchema;
+    },
+    [applySchemaToVariants],
   );
 
   const mapVariantsFromResponse = useCallback(
@@ -388,6 +448,70 @@ export default function useProductVariantsForm() {
       });
     },
     [updateVariantDerived],
+  );
+
+  const createVariantAttributeOption = useCallback(
+    async (
+      index: number,
+      variantUiKey: string,
+      attributeId: string,
+      rawLabel: string,
+    ) => {
+      const label = rawLabel.trim();
+      if (!label || !categoryId) return;
+
+      const fieldKey = getVariantFieldKey(variantUiKey, attributeId);
+      setCreatingOptionByFieldKey((prev) => ({ ...prev, [fieldKey]: true }));
+
+      try {
+        const response = await adminCategoryService.createVariantAttributeOption(
+          categoryId,
+          attributeId,
+          { label },
+        );
+        const nextOption = response.data;
+        const currentAttribute = variantSchema.find((attribute) => attribute.id === attributeId);
+        const wasInactive = currentAttribute?.options.some(
+          (option) => option.id === nextOption.id && option.active === false,
+        );
+
+        await refreshVariantSchema(categoryId, {
+          index,
+          attributeId,
+          optionId: nextOption.id,
+        });
+
+        toast.success(
+          t(
+            wasInactive
+              ? "variantCard.valueReactivatedSuccess"
+              : "variantCard.valueCreateSuccess",
+            {
+              value: nextOption.label,
+              attribute: currentAttribute?.name || "",
+            },
+          ),
+        );
+      } catch (err: unknown) {
+        toast.error(
+          getApiErrorMessage(err, translate, "variantCard.valueCreateFailed"),
+        );
+      } finally {
+        setCreatingOptionByFieldKey((prev) => {
+          const next = { ...prev };
+          delete next[fieldKey];
+          return next;
+        });
+      }
+    },
+    [
+      categoryId,
+      getVariantFieldKey,
+      refreshVariantSchema,
+      t,
+      translate,
+      variantSchema,
+    ],
   );
 
   const regenerateVariantSku = useCallback(
@@ -725,6 +849,7 @@ export default function useProductVariantsForm() {
     skuChangeConfirmOpen,
     skuChangeConfirmMessage,
     uploadingVariantKeys,
+    creatingOptionByFieldKey,
     variantFileInputRefs,
     addVariant,
     generateVariantCombinations,
@@ -732,6 +857,7 @@ export default function useProductVariantsForm() {
     removeVariant,
     updateVariant,
     updateVariantSelection,
+    createVariantAttributeOption,
     regenerateVariantSku,
     getVariantUiKey,
     handleVariantFilesSelected,

@@ -105,6 +105,8 @@ export default memo(function BasicInfoSection(props: Props) {
             isCreatingProcess={savingCategory}
             createPlaceholder={t("basicInfo.placeholders.newCategory")}
             createAddLabel={t("basicInfo.addCategory")}
+            emptyLabel={t("basicInfo.emptyResults")}
+            duplicateCreateHint={t("basicInfo.duplicateCreateHint")}
           />
           {/* Brand Dropdown */}
           <SearchableDropdown
@@ -118,6 +120,8 @@ export default memo(function BasicInfoSection(props: Props) {
             isCreatingProcess={savingBrand}
             createPlaceholder={t("basicInfo.placeholders.newBrand")}
             createAddLabel={t("basicInfo.addBrand")}
+            emptyLabel={t("basicInfo.emptyResults")}
+            duplicateCreateHint={t("basicInfo.duplicateCreateHint")}
           />
         </div>
 

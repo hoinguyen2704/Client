@@ -260,6 +260,10 @@ export interface CategoryVariantOptionRequest {
   active?: boolean;
 }
 
+export interface CreateVariantOptionRequest {
+  label: string;
+}
+
 export interface CategorySpecAttributeRequest {
   attributeId?: string;
   name: string;
