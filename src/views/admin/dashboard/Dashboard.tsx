@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FiDownload } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Button, Modal, StatusBadge, UserAvatar } from '@/components';
+import { Button, Modal, ReportExportModal, StatusBadge, UserAvatar } from '@/components';
 import adminDashboardService from '@/apis/services/adminDashboardService';
 import type {
   DashboardReviewStatsResponse,
@@ -28,6 +28,7 @@ import type {
 } from '@/types';
 import { downloadBlob } from '@/utils/download';
 import { formatDate, formatPrice } from '@/utils/format';
+import { buildReportFilename } from '@/utils/reportExport';
 import { resolveVariantSalesMetrics } from '@/utils/variantSales';
 import DashboardStats from './DashboardStats';
 
@@ -196,6 +197,7 @@ function padRevenueChartData(
 export default function Dashboard() {
   const { t, i18n } = useTranslation('adminDashboard');
   const [activeModal, setActiveModal] = useState<ModalKey>(null);
+  const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
   const [period, setPeriod] = useState<DashboardPeriod>('WEEK');
   const [isPeriodPending, startTransition] = useTransition();
   const [revealedSections, setRevealedSections] = useState<Record<SectionKey, boolean>>({
@@ -403,6 +405,16 @@ export default function Dashboard() {
             className="w-full print:hidden sm:w-auto"
           >
             {t('overview.actions.topVariants')}
+          </Button>
+
+          <Button
+            onClick={() => setIsReportExportModalOpen(true)}
+            variant="success"
+            size="md"
+            icon={<FiDownload />}
+            className="w-full print:hidden sm:w-auto"
+          >
+            {t('overview.actions.exportTimedReport')}
           </Button>
 
           <Button
@@ -783,6 +795,25 @@ export default function Dashboard() {
           </>
         ) : null}
       </Modal>
+
+      <ReportExportModal
+        open={isReportExportModalOpen}
+        onClose={() => setIsReportExportModalOpen(false)}
+        title={t('reportExport.title')}
+        description={t('reportExport.description')}
+        submitLabel={t('reportExport.submit')}
+        onSubmit={async (params) => {
+          try {
+            const blob = await adminDashboardService.exportReportByRange(params);
+            downloadBlob(blob, buildReportFilename('revenue_report', params));
+            toast.success(t('toasts.exportSuccess'));
+          } catch (error) {
+            console.error(error);
+            toast.error(t('toasts.exportFailed'));
+            throw error;
+          }
+        }}
+      />
     </div>
   );
 }

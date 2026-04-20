@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FiClipboard, FiXCircle, FiCheckCircle, FiClock, FiTruck, FiCreditCard, FiDownload } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { ActionButtons, Pagination, AdminSearch, Button, CustomSelect } from '@/components';
+import { ActionButtons, Pagination, AdminSearch, Button, CustomSelect, ReportExportModal } from '@/components';
 import returnService from '@/apis/services/returnService';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { getReturnFilterOptions, canProcessRefund, ReturnStatusBadge, RefundStatusBadge } from '@/constants/returnConstants';
@@ -10,6 +10,7 @@ import { formatDate, formatPrice } from '@/utils/format';
 import { getApiErrorMessage } from '@/utils/error';
 import { downloadBlob } from '@/utils/download';
 import { getPaginatedRowNumber } from '@/utils/helpers';
+import { buildReportFilename } from '@/utils/reportExport';
 import type { PageResponse, ReturnRequestResponse } from '@/types';
 
 
@@ -20,6 +21,7 @@ export default function AdminReturns() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<ReturnRequestResponse> | null>(null);
   const [reviewingKey, setReviewingKey] = useState<string | null>(null);
@@ -93,6 +95,9 @@ export default function AdminReturns() {
           <p className="text-md text-slate-500 mt-1">{t('returns.list.description')}</p>
         </div>
         <div className="flex gap-3 print:hidden">
+          <Button onClick={() => setIsReportExportModalOpen(true)} variant="success" size="md" icon={<FiDownload />}>
+            {t('returns.list.reportExport')}
+          </Button>
           <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
             {t('returns.list.export')}
           </Button>
@@ -313,6 +318,26 @@ export default function AdminReturns() {
           />
         )}
       </div>
+
+      <ReportExportModal
+        open={isReportExportModalOpen}
+        onClose={() => setIsReportExportModalOpen(false)}
+        onSubmit={async (params) => {
+          try {
+            const blob = await returnService.adminExportReportByRange({
+              ...params,
+              status: statusFilter || undefined,
+              keyword: searchQuery || undefined,
+            });
+            downloadBlob(blob, buildReportFilename('returns_report', params));
+            toast.success(t('returns.list.toasts.exportSuccess'));
+          } catch (error) {
+            console.error(error);
+            toast.error(t('returns.list.toasts.exportFailed'));
+            throw error;
+          }
+        }}
+      />
     </div>
   );
 }

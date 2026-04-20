@@ -1,7 +1,7 @@
 import BaseService from './baseService';
 import { adminAxios } from '../axios';
 import type { AxiosRequestConfig } from 'axios';
-import type { AdminOrderListItem, ApiResponse, OrderResponse, PageResponse } from '@/types';
+import type { AdminOrderListItem, ApiResponse, OrderResponse, PageResponse, ReportExportParams } from '@/types';
 
 class AdminOrderService extends BaseService<OrderResponse> {
   constructor() {
@@ -35,6 +35,13 @@ class AdminOrderService extends BaseService<OrderResponse> {
     to?: string;
   }): Promise<Blob> {
     return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
+  }
+
+  async exportReportByRange(params: ReportExportParams & {
+    status?: string;
+    keyword?: string;
+  }): Promise<Blob> {
+    return this.http.get(`${this.endpoint}/report-export`, { params, responseType: 'blob' });
   }
 
   /** Xuất hóa đơn PDF cho 1 đơn hàng */

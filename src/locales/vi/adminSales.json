@@ -2,6 +2,7 @@
   "orders": {
     "title": "Quản lý đơn hàng",
     "export": "Xuất Excel",
+    "reportExport": "Xuất báo cáo",
     "searchPlaceholder": "Tìm kiếm theo mã đơn, tên khách hàng...",
     "table": {
       "index": "STT",
@@ -30,7 +31,9 @@
     },
     "toasts": {
       "updated": "Đã cập nhật trạng thái!",
-      "invalidTransition": "Không thể cập nhật trạng thái theo thứ tự này"
+      "invalidTransition": "Không thể cập nhật trạng thái theo thứ tự này",
+      "exportSuccess": "Xuất báo cáo đơn hàng thành công!",
+      "exportFailed": "Xuất báo cáo đơn hàng thất bại!"
     }
   },
   "orderDetail": {
@@ -95,6 +98,7 @@
       "title": "Quản lý trả hàng / hoàn tiền",
       "description": "Danh sách yêu cầu trả hàng của khách và trạng thái hoàn tiền.",
       "export": "Xuất Excel",
+      "reportExport": "Xuất báo cáo",
       "searchPlaceholder": "Tìm theo mã yêu cầu, mã đơn, tên/email khách...",
       "stats": {
         "pageTotal": "Tổng số trang này",
@@ -212,6 +216,7 @@
   "vouchers": {
     "title": "Quản lý Voucher",
     "create": "Tạo Voucher mới",
+    "reportExport": "Xuất báo cáo",
     "searchPlaceholder": "Tìm kiếm theo mã voucher...",
     "empty": "Không có voucher nào",
     "pagination": "voucher",
@@ -283,7 +288,9 @@
       "toggleFailed": "Cập nhật trạng thái voucher thất bại!",
       "updateSuccess": "Cập nhật voucher thành công!",
       "createSuccess": "Tạo voucher thành công!",
-      "saveFailed": "Thao tác voucher thất bại!"
+      "saveFailed": "Thao tác voucher thất bại!",
+      "exportSuccess": "Xuất báo cáo voucher thành công!",
+      "exportFailed": "Xuất báo cáo voucher thất bại!"
     }
   },
   "feedbacks": {
@@ -300,5 +307,22 @@
       "statusFailed": "Cập nhật trạng thái đánh giá thất bại!",
       "replyFailed": "Phản hồi đánh giá thất bại!"
     }
+  },
+  "reportExport": {
+    "title": "Xuất báo cáo theo thời gian",
+    "description": "Chọn khoảng thời gian để xuất file Excel mà không ảnh hưởng tới luồng export cũ.",
+    "rangeModeLabel": "Kiểu thời gian",
+    "modes": {
+      "custom": "Khoảng ngày",
+      "month": "Tháng",
+      "year": "Năm"
+    },
+    "fromDateLabel": "Từ ngày",
+    "toDateLabel": "Đến ngày",
+    "monthLabel": "Tháng",
+    "yearLabel": "Năm",
+    "invalidRange": "Vui lòng nhập khoảng thời gian hợp lệ trước khi xuất.",
+    "submit": "Xuất báo cáo",
+    "submitting": "Đang xuất..."
   }
 }

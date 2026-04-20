@@ -5,6 +5,7 @@ import {
   FiToggleLeft,
   FiToggleRight,
   FiCheck,
+  FiDownload,
   FiGlobe,
   FiLock,
   FiPackage,
@@ -18,6 +19,7 @@ import { PAGE_SIZE } from "@/constants/paginationConstants";
 import {
   Button,
   PrimaryButton,
+  ReportExportModal,
   AdminSearch,
   Pagination,
   ActionButtons,
@@ -28,6 +30,8 @@ import {
 } from "@/components";
 import useAdminList from "@/hooks/useAdminList";
 import { getPaginatedRowNumber } from "@/utils/helpers";
+import { downloadBlob } from "@/utils/download";
+import { buildReportFilename } from "@/utils/reportExport";
 import { useTranslation } from "react-i18next";
 
 export default function AdminVouchers() {
@@ -46,6 +50,7 @@ export default function AdminVouchers() {
     size: PAGE_SIZE.MEDIUM,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<CouponRequest>>({
     discountType: "PERCENTAGE",
@@ -123,16 +128,26 @@ export default function AdminVouchers() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t("vouchers.title")}</h1>
-        <PrimaryButton
-          onClick={() => {
-            resetForm();
-            setIsModalOpen(true);
-          }}
-          icon={<FiPlus className="text-base" />}
-          className="w-full sm:w-auto"
-        >
-          {t("vouchers.create")}
-        </PrimaryButton>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <Button
+            onClick={() => setIsReportExportModalOpen(true)}
+            variant="success"
+            icon={<FiDownload className="text-base" />}
+            className="w-full sm:w-auto"
+          >
+            {t("vouchers.reportExport")}
+          </Button>
+          <PrimaryButton
+            onClick={() => {
+              resetForm();
+              setIsModalOpen(true);
+            }}
+            icon={<FiPlus className="text-base" />}
+            className="w-full sm:w-auto"
+          >
+            {t("vouchers.create")}
+          </PrimaryButton>
+        </div>
       </div>
 
       <AdminSearch
@@ -575,6 +590,25 @@ export default function AdminVouchers() {
           </div>
         </div>
       </Modal>
+
+      <ReportExportModal
+        open={isReportExportModalOpen}
+        onClose={() => setIsReportExportModalOpen(false)}
+        onSubmit={async (params) => {
+          try {
+            const blob = await adminCouponService.exportReportByRange({
+              ...params,
+              keyword: searchQuery || undefined,
+            });
+            downloadBlob(blob, buildReportFilename('vouchers_report', params));
+            toast.success(t('vouchers.toasts.exportSuccess'));
+          } catch (error) {
+            console.error(error);
+            toast.error(t('vouchers.toasts.exportFailed'));
+            throw error;
+          }
+        }}
+      />
     </div>
   );
 }

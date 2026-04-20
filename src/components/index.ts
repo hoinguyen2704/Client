@@ -31,6 +31,7 @@ export {
   ModalCancelButton,
   ModalSubmitButton,
 } from "./dialog/Modal";
+export { default as ReportExportModal } from "./dialog/ReportExportModal";
 export { default as StarRating } from "./rating/StarRating";
 export { default as UserAvatar } from "./ui/UserAvatar";
 export { FormInput, FormTextarea, FormSelect } from "./input/FormInput";

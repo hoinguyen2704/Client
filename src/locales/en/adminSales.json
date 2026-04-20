@@ -2,6 +2,7 @@
   "orders": {
     "title": "Order management",
     "export": "Export Excel",
+    "reportExport": "Export report",
     "searchPlaceholder": "Search by order number or customer name...",
     "table": {
       "index": "No.",
@@ -30,7 +31,9 @@
     },
     "toasts": {
       "updated": "Order status updated!",
-      "invalidTransition": "Cannot update to this status from the current state"
+      "invalidTransition": "Cannot update to this status from the current state",
+      "exportSuccess": "Order report exported successfully!",
+      "exportFailed": "Failed to export order report!"
     }
   },
   "orderDetail": {
@@ -95,6 +98,7 @@
       "title": "Returns / refunds",
       "description": "Customer return requests and refund processing status.",
       "export": "Export Excel",
+      "reportExport": "Export report",
       "searchPlaceholder": "Search by return number, order number, customer name/email...",
       "stats": {
         "pageTotal": "Items on this page",
@@ -212,6 +216,7 @@
   "vouchers": {
     "title": "Voucher management",
     "create": "Create new voucher",
+    "reportExport": "Export report",
     "searchPlaceholder": "Search by voucher code...",
     "empty": "No vouchers found",
     "pagination": "vouchers",
@@ -283,7 +288,9 @@
       "toggleFailed": "Failed to update voucher status!",
       "updateSuccess": "Voucher updated successfully!",
       "createSuccess": "Voucher created successfully!",
-      "saveFailed": "Voucher action failed!"
+      "saveFailed": "Voucher action failed!",
+      "exportSuccess": "Voucher report exported successfully!",
+      "exportFailed": "Failed to export voucher report!"
     }
   },
   "feedbacks": {
@@ -300,5 +307,22 @@
       "statusFailed": "Failed to update review status!",
       "replyFailed": "Failed to send review reply!"
     }
+  },
+  "reportExport": {
+    "title": "Export report by time",
+    "description": "Choose a time range to generate an Excel report without affecting the existing export flow.",
+    "rangeModeLabel": "Time mode",
+    "modes": {
+      "custom": "Custom range",
+      "month": "Month",
+      "year": "Year"
+    },
+    "fromDateLabel": "From date",
+    "toDateLabel": "To date",
+    "monthLabel": "Month",
+    "yearLabel": "Year",
+    "invalidRange": "Please enter a valid time range before exporting.",
+    "submit": "Export report",
+    "submitting": "Exporting..."
   }
 }

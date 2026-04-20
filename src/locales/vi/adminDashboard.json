@@ -74,6 +74,7 @@
     "actions": {
       "topVariants": "Top phân loại",
       "exportReport": "Xuất báo cáo",
+      "exportTimedReport": "Xuất báo cáo theo thời gian",
       "downloadPdf": "Tải PDF"
     },
     "empty": "Không thể tải dữ liệu dashboard"
@@ -160,5 +161,22 @@
     "creatingPdf": "Đang tạo báo cáo PDF...",
     "pdfSuccess": "Xuất báo cáo PDF thành công!",
     "pdfFailed": "Xuất báo cáo PDF thất bại!"
+  },
+  "reportExport": {
+    "title": "Xuất báo cáo doanh thu theo thời gian",
+    "description": "Chọn khoảng ngày, tháng hoặc năm để xuất workbook doanh thu ra Excel.",
+    "rangeModeLabel": "Kiểu thời gian",
+    "modes": {
+      "custom": "Khoảng ngày",
+      "month": "Tháng",
+      "year": "Năm"
+    },
+    "fromDateLabel": "Từ ngày",
+    "toDateLabel": "Đến ngày",
+    "monthLabel": "Tháng",
+    "yearLabel": "Năm",
+    "invalidRange": "Vui lòng nhập khoảng thời gian hợp lệ trước khi xuất.",
+    "submit": "Xuất báo cáo",
+    "submitting": "Đang xuất..."
   }
 }

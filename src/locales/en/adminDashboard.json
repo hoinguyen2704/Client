@@ -74,6 +74,7 @@
     "actions": {
       "topVariants": "Top variants",
       "exportReport": "Export report",
+      "exportTimedReport": "Export timed report",
       "downloadPdf": "Download PDF"
     },
     "empty": "Unable to load dashboard data"
@@ -160,5 +161,22 @@
     "creatingPdf": "Generating PDF report...",
     "pdfSuccess": "PDF report exported successfully!",
     "pdfFailed": "Failed to export PDF report!"
+  },
+  "reportExport": {
+    "title": "Export revenue report by time",
+    "description": "Choose a custom date range, month, or year to export the revenue workbook as Excel.",
+    "rangeModeLabel": "Time mode",
+    "modes": {
+      "custom": "Custom range",
+      "month": "Month",
+      "year": "Year"
+    },
+    "fromDateLabel": "From date",
+    "toDateLabel": "To date",
+    "monthLabel": "Month",
+    "yearLabel": "Year",
+    "invalidRange": "Please enter a valid time range before exporting.",
+    "submit": "Export report",
+    "submitting": "Exporting..."
   }
 }

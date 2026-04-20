@@ -7,6 +7,7 @@ import type {
   ReviewReturnRequestPayload,
   UpdateReturnStatusRequestPayload,
   ProcessRefundRequestPayload,
+  ReportExportParams,
 } from "@/types";
 
 const RETURN_URL = "/returns";
@@ -83,7 +84,12 @@ const returnService = {
     keyword?: string;
   }): Promise<Blob> =>
     adminAxios.get(`${RETURN_URL}/export`, { params, responseType: 'blob' }),
+
+  adminExportReportByRange: (params: ReportExportParams & {
+    status?: string;
+    keyword?: string;
+  }): Promise<Blob> =>
+    adminAxios.get(`${RETURN_URL}/report-export`, { params, responseType: 'blob' }),
 };
 
 export default returnService;
-

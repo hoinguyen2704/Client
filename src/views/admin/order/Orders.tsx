@@ -4,7 +4,7 @@ import { FiDownload, FiPackage } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
-import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination } from '@/components';
+import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, ReportExportModal } from '@/components';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { getAdminOrderStatusOptions, getOrderFilterOptions } from '@/constants/orderConstants';
 import { useDebounce } from '@/hooks';
@@ -12,12 +12,14 @@ import type { AdminOrderListItem, PageResponse } from '@/types';
 import { downloadBlob } from '@/utils/download';
 import { formatDate, formatPrice } from '@/utils/format';
 import { getPaginatedRowNumber } from '@/utils/helpers';
+import { buildReportFilename } from '@/utils/reportExport';
 
 export default function AdminOrders() {
   const { t } = useTranslation(['adminSales', 'common']);
   const queryClient = useQueryClient();
   const [searchInput, setSearchInput] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
   const [page, setPage] = useState(1);
 
   const deferredSearchInput = useDeferredValue(searchInput);
@@ -99,6 +101,9 @@ export default function AdminOrders() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t('orders.title')}</h1>
         <div className="flex gap-3 print:hidden">
+          <Button onClick={() => setIsReportExportModalOpen(true)} variant="success" size="md" icon={<FiDownload />}>
+            {t('orders.reportExport')}
+          </Button>
           <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
             {t('orders.export')}
           </Button>
@@ -247,6 +252,26 @@ export default function AdminOrders() {
           />
         ) : null}
       </div>
+
+      <ReportExportModal
+        open={isReportExportModalOpen}
+        onClose={() => setIsReportExportModalOpen(false)}
+        onSubmit={async (params) => {
+          try {
+            const blob = await adminOrderService.exportReportByRange({
+              ...params,
+              status: statusFilter || undefined,
+              keyword: debouncedSearchQuery || undefined,
+            });
+            downloadBlob(blob, buildReportFilename('orders_report', params));
+            toast.success(t('orders.toasts.exportSuccess'));
+          } catch (error) {
+            console.error(error);
+            toast.error(t('orders.toasts.exportFailed'));
+            throw error;
+          }
+        }}
+      />
     </div>
   );
 }

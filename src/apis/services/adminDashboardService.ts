@@ -9,6 +9,7 @@ import type {
   DashboardTopListsResponse,
   RecentOrderItem,
   TopVariantItem,
+  ReportExportParams,
 } from '@/types';
 
 const adminDashboardService = {
@@ -36,6 +37,9 @@ const adminDashboardService = {
   /** Xuất báo cáo doanh thu Excel */
   exportReport: (period: string = 'MONTH'): Promise<Blob> =>
     adminAxios.get('/dashboard/export', { params: { period }, responseType: 'blob' }),
+
+  exportReportByRange: (params: ReportExportParams): Promise<Blob> =>
+    adminAxios.get('/dashboard/report-export', { params, responseType: 'blob' }),
 
   /** Xuất báo cáo dashboard dạng PDF */
   exportReportPdf: (type: string, period: string = 'MONTH'): Promise<Blob> =>
