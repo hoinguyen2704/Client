@@ -1,5 +1,20 @@
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
-import { FiChevronDown, FiSearch, FiCheck, FiPlus, FiLoader } from "react-icons/fi";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  type CSSProperties,
+  type KeyboardEvent,
+} from "react";
+import { createPortal } from "react-dom";
+import {
+  FiChevronDown,
+  FiSearch,
+  FiCheck,
+  FiPlus,
+  FiLoader,
+} from "react-icons/fi";
 
 interface SearchableDropdownProps {
   label: string;
@@ -8,16 +23,18 @@ interface SearchableDropdownProps {
   items: Array<{ id: string; name: string }>;
   disabled?: boolean;
   lockedMessage?: string;
-  
-  // Texts
   placeholder: string;
   searchPlaceholder: string;
-  
-  // Create New configuration
-  onCreateNew?: (name: string) => void;
+  onCreateNew?: (name: string) => void | Promise<void>;
   isCreatingProcess?: boolean;
   createPlaceholder?: string;
   createAddLabel?: string;
+  allowClear?: boolean;
+  emptyLabel?: string;
+  duplicateCreateHint?: string;
+  labelClassName?: string;
+  buttonClassName?: string;
+  required?: boolean;
 }
 
 export default function SearchableDropdown({
@@ -33,15 +50,57 @@ export default function SearchableDropdown({
   isCreatingProcess = false,
   createPlaceholder = "Tên mới",
   createAddLabel = "Thêm mới",
+  allowClear = true,
+  emptyLabel = "Không có dữ liệu phù hợp",
+  duplicateCreateHint,
+  labelClassName,
+  buttonClassName = "h-12",
+  required = true,
 }: SearchableDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreatingMode, setIsCreatingMode] = useState(false);
   const [newName, setNewName] = useState("");
+  const [dropdownStyle, setDropdownStyle] = useState<CSSProperties>({});
   
+  const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number | null>(null);
 
-  // Click outside to close
+  const trimmedNewName = newName.trim();
+  const hasDuplicateName = items.some(
+    (item) => item.name.trim().toLowerCase() === trimmedNewName.toLowerCase(),
+  );
+
+  const closeDropdown = useCallback(() => {
+    setIsOpen(false);
+    setIsCreatingMode(false);
+    setSearchTerm("");
+    setNewName("");
+  }, []);
+
+  const updatePosition = useCallback(() => {
+    if (!containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    setDropdownStyle({
+      position: "fixed",
+      top: rect.bottom + 8,
+      left: rect.left,
+      zIndex: 9999,
+      minWidth: Math.max(rect.width, 220),
+    });
+  }, []);
+
+  const scheduleUpdatePosition = useCallback(() => {
+    if (rafIdRef.current !== null) return;
+
+    rafIdRef.current = window.requestAnimationFrame(() => {
+      rafIdRef.current = null;
+      updatePosition();
+    });
+  }, [updatePosition]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
