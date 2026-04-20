@@ -28,8 +28,8 @@ const normalizeCode = (value: string) =>
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/\u0111/g, "d")
     .replace(/\u0110/g, "D")
-    .replace(/[^A-Za-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "")
+    .replace(/[^A-Za-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
     .toUpperCase();
 
 const parseOptionsText = (value: string) =>
@@ -67,7 +67,7 @@ const mapCategoryToVariantAttributes = (
 ): VariantAttributeRow[] =>
   (category.variantAttributes || []).map((attribute, index) => ({
     name: attribute.name || "",
-    code: attribute.code || normalizeCode(attribute.name || ""),
+    code: normalizeCode(attribute.code || attribute.name || ""),
     optionsText: (attribute.options || [])
       .map((option) => option.label)
       .filter(Boolean)
@@ -230,7 +230,12 @@ export default function useCategoryForm() {
           if (rowIndex !== index) return row;
           return {
             ...row,
-            [field]: field === "sortOrder" ? Number(value) : String(value),
+            [field]:
+              field === "sortOrder"
+                ? Number(value)
+                : field === "code"
+                  ? normalizeCode(String(value))
+                  : String(value),
           };
         }),
       );
