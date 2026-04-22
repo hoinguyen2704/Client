@@ -24,7 +24,7 @@ const navItems = [
 export { navItems };
 
 const ICON_BUTTON_CLASS =
-  'p-2 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors';
+  'p-2 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-700 dark:hover:text-blue-300 rounded-xl transition-colors';
 const HEADER_PILL_BUTTON_CLASS =
   'border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700';
 const USER_MENU_LINK_CLASS =
@@ -65,7 +65,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
               <LogoIcon />
-            <span className="text-2xl font-bold text-[#2539e6] hidden sm:block">
+            <span className="hidden text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300 sm:block">
               {SHOP.name}
             </span>
           </Link>
@@ -76,9 +76,9 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
               type="text"
               placeholder={t('header.searchPlaceholder', { ns: 'layout' })}
               onKeyDown={handleSearch}
-              className="w-full h-12 pl-4 pr-12 rounded-2xl bg-slate-50 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 transition-all"
+              className="w-full h-12 pl-4 pr-12 rounded-2xl bg-white border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
             />
-            <FiSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-purple-500 transition-colors" />
+            <FiSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-blue-600 transition-colors" />
           </div>
 
           {/* Actions */}
@@ -97,16 +97,16 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             <button className={`md:hidden ${ICON_BUTTON_CLASS}`}>
               <FiSearch className="text-xl" />
             </button>
-            <Link to="/wishlist" className="p-2 text-body-soft hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 rounded-xl transition-colors relative">
+            <Link to="/wishlist" className="p-2 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-rose-500 rounded-xl transition-colors relative">
               <FiHeart className="text-xl" />
               {wishlistCount > 0 && (
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-800 animate-pulse"></span>
               )}
             </Link>
-            <Link to="/cart" className="p-2 text-body-soft hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-colors relative">
+            <Link to="/cart" className="p-2 text-body-soft hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-blue-300 rounded-xl transition-colors relative">
               <FiShoppingCart className="text-xl" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-sm flex items-center justify-center rounded-full shadow-md">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-sm text-white shadow-sm shadow-blue-950/15">
                   {totalItems > 99 ? '99+' : totalItems}
                 </span>
               )}
@@ -127,7 +127,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden z-50"
+                      className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_45px_rgba(15,23,42,0.12)] dark:border-slate-700 dark:bg-slate-900 z-50"
                     >
                       <div className="p-4 border-b border-slate-100 dark:border-slate-700">
                         <p className="font-bold text-md truncate">{user.email}</p>
@@ -189,8 +189,8 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `relative h-full flex items-center transition-colors hover:text-[#2539e6] dark:hover:text-blue-400 ${
-                  isActive ? 'text-[#2539e6] dark:text-blue-400' : ''
+                `relative h-full flex items-center transition-colors hover:text-blue-700 dark:hover:text-blue-300 ${
+                  isActive ? 'text-blue-700 dark:text-blue-300' : ''
                 }`
               }
             >
@@ -198,7 +198,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                 <>
                   {t(item.labelKey, { ns: 'layout' })}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#2539e6] dark:bg-blue-400 rounded-t-md"></span>
+                    <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-t-md bg-blue-600 dark:bg-blue-300"></span>
                   )}
                 </>
               )}

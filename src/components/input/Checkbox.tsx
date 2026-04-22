@@ -19,7 +19,7 @@ export default function Checkbox({
       <input
         type="checkbox"
         className={cn(
-          'peer shrink-0 appearance-none w-5 h-5 rounded-md border-2 border-slate-300 dark:border-slate-600 checked:bg-purple-600 checked:border-purple-600 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500/30 disabled:opacity-40 disabled:cursor-not-allowed',
+          'peer shrink-0 appearance-none w-5 h-5 rounded-md border-2 border-slate-300 dark:border-slate-600 checked:bg-blue-600 checked:border-blue-600 transition-all cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500/15 disabled:opacity-40 disabled:cursor-not-allowed',
           className,
         )}
         onChange={handleChange}

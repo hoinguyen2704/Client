@@ -26,7 +26,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
 
   const selectedOption = options.find(o => o.value === value) || options[0];
   const triggerFallbackClass =
-    'bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-white hover:bg-white dark:hover:bg-slate-700';
+    'bg-white border-slate-200 text-slate-800 dark:bg-slate-900 dark:border-slate-700 dark:text-white hover:border-slate-300 dark:hover:border-slate-600';
   const idleOptionClass =
     'text-body hover:bg-slate-100 dark:hover:bg-slate-700/70 hover:text-slate-900 dark:hover:text-white';
 
@@ -37,7 +37,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
       position: 'fixed',
       top: rect.bottom + 8,
       zIndex: 9999,
-      minWidth: Math.max(rect.width, 160),
+      width: Math.max(rect.width, 160),
     };
     if (dropdownAlign === 'right') {
       style.right = window.innerWidth - rect.right;
@@ -114,9 +114,9 @@ export default function CustomSelect({ value, options, onChange, className = '',
         type="button"
         onClick={toggleDropdown}
         disabled={disabled}
-        className={`w-full h-full flex items-center justify-between gap-2 px-3 py-2 text-md font-semibold rounded-xl border outline-none whitespace-nowrap focus:ring-2 focus:ring-purple-500/50 shadow-sm transition-all duration-200 ${
+        className={`w-full h-full flex items-center justify-between gap-2 px-3 py-2 text-md font-semibold rounded-xl border outline-none whitespace-nowrap focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 shadow-sm transition-all duration-200 ${
           selectedOption?.colorClass || triggerFallbackClass
-        } ${isOpen ? 'ring-2 ring-purple-500/50 scale-[0.98]' : ''} ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
+        } ${isOpen ? 'border-blue-500 ring-4 ring-blue-500/10' : ''} ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
         <span>{selectedOption?.label}</span>
         <FiChevronDown className={`text-opacity-70 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
@@ -125,7 +125,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
       {isOpen && createPortal(
         <div
           ref={dropdownRef}
-          className="max-h-64 overflow-auto rounded-xl bg-white dark:bg-slate-800 p-1.5 shadow-xl border border-slate-100 dark:border-slate-700/60 animate-in fade-in zoom-in-95 duration-200 ease-out"
+          className="max-h-64 overflow-auto rounded-xl bg-white dark:bg-slate-900 p-1.5 shadow-[0_20px_45px_rgba(15,23,42,0.14)] border border-slate-200 dark:border-slate-700/60 animate-in fade-in zoom-in-95 duration-200 ease-out"
           style={dropdownStyle}
         >
           {options.map((option) => {
@@ -142,7 +142,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
                 }}
                 className={`w-full flex items-center justify-between px-3 py-2.5 text-md font-medium rounded-lg transition-colors duration-150 ${
                   isSelected
-                    ? (option.colorClass || 'bg-purple-50 dark:bg-purple-500/15 text-purple-700 dark:text-purple-400 font-bold')
+                    ? (option.colorClass || 'bg-blue-50 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 font-bold')
                     : idleOptionClass
                 } ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
               >
@@ -152,7 +152,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
                   )}
                   <span>{option.label}</span>
                 </div>
-                {isSelected && <FiCheck className="text-purple-600 dark:text-purple-400 stroke-[3]" />}
+                {isSelected && <FiCheck className="text-blue-600 dark:text-blue-300 stroke-[3]" />}
               </button>
             );
           })}

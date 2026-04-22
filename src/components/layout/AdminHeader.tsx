@@ -10,7 +10,7 @@ import LanguageToggle from './LanguageToggle';
 import type { AdminHeaderProps } from './types';
 
 const ADMIN_HEADER_ICON_BUTTON_CLASS =
-  'p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-body-soft transition-colors';
+  'p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-700 dark:hover:text-blue-300 text-body-soft transition-colors';
 const ADMIN_HEADER_SIDEBAR_BUTTON_CLASS = `lg:hidden ${ADMIN_HEADER_ICON_BUTTON_CLASS}`;
 const ADMIN_HEADER_PILL_BUTTON_CLASS =
   'border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700';
@@ -40,9 +40,9 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
           <input
             type="text"
             placeholder={t('adminHeader.searchPlaceholder', { ns: 'layout' })}
-            className="w-full h-11 pl-11 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 transition-all"
+            className="w-full h-11 pl-11 pr-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
           />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-purple-500 transition-colors" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-blue-600 transition-colors" />
         </div>
       </div>
 
@@ -71,10 +71,10 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
             className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 sm:p-2 rounded-xl transition-colors"
           >
             {user?.avatar ? (
-              <img src={user.avatar} alt="Admin" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-purple-500/20" />
+              <img src={user.avatar} alt="Admin" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-blue-500/15" />
             ) : (
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full ring-2 ring-purple-500/20 bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
-                <FiUser className="text-lg text-purple-500 dark:text-purple-400" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-full ring-2 ring-blue-500/15 bg-blue-50 dark:bg-blue-950/30 sm:h-10 sm:w-10">
+                <FiUser className="text-lg text-blue-600 dark:text-blue-300" />
               </div>
             )}
             <div className="hidden md:block text-md text-left">
@@ -97,14 +97,14 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   {user?.avatar ? (
                     <img src={user.avatar} alt="Admin" className="w-12 h-12 rounded-full object-cover" />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
-                      <FiUser className="text-2xl text-purple-500 dark:text-purple-400" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-950/30">
+                      <FiUser className="text-2xl text-blue-600 dark:text-blue-300" />
                     </div>
                   )}
                   <div>
                     <p className="font-bold text-md">{user?.name || 'Admin'}</p>
                     <p className="text-sm text-muted">{user?.email || ''}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-10 font-bold rounded-md">
+                    <span className="mt-1 inline-block rounded-md bg-slate-100 px-2 py-0.5 text-10 font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                       {user?.role === 'ADMIN'
                         ? t('roles.admin', { ns: 'common' })
                         : t('roles.staff', { ns: 'common' })}

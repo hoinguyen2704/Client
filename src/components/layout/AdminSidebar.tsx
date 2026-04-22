@@ -55,7 +55,7 @@ export default function AdminSidebar() {
           <Link to="/admin" className="flex items-center gap-3 overflow-hidden">
             <LogoIcon />
             {!sidebarCollapsed && (
-              <span className="text-base sm:text-xl font-bold text-[#2539e6] whitespace-nowrap">{SHOP.name} Admin</span>
+              <span className="whitespace-nowrap text-base font-bold tracking-tight text-blue-700 dark:text-blue-300 sm:text-xl">{SHOP.name} Admin</span>
             )}
           </Link>
           <button
@@ -78,7 +78,7 @@ export default function AdminSidebar() {
                   'flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all font-medium text-md sm:text-base',
                   sidebarCollapsed && 'justify-center px-3',
                   isActive
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md shadow-purple-500/20'
+                    ? 'bg-blue-600 text-white shadow-sm shadow-blue-950/15'
                     : SIDEBAR_IDLE_ITEM_CLASS
                 )}
                 title={sidebarCollapsed ? t(item.labelKey, { ns: 'layout' }) : undefined}

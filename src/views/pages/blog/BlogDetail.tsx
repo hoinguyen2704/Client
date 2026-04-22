@@ -28,7 +28,7 @@ export default function BlogDetail() {
     <div className="max-w-4xl mx-auto px-4 py-12 text-center">
       <FiBook className="text-6xl text-slate-300 mx-auto mb-4" />
       <h2 className="text-xl font-bold mb-2">Không tìm thấy bài viết</h2>
-      <Link to="/blog" className="text-purple-600 hover:underline">← Quay lại Blog</Link>
+      <Link to="/blog" className="text-blue-600 hover:underline">← Quay lại Blog</Link>
     </div>
   );
 

@@ -211,7 +211,7 @@ export default function Categories() {
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       {(cat.specAttributes?.length || 0) > 0 ? (
-                        <span className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-full text-md font-bold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 mx-auto">
+                        <span className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-full text-md font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 mx-auto">
                           <FiList className="text-9" />{" "}
                           {cat.specAttributes!.length}
                         </span>

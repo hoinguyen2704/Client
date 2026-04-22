@@ -37,11 +37,11 @@ export default function Wishlist() {
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-5 sm:py-8 md:py-12 space-y-5 sm:space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col items-center justify-center text-center gap-2 sm:gap-3">
-        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-bold rounded-2xl shadow-sm border border-purple-100 dark:border-purple-800 mb-1 sm:mb-2 text-md sm:text-base">
+        <div className="mb-1 inline-flex items-center gap-2 rounded-2xl border border-blue-100 bg-blue-50 px-3 py-1.5 text-md font-bold text-blue-700 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/30 dark:text-blue-300 sm:mb-2 sm:px-4 sm:py-2 sm:text-base">
           <FiHeart className="text-xl" />
           <span>{items.length} sản phẩm</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 sm:text-3xl">
           Danh sách Yêu thích
         </h1>
         <p className="text-md sm:text-base text-slate-500">Lưu trữ những thiết bị công nghệ bạn đang để mắt tới</p>
@@ -60,11 +60,11 @@ export default function Wishlist() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative overflow-hidden bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl rounded-[1.5rem] sm:rounded-[2.5rem] p-6 sm:p-12 text-center border border-slate-100 dark:border-slate-800 shadow-xl shadow-purple-500/5"
+          className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white/70 p-6 text-center shadow-xl shadow-slate-950/5 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/50 sm:rounded-[2.5rem] sm:p-12"
         >
           {/* Abstract background blobs for empty state */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-pink-500/10 blur-[80px] rounded-full" />
-          <div className="absolute bottom-0 left-1/4 w-40 h-40 bg-purple-500/10 blur-[60px] rounded-full" />
+          <div className="absolute bottom-0 left-1/4 h-40 w-40 rounded-full bg-blue-500/10 blur-[60px]" />
 
           <div className="relative z-10">
             <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-5 sm:mb-8 relative">
@@ -83,7 +83,7 @@ export default function Wishlist() {
             </p>
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/30 hover:-translate-y-1 transition-all text-md sm:text-base"
+              className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-md font-bold text-white shadow-sm transition-all hover:-translate-y-1 hover:bg-blue-700 sm:px-8 sm:py-4 sm:text-base"
             >
               <FiShoppingCart className="text-xl" /> Khám phá ngay
             </Link>
@@ -105,7 +105,7 @@ export default function Wishlist() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="bg-white dark:bg-slate-900 rounded-[1.25rem] sm:rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 group flex flex-col"
+                  className="group flex flex-col overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-950/8 dark:border-slate-800 dark:bg-slate-900 sm:rounded-[2rem]"
                 >
                   <Link
                     to={`/product/${item.productSlug}`}
@@ -137,14 +137,14 @@ export default function Wishlist() {
                   <div className="p-3 sm:p-5 flex flex-col flex-1">
                     <Link
                       to={`/product/${item.productSlug}`}
-                      className="font-bold text-md sm:text-lg line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors mb-2 sm:mb-3 leading-snug"
+                      className="mb-2 line-clamp-2 text-md font-bold leading-snug transition-colors hover:text-blue-700 dark:hover:text-blue-300 sm:mb-3 sm:text-lg"
                     >
                       {item.productName}
                     </Link>
 
                     <div className="mt-auto">
                       <div className="flex flex-col gap-0.5 sm:gap-1 mb-3 sm:mb-5">
-                        <span className="text-base sm:text-xl font-extrabold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent w-max">
+                        <span className="w-max text-base font-extrabold text-slate-900 dark:text-slate-50 sm:text-xl">
                           {formatPrice(item.productPrice)}
                         </span>
                         {discount > 0 && (
@@ -165,7 +165,7 @@ export default function Wishlist() {
 
                         <Link
                           to={`/product/${item.productSlug}`}
-                          className="flex-1 h-10 sm:h-12 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-500 hover:text-white transition-all flex items-center justify-center gap-1.5 sm:gap-2 group/link text-sm sm:text-base"
+                          className="group/link flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-slate-100 text-sm font-bold text-slate-700 transition-all hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:text-slate-300 sm:h-12 sm:rounded-2xl sm:gap-2 sm:text-base"
                         >
                           Tùy chọn mua{" "}
                           <FiArrowRight className="group-hover/link:translate-x-1 transition-transform" />

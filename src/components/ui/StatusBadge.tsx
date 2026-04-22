@@ -9,7 +9,7 @@ export default function StatusBadge({ status, label, className }: StatusBadgePro
   const resolvedLabel = label || (config.labelKey ? t(config.labelKey, { defaultValue: config.label }) : config.label);
 
   return (
-    <span className={cn('px-3 py-1 rounded-full text-sm font-bold whitespace-nowrap', config.className, className)}>
+    <span className={cn('inline-flex items-center px-3 py-1 rounded-xl text-sm font-semibold whitespace-nowrap border', config.className, className)}>
       {resolvedLabel}
     </span>
   );

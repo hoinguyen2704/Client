@@ -31,7 +31,7 @@ export default function ProductPickerVariantRow({
         ${isAlreadyInSale
           ? 'cursor-not-allowed bg-amber-50/40 opacity-50 dark:bg-amber-500/5'
           : isNewlySelected
-            ? 'cursor-pointer border-y border-purple-200/90 bg-purple-100/80 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] hover:bg-purple-100 dark:border-purple-400/30 dark:bg-purple-500/25 dark:hover:bg-purple-500/30'
+            ? 'cursor-pointer border-y border-blue-200/90 bg-blue-100/80 shadow-[inset_5px_0_0_0_rgba(147,51,234,0.95)] hover:bg-blue-100 dark:border-blue-400/30 dark:bg-blue-500/25 dark:hover:bg-blue-500/30'
             : 'cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-700/30'
         }`}
       onClick={() => !isAlreadyInSale && onToggle()}
@@ -43,8 +43,8 @@ export default function ProductPickerVariantRow({
               ${isAlreadyInSale
                 ? 'border-slate-300 bg-slate-200 dark:border-slate-500 dark:bg-slate-600'
                 : isChecked
-                  ? 'border-purple-600 bg-purple-600 shadow-[0_0_0_2px_rgba(147,51,234,0.15)]'
-                  : 'border-slate-300 bg-white hover:border-purple-400 dark:border-slate-600 dark:bg-slate-800'
+                  ? 'border-blue-600 bg-blue-600 shadow-[0_0_0_2px_rgba(147,51,234,0.15)]'
+                  : 'border-slate-300 bg-white hover:border-blue-400 dark:border-slate-600 dark:bg-slate-800'
               }`}
           >
             {isChecked ? <FiCheck className="text-white" size={14} strokeWidth={3} /> : null}
@@ -53,7 +53,7 @@ export default function ProductPickerVariantRow({
 
         <div className="min-w-0 flex-1">
           <div
-            className={`text-md font-semibold ${isNewlySelected ? 'text-purple-800 dark:text-purple-200' : 'text-slate-700 dark:text-slate-200'
+            className={`text-md font-semibold ${isNewlySelected ? 'text-blue-800 dark:text-blue-200' : 'text-slate-700 dark:text-slate-200'
               }`}
           >
             {variant.variantName || t('productPicker.variantRow.defaultName')}
@@ -93,7 +93,7 @@ export default function ProductPickerVariantRow({
       </div>
 
       <div
-        className={`hidden items-center justify-end border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex ${isNewlySelected ? 'font-bold text-purple-700 dark:text-purple-200' : 'text-slate-500'
+        className={`hidden items-center justify-end border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex ${isNewlySelected ? 'font-bold text-blue-700 dark:text-blue-200' : 'text-slate-500'
           }`}
       >
         {isNewlySelected

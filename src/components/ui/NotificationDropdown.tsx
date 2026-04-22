@@ -14,7 +14,7 @@ const typeIcons: Record<string, React.ReactNode> = {
   ORDER: <FiShoppingBag className="text-blue-500" />,
   SUPPORT: <FiMessageSquare className="text-amber-500" />,
   TICKET: <FiMessageSquare className="text-amber-500" />,
-  PROMOTION: <FiTag className="text-purple-500" />,
+  PROMOTION: <FiTag className="text-indigo-500" />,
   SYSTEM: <FiInfo className="text-slate-500" />,
 };
 
@@ -106,7 +106,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllRead}
-                  className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors"
+                  className="flex items-center gap-1 text-sm font-medium text-blue-700 hover:text-blue-800 transition-colors"
                 >
                   <FiCheckCircle className="text-sm" />
                   {t('notifications.markAllRead', { ns: 'layout' })}
@@ -139,7 +139,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                   <div
                     key={n.id}
                     onClick={() => !n.isRead && handleMarkRead(n.id)}
-                    className={`px-5 py-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 ${!n.isRead ? 'bg-purple-50/40 dark:bg-purple-900/10' : ''
+                  className={`px-5 py-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 ${!n.isRead ? 'bg-blue-50/40 dark:bg-blue-950/20' : ''
                       }`}
                   >
                     <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 text-base">
@@ -148,7 +148,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 mb-0.5">
                         <h4 className="font-semibold text-sm truncate">{n.title}</h4>
-                        {!n.isRead && <span className="w-1.5 h-1.5 rounded-full bg-purple-600 shrink-0" />}
+                        {!n.isRead && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
                       </div>
                       <p className="text-sm text-muted line-clamp-2 leading-snug">{n.content}</p>
                       <span className="text-11 text-subtle mt-1 block">{formatDate(n.createdAt)}</span>
@@ -172,7 +172,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
               <Link
                 to="/user/notifications"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 text-sm font-semibold text-purple-600 hover:text-purple-700 transition-colors"
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
               >
                 {t('notifications.viewAll', { ns: 'layout' })}
                 <FiExternalLink className="text-sm" />

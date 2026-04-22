@@ -59,21 +59,21 @@ export default function CategoryVariantAttributesSection({
                 value={row.name}
                 onChange={(e) => onChange(index, "name", e.target.value)}
                 placeholder={t("categories.variantAttributes.namePlaceholder")}
-                className="h-11 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                className="h-11 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800"
               />
               <input
                 type="text"
                 value={row.code}
                 onChange={(e) => onChange(index, "code", e.target.value)}
                 placeholder={t("categories.variantAttributes.codePlaceholder")}
-                className="h-11 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                className="h-11 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800"
               />
               <input
                 type="text"
                 value={row.optionsText}
                 onChange={(e) => onChange(index, "optionsText", e.target.value)}
                 placeholder={t("categories.variantAttributes.optionsPlaceholder")}
-                className="h-11 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                className="h-11 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800"
               />
               <TrashButton onClick={() => onRemove(index)} />
             </div>

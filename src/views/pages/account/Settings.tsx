@@ -186,7 +186,7 @@ export default function Settings() {
                     value={language}
                     onChange={(v) => setLanguage(v as SupportedLanguage)}
                     options={[
-                      { value: 'vi', label: t('settings:displayOptions.languageOptions.vi'), colorClass: "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-200" },
+                      { value: 'vi', label: t('settings:displayOptions.languageOptions.vi'), colorClass: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-200" },
                       { value: 'en', label: t('settings:displayOptions.languageOptions.en'), colorClass: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-200" }
                     ]}
                     dropdownAlign="right"
@@ -204,7 +204,7 @@ export default function Settings() {
                 <SwitchToggle
                   checked={notifications.promotions}
                   onChange={() => handleNotificationChange('promotions')}
-                  tone="purple"
+                  tone="blue"
                   ariaLabel={t('settings:aria.togglePromotions')}
                 />
               </label>

@@ -73,7 +73,7 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
           <div className="flex-1">
             <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
               <div className="text-md text-slate-500 mb-1">{t('overview.bottom.monthThis')}</div>
-              <div className="text-xl font-bold text-purple-600 dark:text-purple-400">+{stats.newFeedbacks}</div>
+              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">+{stats.newFeedbacks}</div>
             </div>
           </div>
         </div>

@@ -353,7 +353,7 @@ export default function FlashSaleForm() {
                             <p>{t('flashSales.form.empty')}</p>
                             <button
                               onClick={handleOpenPicker}
-                              className="mt-2 text-sm text-purple-500 hover:underline font-medium"
+                              className="mt-2 text-sm text-blue-500 hover:underline font-medium"
                             >
                               {t('flashSales.form.addNow')}
                             </button>

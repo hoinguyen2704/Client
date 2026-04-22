@@ -143,10 +143,10 @@ function LoginForm() {
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                <FiUser className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
+                <FiUser className="text-slate-400 group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
               </div>
               <input type="text" required value={identifier} onChange={(e) => setIdentifier(e.target.value)}
-                className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
+                className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
                 placeholder={t('login.identifierPlaceholder', { ns: 'auth' })} />
             </div>
           </div>
@@ -157,13 +157,13 @@ function LoginForm() {
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                <FiLock className="text-slate-400 group-focus-within:text-purple-500 transition-colors text-xl sm:text-2xl" />
+                <FiLock className="text-slate-400 group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
               </div>
               <input type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-sm"
+                className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
                 placeholder={t('login.passwordPlaceholder', { ns: 'auth' })} />
               <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 {showPassword ? <FiEyeOff className="text-xl sm:text-2xl" /> : <FiEye className="text-xl sm:text-2xl" />}
               </button>
             </div>
@@ -183,13 +183,13 @@ function LoginForm() {
               {t('login.rememberMe', { ns: 'auth' })}
             </label>
           </div>
-          <Link to="/forgot-password" className="text-base sm:text-lg font-medium text-purple-600 hover:text-purple-500 transition-colors">
+          <Link to="/forgot-password" className="text-base sm:text-lg font-medium text-blue-600 hover:text-blue-500 transition-colors">
             {t('login.forgotPassword', { ns: 'auth' })}
           </Link>
         </div>
 
         <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={loading}
-          className="group relative w-full flex justify-center items-center py-4 sm:py-5 px-6 sm:px-8 text-lg sm:text-xl font-bold rounded-2xl text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 mt-6 disabled:opacity-60 disabled:cursor-not-allowed">
+          className="group relative w-full flex justify-center items-center py-4 sm:py-5 px-6 sm:px-8 text-lg sm:text-xl font-bold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 mt-6 disabled:opacity-60 disabled:cursor-not-allowed">
           {loading ? (
             <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
@@ -232,7 +232,7 @@ function LoginForm() {
       <div className="text-center pt-4">
         <p className="text-lg text-slate-600 dark:text-slate-400">
           {t('login.registerPrompt', { ns: 'auth' })}{' '}
-          <Link to="/register" className="font-semibold text-purple-600 hover:text-purple-500 transition-colors">
+          <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
             {t('login.registerLink', { ns: 'auth' })}
           </Link>
         </p>
@@ -251,7 +251,7 @@ export default function Login() {
 
   return (
     <AuthLayout
-      heroGradient="from-purple-700 via-purple-600 to-blue-600 dark:from-purple-950 dark:via-slate-900 dark:to-blue-950"
+      heroGradient="from-blue-700 via-blue-600 to-blue-600 dark:from-blue-950 dark:via-slate-900 dark:to-blue-950"
       accentBlobClass="bg-blue-400/10"
       heroTitle={(
         <Trans
@@ -265,8 +265,8 @@ export default function Login() {
       )}
       heroSubtitle={t('login.heroSubtitle')}
       features={features}
-      mobileLogoGradient="from-purple-600 to-blue-600"
-      mobileLogoShadow="shadow-purple-500/30"
+      mobileLogoGradient="from-blue-600 to-blue-600"
+      mobileLogoShadow="shadow-blue-500/30"
     >
       <LoginForm />
     </AuthLayout>

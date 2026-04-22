@@ -25,9 +25,9 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
       <h2 className="text-base sm:text-lg font-bold mb-4">{t('overview.charts.revenue.title')}</h2>
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 rounded-2xl p-2.5 sm:p-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
           <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryTotal')}</p>
-          <p className="text-md sm:text-lg font-bold text-purple-700 dark:text-purple-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
+          <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
           <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryAverage')}</p>
@@ -45,7 +45,7 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
         <div className="h-64 sm:h-80 min-w-0">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={256}>
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 24 }}>
-              <defs><linearGradient id="colorRevAPI" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.25}/><stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/></linearGradient></defs>
+              <defs><linearGradient id="colorRevAPI" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#2563eb" stopOpacity={0.25}/><stop offset="95%" stopColor="#2563eb" stopOpacity={0}/></linearGradient></defs>
               <XAxis
                 dataKey="name"
                 stroke="#475569"
@@ -69,13 +69,13 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
               {todayEntry && (
                 <ReferenceLine
                   x={todayEntry.name}
-                  stroke="#8b5cf6"
+                  stroke="#2563eb"
                   strokeWidth={2}
                   strokeDasharray="4 4"
                   strokeOpacity={0.5}
                 />
               )}
-              <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevAPI)" dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+              <Area type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorRevAPI)" dot={{ r: 4, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

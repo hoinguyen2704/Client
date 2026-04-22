@@ -28,7 +28,7 @@ export default memo(function StatusPricingSection(props: Props) {
               setShowStatusDropdown(!showStatusDropdown);
             }}
             disabled={!isEditMode}
-            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex h-12 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-left transition-colors hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-70 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
           >
             <div className="flex items-center gap-2">
               <span
@@ -80,7 +80,7 @@ export default memo(function StatusPricingSection(props: Props) {
                   }}
                   className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-md transition-colors text-left ${
                     status === opt.value
-                      ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
+                      ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
                       : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
                   }`}
                 >
@@ -89,7 +89,7 @@ export default memo(function StatusPricingSection(props: Props) {
                   />
                   <span className="flex-1">{opt.label}</span>
                   {status === opt.value && (
-                    <FiCheck className="text-purple-500 flex-shrink-0" />
+                    <FiCheck className="text-blue-500 flex-shrink-0" />
                   )}
                 </button>
               ))}
@@ -114,7 +114,7 @@ export default memo(function StatusPricingSection(props: Props) {
             )
           }
           placeholder="0"
-          className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+          className="w-full h-12 rounded-xl border border-slate-200 bg-white px-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
         />
         <p className="text-sm text-slate-400 mt-1">
           {t("statusPricing.originPriceHint")}

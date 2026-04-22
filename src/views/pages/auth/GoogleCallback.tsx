@@ -98,7 +98,7 @@ export default function GoogleCallback() {
           </>
         ) : (
           <>
-            <FiLoader className="mx-auto text-5xl text-purple-500 animate-spin" />
+            <FiLoader className="mx-auto text-5xl text-blue-500 animate-spin" />
             <h1 className="text-2xl font-bold">{t('googleCallback.loadingTitle', { ns: 'auth' })}</h1>
             <p className="text-slate-500 dark:text-slate-400">
               {t('googleCallback.loadingDescription', { ns: 'auth' })}

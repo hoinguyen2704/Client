@@ -133,20 +133,20 @@ const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, on
       initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-shadow">
       {/* Top gradient bar */}
-      <div className={`h-1.5 ${v.discountType === 'PERCENTAGE' ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'}`} />
+      <div className={`h-1.5 ${v.discountType === 'PERCENTAGE' ? 'bg-gradient-to-r from-blue-500 to-blue-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'}`} />
 
       <div className="p-5">
         <div className="flex items-start gap-4" onClick={() => onCopy(v.code)}>
           {/* Left - icon */}
           <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center ${v.discountType === 'PERCENTAGE'
-            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600'}`}>
+            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600'}`}>
             <FiTag className="text-2xl" />
           </div>
           {/* Right - info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="font-mono font-bold text-lg tracking-wider">{v.code}</span>
-              <button className="p-1 text-slate-400 hover:text-purple-500 transition-colors"><FiCopy className="text-lg" /></button>
+              <button className="p-1 text-slate-400 hover:text-blue-500 transition-colors"><FiCopy className="text-lg" /></button>
               <span className={`px-2 py-1 rounded-md text-10 font-bold tracking-wide uppercase ${getVoucherType(v) === 'FREESHIP'
                 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                 : 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300'
@@ -154,7 +154,7 @@ const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, on
                 {getVoucherType(v) === 'FREESHIP' ? t('checkout:voucherCard.shippingTag') : t('checkout:voucherCard.productTag')}
               </span>
             </div>
-            <div className={`text-xl font-black ${v.discountType === 'PERCENTAGE' ? 'text-purple-600' : 'text-amber-600'}`}>
+            <div className={`text-xl font-black ${v.discountType === 'PERCENTAGE' ? 'text-blue-600' : 'text-amber-600'}`}>
               {v.discountType === 'PERCENTAGE'
                 ? t('checkout:voucherCard.discountPercent', { value: v.discountValue })
                 : t('checkout:voucherCard.discountAmount', { value: formatPrice(v.discountValue) })}
@@ -230,8 +230,8 @@ const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, on
 
 /* ── Memoized section — primitive props only so memo is never defeated ── */
 const SECTION_ICONS = {
-  gift: <FiGift className="text-purple-600" />,
-  bookmark: <FiBookmark className="text-purple-600" />,
+  gift: <FiGift className="text-blue-600" />,
+  bookmark: <FiBookmark className="text-blue-600" />,
 } as const;
 
 const VoucherSection = memo(({
@@ -297,7 +297,7 @@ const VoucherSection = memo(({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+        <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
           <FiGift className="text-xl" />
         </div>
         <h1 className="text-2xl font-bold">{t('account:vouchers.title')}</h1>
@@ -310,7 +310,7 @@ const VoucherSection = memo(({
           <div className="flex gap-3">
             <input type="text" placeholder={t('account:vouchers.searchPlaceholder')} value={couponCode}
               onChange={(e) => setCouponCode(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 uppercase font-mono text-lg" />
+              className="flex-1 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 uppercase font-mono text-lg" />
             <PrimaryButton onClick={handleSearch} icon={<FiTag />} className="h-12 px-8 text-lg">
               {t('account:vouchers.check')}
             </PrimaryButton>
@@ -334,7 +334,7 @@ const VoucherSection = memo(({
       <VoucherSection
         iconType="gift"
         title={t('account:vouchers.publicTitle')}
-        badgeClass="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+        badgeClass="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
         vouchers={publicVouchers}
         savingId={savingId}
         expanded={expandPublic}

@@ -11,7 +11,7 @@ export default function ProductGallery({ images, activeImage, onImageChange, pro
           referrerPolicy="no-referrer"
         />
         {discount > 0 && (
-          <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold px-3 py-1 rounded-xl shadow-lg text-sm">
+          <div className="absolute top-3 left-3 rounded-xl bg-rose-600 px-3 py-1 text-sm font-bold text-white shadow-sm">
             Giảm {discount}%
           </div>
         )}
@@ -22,7 +22,7 @@ export default function ProductGallery({ images, activeImage, onImageChange, pro
           <button
             key={idx}
             onClick={() => onImageChange(idx)}
-            className={`relative h-[72px] w-[72px] rounded-xl overflow-hidden border bg-white transition-all dark:bg-slate-900 sm:h-20 sm:w-20 ${activeImage === idx ? 'border-purple-500 shadow-md shadow-purple-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-purple-300'}`}
+            className={`relative h-[72px] w-[72px] overflow-hidden rounded-xl border bg-white transition-all dark:bg-slate-900 sm:h-20 sm:w-20 ${activeImage === idx ? 'border-blue-500 shadow-sm shadow-blue-950/10' : 'border-slate-200 dark:border-slate-700 hover:border-blue-300'}`}
           >
             <img
               src={img}

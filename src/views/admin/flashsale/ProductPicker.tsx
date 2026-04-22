@@ -221,7 +221,7 @@ export default function ProductPicker() {
             </button>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                <FiPackage className="text-purple-500" />
+                <FiPackage className="text-blue-500" />
                 {t('productPicker.heroTitle')}
               </h1>
               <p className="text-sm text-slate-500 mt-0.5">
@@ -232,9 +232,9 @@ export default function ProductPicker() {
 
           {/* Selected count badge */}
           {selectedCount > 0 && (
-            <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 rounded-xl">
-              <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl">
+              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
                 <Trans i18nKey="adminCatalog:productPicker.selectedVariants" values={{ count: selectedCount }} components={{ strong: <strong /> }} />
               </span>
             </div>
@@ -256,7 +256,7 @@ export default function ProductPicker() {
               }}
               autoFocus
               clearable
-              inputClassName="border border-slate-300 dark:border-slate-700 text-15 font-medium focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
+              inputClassName="border border-slate-300 dark:border-slate-700 text-15 font-medium focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
             />
           </div>
           <div className="flex flex-col lg:flex-row gap-2 lg:items-center">
@@ -325,7 +325,7 @@ export default function ProductPicker() {
           {loading ? (
             <div className="p-12 text-center">
               <div className="inline-flex items-center gap-3 text-slate-400">
-                <div className="w-5 h-5 border-2 border-slate-300 border-t-purple-500 rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-slate-300 border-t-blue-500 rounded-full animate-spin" />
                 {t('productPicker.loading')}
               </div>
             </div>
@@ -344,7 +344,7 @@ export default function ProductPicker() {
                       setCurrentPage(1);
                     });
                   }}
-                  className="mt-2 text-sm text-purple-500 hover:underline"
+                  className="mt-2 text-sm text-blue-500 hover:underline"
                 >
                   {t('productPicker.clearFilters')}
                 </button>
@@ -391,7 +391,7 @@ export default function ProductPicker() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-md text-slate-500">
             {selectedCount > 0 ? (
-              <Trans i18nKey="adminCatalog:productPicker.footerSelected" values={{ count: selectedCount }} components={{ strong: <strong className="text-purple-600" /> }} />
+              <Trans i18nKey="adminCatalog:productPicker.footerSelected" values={{ count: selectedCount }} components={{ strong: <strong className="text-blue-600" /> }} />
             ) : (
               t('productPicker.footerEmpty')
             )}

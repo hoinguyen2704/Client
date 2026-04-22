@@ -37,7 +37,7 @@ export default function UserAvatar({ name, src, size = 'md', className }: UserAv
   return (
     <div
       className={cn(
-        'rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-bold',
+        'rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 font-bold',
         sizeClass,
         className,
       )}

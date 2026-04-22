@@ -20,9 +20,9 @@ export interface PaginationProps {
 const BTN_BASE =
   'w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl text-md font-semibold transition-all duration-200 select-none';
 const BTN_IDLE =
-  'bg-slate-100 dark:bg-slate-800 text-body-soft hover:bg-slate-200 dark:hover:bg-slate-700 shadow-[1px_1px_3px_rgba(0,0,0,0.06)] hover:shadow-md';
+  'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-body-soft hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 shadow-[1px_1px_3px_rgba(0,0,0,0.04)]';
 const BTN_ACTIVE =
-  'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/30 scale-105';
+  'bg-blue-600 border border-blue-600 text-white shadow-sm shadow-blue-950/15';
 const BTN_DISABLED =
   'opacity-40 cursor-not-allowed pointer-events-none';
 

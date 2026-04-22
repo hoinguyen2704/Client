@@ -61,7 +61,7 @@ export default function QuantitySelector({
         type="button"
         onClick={handleDecrement}
         disabled={disabled || value <= min}
-        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
+        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
       >
         <FiMinus />
       </button>
@@ -76,7 +76,7 @@ export default function QuantitySelector({
         type="button"
         onClick={handleIncrement}
         disabled={disabled || (max !== Infinity && value >= max)}
-        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
+        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
       >
         <FiPlus />
       </button>

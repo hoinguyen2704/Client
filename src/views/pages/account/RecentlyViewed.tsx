@@ -46,8 +46,8 @@ export default function RecentlyViewed() {
                     </div>
                   </div>
                   <div className="p-3 sm:p-4">
-                    <h3 className="font-bold text-md sm:text-base line-clamp-2 group-hover:text-purple-600 transition-colors mb-1.5 sm:mb-2">{product.name}</h3>
-                    <span className="text-md sm:text-lg font-bold text-purple-600">{formatPrice(product.price)}</span>
+                    <h3 className="font-bold text-md sm:text-base line-clamp-2 group-hover:text-blue-600 transition-colors mb-1.5 sm:mb-2">{product.name}</h3>
+                    <span className="text-md sm:text-lg font-bold text-blue-600">{formatPrice(product.price)}</span>
                   </div>
                 </Link>
               </motion.div>

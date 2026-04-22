@@ -297,7 +297,7 @@ export default function MyReviews() {
                           <div className="flex flex-wrap items-center gap-2 mb-1">
                             <h3 className="font-bold line-clamp-1">{entry.productName}</h3>
                             {entry.totalRounds > 1 && (
-                              <span className="px-2 py-0.5 rounded-full text-sm font-semibold bg-purple-100 text-purple-600">
+                              <span className="px-2 py-0.5 rounded-full text-sm font-semibold bg-blue-100 text-blue-600">
                                 {t('myReviews.item.roundBadge', { current: entry.round, max: MAX_REVIEW_ATTEMPTS })}
                               </span>
                             )}
@@ -314,7 +314,7 @@ export default function MyReviews() {
 
                         {entry.review.adminReply && (
                           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
-                            <div className="flex items-center gap-2 mb-1 text-purple-600 font-bold text-md">
+                            <div className="flex items-center gap-2 mb-1 text-blue-600 font-bold text-md">
                               <FiMessageSquare /> {t('myReviews.adminReplyTitle')}
                             </div>
                             <p className="text-md text-slate-600 dark:text-slate-400">{entry.review.adminReply}</p>
@@ -426,7 +426,7 @@ export default function MyReviews() {
                   value={reviewContent}
                   onChange={(e) => setReviewContent(e.target.value)}
                   placeholder={t('myReviews.modal.contentPlaceholder')}
-                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none h-32"
+                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 resize-none h-32"
                 />
               </div>
             </form>

@@ -55,12 +55,12 @@ export default function UserLayout() {
         <aside className="w-full lg:w-72 shrink-0">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 lg:sticky lg:top-[8.5rem] lg:max-h-[calc(100dvh-9.5rem)] lg:overflow-y-auto custom-scrollbar">
             <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-8">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 p-0.5 shrink-0 flex items-center justify-center">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-600 p-0.5 sm:h-14 sm:w-14">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 object-cover" />
                 ) : (
-                  <div className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
-                    <FiUser className="text-xl sm:text-2xl text-purple-500 dark:text-purple-400" />
+                  <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-white bg-blue-50 dark:border-slate-900 dark:bg-blue-950/30">
+                    <FiUser className="text-xl text-blue-600 dark:text-blue-300 sm:text-2xl" />
                   </div>
                 )}
               </div>
@@ -99,7 +99,7 @@ export default function UserLayout() {
                         className={({ isActive }) => cn(
                           "flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all font-medium text-md",
                           isActive
-                            ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                            ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300"
                             : USER_LAYOUT_IDLE_ITEM_CLASS
                         )}
                       >
@@ -139,7 +139,7 @@ export default function UserLayout() {
                     className={({ isActive }) => cn(
                       "flex items-center gap-2.5 px-4 py-3 rounded-xl transition-all font-medium text-base min-w-0",
                       isActive
-                        ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                        ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300"
                         : USER_LAYOUT_IDLE_ITEM_CLASS
                     )}
                   >

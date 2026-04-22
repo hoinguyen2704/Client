@@ -105,7 +105,7 @@ export default function Home() {
 
       {featured.length > 0 && (
         <ProductSection
-          icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30"><FiCpu className="text-2xl" /></div>}
+          icon={<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-sm shadow-blue-950/15"><FiCpu className="text-2xl" /></div>}
           title={t('sections.featuredTitle')}
           subtitle={<p className="text-md text-slate-500">{t('sections.featuredSubtitle')}</p>}
           products={featured}
@@ -119,13 +119,13 @@ export default function Home() {
           title={t('sections.bestSellersTitle')}
           products={bestSellers}
           layout="scroll"
-          bgClassName="bg-slate-100 dark:bg-slate-800/50 rounded-2xl my-10"
+          bgClassName="my-10 rounded-[2rem] bg-slate-100/80 dark:bg-slate-800/50"
         />
       )}
 
       {newArrivals.length > 0 && (
         <ProductSection
-          icon={<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30"><FiStar className="text-2xl" /></div>}
+          icon={<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm shadow-slate-900/15 dark:bg-slate-100 dark:text-slate-900"><FiStar className="text-2xl" /></div>}
           title={t('sections.newArrivalsTitle')}
           products={newArrivals}
           seeAllLink="/products"
@@ -134,7 +134,7 @@ export default function Home() {
 
       {loading && (
         <div className="flex justify-center py-20">
-          <div className="w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-100 border-t-blue-600" />
         </div>
       )}
     </div>

@@ -44,7 +44,7 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
           const dotColor = isPassed
             ? 'bg-emerald-500 text-white'
             : isCurrent
-            ? step.colorClass ? `bg-gradient-to-r ${step.colorClass} text-white shadow-lg shadow-purple-500/20 ring-4 ring-purple-100 dark:ring-purple-900/30` : 'bg-purple-600 text-white shadow-lg shadow-purple-500/20 ring-4 ring-purple-100 dark:ring-purple-900/30'
+            ? step.colorClass ? `bg-gradient-to-r ${step.colorClass} text-white shadow-lg shadow-blue-500/20 ring-4 ring-blue-100 dark:ring-blue-900/30` : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 ring-4 ring-blue-100 dark:ring-blue-900/30'
             : 'bg-slate-200 dark:bg-slate-700 text-slate-400';
 
           const lineColor = isPassed ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700';
@@ -124,7 +124,7 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
               >
                 <div
                   className={`font-semibold ${sizeClasses.label} ${
-                    isCurrent ? 'text-purple-600 dark:text-purple-400' : isPending ? 'text-slate-400' : 'text-slate-700 dark:text-slate-300'
+                    isCurrent ? 'text-blue-600 dark:text-blue-400' : isPending ? 'text-slate-400' : 'text-slate-700 dark:text-slate-300'
                   }`}
                 >
                   {step.label}

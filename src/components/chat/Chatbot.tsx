@@ -29,7 +29,7 @@ const DEFAULT_CONFIG: WidgetConfig = {
     name: `${SHOP.name} AI`,
     subtitle: "",
     welcomeMessage: "",
-    themeColor: "#9333ea",
+    themeColor: "#2563eb",
     avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=TechStore",
   },
   suggestions: [],
@@ -330,7 +330,7 @@ export default function Chatbot({
                       "w-8 h-8 rounded-full flex items-center justify-center shrink-0 " +
                       (msg.role === "user"
                         ? "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-                        : "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400")
+                        : "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400")
                     }
                   >
                     {msg.role === "user" ? <FiUser /> : <FiCpu />}
@@ -357,20 +357,20 @@ export default function Chatbot({
               {/* Typing indicator */}
               {isLoading && (
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 flex items-center justify-center shrink-0">
                     <FiCpu />
                   </div>
                   <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-1.5 items-center">
                     <div
-                      className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
                       style={{ animationDelay: "0ms" }}
                     />
                     <div
-                      className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
                       style={{ animationDelay: "150ms" }}
                     />
                     <div
-                      className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
                       style={{ animationDelay: "300ms" }}
                     />
                   </div>
@@ -389,7 +389,7 @@ export default function Chatbot({
                     <button
                       key={s}
                       onClick={() => handleSuggestion(s)}
-                      className="text-sm px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"
+                      className="text-sm px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
                     >
                       {s}
                     </button>
@@ -408,13 +408,13 @@ export default function Chatbot({
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t("chatbot.inputPlaceholder")}
-                  className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-3 sm:pl-4 pr-12 py-2.5 sm:py-3 text-md focus:ring-2 focus:ring-purple-500 resize-none h-[40px] sm:h-[44px] max-h-[120px] overflow-y-auto"
+                  className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-3 sm:pl-4 pr-12 py-2.5 sm:py-3 text-md focus:ring-2 focus:ring-blue-500 resize-none h-[40px] sm:h-[44px] max-h-[120px] overflow-y-auto"
                   rows={1}
                 />
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
-                  className="absolute right-2 w-8 h-8 flex items-center justify-center text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+                  className="absolute right-2 w-8 h-8 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
                 >
                   <FiSend />
                 </button>

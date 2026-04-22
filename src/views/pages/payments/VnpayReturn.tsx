@@ -56,7 +56,7 @@ export default function VnpayReturn() {
   if (status === 'LOADING') {
     return (
       <div className="w-full flex justify-center items-center h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default function VnpayReturn() {
               href={`/user/orders/${txnRef}`}
               fullWidth
               size="lg"
-              className="mb-3 sm:mb-4 bg-purple-600 hover:bg-purple-700 text-white"
+              className="mb-3 sm:mb-4 bg-blue-600 hover:bg-blue-700 text-white"
             >
               {t('vnpayReturn.success.trackOrder')}
             </Button>

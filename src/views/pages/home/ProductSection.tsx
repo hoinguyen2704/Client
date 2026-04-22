@@ -31,7 +31,7 @@ export default function ProductSection({
           </div>
         </div>
         {seeAllLink && (
-          <Link to={seeAllLink} className="text-purple-600 font-medium hover:underline">
+          <Link to={seeAllLink} className="font-semibold text-blue-700 transition-colors hover:text-blue-800">
             {seeAllLabel || t('sections.seeAll')}
           </Link>
         )}

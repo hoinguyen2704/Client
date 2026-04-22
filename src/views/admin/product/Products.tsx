@@ -380,7 +380,7 @@ export default function Products() {
                         </div>
                       </td>
                       <td className="p-4 text-slate-500">{product.categoryName || t('common:labels.notAvailable')}</td>
-                      <td className="p-4 font-bold text-purple-600">{formatPrice(product.lowestPrice ?? product.originPrice)}</td>
+                      <td className="p-4 font-bold text-slate-900 dark:text-slate-100">{formatPrice(product.lowestPrice ?? product.originPrice)}</td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
                           <span className={`font-medium ${stock === 0 ? 'text-red-500' : stock < 10 ? 'text-orange-500' : ''}`}>{stock}</span>

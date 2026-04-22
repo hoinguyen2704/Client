@@ -214,7 +214,7 @@ export default function SearchableDropdown({
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder={searchPlaceholder}
-            className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-none text-md focus:outline-none focus:ring-1 focus:ring-purple-500"
+            className="w-full h-9 pl-8 pr-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-md focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
             autoFocus
           />
         </div>
@@ -230,11 +230,11 @@ export default function SearchableDropdown({
             }}
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
               !value
-                ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
+                ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
                 : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
             }`}
           >
-            {!value && <FiCheck className="text-purple-500 flex-shrink-0" />}
+            {!value && <FiCheck className="text-blue-500 flex-shrink-0" />}
             <span className={!value ? "" : "ml-5"}>{placeholder}</span>
           </button>
         )}
@@ -255,12 +255,12 @@ export default function SearchableDropdown({
             }}
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
               value === item.id
-                ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
+                ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
                 : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
             }`}
           >
             {value === item.id && (
-              <FiCheck className="text-purple-500 flex-shrink-0" />
+              <FiCheck className="text-blue-500 flex-shrink-0" />
             )}
             <span className={value === item.id ? "" : "ml-5"}>{item.name}</span>
           </button>
@@ -278,14 +278,14 @@ export default function SearchableDropdown({
                   onChange={(event) => setNewName(event.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={createPlaceholder}
-                  className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-md focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
                   autoFocus
                 />
                 <button
                   type="button"
                   onClick={handleCreate}
                   disabled={isCreatingProcess || !trimmedNewName || hasDuplicateName}
-                  className="h-8 px-3 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center gap-1"
+                  className="h-8 px-3 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-1"
                 >
                   {isCreatingProcess ? (
                     <FiLoader className="animate-spin text-sm" />
@@ -315,7 +315,7 @@ export default function SearchableDropdown({
             <button
               type="button"
               onClick={() => setIsCreatingMode(true)}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
             >
               <FiPlus className="text-sm" /> {createAddLabel}
             </button>
@@ -346,7 +346,7 @@ export default function SearchableDropdown({
             setSearchTerm("");
           }}
           disabled={disabled}
-          className={`w-full px-4 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-between text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70 ${
+          className={`w-full px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 flex items-center justify-between text-left transition-colors hover:border-slate-300 dark:hover:border-slate-600 disabled:cursor-not-allowed disabled:opacity-70 ${
             renderMode === "portal" && isOpen
               ? "rounded-b-none"
               : ""

@@ -74,7 +74,7 @@ export default function MyReturns() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-xl sm:text-2xl font-bold">{t('returns.title')}</h1>
-        <Link to="/user/orders" className="h-10 px-4 rounded-xl flex items-center justify-center gap-2 font-semibold bg-purple-600 text-white hover:bg-purple-700 transition">
+        <Link to="/user/orders" className="h-10 px-4 rounded-xl flex items-center justify-center gap-2 font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">
           <FiPlus /> {t('returns.goToOrdersToReturn')}
         </Link>
       </div>
@@ -94,12 +94,12 @@ export default function MyReturns() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-full h-12 pl-12 pr-12 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+            className="w-full h-12 pl-12 pr-12 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
           />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
           <button
             onClick={handleSearch}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-3 rounded-lg text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-3 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors"
           >
             {t('common:actions.search')}
           </button>
@@ -124,7 +124,7 @@ export default function MyReturns() {
             </div>
             <h3 className="text-lg sm:text-xl font-bold mb-2">{t('returns.empty.title')}</h3>
             <p className="text-md sm:text-base text-slate-500 mb-6">{t('returns.empty.description')}</p>
-            <Link to="/user/orders" className="inline-flex h-11 px-6 rounded-xl items-center justify-center font-semibold bg-purple-600 text-white hover:bg-purple-700 transition">
+            <Link to="/user/orders" className="inline-flex h-11 px-6 rounded-xl items-center justify-center font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">
               {t('returns.empty.action')}
             </Link>
           </div>
@@ -137,7 +137,7 @@ export default function MyReturns() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-1.5 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-base sm:text-lg text-purple-600">{item.returnNumber}</span>
+                    <span className="font-bold text-base sm:text-lg text-blue-600">{item.returnNumber}</span>
                     <ReturnStatusBadge status={item.status} />
                     <RefundStatusBadge status={item.refundStatus} />
                   </div>
@@ -148,7 +148,7 @@ export default function MyReturns() {
                 </div>
                 <div className="text-left sm:text-right">
                   <p className="text-sm text-slate-500 uppercase tracking-wide">{t('returns.requestedAmount')}</p>
-                  <p className="text-lg font-bold text-purple-600">{formatPrice(Number(item.requestedAmount || 0))}</p>
+                  <p className="text-lg font-bold text-blue-600">{formatPrice(Number(item.requestedAmount || 0))}</p>
                   {item.approvedAmount != null && (
                     <p className="text-sm text-slate-500 mt-1">
                       {t('returns.approvedAmount')}: <span className="font-semibold">{formatPrice(Number(item.approvedAmount || 0))}</span>

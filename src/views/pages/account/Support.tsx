@@ -227,7 +227,7 @@ export default function Support() {
                     <div
                       className={`max-w-[92%] sm:max-w-[82%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-md sm:text-base ${
                         msg.senderType === 'USER'
-                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-br-md'
                           : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-bl-md'
                       }`}
                     >

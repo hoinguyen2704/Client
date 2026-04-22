@@ -231,9 +231,9 @@ export default function CreatableSingleSelect({
           setIsOpen(true);
         }}
         disabled={disabled}
-        className={`flex h-full w-full items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-md font-semibold shadow-sm transition-all duration-200 focus:ring-2 focus:ring-purple-500/50 ${
+        className={`flex h-full w-full items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-md font-semibold shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500/50 ${
           triggerFallbackClass
-        } ${isOpen ? "ring-2 ring-purple-500/50 scale-[0.98]" : ""} ${
+        } ${isOpen ? "ring-2 ring-blue-500/50 scale-[0.98]" : ""} ${
           disabled ? "cursor-not-allowed opacity-60" : ""
         }`}
       >
@@ -260,7 +260,7 @@ export default function CreatableSingleSelect({
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder={searchPlaceholder}
-                className="h-9 w-full rounded-lg border-none bg-slate-50 pl-8 pr-3 text-md outline-none focus:ring-1 focus:ring-purple-500 dark:bg-slate-900"
+                className="h-9 w-full rounded-lg border-none bg-slate-50 pl-8 pr-3 text-md outline-none focus:ring-1 focus:ring-blue-500 dark:bg-slate-900"
               />
             </div>
           </div>
@@ -272,13 +272,13 @@ export default function CreatableSingleSelect({
                 onClick={() => handleSelect("")}
                 className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-md font-medium transition-colors ${
                   !value
-                    ? "bg-purple-50 font-bold text-purple-700 dark:bg-purple-500/15 dark:text-purple-400"
+                    ? "bg-blue-50 font-bold text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
                     : idleOptionClass
                 }`}
               >
                 <span>{placeholder}</span>
                 {!value && (
-                  <FiCheck className="stroke-[3] text-purple-600 dark:text-purple-400" />
+                  <FiCheck className="stroke-[3] text-blue-600 dark:text-blue-400" />
                 )}
               </button>
             )}
@@ -297,13 +297,13 @@ export default function CreatableSingleSelect({
                     onClick={() => handleSelect(option.value)}
                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-md font-medium transition-colors ${
                       isSelected
-                        ? "bg-purple-50 font-bold text-purple-700 dark:bg-purple-500/15 dark:text-purple-400"
+                        ? "bg-blue-50 font-bold text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
                         : idleOptionClass
                     }`}
                   >
                     <span>{option.label}</span>
                     {isSelected && (
-                      <FiCheck className="stroke-[3] text-purple-600 dark:text-purple-400" />
+                      <FiCheck className="stroke-[3] text-blue-600 dark:text-blue-400" />
                     )}
                   </button>
                 );
@@ -333,7 +333,7 @@ export default function CreatableSingleSelect({
                         }
                       }}
                       placeholder={createPlaceholder}
-                      className="h-8 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-md outline-none focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900"
+                      className="h-8 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-md outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900"
                     />
                     <button
                       type="button"
@@ -341,7 +341,7 @@ export default function CreatableSingleSelect({
                         void handleCreate();
                       }}
                       disabled={!trimmedDraftValue || hasDuplicateDraft || isSubmittingCreate}
-                      className="flex h-8 items-center gap-1 rounded-lg bg-purple-600 px-3 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-50"
+                      className="flex h-8 items-center gap-1 rounded-lg bg-blue-600 px-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
                     >
                       {isSubmittingCreate ? (
                         <FiLoader className="animate-spin text-sm" />
@@ -370,7 +370,7 @@ export default function CreatableSingleSelect({
                 <button
                   type="button"
                   onClick={() => setIsCreating(true)}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-md font-medium text-purple-600 transition-colors hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-md font-medium text-blue-600 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/20"
                 >
                   <FiPlus className="text-sm" />
                   {createLabel}

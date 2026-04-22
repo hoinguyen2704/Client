@@ -87,9 +87,9 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
           { id: 'reviews', label: t('productDetail.tabs.reviews', { count: reviews }) },
         ].map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 py-3 sm:py-4 px-2 text-center font-bold text-sm sm:text-md lg:text-lg transition-colors relative ${activeTab === tab.id ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}>
+            className={`relative flex-1 px-2 py-3 text-center text-sm font-bold transition-colors sm:py-4 sm:text-md lg:text-lg ${activeTab === tab.id ? 'text-blue-700 dark:text-blue-300' : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'}`}>
             {tab.label}
-            {activeTab === tab.id && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-purple-600 to-blue-500" />}
+            {activeTab === tab.id && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 sm:h-1" />}
           </button>
         ))}
       </div>
@@ -123,7 +123,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
             )}
             {activeTab === 'description' && (
               <motion.div key="desc" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}
-                className="prose dark:prose-invert max-w-none text-md sm:text-base lg:text-lg prose-img:w-full prose-img:rounded-2xl prose-img:mx-auto prose-a:text-purple-600 w-full overflow-hidden [&_.cps-block-content]:!max-h-none [&>div>div]:!max-h-none">
+                className="prose w-full max-w-none overflow-hidden text-md prose-img:mx-auto prose-img:w-full prose-img:rounded-2xl prose-a:text-blue-700 dark:prose-invert sm:text-base lg:text-lg [&_.cps-block-content]:!max-h-none [&>div>div]:!max-h-none">
                 {product.description ? (
                   <div dangerouslySetInnerHTML={{ __html: product.description.replace(/style="[^"]*max-height[^"]*"/g, '') }} />
                 ) : (
@@ -136,7 +136,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                 {/* Summary */}
                 <div className="flex flex-col md:flex-row gap-4 sm:gap-8 items-center p-4 sm:p-6 md:p-8 bg-slate-50 dark:bg-slate-800/50 rounded-2xl mb-6 sm:mb-8 border border-slate-100 dark:border-slate-700">
                   <div className="text-center md:w-1/4">
-                    <div className="text-4xl sm:text-5xl md:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 mb-1 sm:mb-2">{rating.toFixed(1)}</div>
+                    <div className="mb-1 text-4xl font-black text-slate-900 dark:text-slate-50 sm:mb-2 sm:text-5xl md:text-6xl">{rating.toFixed(1)}</div>
                     <div className="flex justify-center gap-1 text-yellow-400 text-base sm:text-xl mb-1 sm:mb-2">
                       <StarRating value={Math.round(rating)} onChange={() => {}} readOnly size="sm" />
                     </div>
@@ -147,7 +147,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                       <div key={star} className="flex items-center gap-2 md:gap-4">
                         <div className="flex items-center gap-1 w-9 md:w-12 text-md sm:text-base font-medium">{star} <FiStar className="text-yellow-400 fill-current" /></div>
                         <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 rounded-full transition-all" style={{ width: `${starDistribution[star]}%` }}></div>
+                          <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: `${starDistribution[star]}%` }}></div>
                         </div>
                         <span className="text-sm sm:text-md text-slate-400 w-8 text-right">{starDistribution[star]}%</span>
                       </div>
@@ -176,7 +176,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                               {mainFb.userAvatar ? (
                                 <img src={mainFb.userAvatar} alt={mainFb.userName} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" referrerPolicy="no-referrer" />
                               ) : (
-                                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-bold">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 sm:h-10 sm:w-10">
                                   {mainFb.userName?.charAt(0)?.toUpperCase() || <FiUser />}
                                 </div>
                               )}
@@ -217,7 +217,7 @@ export default function ProductTabs({ product, images }: { product: ProductRespo
                               <div className="flex items-center justify-between mb-2">
                                  <p className="text-md sm:text-base font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                    {t('productDetail.tabs.updatedReview', { afterText })}
-                                   <span className="px-1.5 py-0.5 text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded">{t('productDetail.tabs.new')}</span>
+                                   <span className="rounded bg-blue-100 px-1.5 py-0.5 text-sm font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">{t('productDetail.tabs.new')}</span>
                                  </p>
                                  <div className="flex items-center gap-2 text-md text-slate-400">
                                     <span>{formatDate(group[1].createdAt)}</span>

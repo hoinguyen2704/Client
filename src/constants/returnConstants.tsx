@@ -275,7 +275,7 @@ export function buildReturnTimelineSteps(
   const currentStepIndex = baseFlow.indexOf(status);
   const steps: TimelineStep[] = baseFlow.map((stepStatus) => {
     const meta = getReturnStatusMeta(stepStatus, t);
-    let color = 'from-purple-500 to-purple-600';
+    let color = 'from-blue-500 to-blue-600';
     if (stepStatus === 'REJECTED' || stepStatus === 'CANCELLED' || stepStatus === 'QC_FAILED') {
       color = 'from-red-500 to-red-600';
     } else if (stepStatus === 'REFUNDED' || stepStatus === 'CLOSED') {

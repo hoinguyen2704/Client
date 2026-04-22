@@ -247,7 +247,7 @@ export interface IconButtonProps {
 }
 
 //  SwitchToggle
-export type SwitchTone = "primary" | "success" | "blue" | "slate" | "purple";
+export type SwitchTone = "primary" | "success" | "blue" | "slate";
 
 export interface SwitchToggleProps {
   checked: boolean;

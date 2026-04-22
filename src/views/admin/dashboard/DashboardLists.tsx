@@ -30,7 +30,7 @@ export default function DashboardLists({ stats }: DashboardChildProps) {
                     {t('overview.lists.soldSuffix', { count: product.totalSold })}
                   </p>
                 </div>
-                <div className="text-right"><p className="font-bold text-md text-purple-600 dark:text-purple-400">{formatPrice(product.revenue)}</p></div>
+                <div className="text-right"><p className="font-bold text-md text-blue-600 dark:text-blue-400">{formatPrice(product.revenue)}</p></div>
               </div>
             ))
           )}
@@ -62,7 +62,7 @@ export default function DashboardLists({ stats }: DashboardChildProps) {
                         </span>
                       </div>
                       <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 rounded-full" style={{ width: `${percent}%` }} />
+                        <div className="h-full bg-gradient-to-r from-blue-600 to-blue-500 rounded-full" style={{ width: `${percent}%` }} />
                       </div>
                     </div>
                   );

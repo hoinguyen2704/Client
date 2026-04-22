@@ -184,7 +184,7 @@ export default function Products() {
       <nav className="flex text-sm sm:text-md text-slate-500 mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link to="/" className="hover:text-purple-600">
+            <Link to="/" className="transition-colors hover:text-blue-700 dark:hover:text-blue-300">
               {t("layout:navigation.home")}
             </Link>
           </li>
@@ -233,7 +233,7 @@ export default function Products() {
                       setPage(1);
                     }}
                     placeholder={t("products.searchPlaceholder")}
-                    className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-md focus:ring-2 focus:ring-purple-500"/>
+                    className="w-full h-10 rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-md shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"/>
                 </div>
               </div>
 
@@ -263,7 +263,7 @@ export default function Products() {
                           }}
                           className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                             !selectedCategorySlug
-                              ? "bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                              ? "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 font-medium"
                               : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                           }`}>
                           {t("products.allCategories")}
@@ -274,7 +274,7 @@ export default function Products() {
                             onClick={() => handleCategoryChange(cat.slug)}
                             className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                               selectedCategorySlug === cat.slug
-                                ? "bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium"
+                                ? "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 font-medium"
                                 : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                             }`}>
                             {cat.name}
@@ -316,9 +316,9 @@ export default function Products() {
                               <Checkbox
                                 checked={selectedBrand === brand.slug}
                                 onCheckedChange={() => handleBrandChange(brand.slug)}
-                                className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 dark:checked:border-purple-500 dark:checked:bg-purple-500"
+                                className="w-5 h-5 rounded border-slate-300 dark:border-slate-600"
                               />
-                              <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                              <span className="text-slate-700 dark:text-slate-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                                 {brand.name}
                                 {brand.productCount > 0 && (
                                   <span className="text-sm text-slate-400 ml-1">

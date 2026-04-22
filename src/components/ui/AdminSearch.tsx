@@ -39,7 +39,7 @@ export default function AdminSearch({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoFocus={autoFocus}
-          className={`w-full h-12 pl-12 ${clearable && value ? 'pr-16' : 'pr-4'} rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 ${inputClassName}`.trim()}
+          className={`w-full h-12 pl-12 ${clearable && value ? 'pr-16' : 'pr-4'} rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 ${inputClassName}`.trim()}
         />
         <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         {clearable && value && (

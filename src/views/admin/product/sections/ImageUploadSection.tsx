@@ -29,7 +29,7 @@ export default memo(function ImageUploadSection(props: Props) {
           )}
         </div>
         {uploadingImages && (
-          <FiLoader className="animate-spin text-purple-500" />
+          <FiLoader className="animate-spin text-blue-600" />
         )}
       </div>
 
@@ -64,19 +64,19 @@ export default memo(function ImageUploadSection(props: Props) {
         }}
         className={`border-2 border-dashed rounded-xl py-8 flex flex-col items-center justify-center cursor-pointer transition-all ${
           isDragging
-            ? "border-purple-400 bg-purple-50 dark:bg-purple-900/20 scale-[1.02]"
-            : "border-slate-300 dark:border-slate-700 hover:border-purple-300 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+            ? "border-blue-400 bg-blue-50 dark:bg-blue-950/30 scale-[1.02]"
+            : "border-slate-300 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50 dark:hover:bg-slate-800/50"
         }`}
       >
         <div
           className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 transition-all ${
             isDragging
-              ? "bg-purple-100 dark:bg-purple-900/30 scale-110"
+              ? "bg-blue-100 dark:bg-blue-950/30 scale-110"
               : "bg-slate-100 dark:bg-slate-800"
           }`}
         >
           <FiUploadCloud
-            className={`text-2xl ${isDragging ? "text-purple-500" : "text-slate-400"}`}
+            className={`text-2xl ${isDragging ? "text-blue-600 dark:text-blue-300" : "text-slate-400"}`}
           />
         </div>
         <span className="font-semibold text-md text-slate-600 dark:text-slate-300">
@@ -134,7 +134,7 @@ export default memo(function ImageUploadSection(props: Props) {
                 className="w-full h-full object-cover"
               />
               {idx === 0 && pendingFiles.length === 0 && (
-                <span className="absolute top-2 left-2 text-10 font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-2 py-0.5 rounded-md shadow">
+                <span className="absolute left-2 top-2 rounded-md bg-blue-600 px-2 py-0.5 text-10 font-bold text-white shadow-sm">
                   {t("imageUpload.primaryBadge")}
                 </span>
               )}

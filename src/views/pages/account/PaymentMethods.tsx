@@ -119,14 +119,14 @@ export default function PaymentMethods() {
           <div>
             <label className="block font-medium mb-2">{t('paymentMethods.modal.cardNumber')}</label>
             <div className="relative">
-              <input type="text" placeholder="0000 0000 0000 0000" className="w-full h-11 sm:h-12 pl-11 sm:pl-12 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 font-mono tracking-widest text-md sm:text-base" maxLength={19} />
+              <input type="text" placeholder="0000 0000 0000 0000" className="w-full h-11 sm:h-12 pl-11 sm:pl-12 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 font-mono tracking-widest text-md sm:text-base" maxLength={19} />
               <FiCreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
             </div>
           </div>
-          <div><label className="block font-medium mb-2">{t('paymentMethods.modal.cardholderInput')}</label><input type="text" placeholder="NGUYEN VAN A" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 uppercase text-md sm:text-base" /></div>
+          <div><label className="block font-medium mb-2">{t('paymentMethods.modal.cardholderInput')}</label><input type="text" placeholder="NGUYEN VAN A" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 uppercase text-md sm:text-base" /></div>
           <div className="grid grid-cols-2 gap-4">
-            <div><label className="block font-medium mb-2">{t('paymentMethods.modal.expiryDate')}</label><input type="text" placeholder="MM/YY" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center text-md sm:text-base" maxLength={5} /></div>
-            <div><label className="block font-medium mb-2">{t('paymentMethods.modal.securityCode')}</label><input type="password" placeholder="•••" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 text-center tracking-widest text-md sm:text-base" maxLength={3} /></div>
+            <div><label className="block font-medium mb-2">{t('paymentMethods.modal.expiryDate')}</label><input type="text" placeholder="MM/YY" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 text-center text-md sm:text-base" maxLength={5} /></div>
+            <div><label className="block font-medium mb-2">{t('paymentMethods.modal.securityCode')}</label><input type="password" placeholder="•••" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest text-md sm:text-base" maxLength={3} /></div>
           </div>
           <label className="flex items-center gap-3 cursor-pointer mt-4">
             <Checkbox className="w-5 h-5" />

@@ -144,7 +144,7 @@ export default memo(function VariantSection(props: Props) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-bold">{t("variantSection.title")}</h2>
-          <span className="text-sm font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2.5 py-1 rounded-full">
+          <span className="rounded-full bg-blue-100 px-2.5 py-1 text-sm font-semibold text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
             {t("variantSection.count", { count: variants.length })}
           </span>
         </div>
@@ -178,7 +178,7 @@ export default memo(function VariantSection(props: Props) {
               }));
               setFocusVariantKey(nextVariantKey);
             }}
-            className="text-md font-semibold text-white bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all"
+            className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-md font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
           >
             <FiPlus /> {t("variantSection.add")}
           </button>
@@ -263,8 +263,8 @@ export default memo(function VariantSection(props: Props) {
 
         {variants.length === 0 && (
           <div className="text-center py-10 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl mt-2">
-            <div className="w-14 h-14 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center mx-auto mb-3">
-              <FiPlus className="text-2xl text-purple-500" />
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-950/30">
+              <FiPlus className="text-2xl text-blue-600 dark:text-blue-300" />
             </div>
             <p className="text-muted text-md font-medium">
               {t("variantSection.emptyTitle")}

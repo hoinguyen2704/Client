@@ -19,7 +19,7 @@ function TicketListItemRaw({ ticket, isSelected, onClick, showUserName }: Ticket
       onClick={() => onClick(ticket)}
       className={`w-full p-4 rounded-xl text-left transition-all ${
         isSelected
-          ? 'bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-800 shadow-sm'
+          ? 'bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 shadow-sm'
           : 'hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-transparent'
       }`}
     >

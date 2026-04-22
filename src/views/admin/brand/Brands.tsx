@@ -199,7 +199,7 @@ export default function Brands() {
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
                   required
-                  className="w-full h-11 px-4 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none text-md transition-colors"
+                  className="w-full h-11 px-4 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-md transition-colors"
                 />
               </div>
               <div>
@@ -216,7 +216,7 @@ export default function Brands() {
                       logoUrl: e.target.value,
                     }))
                   }
-                  className="w-full h-11 px-4 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none text-md transition-colors"
+                  className="w-full h-11 px-4 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-md transition-colors"
                 />
               </div>
             </div>
@@ -286,7 +286,7 @@ export default function Brands() {
                             className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-slate-700"
                           />
                         ) : (
-                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600">
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600">
                             <FiTag />
                           </div>
                         )}
@@ -295,7 +295,7 @@ export default function Brands() {
                     </td>
                     <td className="p-3 sm:p-4 text-slate-500">{brand.slug}</td>
                     <td className="p-3 sm:p-4 text-center">
-                      <span className="inline-flex items-center justify-center min-w-8 px-2 py-1 rounded-full bg-purple-100 text-purple-700 font-semibold text-sm">
+                      <span className="inline-flex items-center justify-center min-w-8 px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm">
                         {brand.productCount ?? 0}
                       </span>
                     </td>

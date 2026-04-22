@@ -389,7 +389,7 @@ export default function Dashboard() {
                 onClick={() => startTransition(() => setPeriod(item.value as DashboardPeriod))}
                 className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-md font-medium transition-colors ${
                   period === item.value
-                    ? 'bg-white text-purple-600 shadow-sm dark:bg-slate-700'
+                    ? 'bg-white text-blue-600 shadow-sm dark:bg-slate-700'
                     : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
@@ -573,13 +573,13 @@ export default function Dashboard() {
                           <tr
                             key={index}
                             className={`border-b border-slate-100 transition-colors hover:bg-slate-50 dark:border-slate-800/50 dark:hover:bg-slate-800/50 ${
-                              isToday ? 'bg-purple-50 dark:bg-purple-900/10' : ''
+                              isToday ? 'bg-blue-50 dark:bg-blue-900/10' : ''
                             }`}
                           >
                             <td className="whitespace-nowrap py-2.5 pr-3 text-md font-medium sm:py-4 sm:pr-4">
                               {displayLabel}
                               {isToday ? (
-                                <span className="ml-2 rounded-full bg-purple-100 px-2 py-0.5 text-sm font-bold text-purple-600 dark:bg-purple-900/30">
+                                <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-sm font-bold text-blue-600 dark:bg-blue-900/30">
                                   {t('overview.today')}
                                 </span>
                               ) : null}
@@ -636,7 +636,7 @@ export default function Dashboard() {
                             </div>
                           </td>
                           <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md text-slate-500 sm:py-4">{customer.totalOrders}</td>
-                          <td className="whitespace-nowrap py-2.5 text-right text-md font-bold text-purple-600 sm:py-4">{formatPrice(customer.totalSpent)}</td>
+                          <td className="whitespace-nowrap py-2.5 text-right text-md font-bold text-blue-600 sm:py-4">{formatPrice(customer.totalSpent)}</td>
                         </tr>
                       ))
                     )}

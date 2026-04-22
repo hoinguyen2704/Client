@@ -12,7 +12,7 @@ interface FeatureItem {
 
 interface AuthLayoutProps {
   children: React.ReactNode;
-  /** All gradient classes for the left hero panel (light + dark), e.g. "from-purple-700 via-purple-600 to-blue-600 dark:from-purple-950 dark:via-slate-900 dark:to-blue-950" */
+  /** All gradient classes for the left hero panel (light + dark), e.g. "from-blue-700 via-blue-600 to-blue-600 dark:from-blue-950 dark:via-slate-900 dark:to-blue-950" */
   heroGradient: string;
   /** Accent blob color class, e.g. "bg-blue-400/10" */
   accentBlobClass?: string;
@@ -22,9 +22,9 @@ interface AuthLayoutProps {
   heroSubtitle: string;
   /** Feature/tip items for the left panel */
   features: FeatureItem[];
-  /** Gradient for mobile logo button, e.g. "from-purple-600 to-blue-600" */
+  /** Gradient for mobile logo button, e.g. "from-blue-600 to-blue-600" */
   mobileLogoGradient: string;
-  /** Shadow color for mobile logo, e.g. "shadow-purple-500/30" */
+  /** Shadow color for mobile logo, e.g. "shadow-blue-500/30" */
   mobileLogoShadow?: string;
 }
 
@@ -36,7 +36,7 @@ export default function AuthLayout({
   heroSubtitle,
   features,
   mobileLogoGradient,
-  mobileLogoShadow = "shadow-purple-500/30",
+  mobileLogoShadow = "shadow-blue-500/30",
 }: AuthLayoutProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-3 sm:p-4">
@@ -49,7 +49,7 @@ export default function AuthLayout({
           <div
             className={`absolute bottom-[-20%] right-[-10%] w-[40rem] h-[40rem] ${accentBlobClass} rounded-full blur-3xl`}
           />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-purple-400/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-blue-400/10 rounded-full blur-3xl" />
 
           <div className="relative z-10 h-full flex flex-col justify-center p-16 xl:p-20">
             {/* Logo */}

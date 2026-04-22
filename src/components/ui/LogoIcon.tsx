@@ -33,7 +33,7 @@ export default function LogoIcon({
     <div
       className={cn(
         s.container,
-        'bg-[#6338f0] flex items-center justify-center shrink-0 shadow-purple-500/30',
+        'bg-[#6338f0] flex items-center justify-center shrink-0 shadow-blue-500/30',
         containerClassName
       )}
     >

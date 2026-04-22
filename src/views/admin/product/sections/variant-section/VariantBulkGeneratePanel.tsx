@@ -38,7 +38,7 @@ export default memo(function VariantBulkGeneratePanel(
                       key={`bulk-${attribute.id}-${option.id}`}
                       className={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-colors ${
                         checked
-                          ? "border-purple-400 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300"
+                          ? "border-blue-400 bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300"
                           : "border-slate-200 text-body-soft dark:border-slate-700"
                       }`}
                     >
@@ -76,7 +76,7 @@ export default memo(function VariantBulkGeneratePanel(
         <button
           type="button"
           onClick={generateSelections}
-          className="h-9 rounded-lg bg-purple-600 px-3 text-sm font-semibold text-white hover:bg-purple-700"
+          className="h-9 rounded-lg bg-blue-600 px-3 text-sm font-semibold text-white hover:bg-blue-700"
         >
           {t("variantBulkGenerate.generate")}
         </button>

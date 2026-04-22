@@ -127,7 +127,7 @@ export default function OrderTracking() {
     <div className="text-center py-12">
       <FiXCircle className="text-6xl text-slate-300 mx-auto mb-4" />
       <h2 className="text-xl font-bold mb-2">{t('orderTracking.notFound.title')}</h2>
-      <Link to="/user/orders" className="text-purple-600 hover:underline">← {t('orderTracking.notFound.back')}</Link>
+      <Link to="/user/orders" className="text-blue-600 hover:underline">← {t('orderTracking.notFound.back')}</Link>
     </div>
   );
 
@@ -145,7 +145,7 @@ export default function OrderTracking() {
           <h1 className="text-xl sm:text-2xl font-bold">{t('orderTracking.title', { orderNumber: order.orderNumber })}</h1>
         </div>
         {allowReturnBtn && (
-          <Button onClick={handleStartReturn} variant="outline" className="text-purple-600 border-purple-600 whitespace-nowrap">
+          <Button onClick={handleStartReturn} variant="outline" className="text-blue-600 border-blue-600 whitespace-nowrap">
             {t('orderTracking.actions.requestReturn')}
           </Button>
         )}
@@ -153,17 +153,17 @@ export default function OrderTracking() {
 
       {/* Return Active Banner */}
       {activeReturn && (
-        <div className="bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-4 sm:p-6 shadow-sm border border-purple-100 dark:border-purple-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 sm:p-6 shadow-sm border border-blue-100 dark:border-blue-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-800 flex items-center justify-center text-purple-600 dark:text-purple-300 flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-300 flex-shrink-0">
               <FiPackage className="text-xl" />
             </div>
             <div>
-              <h3 className="font-bold text-purple-800 dark:text-purple-200">{t('orderTracking.returnBanner.title')}</h3>
-              <p className="text-md text-purple-600 dark:text-purple-300 mt-0.5">{t('orderTracking.returnBanner.description')}</p>
+              <h3 className="font-bold text-blue-800 dark:text-blue-200">{t('orderTracking.returnBanner.title')}</h3>
+              <p className="text-md text-blue-600 dark:text-blue-300 mt-0.5">{t('orderTracking.returnBanner.description')}</p>
             </div>
           </div>
-          <Link to={`/user/returns`} className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg text-md font-semibold text-purple-600 shadow-sm border border-purple-100 dark:border-slate-700 whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700">
+          <Link to={`/user/returns`} className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg text-md font-semibold text-blue-600 shadow-sm border border-blue-100 dark:border-slate-700 whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700">
             {t('orderTracking.returnBanner.button')}
           </Link>
         </div>
@@ -171,17 +171,17 @@ export default function OrderTracking() {
 
       {/* Inline Return Form */}
       {isReturning && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-purple-500/30 space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-blue-500/30 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h2 className="text-xl font-bold text-purple-600">{t('orderTracking.returnForm.title')}</h2>
+            <h2 className="text-xl font-bold text-blue-600">{t('orderTracking.returnForm.title')}</h2>
             <Button variant="secondary" className="text-slate-500" onClick={() => setIsReturning(false)}>{t('orderTracking.returnForm.cancel')}</Button>
           </div>
 
           <div className="space-y-4">
-            <div className="font-semibold flex items-center gap-2"><FiPackage className="text-purple-600" /> {t('orderTracking.returnForm.selectItems')}</div>
+            <div className="font-semibold flex items-center gap-2"><FiPackage className="text-blue-600" /> {t('orderTracking.returnForm.selectItems')}</div>
             <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
               {order.items.map(line => (
-                <div key={line.id} className={`p-3 sm:p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center transition-colors ${selectedReturnItems[line.id] ? 'bg-purple-50/50 dark:bg-purple-900/10' : 'bg-slate-50/50 dark:bg-slate-800/30'}`}>
+                <div key={line.id} className={`p-3 sm:p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center transition-colors ${selectedReturnItems[line.id] ? 'bg-blue-50/50 dark:bg-blue-900/10' : 'bg-slate-50/50 dark:bg-slate-800/30'}`}>
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <Checkbox
                       checked={!!selectedReturnItems[line.id]}
@@ -222,7 +222,7 @@ export default function OrderTracking() {
                 <button
                   key={reason}
                   onClick={() => setReturnReason(reason)}
-                  className={`px-3 py-1.5 rounded-full text-md font-medium transition-colors ${returnReason === reason ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 border border-purple-200 dark:border-purple-700/50' : 'bg-slate-100 text-muted-strong hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-transparent'}`}
+                  className={`px-3 py-1.5 rounded-full text-md font-medium transition-colors ${returnReason === reason ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50' : 'bg-slate-100 text-muted-strong hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-transparent'}`}
                 >
                   {reason}
                 </button>
@@ -232,7 +232,7 @@ export default function OrderTracking() {
               value={returnReason}
               onChange={(e) => setReturnReason(e.target.value)}
               placeholder={t('orderTracking.returnForm.reasonPlaceholder')}
-              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
             />
           </div>
 
@@ -242,7 +242,7 @@ export default function OrderTracking() {
               value={returnNote}
               onChange={(e) => setReturnNote(e.target.value)}
               placeholder={t('orderTracking.returnForm.notePlaceholder')}
-              className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+              className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
             />
           </div>
 
@@ -265,7 +265,7 @@ export default function OrderTracking() {
                   <h2 className="text-lg font-bold">{t('orderTracking.shipping.title')}</h2>
                   <p className="text-slate-500 mt-1">{t('orderTracking.shipping.trackingCode')}: <span className="font-semibold text-strong-soft">{order.trackingCode}</span></p>
                 </div>
-                <FiTruck className="text-3xl text-purple-600 opacity-20" />
+                <FiTruck className="text-3xl text-blue-600 opacity-20" />
               </div>
             </div>
           )}
@@ -295,18 +295,18 @@ export default function OrderTracking() {
                       <div className="relative flex flex-col items-center">
                         {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
                         
-                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
                         
                         {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
                       </div>
 
                       {/* Right: Content */}
                       <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-muted-strong'}`}>
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted-strong'}`}>
                           {history.status === 'SHIPPED' ? t('orderTracking.timeline.deliveredTitle') : history.description}
                         </h4>
                         {isFirst && history.status === 'SHIPPED' && (
-                          <div className="inline-flex items-center gap-1 text-md text-purple-600 mt-1 cursor-pointer hover:underline">
+                          <div className="inline-flex items-center gap-1 text-md text-blue-600 mt-1 cursor-pointer hover:underline">
                             <FiCheck /> {t('orderTracking.timeline.deliveredDescription')}
                           </div>
                         )}
@@ -327,11 +327,11 @@ export default function OrderTracking() {
                   const isActive = idx <= currentStep;
                   return (
                     <div key={step.key} className="flex-1 flex flex-col items-center relative">
-                      {idx > 0 && <div className={`absolute top-5 right-1/2 w-full h-0.5 ${idx <= currentStep ? 'bg-purple-600' : 'bg-slate-200 dark:bg-slate-700'}`} />}
-                      <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-purple-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
+                      {idx > 0 && <div className={`absolute top-5 right-1/2 w-full h-0.5 ${idx <= currentStep ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`} />}
+                      <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
                         <Icon />
                       </div>
-                      <span className={`text-sm mt-2 font-medium ${isActive ? 'text-purple-600' : 'text-slate-400'}`}>{step.label}</span>
+                      <span className={`text-sm mt-2 font-medium ${isActive ? 'text-blue-600' : 'text-slate-400'}`}>{step.label}</span>
                     </div>
                   );
                 })}
@@ -368,7 +368,7 @@ export default function OrderTracking() {
                   </div>
                   <div className="text-right flex-shrink-0 space-y-0.5">
                     <div className="text-md text-slate-500 mb-1">{formatPrice(Number(item.unitPrice || 0))}</div>
-                    <div className="font-bold text-purple-600 text-lg">{formatPrice(item.subtotal)}</div>
+                    <div className="font-bold text-blue-600 text-lg">{formatPrice(item.subtotal)}</div>
                   </div>
                 </div>
               ))}
@@ -403,7 +403,7 @@ export default function OrderTracking() {
                 </div>
               )}
               <hr className="border-slate-100 dark:border-slate-800" />
-              <div className="flex justify-between text-lg"><span className="font-bold">{t('orderTracking.summary.total')}</span><span className="font-bold text-purple-600">{formatPrice(order.totalAmount)}</span></div>
+              <div className="flex justify-between text-lg"><span className="font-bold">{t('orderTracking.summary.total')}</span><span className="font-bold text-blue-600">{formatPrice(order.totalAmount)}</span></div>
             </div>
           </div>
 

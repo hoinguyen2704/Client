@@ -108,7 +108,7 @@ export default function Cart() {
           </div>
           <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-slate-800 dark:text-white">{t('cart.empty.title')}</h3>
           <p className="text-md sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm">{t('cart.empty.description')}</p>
-          <Link to="/search" className="px-6 sm:px-8 py-3.5 sm:py-4 text-md sm:text-base bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-2xl hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-purple-500/25 transform hover:-translate-y-1">
+          <Link to="/search" className="px-6 sm:px-8 py-3.5 sm:py-4 text-md sm:text-base bg-gradient-to-r from-blue-600 to-blue-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-blue-500/25 transform hover:-translate-y-1">
             {t('cart.empty.action')}
           </Link>
         </div>
@@ -137,20 +137,20 @@ export default function Cart() {
                   </span>
                   <Link to={`/product/${item.productSlug}`} className="shrink-0 group block">
                     {item.imageUrl ? (
-                      <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-transparent group-hover:border-purple-300 transition-colors" />
+                      <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-transparent group-hover:border-blue-300 transition-colors" />
                     ) : (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-purple-50 transition-colors"><FiShoppingBag /></div>
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-blue-50 transition-colors"><FiShoppingBag /></div>
                     )}
                   </Link>
                   <div className="min-w-0 flex-1 flex flex-col items-start">
-                    <Link to={`/product/${item.productSlug}`} className="hover:text-purple-600 transition-colors w-full">
+                    <Link to={`/product/${item.productSlug}`} className="hover:text-blue-600 transition-colors w-full">
                       <h3 className="font-bold line-clamp-2 text-md sm:text-base">{item.productName}</h3>
                     </Link>
                     <Link to={`/product/${item.productSlug}`} className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-0.5 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group cursor-pointer" title={t('cart.changeConfigTitle')}>
                       <p className="text-sm sm:text-md font-medium text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 line-clamp-1">{item.variantName}</p>
                       <span className="text-10 font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">{t('cart.changeConfig')}</span>
                     </Link>
-                    <p className="text-purple-600 font-bold mt-1 text-md sm:text-base">{formatPrice(item.price)}</p>
+                    <p className="text-blue-600 font-bold mt-1 text-md sm:text-base">{formatPrice(item.price)}</p>
                     {item.available === false && (
                       <p className="text-sm text-red-500 mt-1">{item.issueMessage || t('items.unavailable')}</p>
                     )}
@@ -179,7 +179,7 @@ export default function Cart() {
               <div className="flex justify-between"><span className="text-slate-500">{t('cart.summary.selectedItems')}</span><span className="font-medium">{selectedItems.length}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">{t('cart.summary.subtotal')}</span><span className="font-medium">{formatPrice(total)}</span></div>
               <hr className="border-slate-100 dark:border-slate-800" />
-              <div className="flex justify-between text-base sm:text-lg"><span className="font-bold">{t('cart.summary.total')}</span><span className="font-bold text-purple-600">{formatPrice(total)}</span></div>
+              <div className="flex justify-between text-base sm:text-lg"><span className="font-bold">{t('cart.summary.total')}</span><span className="font-bold text-blue-600">{formatPrice(total)}</span></div>
             </div>
             <PrimaryButton 
               onClick={() => {

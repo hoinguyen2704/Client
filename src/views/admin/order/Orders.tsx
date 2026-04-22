@@ -180,11 +180,11 @@ export default function AdminOrders() {
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                    <div className="font-bold text-purple-600 flex items-center gap-2">
+                    <div className="font-bold text-blue-600 flex items-center gap-2">
                       <span className="inline-flex lg:hidden items-center justify-center min-w-9 h-8 px-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 text-sm font-semibold">
                         {rowNumber}
                       </span>
-                      <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 lg:hidden"><FiPackage className="text-md" /></div>
+                      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 lg:hidden"><FiPackage className="text-md" /></div>
                       {order.orderNumber}
                     </div>
                     <div className="lg:hidden text-slate-500 text-md ">{formatDate(order.createdAt)}</div>

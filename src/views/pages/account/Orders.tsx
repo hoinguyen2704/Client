@@ -110,7 +110,7 @@ export default function Orders() {
         <div className="relative">
           <input type="text" placeholder={t('orders.searchPlaceholder')} value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500" />
+            className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500" />
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
         </div>
       </div>
@@ -156,9 +156,9 @@ export default function Orders() {
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1.5 sm:gap-2 shrink-0">
-                      <div className="font-bold text-md sm:text-base text-purple-600">{formatPrice(item.unitPrice)}</div>
+                      <div className="font-bold text-md sm:text-base text-blue-600">{formatPrice(item.unitPrice)}</div>
                       {order.orderStatus === 'SHIPPED' && (
-                        <button onClick={() => handleOpenReview(order, item)} className="px-2.5 sm:px-3 py-1 text-sm sm:text-md rounded border border-purple-600 text-purple-600 font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors bg-white dark:bg-transparent">
+                        <button onClick={() => handleOpenReview(order, item)} className="px-2.5 sm:px-3 py-1 text-sm sm:text-md rounded border border-blue-600 text-blue-600 font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors bg-white dark:bg-transparent">
                           {t('orders.review')}
                         </button>
                       )}
@@ -169,7 +169,7 @@ export default function Orders() {
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-slate-100 dark:border-slate-800">
                 <div className="text-slate-500 text-md sm:text-base">
-                  {t('orders.total')}: <span className="text-lg sm:text-xl font-bold text-purple-600 ml-2">{formatPrice(order.totalAmount)}</span>
+                  {t('orders.total')}: <span className="text-lg sm:text-xl font-bold text-blue-600 ml-2">{formatPrice(order.totalAmount)}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
                   {order.orderStatus === 'PENDING' && (
@@ -177,7 +177,7 @@ export default function Orders() {
                       {t('orders.cancelOrder')}
                     </button>
                   )}
-                  <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
+                  <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
                     {t('orders.viewDetails')} <FiChevronRight />
                   </Link>
                 </div>
@@ -240,7 +240,7 @@ export default function Orders() {
                 </div>
                 <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
                   placeholder={t('orders.reviewModal.placeholder')}
-                  className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 resize-none" />
+                  className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 resize-none" />
               </div>
             )}
           </div>

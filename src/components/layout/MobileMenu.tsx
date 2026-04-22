@@ -65,7 +65,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                 type="text"
                 placeholder={t('mobileMenu.searchPlaceholder', { ns: 'layout' })}
                 onKeyDown={handleSearch}
-                className="w-full h-10 pl-4 pr-10 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+                className="w-full h-10 pl-4 pr-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
               />
               <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
             </div>
@@ -80,7 +80,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                   className={({ isActive }) =>
                     `px-4 py-3 rounded-xl font-medium transition-colors ${
                       isActive 
-                        ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' 
+                        ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300' 
                         : MOBILE_NAV_IDLE_CLASS
                     }`
                   }
@@ -133,7 +133,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                 <Link 
                   to="/login" 
                   onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400"
+                  className="flex items-center gap-3 rounded-xl bg-blue-50 px-4 py-3 font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-300"
                 >
                   <FiUser className="text-lg" /> {t('mobileMenu.loginRegister', { ns: 'layout' })}
                 </Link>

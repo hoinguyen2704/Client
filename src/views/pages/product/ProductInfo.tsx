@@ -265,6 +265,16 @@ export default function ProductInfo({
   const price = pricing?.salePrice ?? 0;
   const comparePrice = pricing?.originPrice ?? 0;
   const discountPercent = pricing?.discount ?? 0;
+  const activePriceClass = pricing?.isFlashSale
+    ? 'text-rose-600 dark:text-rose-400'
+    : comparePrice > price && price > 0
+      ? 'text-blue-600 dark:text-blue-400'
+      : 'text-blue-700 dark:text-blue-300';
+  const rangePriceClass = 'text-blue-700 dark:text-blue-300';
+  const showFlashSaleBadge = Boolean(canShowVariantPrice && pricing?.isFlashSale);
+  const flashSaleRemainingText = activeFlashItem
+    ? t('productDetail.pricing.flashSaleRemaining', { ns: 'catalog', count: activeFlashItem.remainingStock })
+    : null;
   const rating = product.averageRating || 0;
   const reviews = product.totalReviews || 0;
   const stock = activeVariant?.stockQuantity ?? 0;
@@ -431,14 +441,14 @@ export default function ProductInfo({
       <div className="inline-flex w-full self-start flex-wrap items-end gap-x-4 gap-y-2 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-800/50 sm:flex-nowrap lg:max-w-[52%]">
         {canShowVariantPrice ? (
           <>
-            <span className="whitespace-nowrap bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-[2.1rem] font-bold leading-none text-transparent md:text-[2.6rem]">
+            <span className={`whitespace-nowrap text-[2.1rem] font-bold leading-none md:text-[2.6rem] ${activePriceClass}`}>
               {formatPrice(price)}
             </span>
             {comparePrice > price && (
               <>
                 <span className="mb-0.5 whitespace-nowrap text-lg text-slate-400 line-through md:text-xl">{formatPrice(comparePrice)}</span>
                 {discountPercent > 0 ? (
-                  <span className="mb-0.5 inline-flex whitespace-nowrap rounded-xl bg-gradient-to-r from-red-500 to-orange-500 px-2.5 py-1 text-sm font-black uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_rgba(239,68,68,0.22)] md:text-sm">
+                  <span className="mb-0.5 inline-flex whitespace-nowrap rounded-xl bg-rose-600 px-2.5 py-1 text-sm font-black uppercase tracking-[0.08em] text-white shadow-sm md:text-sm">
                     {discountPercent}% giảm
                   </span>
                 ) : null}
@@ -446,7 +456,7 @@ export default function ProductInfo({
             )}
           </>
         ) : isSelectionRequired && !isSelectionComplete && variantSalePriceRange ? (
-          <span className="whitespace-nowrap bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-[2.1rem] font-bold leading-none text-transparent md:text-[2.6rem]">
+          <span className={`whitespace-nowrap text-[2.1rem] font-bold leading-none md:text-[2.6rem] ${rangePriceClass}`}>
             {variantSalePriceRange.min === variantSalePriceRange.max
               ? formatPrice(variantSalePriceRange.min)
               : `${formatPrice(variantSalePriceRange.min)} - ${formatPrice(variantSalePriceRange.max)}`}
@@ -469,13 +479,29 @@ export default function ProductInfo({
           ))}
         </div>
       )}
-      {canShowVariantPrice && pricing?.isFlashSale && (
-        <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold text-sm md:text-md">
-          <FiZap className="text-base" />
-          {t('productDetail.pricing.flashSale', { ns: 'catalog' })} -{discountPercent}%
-          {activeFlashItem ? ` • ${t('productDetail.pricing.flashSaleRemaining', { ns: 'catalog', count: activeFlashItem.remainingStock })}` : ''}
+      <div className="min-h-11 lg:max-w-[52%]">
+        <div
+          className={`inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-opacity ${
+            showFlashSaleBadge
+              ? 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800 dark:bg-rose-900/20 dark:text-rose-300 opacity-100'
+              : 'invisible pointer-events-none opacity-0'
+          }`}
+          aria-hidden={!showFlashSaleBadge}
+        >
+          <FiZap className="shrink-0 text-base" />
+          <span className="whitespace-nowrap">{t('productDetail.pricing.flashSale', { ns: 'catalog' })}</span>
+          {discountPercent > 0 && (
+            <span className="whitespace-nowrap rounded-full bg-rose-600 px-2 py-0.5 text-xs font-black uppercase tracking-[0.06em] text-white">
+              -{discountPercent}%
+            </span>
+          )}
+          {flashSaleRemainingText && (
+            <span className="truncate text-rose-700/80 dark:text-rose-300/85">
+              {flashSaleRemainingText}
+            </span>
+          )}
         </div>
-      )}
+      </div>
 
       {highlightSpecs.length > 0 && (
         <div className="flex max-w-full flex-wrap gap-2 lg:max-w-[52%]">

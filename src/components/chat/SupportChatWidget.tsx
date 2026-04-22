@@ -353,7 +353,7 @@ export default function SupportChatWidget({
                     <div
                       className={`max-w-[92%] sm:max-w-[85%] px-3 py-2 rounded-2xl text-md ${
                         msg.senderType === 'USER'
-                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-br-md'
                           : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-bl-md'
                       }`}
                     >
@@ -380,7 +380,7 @@ export default function SupportChatWidget({
               {!canDirectSupport ? (
                 <button
                   onClick={() => navigate('/login')}
-                  className="w-full h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white text-md font-semibold"
+                  className="w-full h-10 rounded-lg bg-gradient-to-r from-blue-600 to-blue-600 text-white text-md font-semibold"
                 >
                   {t('supportChat.loginButton', { ns: 'layout' })}
                 </button>

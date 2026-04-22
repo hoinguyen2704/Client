@@ -20,8 +20,8 @@ export const CONFIRM_VARIANT_CONFIG: Record<
   },
   info: {
     icon: <FiAlertTriangle className="text-xl" />,
-    btnClass: "bg-purple-600 hover:bg-purple-700 focus:ring-purple-500",
+    btnClass: "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500",
     iconBg:
-      "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400",
+      "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
   },
 };

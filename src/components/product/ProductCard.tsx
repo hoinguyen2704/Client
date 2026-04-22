@@ -123,17 +123,17 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-3xl p-1.5 sm:p-3 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 border border-slate-100 dark:border-slate-800 transition-all group relative flex flex-col h-full"
+      className="group relative flex h-full flex-col rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_22px_40px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 sm:rounded-3xl sm:p-3"
     >
       {/* Badges */}
       <div className="absolute top-2 sm:top-5 left-2 sm:left-5 z-10 flex flex-col gap-1 sm:gap-2">
         {isNew && (
-          <span className={`bg-gradient-to-r from-blue-500 to-cyan-400 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
+        <span className={`bg-blue-600 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
             {t('productCard.badges.new', { ns: 'catalog' }).toUpperCase()}
           </span>
         )}
         {discount > 0 && (
-          <span className={`bg-gradient-to-r from-red-500 to-pink-500 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
+          <span className={`bg-rose-600 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
             {t('productCard.badges.discount', { ns: 'catalog', percent: discount }).toUpperCase()}
           </span>
         )}
@@ -190,7 +190,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
         </Link>
 
         {/* Price & Status — same row */}
-        <div className="bg-slate-50 dark:bg-slate-800/40 sm:bg-gradient-to-br sm:from-purple-50 sm:to-blue-50 sm:dark:from-purple-900/20 sm:dark:to-blue-900/20 p-2 sm:p-3 rounded-lg sm:rounded-2xl border border-slate-100 sm:border-purple-100 dark:border-slate-700 sm:dark:border-purple-800/30 mb-1.5 sm:mb-4 mt-auto">
+        <div className="mt-auto mb-1.5 rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/40 sm:mb-4 sm:rounded-2xl sm:p-3">
           {originPrice > 0 ? (
             <>
               {/* Giá gốc */}
@@ -200,7 +200,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                   {formatPrice(originPrice)}
                 </span>
                 {hasDiscount && (
-                  <span className={`${TYPOGRAPHY_TEXT_SIZE.md} font-black text-red-500 bg-red-50 dark:bg-red-900/20 px-1 sm:px-1.5 py-0.5 rounded`}>
+                    <span className={`${TYPOGRAPHY_TEXT_SIZE.md} rounded bg-rose-50 px-1 py-0.5 font-black text-rose-600 dark:bg-rose-900/20 dark:text-rose-300 sm:px-1.5`}>
                     -{discount}%
                   </span>
                 )}
@@ -274,7 +274,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                 toast.error(getApiErrorMessage(error, translate, 'catalog:productCard.actions.addToCartFailed'));
               } finally { setAddingToCart(false); }
             }}
-            className="flex-1 h-9 sm:h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg sm:rounded-2xl font-bold text-11 sm:text-md flex justify-center items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-purple-500/25 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed group/cart"
+            className="flex h-9 flex-1 items-center justify-center gap-1 rounded-lg bg-blue-600 text-11 font-bold text-white shadow-sm shadow-blue-950/10 transition-all hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 group/cart sm:h-12 sm:rounded-2xl sm:text-md sm:gap-2"
           >
             <FiShoppingCart className="text-md sm:text-lg group-hover/cart:-rotate-12 transition-transform" />
             <span className="truncate">

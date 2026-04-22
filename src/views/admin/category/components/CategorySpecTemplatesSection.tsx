@@ -21,7 +21,7 @@ export default function CategorySpecTemplatesSection({
     <div className="overflow-hidden rounded-xl border-2 border-slate-200 dark:border-slate-700">
       <div className="flex flex-col gap-2 border-b-2 border-slate-200 bg-slate-50 px-3 py-3 dark:border-slate-700 dark:bg-slate-800/50 sm:flex-row sm:items-center sm:justify-between sm:px-4">
         <div className="flex min-w-0 items-center gap-2">
-          <FiList className="text-purple-500" />
+          <FiList className="text-blue-500" />
           <span className="font-medium text-md">{t("categories.specTemplates.header")}</span>
           <span className="text-sm text-slate-400">
             ({t("categories.specTemplates.count", { count: rows.length })})
@@ -33,7 +33,7 @@ export default function CategorySpecTemplatesSection({
           variant="ghost"
           size="sm"
           icon={<FiPlus />}
-          className="w-full text-purple-600 sm:w-auto"
+          className="w-full text-blue-600 sm:w-auto"
         >
           {t("categories.specTemplates.add")}
         </Button>
@@ -47,7 +47,7 @@ export default function CategorySpecTemplatesSection({
             onClick={onAdd}
             variant="ghost"
             size="md"
-            className="text-purple-600"
+            className="text-blue-600"
           >
             + {t("categories.specTemplates.firstAdd")}
           </Button>
@@ -73,14 +73,14 @@ export default function CategorySpecTemplatesSection({
                 value={row.specKey}
                 onChange={(e) => onChange(index, "specKey", e.target.value)}
                 placeholder={t("categories.specTemplates.namePlaceholder")}
-                className="h-13 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none transition-all focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                className="h-13 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800"
               />
               <input
                 type="text"
                 value={row.hint}
                 onChange={(e) => onChange(index, "hint", e.target.value)}
                 placeholder={t("categories.specTemplates.hintPlaceholder")}
-                className="h-13 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none transition-all focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                className="h-13 rounded-lg border-2 border-slate-200 bg-white px-4 text-md outline-none transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800"
               />
               <div className="flex items-center justify-center">
                 <TrashButton onClick={() => onRemove(index)} />

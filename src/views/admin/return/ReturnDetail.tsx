@@ -295,14 +295,14 @@ export default function ReturnDetail() {
                       <div className="relative flex flex-col items-center">
                         {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
 
-                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
 
                         {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
                       </div>
 
                       {/* Right: Content */}
                       <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-slate-600 dark:text-slate-400'}`}>
                           {history.description}
                         </h4>
                       </div>
@@ -315,7 +315,7 @@ export default function ReturnDetail() {
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4">
-              <FiPackage className="text-purple-600" />
+              <FiPackage className="text-blue-600" />
               {t('returns.detail.itemsTitle')}
             </h2>
             <div className="overflow-x-auto">
@@ -338,7 +338,7 @@ export default function ReturnDetail() {
                       <td className="py-4 text-right">{formatPrice(Number(item.unitPrice || 0))}</td>
                       <td className="py-4 text-center">{item.requestedQuantity}</td>
                       <td className="py-4 text-center">{item.approvedQuantity ?? '-'}</td>
-                      <td className="py-4 text-right font-bold text-purple-600">{formatPrice(Number(item.lineAmount || 0))}</td>
+                      <td className="py-4 text-right font-bold text-blue-600">{formatPrice(Number(item.lineAmount || 0))}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -422,7 +422,7 @@ export default function ReturnDetail() {
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <FiDollarSign className="text-purple-600" />
+              <FiDollarSign className="text-blue-600" />
               {t('returns.detail.amountsTitle')}
             </h2>
             <div className="space-y-2 text-md">
@@ -455,13 +455,13 @@ export default function ReturnDetail() {
                 value={approvedAmount}
                 onChange={(e) => setApprovedAmount(e.target.value)}
                 placeholder={t('returns.detail.approvedAmountPlaceholder')}
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40"
               />
               <textarea
                 value={reviewNote}
                 onChange={(e) => setReviewNote(e.target.value)}
                 placeholder={t('returns.detail.reviewNotePlaceholder')}
-                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+                className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <Button
@@ -499,7 +499,7 @@ export default function ReturnDetail() {
               value={statusNote}
               onChange={(e) => setStatusNote(e.target.value)}
               placeholder={t('returns.detail.statusNotePlaceholder')}
-              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
             />
             <Button
               variant="outline"
@@ -523,7 +523,7 @@ export default function ReturnDetail() {
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(e.target.value)}
                 placeholder={t('returns.detail.refundAmountPlaceholder')}
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40"
               />
               <CustomSelect
                 value={refundProvider}
@@ -541,26 +541,26 @@ export default function ReturnDetail() {
                 value={transactionId}
                 onChange={(e) => setTransactionId(e.target.value)}
                 placeholder={t('returns.detail.transactionIdPlaceholder')}
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40"
               />
               <textarea
                 value={refundAdminNote}
                 onChange={(e) => setRefundAdminNote(e.target.value)}
                 placeholder={t('returns.detail.refundAdminNotePlaceholder')}
-                className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+                className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
               />
               <input
                 type="text"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value.toUpperCase())}
                 placeholder={t('returns.detail.currencyPlaceholder')}
-                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40"
+                className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40"
               />
               <textarea
                 value={rawPayload}
                 onChange={(e) => setRawPayload(e.target.value)}
                 placeholder={t('returns.detail.rawPayloadPlaceholder')}
-                className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+                className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
               />
               <Button
                 variant="success"

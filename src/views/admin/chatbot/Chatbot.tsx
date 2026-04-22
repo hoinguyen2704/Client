@@ -167,7 +167,7 @@ export default function Chatbot() {
         <p>{t("chatbot.states.connectionFailed")}</p>
         <button
           onClick={loadConfig}
-          className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors text-md"
+          className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-md"
         >
           {t("chatbot.actions.retry")}
         </button>
@@ -186,7 +186,7 @@ export default function Chatbot() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-            <FiCpu className="text-purple-600" />
+            <FiCpu className="text-blue-600" />
             {t("chatbot.title")}
           </h1>
           <p className="text-md text-slate-500 mt-1">
@@ -205,7 +205,7 @@ export default function Chatbot() {
           <button
             onClick={handleSave}
             disabled={saving || !dirty}
-            className="px-4 h-10 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
+            className="px-4 h-10 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
             <FiSave />
             {saving ? t("chatbot.actions.saving") : t("chatbot.actions.save")}
@@ -223,14 +223,14 @@ export default function Chatbot() {
       <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
         <button
           onClick={() => setActiveTab("settings")}
-          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiSettings className="inline mr-1.5 -mt-0.5" />
           {t("chatbot.tabs.settings")}
         </button>
         <button
           onClick={() => setActiveTab("overview")}
-          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-purple-600 text-purple-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
         >
           <FiActivity className="inline mr-1.5 -mt-0.5" />
           {t("chatbot.tabs.overview")}
@@ -319,7 +319,7 @@ export default function Chatbot() {
                         parseFloat(e.target.value),
                       )
                     }
-                    className="w-full mt-2 accent-purple-600"
+                    className="w-full mt-2 accent-blue-600"
                   />
                   <div className="flex justify-between text-sm text-slate-400 mt-1">
                     <span>{t("chatbot.sections.ai.temperatureExact")}</span>
@@ -508,7 +508,7 @@ export default function Chatbot() {
                 <div className="flex items-center gap-3">
                   <input
                     type="color"
-                    value={config.bot?.themeColor || "#9333ea"}
+                    value={config.bot?.themeColor || "#2563eb"}
                     onChange={(e) =>
                       updateField("bot", "themeColor", e.target.value)
                     }
@@ -516,11 +516,11 @@ export default function Chatbot() {
                   />
                   <input
                     type="text"
-                    value={config.bot?.themeColor || "#9333ea"}
+                    value={config.bot?.themeColor || "#2563eb"}
                     onChange={(e) =>
                       updateField("bot", "themeColor", e.target.value)
                     }
-                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md uppercase font-mono"
+                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-md uppercase font-mono"
                   />
                 </div>
               </div>
@@ -530,7 +530,7 @@ export default function Chatbot() {
                   {t("chatbot.sections.widget.fields.avatar")}
                 </label>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700 shrink-0">
+                  <div className="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700 shrink-0">
                     {config.bot?.avatarUrl ? (
                       <img
                         src={config.bot.avatarUrl}
@@ -538,7 +538,7 @@ export default function Chatbot() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <FiCpu className="text-2xl text-purple-500" />
+                      <FiCpu className="text-2xl text-blue-500" />
                     )}
                   </div>
                   <input
@@ -548,7 +548,7 @@ export default function Chatbot() {
                       updateField("bot", "avatarUrl", e.target.value)
                     }
                     placeholder={t("chatbot.sections.widget.avatarPlaceholder")}
-                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                    className="flex-1 h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-md"
                   />
                 </div>
               </div>
@@ -588,7 +588,7 @@ export default function Chatbot() {
                         newSugg[idx] = e.target.value;
                         updateTopLevel("suggestions", newSugg);
                       }}
-                      className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                      className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-md"
                     />
                     <button
                       onClick={() => removeSuggestion(idx)}
@@ -607,12 +607,12 @@ export default function Chatbot() {
                   onChange={(e) => setNewSuggestion(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addSuggestion()}
                   placeholder={t("chatbot.sections.suggestions.newPlaceholder")}
-                  className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 outline-none text-md"
+                  className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-md"
                 />
                 <button
                   onClick={addSuggestion}
                   disabled={!newSuggestion.trim()}
-                  className="h-10 px-3 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 text-md font-medium flex items-center justify-center gap-1 w-full sm:w-auto"
+                  className="h-10 px-3 rounded-lg bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors disabled:opacity-50 text-md font-medium flex items-center justify-center gap-1 w-full sm:w-auto"
                 >
                   <FiPlus />
                   {t("chatbot.actions.addSuggestion")}
@@ -650,7 +650,7 @@ export default function Chatbot() {
                 value: config.ai?.temperature ?? notAvailable,
               })}
               icon={<FiCpu />}
-              iconClassName="bg-purple-100 text-purple-600"
+              iconClassName="bg-blue-100 text-blue-600"
             />
             <ChatbotOverviewStatCard
               label={t("chatbot.overview.cards.store")}

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '@/components';
 import type { DashboardChildProps } from './types';
 
-const CATEGORY_COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#6366f1', '#14b8a6', '#f97316'];
+const CATEGORY_COLORS = ['#2563eb', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#0ea5e9', '#06b6d4', '#6366f1', '#14b8a6', '#f97316'];
 
 export default function CategoryChart({ stats }: DashboardChildProps) {
   const { t } = useTranslation('adminDashboard');

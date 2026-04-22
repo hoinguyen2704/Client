@@ -107,7 +107,7 @@ export default function Settings() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <FiLoader className="animate-spin text-3xl text-purple-500" />
+        <FiLoader className="animate-spin text-3xl text-blue-500" />
       </div>
     );
   }
@@ -262,7 +262,7 @@ export default function Settings() {
           <SectionCard
             title={t('payment.title')}
             icon={
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-xl text-purple-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-xl text-blue-600">
                 <FiCreditCard />
               </div>
             }

@@ -214,7 +214,7 @@ export default function Profile() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-3">
-          <FiLoader className="text-3xl text-purple-500 animate-spin" />
+          <FiLoader className="text-3xl text-blue-500 animate-spin" />
           <span className="text-slate-500 font-medium">{t('profile.loading.profile')}</span>
         </div>
       </div>
@@ -300,8 +300,8 @@ export default function Profile() {
                   }}
                 />
               ) : null}
-              <div className={`w-full h-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center ${user?.avatarUrl ? 'hidden' : ''}`}>
-                <FiUser className="text-5xl text-purple-500 dark:text-purple-400" />
+              <div className={`w-full h-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center ${user?.avatarUrl ? 'hidden' : ''}`}>
+                <FiUser className="text-5xl text-blue-500 dark:text-blue-400" />
               </div>
               {/* Upload loading overlay */}
               {uploadingAvatar && (
@@ -333,7 +333,7 @@ export default function Profile() {
               onClick={() => avatarInputRef.current?.click()}
               variant="ghost"
               size="sm"
-              className="text-md text-purple-600 hover:underline"
+              className="text-md text-blue-600 hover:underline"
             >
               {t('profile.avatar.change')}
             </Button>
@@ -348,7 +348,7 @@ export default function Profile() {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -375,7 +375,7 @@ export default function Profile() {
                   className={`w-full h-12 px-4 rounded-xl border-none ${
                     hasPersistedPhoneNumber
                       ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-500 cursor-not-allowed'
-                      : 'bg-slate-100 dark:bg-slate-800 focus:ring-2 focus:ring-purple-500'
+                      : 'bg-slate-100 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500'
                   }`}
                 />
                 <p className="mt-2 text-sm text-slate-500">
@@ -390,7 +390,7 @@ export default function Profile() {
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -424,7 +424,7 @@ export default function Profile() {
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500"
+                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -434,7 +434,7 @@ export default function Profile() {
                     value={emailChangePassword}
                     onChange={(e) => setEmailChangePassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500"
+                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -463,7 +463,7 @@ export default function Profile() {
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value)}
                       placeholder={t('profile.emailOtp.otpPlaceholder')}
-                      className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500"
+                      className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <Button
@@ -518,7 +518,7 @@ export default function Profile() {
                 placeholder="••••••••"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -528,7 +528,7 @@ export default function Profile() {
                 placeholder="••••••••"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -538,7 +538,7 @@ export default function Profile() {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500"
+                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <Button
@@ -548,7 +548,7 @@ export default function Profile() {
               variant="secondary"
               size="md"
               fullWidth
-              className="mt-4 bg-slate-900 dark:bg-slate-700 text-white hover:bg-purple-600 dark:hover:bg-purple-600"
+              className="mt-4 bg-slate-900 dark:bg-slate-700 text-white hover:bg-blue-600 dark:hover:bg-blue-600"
             >
               {savingPassword ? t('profile.passwordSection.submitting') : t('profile.passwordSection.submit')}
             </Button>

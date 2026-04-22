@@ -195,7 +195,7 @@ export default function AdminVouchers() {
                     </td>
                     <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-100 text-purple-600">
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600">
                           <FiTag />
                         </div>
                         <span className="font-bold font-mono tracking-wider">
@@ -204,14 +204,14 @@ export default function AdminVouchers() {
                       </div>
                     </td>
                     <td className="p-3 sm:p-4">
-                      <div className="font-bold text-purple-600">
+                      <div className="font-bold text-blue-600">
                         {v.discountType === "PERCENTAGE"
                           ? `${v.discountValue}%`
                           : formatPrice(v.discountValue)}
                       </div>
                       <div className="text-sm text-slate-500 flex gap-1 items-center mt-1">
                         <span
-                          className={`px-1.5 py-0.5 rounded ${v.couponCategory === "SHIPPING" ? "bg-teal-100 text-teal-600" : "bg-purple-100 text-purple-600"}`}
+                          className={`px-1.5 py-0.5 rounded ${v.couponCategory === "SHIPPING" ? "bg-teal-100 text-teal-600" : "bg-blue-100 text-blue-600"}`}
                         >
                           {v.couponCategory === "SHIPPING"
                             ? t("vouchers.meta.freeship")
@@ -233,7 +233,7 @@ export default function AdminVouchers() {
                         {v.usageLimit && (
                           <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mt-1 overflow-hidden max-w-[60px]">
                             <div
-                              className="h-full bg-purple-600 rounded-full"
+                              className="h-full bg-blue-600 rounded-full"
                               style={{
                                 width: `${(v.usedCount / v.usageLimit) * 100}%`,
                               }}
@@ -380,7 +380,7 @@ export default function AdminVouchers() {
                   onChange={() =>
                     setForm({ ...form, discountType: "PERCENTAGE" })
                   }
-                  className="text-purple-600"
+                  className="text-blue-600"
                 />
                 <span className="text-md">{t("vouchers.form.percentage")}</span>
               </label>
@@ -392,7 +392,7 @@ export default function AdminVouchers() {
                   onChange={() =>
                     setForm({ ...form, discountType: "FIXED_AMOUNT" })
                   }
-                  className="text-purple-600"
+                  className="text-blue-600"
                 />
                 <span className="text-md">{t("vouchers.form.fixedAmount")}</span>
               </label>
@@ -411,7 +411,7 @@ export default function AdminVouchers() {
                   onChange={() =>
                     setForm({ ...form, couponCategory: "PRODUCT" })
                   }
-                  className="text-purple-600"
+                  className="text-blue-600"
                 />
                 <span className="text-md">
                   {t("vouchers.form.productVoucher")}
@@ -425,7 +425,7 @@ export default function AdminVouchers() {
                   onChange={() =>
                     setForm({ ...form, couponCategory: "SHIPPING" })
                   }
-                  className="text-purple-600"
+                  className="text-blue-600"
                 />
                 <span className="text-md">{t("vouchers.form.shippingVoucher")}</span>
               </label>
@@ -512,7 +512,7 @@ export default function AdminVouchers() {
           </div>
 
           {/* Visibility */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-100 dark:border-blue-900/50 space-y-3">
+          <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-blue-50 dark:from-blue-950/30 dark:to-blue-950/30 border border-blue-100 dark:border-blue-900/50 space-y-3">
             <div className="flex items-start sm:items-center justify-between gap-3">
               <div>
                 <div className="text-md font-bold flex items-center gap-2">
@@ -556,7 +556,7 @@ export default function AdminVouchers() {
                 }
                 className={`p-3 rounded-xl border-2 text-left transition-all ${
                   form.applyType === "ALL"
-                    ? "border-purple-500 bg-purple-50 dark:bg-purple-950/30"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
                     : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
                 }`}
               >
@@ -572,7 +572,7 @@ export default function AdminVouchers() {
                 }
                 className={`p-3 rounded-xl border-2 text-left transition-all ${
                   form.applyType === "SPECIFIC_PRODUCTS"
-                    ? "border-purple-500 bg-purple-50 dark:bg-purple-950/30"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
                     : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
                 }`}
               >

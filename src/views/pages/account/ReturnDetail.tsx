@@ -151,7 +151,7 @@ export default function ReturnDetail() {
     <div className="text-center py-12">
       <FiXCircle className="text-6xl text-slate-300 mx-auto mb-4" />
       <h2 className="text-xl font-bold mb-2">{t('returnDetail.notFound.title')}</h2>
-      <Link to="/user/returns" className="text-purple-600 hover:underline">← {t('returnDetail.notFound.back')}</Link>
+      <Link to="/user/returns" className="text-blue-600 hover:underline">← {t('returnDetail.notFound.back')}</Link>
     </div>
   );
 
@@ -164,7 +164,7 @@ export default function ReturnDetail() {
           <div>
             <h1 className="text-xl md:text-2xl font-bold">{t('returnDetail.header.title', { returnNumber: data.returnNumber })}</h1>
             <p className="text-md text-slate-500 mt-0.5">
-              {t('returnDetail.header.order')}: <Link to={`/user/orders/${data.orderNumber}`} className="text-purple-600 font-semibold hover:underline">{data.orderNumber}</Link>
+              {t('returnDetail.header.order')}: <Link to={`/user/orders/${data.orderNumber}`} className="text-blue-600 font-semibold hover:underline">{data.orderNumber}</Link>
             </p>
           </div>
         </div>
@@ -225,13 +225,13 @@ export default function ReturnDetail() {
                     {/* Middle: Line & Dot */}
                     <div className="relative flex flex-col items-center">
                       {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
-                      <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                      <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
                       {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
                     </div>
 
                     {/* Right: Content */}
                     <div className="pb-8 pt-1 flex-1">
-                      <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                      <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-slate-600 dark:text-slate-400'}`}>
                         {step.label}
                       </h4>
                     </div>
@@ -267,7 +267,7 @@ export default function ReturnDetail() {
                       </p>
                     </div>
                     <div className="text-right flex-shrink-0 space-y-0.5">
-                      <p className="font-bold text-purple-600 text-lg">{formatPrice(Number(line.lineAmount || 0))}</p>
+                      <p className="font-bold text-blue-600 text-lg">{formatPrice(Number(line.lineAmount || 0))}</p>
                       {line.approvedQuantity != null && (
                         <p className="text-sm font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full inline-block">
                           {t('returnDetail.approvedQuantity', { count: line.approvedQuantity })}
@@ -322,7 +322,7 @@ export default function ReturnDetail() {
             <div className="space-y-3 text-md">
               <div className="flex justify-between">
                 <span className="text-slate-500">{t('returnDetail.amount.requested')}</span>
-                <span className="font-semibold text-purple-600">{formatPrice(Number(data.requestedAmount || 0))}</span>
+                <span className="font-semibold text-blue-600">{formatPrice(Number(data.requestedAmount || 0))}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">{t('returnDetail.amount.approved')}</span>
@@ -345,7 +345,7 @@ export default function ReturnDetail() {
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <h3 className="text-lg font-bold">{t('returnDetail.refunds.title')}</h3>
               {data.refunds.length > 0 && (
-                <span className="text-md font-semibold bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300 px-2 py-0.5 rounded-full">
+                <span className="text-md font-semibold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 rounded-full">
                   {data.refunds.length}
                 </span>
               )}

@@ -97,7 +97,7 @@ export default function Feedbacks() {
                     {!review.adminReply && (
                       <Button onClick={() => setReplyId(replyId === review.id ? null : review.id)}
                         variant="ghost" size="sm" icon={<FiMessageCircle />}
-                        className="text-purple-600">
+                        className="text-blue-600">
                         {t('feedbacks.reply')}
                       </Button>
                     )}
@@ -110,7 +110,7 @@ export default function Feedbacks() {
                         defaultValue=""
                         autoFocus
                         onKeyDown={(e) => { if (e.key === 'Enter') handleReply(review.id); }}
-                        className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-purple-500 outline-none text-md" />
+                        className="flex-1 h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 outline-none text-md" />
                       <Button onClick={() => handleReply(review.id)} size="sm" className="w-full sm:w-auto">{t('feedbacks.send')}</Button>
                     </div>
                   )}

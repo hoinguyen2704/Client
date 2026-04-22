@@ -13,7 +13,7 @@ export default function DashboardStats({ stats, onOpenModal }: DashboardStatsPro
   };
 
   const cards = [
-    { key: 'revenue', label: t('stats.revenue'), value: formatPrice(stats.totalRevenue ?? 0), icon: FiDollarSign, color: 'purple' },
+    { key: 'revenue', label: t('stats.revenue'), value: formatPrice(stats.totalRevenue ?? 0), icon: FiDollarSign, color: 'blue' },
     { key: 'orders', label: t('stats.orders.label'), value: fmt(stats.totalOrders ?? 0), sub: t('stats.orders.sub', { count: stats.newOrders ?? 0 }), icon: FiShoppingBag, color: 'blue' },
     { key: 'customers', label: t('stats.customers.label'), value: fmt(stats.totalCustomers ?? 0), sub: t('stats.customers.sub', { count: stats.newCustomers ?? 0 }), icon: FiUsers, color: 'orange' },
     { key: 'products', label: t('stats.productsSold'), value: fmt(stats.productsSold ?? 0), icon: FiBox, color: 'emerald' },
@@ -22,7 +22,6 @@ export default function DashboardStats({ stats, onOpenModal }: DashboardStatsPro
   ];
 
   const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-    purple: { bg: 'bg-purple-100', text: 'text-purple-600', border: 'hover:border-purple-300 hover:shadow-purple-500/20' },
     blue:   { bg: 'bg-blue-100', text: 'text-blue-600', border: 'hover:border-blue-300 hover:shadow-blue-500/20' },
     orange: { bg: 'bg-orange-100', text: 'text-orange-600', border: 'hover:border-orange-300 hover:shadow-orange-500/20' },
     emerald:{ bg: 'bg-emerald-100', text: 'text-emerald-600', border: 'hover:border-emerald-300 hover:shadow-emerald-500/20' },

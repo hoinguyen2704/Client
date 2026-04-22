@@ -41,7 +41,7 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
         ? `T${monthNumber}`
         : parts[0];
 
-  const textColor = isToday ? '#7c3aed' : '#64748b';
+  const textColor = isToday ? '#2563eb' : '#64748b';
   const fontWeight = isToday ? 700 : 500;
 
   return (
@@ -49,8 +49,8 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
       {/* Today indicator dot */}
       {isToday && (
         <>
-          <circle cx={0} cy={-6} r={3} fill="#7c3aed" />
-          <circle cx={0} cy={-6} r={6} fill="#7c3aed" opacity={0.15} />
+          <circle cx={0} cy={-6} r={3} fill="#2563eb" />
+          <circle cx={0} cy={-6} r={6} fill="#2563eb" opacity={0.15} />
         </>
       )}
 
@@ -61,7 +61,7 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
           y={5}
           dy={0}
           textAnchor="middle"
-          fill={isToday ? '#7c3aed' : '#94a3b8'}
+          fill={isToday ? '#2563eb' : '#94a3b8'}
           fontSize={10}
           fontWeight={isToday ? 700 : 500}
         >
@@ -89,7 +89,7 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
           y={isWeekLabel ? 30 : 21}
           dy={0}
           textAnchor="middle"
-          fill="#7c3aed"
+          fill="#2563eb"
           fontSize={9}
           fontWeight={700}
         >

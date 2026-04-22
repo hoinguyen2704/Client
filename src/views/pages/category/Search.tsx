@@ -117,7 +117,7 @@ export default function Search() {
       {/* Breadcrumb */}
       <nav className="flex text-sm sm:text-md text-slate-500 mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
-          <li><Link to="/" className="hover:text-purple-600">{t('layout:navigation.home')}</Link></li>
+          <li><Link to="/" className="hover:text-blue-600">{t('layout:navigation.home')}</Link></li>
           <li><span className="mx-2">/</span></li>
           <li><span className="text-slate-900 dark:text-slate-100 font-medium">{t('catalog:search.breadcrumbCurrent')}</span></li>
         </ol>
@@ -151,7 +151,7 @@ export default function Search() {
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryChange(cat.slug)}
-                      className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${selectedCategory === cat.slug ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                      className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${selectedCategory === cat.slug ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                     >
                       {cat.name}
                     </button>
@@ -168,9 +168,9 @@ export default function Search() {
                       <Checkbox
                           checked={selectedBrand === brand.slug}
                           onCheckedChange={() => handleBrandChange(brand.slug)}
-                          className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 dark:checked:border-purple-500 dark:checked:bg-purple-500"
+                          className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 dark:checked:border-blue-500 dark:checked:bg-blue-500"
                         />
-                      <span className="text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{brand.name}</span>
+                      <span className="text-slate-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{brand.name}</span>
                     </label>
                   ))}
                 </div>

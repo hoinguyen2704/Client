@@ -55,7 +55,7 @@ export default function SlidingTabs({
       >
         {/* Sliding pill indicator */}
         <div
-          className="absolute top-1.5 bottom-1.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-xl shadow-md transition-all duration-300 ease-out"
+          className="absolute top-1.5 bottom-1.5 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-md transition-all duration-300 ease-out"
           style={{ left: indicator.left, width: indicator.width }}
         />
         {tabs.map((tab) => (
@@ -89,7 +89,7 @@ export default function SlidingTabs({
           onClick={() => onChange(tab.id)}
           className={`px-4 sm:px-6 py-2.5 sm:py-3 text-md sm:text-base font-medium whitespace-nowrap transition-colors ${
             activeTab === tab.id
-              ? 'text-purple-600'
+              ? 'text-blue-600'
               : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
@@ -98,7 +98,7 @@ export default function SlidingTabs({
       ))}
       {/* Sliding underline indicator */}
       <div
-        className="absolute bottom-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full transition-all duration-300 ease-out"
+        className="absolute bottom-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full transition-all duration-300 ease-out"
         style={{ left: indicator.left, width: indicator.width }}
       />
     </div>

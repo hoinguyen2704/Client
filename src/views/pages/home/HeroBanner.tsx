@@ -51,7 +51,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
     >
       <form 
         onSubmit={handleSearch} 
-        className="relative flex items-center w-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 p-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(139,92,246,0.15)] focus-within:ring-2 focus-within:ring-purple-500/50 transition-all duration-300"
+        className="relative flex items-center w-full rounded-full border border-white/50 bg-white/95 p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.16)] backdrop-blur-xl transition-all duration-300 focus-within:ring-4 focus-within:ring-blue-500/15 dark:border-slate-700/50 dark:bg-slate-900/90 dark:shadow-[0_18px_40px_rgba(15,23,42,0.34)]"
       >
         <div className="pl-5 text-slate-400">
           <FiSearch className="text-2xl" />
@@ -71,7 +71,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
         />
         <button 
           type="submit"
-          className="h-14 px-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold flex-shrink-0 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 transition-all active:scale-95"
+          className="flex h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-blue-600 px-8 font-semibold text-white shadow-sm shadow-blue-950/15 transition-all hover:bg-blue-700 active:scale-95"
         >
           {t('hero.searchButton')}
         </button>
@@ -94,7 +94,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
                 <img src={product.mainImageUrl || ''} alt={product.name} className="w-12 h-12 rounded-lg object-cover" referrerPolicy="no-referrer" />
                 <div>
                   <h4 className="font-medium text-slate-900 dark:text-white line-clamp-1">{product.name}</h4>
-                  <p className="text-md text-purple-600 font-bold">
+                  <p className="text-md font-bold text-slate-900 dark:text-slate-100">
                     {formatPrice(product.variants?.[0]?.price || product.originPrice || 0)}
                   </p>
                 </div>
@@ -125,14 +125,14 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
 
   return (
     <section className="w-full px-4 md:px-8 lg:px-12 py-6">
-      <div className="relative rounded-2xl overflow-hidden h-[400px] md:h-[500px] lg:h-[600px] bg-slate-900 group">
+      <div className="group relative h-[400px] overflow-hidden rounded-[2rem] bg-slate-950 md:h-[500px] lg:h-[600px]">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentBanner}
             src={banners[currentBanner].image}
             alt={banners[currentBanner].title}
             initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 0.6, scale: 1 }}
+            animate={{ opacity: 0.78, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
             className="absolute inset-0 w-full h-full object-cover"
@@ -140,12 +140,13 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
           />
         </AnimatePresence>
         
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center z-10">
+        <div className="absolute inset-0 z-10 bg-[linear-gradient(180deg,rgba(15,23,42,0.22),rgba(15,23,42,0.48))]" />
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center text-white">
           <motion.h2 
             key={`title-${currentBanner}`}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg"
+            className="mb-4 max-w-4xl text-4xl font-bold tracking-tight drop-shadow-lg md:text-6xl"
           >
             {banners[currentBanner].title}
           </motion.h2>
@@ -154,7 +155,7 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="text-xl md:text-2xl font-medium mb-12 drop-shadow-md"
+            className="mb-12 max-w-3xl text-xl font-medium text-slate-100/90 drop-shadow-md md:text-2xl"
           >
             {banners[currentBanner].subtitle}
           </motion.p>
@@ -163,10 +164,10 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
           <HeroSearchBar />
         </div>
 
-        <button onClick={prevBanner} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/40 transition-colors z-20">
+        <button onClick={prevBanner} className="absolute left-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-slate-900/35 text-white backdrop-blur-md transition-colors hover:bg-slate-900/55">
           <FiChevronLeft className="text-2xl" />
         </button>
-        <button onClick={nextBanner} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/40 transition-colors z-20">
+        <button onClick={nextBanner} className="absolute right-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-slate-900/35 text-white backdrop-blur-md transition-colors hover:bg-slate-900/55">
           <FiChevronRight className="text-2xl" />
         </button>
 

@@ -5,19 +5,19 @@ import { cn } from '@/utils/cn';
 import type { ButtonProps, ButtonSize, ButtonVariant } from '../ui/types';
 
 const BASE_CLASS =
-  'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none';
+  'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none';
 
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary:
-    'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:-translate-y-0.5 active:translate-y-0',
+    'bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-950/10 hover:shadow-md hover:shadow-blue-950/15 hover:-translate-y-0.5 active:translate-y-0',
   secondary:
-    'bg-slate-100 dark:bg-slate-800 text-body hover:bg-slate-200 dark:hover:bg-slate-700',
-  danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm',
+    'bg-slate-100 dark:bg-slate-800 text-body hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700',
+  danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-950/10',
   ghost:
     'bg-transparent text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800',
   outline:
-    'border-2 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 bg-transparent',
-  success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm',
+    'border-2 border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 bg-transparent',
+  success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-950/10',
 };
 
 const SIZE_CLASS: Record<ButtonSize, string> = {

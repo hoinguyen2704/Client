@@ -36,7 +36,7 @@ export default function OrderSummary({ cartItems, currentStep, onBack, onNext }:
         <div className="flex justify-between items-end">
           <span className="font-bold text-base sm:text-lg">Tổng thanh toán</span>
           <div className="text-right">
-            <span className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
+            <span className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-500">
               {formatPrice(total)}
             </span>
           </div>

@@ -36,7 +36,7 @@ export default function ProductForm() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-3">
-          <FiLoader className="text-3xl text-purple-500 animate-spin" />
+          <FiLoader className="animate-spin text-3xl text-blue-600" />
           <span className="text-slate-500 font-medium">
             {t("productForm.loading")}
           </span>

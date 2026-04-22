@@ -28,7 +28,7 @@ export default function Footer() {
         <div className="space-y-6">
           <Link to="/" className="flex items-center gap-3">
               <LogoIcon />
-            <span className="text-2xl font-bold text-[#2539e6] dark:text-white">
+            <span className="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
               {shop.shopName}
             </span>
           </Link>
@@ -64,7 +64,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/about"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.company')}
               </Link>
@@ -72,7 +72,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/careers"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.careers')}
               </Link>
@@ -80,7 +80,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/terms"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.terms')}
               </Link>
@@ -88,7 +88,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/privacy"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.privacy')}
               </Link>
@@ -96,7 +96,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/contact"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.partnership')}
               </Link>
@@ -113,7 +113,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/support/shopping"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.shoppingGuide')}
               </Link>
@@ -121,7 +121,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/support/payment"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.paymentGuide')}
               </Link>
@@ -129,7 +129,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/support/shipping"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.shippingPolicy')}
               </Link>
@@ -137,7 +137,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/support/warranty"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.warrantyPolicy')}
               </Link>
@@ -145,7 +145,7 @@ export default function Footer() {
             <li>
               <Link
                 to="/support/returns"
-                className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {t('footer.returnPolicy')}
               </Link>

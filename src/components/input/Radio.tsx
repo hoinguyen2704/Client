@@ -17,7 +17,7 @@ export default function Radio({
     <input
       type="radio"
       className={cn(
-        'appearance-none w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-600 checked:border-[6px] checked:border-purple-600 dark:checked:border-purple-400 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500/30',
+        'appearance-none w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-600 checked:border-[6px] checked:border-blue-600 dark:checked:border-blue-400 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/30',
         className,
       )}
       onChange={handleChange}

@@ -296,10 +296,10 @@ export default function CMS() {
 
       {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
-        <button onClick={() => setTab('banners')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'banners' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
+        <button onClick={() => setTab('banners')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'banners' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
           {t('adminContent:cms.tabs.banners')}
         </button>
-        <button onClick={() => setTab('articles')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'articles' ? 'bg-purple-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
+        <button onClick={() => setTab('articles')} className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium whitespace-nowrap transition-colors ${tab === 'articles' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700'}`}>
           {t('adminContent:cms.tabs.articles')}
         </button>
       </div>

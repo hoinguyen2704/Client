@@ -95,21 +95,21 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(to right, #9333ea, #3b82f6);
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
   color: white;
 }
 .btn-primary:hover {
-  box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.3);
-  transform: scale(1.02);
+  box-shadow: 0 10px 20px -8px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
 }
 
 .btn-outline {
-  border: 2px solid #9333ea;
-  color: #9333ea;
+  border: 2px solid #2563eb;
+  color: #2563eb;
   background: transparent;
 }
 .btn-outline:hover {
-  background: rgba(147, 51, 234, 0.05);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 .btn-danger {

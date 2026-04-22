@@ -69,7 +69,7 @@ export default memo(function BasicInfoSection(props: Props) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={t("basicInfo.placeholders.name")}
-            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full h-12 rounded-xl border border-slate-200 bg-white px-4 outline-none focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
           />
         </div>
 
@@ -81,7 +81,7 @@ export default memo(function BasicInfoSection(props: Props) {
             onChange={(e) => setProductCode(e.target.value)}
             placeholder={t("basicInfo.placeholders.productCode")}
             readOnly={isEditMode}
-            className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-70"
+            className="w-full h-12 rounded-xl border border-slate-200 bg-white px-4 outline-none focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900"
           />
           <p className="mt-1 text-sm text-slate-500">
             {isEditMode
@@ -131,7 +131,7 @@ export default memo(function BasicInfoSection(props: Props) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("basicInfo.placeholders.description")}
-            className="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 resize-y outline-none"
+            className="w-full h-64 resize-y rounded-xl border border-slate-200 bg-white p-4 outline-none focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
           />
         </div>
         </div>
@@ -190,12 +190,12 @@ export default memo(function BasicInfoSection(props: Props) {
                             }}
                             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
                               alreadyAdded
-                                ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium"
+                                ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
                                 : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
                             }`}
                           >
                             {alreadyAdded ? (
-                              <FiCheckSquare className="text-purple-500 flex-shrink-0" />
+                              <FiCheckSquare className="text-blue-500 flex-shrink-0" />
                             ) : (
                               <FiSquare className="text-slate-400 flex-shrink-0" />
                             )}
@@ -256,7 +256,7 @@ export default memo(function BasicInfoSection(props: Props) {
                   setSpecs(newSpecs);
                 }}
                 placeholder={getHintForSpec(spec.key)}
-                className="flex-1 h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-800 border-none outline-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-md"
+                className="flex-1 h-10 rounded-lg border border-slate-200 bg-white px-3 text-md outline-none focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
               />
             </div>
           ))}

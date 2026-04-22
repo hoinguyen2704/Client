@@ -25,10 +25,10 @@ const VARIANT_CONFIG: Record<
 > = {
   product: {
     containerClassName:
-      "border border-purple-100 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/20",
-    accentClassName: "text-purple-600",
+      "border border-blue-100 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-900/20",
+    accentClassName: "text-blue-600",
     saveButtonClassName:
-      "from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700",
+      "from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700",
   },
   shipping: {
     containerClassName:

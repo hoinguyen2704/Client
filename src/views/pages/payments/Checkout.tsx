@@ -362,17 +362,17 @@ export default function Checkout() {
                 variant="ghost"
                 size="sm"
                 icon={<FiPlus className="group-hover:rotate-90 transition-transform" />}
-                className="group w-full justify-center text-md text-purple-600 hover:text-purple-700 dark:text-purple-400 sm:w-auto"
+                className="group w-full justify-center text-md text-blue-600 hover:text-blue-700 dark:text-blue-400 sm:w-auto"
               >
                 {t('address.addNew')}
               </Button>
             }
           >
             {addresses.length === 0 ? (
-              <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-800/20 rounded-2xl p-5 sm:p-8 mb-2 sm:mb-4 border border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center text-center group transition-all hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:border-purple-300 dark:hover:border-purple-700/50">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-800/20 rounded-2xl p-5 sm:p-8 mb-2 sm:mb-4 border border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center text-center group transition-all hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:border-blue-300 dark:hover:border-blue-700/50">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-3 sm:mb-4 relative z-10 border border-slate-100 dark:border-slate-700 group-hover:scale-110 transition-transform">
-                  <FiMapPin className="text-xl sm:text-2xl text-purple-500" />
+                  <FiMapPin className="text-xl sm:text-2xl text-blue-500" />
                 </div>
                 <h3 className="text-base sm:text-lg font-bold mb-2 relative z-10 text-slate-800 dark:text-white">{t('address.emptyTitle')}</h3>
                 <p className="text-md text-slate-500 mb-6 max-w-sm relative z-10">{t('address.emptyDescription')}</p>
@@ -382,7 +382,7 @@ export default function Checkout() {
                   variant="outline"
                   size="sm"
                   icon={<FiPlus />}
-                  className="px-6 border-purple-100 dark:border-purple-900/50 hover:border-purple-500 hover:text-purple-700 text-purple-600 dark:text-purple-400 relative z-10 shadow-sm hover:shadow-md"
+                  className="px-6 border-blue-100 dark:border-blue-900/50 hover:border-blue-500 hover:text-blue-700 text-blue-600 dark:text-blue-400 relative z-10 shadow-sm hover:shadow-md"
                 >
                   {t('address.emptyAction')}
                 </Button>
@@ -390,7 +390,7 @@ export default function Checkout() {
             ) : (
               <div className="space-y-3 sm:space-y-4 max-h-[44vh] sm:max-h-[400px] overflow-y-auto custom-scrollbar p-1">
                 {addresses.map(addr => (
-                  <label key={addr.id} className={`flex items-start gap-3 sm:gap-4 p-3 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all ${selectedAddressId === addr.id ? 'border-purple-500 bg-purple-50/20 dark:bg-purple-900/10 shadow-sm' : 'border-slate-100 dark:border-slate-800 hover:border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
+                  <label key={addr.id} className={`flex items-start gap-3 sm:gap-4 p-3 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all ${selectedAddressId === addr.id ? 'border-blue-500 bg-blue-50/20 dark:bg-blue-900/10 shadow-sm' : 'border-slate-100 dark:border-slate-800 hover:border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
                     <Radio
                       name="address"
                       checked={selectedAddressId === addr.id}
@@ -403,7 +403,7 @@ export default function Checkout() {
                           <span className="font-bold text-md sm:text-base text-slate-800 dark:text-white">{addr.fullName}</span>
                           <span className="text-disabled">|</span> 
                           <span className="font-medium text-md sm:text-base text-muted-strong">{addr.phoneNumber}</span>
-                          {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-11 font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50 uppercase tracking-wide">{t('address.default')}</span>}
+                          {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-11 font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 uppercase tracking-wide">{t('address.default')}</span>}
                         </div>
                         <IconButton
                           onClick={() => handleEditAddress(addr)}
@@ -434,7 +434,7 @@ export default function Checkout() {
                       <p className="text-sm text-red-500 mt-1">{item.issueMessage || t('items.unavailable')}</p>
                     )}
                   </div>
-                  <span className="font-bold text-md sm:text-base text-purple-600 shrink-0">{formatPrice(item.subtotal)}</span>
+                  <span className="font-bold text-md sm:text-base text-blue-600 shrink-0">{formatPrice(item.subtotal)}</span>
                 </div>
               ))}
             </div>
@@ -444,7 +444,7 @@ export default function Checkout() {
           <SectionCard title={t('payment.title')}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               {paymentMethods.map(pm => (
-                <label key={pm.id} className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border cursor-pointer transition-colors ${paymentMethod === pm.id ? 'border-purple-500 bg-purple-50/30 dark:bg-purple-900/10' : 'border-slate-200 dark:border-slate-700'}`}>
+                <label key={pm.id} className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border cursor-pointer transition-colors ${paymentMethod === pm.id ? 'border-blue-500 bg-blue-50/30 dark:bg-blue-900/10' : 'border-slate-200 dark:border-slate-700'}`}>
                   <Radio
                     name="payment"
                     checked={paymentMethod === pm.id}
@@ -474,7 +474,7 @@ export default function Checkout() {
             <div className="space-y-3">
               <div className="flex gap-2.5 sm:gap-3">
                 <input
-                  className="min-w-0 flex-1 px-3.5 sm:px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-md uppercase focus:ring-2 focus:ring-purple-500 outline-none transition-all placeholder:font-sans"
+                  className="min-w-0 flex-1 px-3.5 sm:px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-md uppercase focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:font-sans"
                   placeholder={t('summary.couponPlaceholder')}
                   value={inputCouponCode}
                   onChange={(e) => {
@@ -485,7 +485,7 @@ export default function Checkout() {
                   onClick={handleApplyCoupon}
                   icon={<FiTag className="text-lg" />}
                   variant="ghost"
-                  className="w-12 h-12 shrink-0 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+                  className="w-12 h-12 shrink-0 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40"
                   title={t('summary.applyCoupon')}
                 />
               </div>
@@ -564,7 +564,7 @@ export default function Checkout() {
               )}
             </div>
           </div>
-          <div className="rounded-2xl border border-purple-100/80 bg-gradient-to-br from-white via-purple-50/50 to-blue-50/60 p-4 sm:p-5 dark:border-purple-900/40 dark:from-slate-900 dark:via-purple-950/15 dark:to-blue-950/15">
+          <div className="rounded-2xl border border-blue-100/80 bg-gradient-to-br from-white via-blue-50/50 to-blue-50/60 p-4 sm:p-5 dark:border-blue-900/40 dark:from-slate-900 dark:via-blue-950/15 dark:to-blue-950/15">
             <div className="space-y-3">
               <div className="min-w-0">
                 <p className="text-lg font-bold text-slate-900 dark:text-white sm:text-xl">{t('summary.total')}</p>
@@ -576,7 +576,7 @@ export default function Checkout() {
                       : t('summary.taxExcluded')}
                 </p>
               </div>
-              <span className="block w-full text-right font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 text-[1.7rem] sm:text-[2rem] tabular-nums">
+              <span className="block w-full text-right font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-600 text-[1.7rem] sm:text-[2rem] tabular-nums">
                 {formatPrice(total)}
               </span>
             </div>
@@ -615,7 +615,7 @@ export default function Checkout() {
           >
             <div className="flex flex-col sm:flex-row gap-2">
               <input
-                className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-md uppercase focus:ring-2 focus:ring-purple-500 outline-none"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-md uppercase focus:ring-2 focus:ring-blue-500 outline-none"
                 placeholder={t('voucherModal.manualPlaceholder')}
                 value={inputCouponCode}
                 onChange={(e) => {
@@ -644,20 +644,20 @@ export default function Checkout() {
                   aria-expanded={expandPublic}
                   className="group -m-2 inline-flex max-w-full items-center gap-3 rounded-2xl px-2 py-1.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
                 >
-                  <FiGift className="shrink-0 text-purple-600" />
+                  <FiGift className="shrink-0 text-blue-600" />
                   <span className="shrink-0 whitespace-nowrap leading-none">
                     {t('voucherModal.publicTitle', { defaultValue: 'Kho voucher' })}
                   </span>
-                  <span className="shrink-0 px-2 py-0.5 text-11 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                  <span className="shrink-0 px-2 py-0.5 text-11 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                     {publicVouchers.length}
                   </span>
-                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-purple-600 ${expandPublic ? 'rotate-180' : ''}`} />
+                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-blue-600 ${expandPublic ? 'rotate-180' : ''}`} />
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
-                  <FiGift className="shrink-0 text-purple-600" />
+                  <FiGift className="shrink-0 text-blue-600" />
                   <span>{t('voucherModal.publicTitle', { defaultValue: 'Kho voucher' })}</span>
-                  <span className="px-2 py-0.5 text-11 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                  <span className="px-2 py-0.5 text-11 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                     {publicVouchers.length}
                   </span>
                 </div>
@@ -696,18 +696,18 @@ export default function Checkout() {
                   aria-expanded={expandSaved}
                   className="group -m-2 inline-flex max-w-full items-center gap-3 rounded-2xl px-2 py-1.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
                 >
-                  <FiBookmark className="shrink-0 text-purple-600" />
+                  <FiBookmark className="shrink-0 text-blue-600" />
                   <span className="shrink-0 whitespace-nowrap leading-none">
                     {t('voucherModal.savedTitle')}
                   </span>
                   <span className="shrink-0 px-2 py-0.5 text-11 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                     {savedVouchers.length}
                   </span>
-                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-purple-600 ${expandSaved ? 'rotate-180' : ''}`} />
+                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-blue-600 ${expandSaved ? 'rotate-180' : ''}`} />
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
-                  <FiBookmark className="shrink-0 text-purple-600" />
+                  <FiBookmark className="shrink-0 text-blue-600" />
                   <span>{t('voucherModal.savedTitle')}</span>
                   <span className="px-2 py-0.5 text-11 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                     {savedVouchers.length}
@@ -754,7 +754,7 @@ export default function Checkout() {
             <Button onClick={resetForm} variant="secondary" className="h-11 sm:h-14 px-5 sm:px-10 rounded-2xl font-bold text-md sm:text-lg">
               {t('address.form.cancel')}
             </Button>
-            <Button onClick={handleSaveAddress} variant="primary" className="h-11 sm:h-14 px-5 sm:px-10 text-md sm:text-lg font-bold rounded-2xl shadow-xl shadow-purple-500/30">
+            <Button onClick={handleSaveAddress} variant="primary" className="h-11 sm:h-14 px-5 sm:px-10 text-md sm:text-lg font-bold rounded-2xl shadow-xl shadow-blue-500/30">
               {t('address.form.save')}
             </Button>
           </>
@@ -764,32 +764,32 @@ export default function Checkout() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
               <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.fullName')}</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.fullNamePlaceholder')} value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.fullNamePlaceholder')} value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
               <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.phoneNumber')}</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.phoneNumberPlaceholder')} value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.phoneNumberPlaceholder')} value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
               <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.province')}</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.provincePlaceholder')} value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.provincePlaceholder')} value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
               <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.district')}</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.districtPlaceholder')} value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.districtPlaceholder')} value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
               <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.ward')}</label>
-              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.wardPlaceholder')} value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
+              <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.wardPlaceholder')} value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
             </div>
           </div>
 
           <div className="space-y-2 sm:space-y-3">
             <label className="text-md font-semibold text-body uppercase tracking-wider">{t('address.form.detailAddress')}</label>
-            <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-purple-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.detailAddressPlaceholder')} value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
+            <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('address.form.detailAddressPlaceholder')} value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
           </div>
 
           <div className="pt-1 sm:pt-4">

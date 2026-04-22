@@ -161,18 +161,18 @@ export default function OrderDetail() {
                       <div className="relative flex flex-col items-center">
                         {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
                         
-                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
                         
                         {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
                       </div>
 
                       {/* Right: Content */}
                       <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-purple-600' : 'text-muted-strong'}`}>
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted-strong'}`}>
                           {history.status === 'SHIPPED' ? t('orderDetail.timelineDelivered') : history.description}
                         </h4>
                         {isFirst && history.status === 'SHIPPED' && (
-                          <div className="inline-flex items-center gap-1 text-md text-purple-600 mt-1">
+                          <div className="inline-flex items-center gap-1 text-md text-blue-600 mt-1">
                             <FiCheck /> {t('orderDetail.timelineDeliveredDescription')}
                           </div>
                         )}
@@ -187,7 +187,7 @@ export default function OrderDetail() {
           {/* Items */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4 sm:mb-6">
-              <FiPackage className="text-purple-600" /> {t('orderDetail.itemsTitle', { count: order.items?.length || 0 })}
+              <FiPackage className="text-blue-600" /> {t('orderDetail.itemsTitle', { count: order.items?.length || 0 })}
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[620px] text-left border-collapse">
@@ -208,7 +208,7 @@ export default function OrderDetail() {
                       </td>
                       <td className="py-4 text-center font-medium">{formatPrice(item.unitPrice)}</td>
                       <td className="py-4 text-center font-medium">{item.quantity}</td>
-                      <td className="py-4 text-right font-bold text-purple-600">{formatPrice(item.subtotal)}</td>
+                      <td className="py-4 text-right font-bold text-blue-600">{formatPrice(item.subtotal)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -229,7 +229,7 @@ export default function OrderDetail() {
         <div className="space-y-4 sm:space-y-6">
           {/* Customer Info */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-purple-600" /> {t('orderDetail.customerTitle')}</h2>
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-blue-600" /> {t('orderDetail.customerTitle')}</h2>
             <div className="space-y-3 text-md">
               {order.customerName && (
                 <div className="flex items-start justify-between gap-3">
@@ -240,7 +240,7 @@ export default function OrderDetail() {
               {order.customerEmail && (
                 <div className="flex items-start justify-between gap-3">
                   <span className="text-slate-500">{t('orderDetail.email')}:</span>
-                  <span className="font-medium text-purple-600">{order.customerEmail}</span>
+                  <span className="font-medium text-blue-600">{order.customerEmail}</span>
                 </div>
               )}
               {order.customerPhone && (
@@ -273,7 +273,7 @@ export default function OrderDetail() {
               {order.couponCode && (
                 <div className="flex items-start justify-between gap-3">
                   <span className="text-slate-500">{t('orderDetail.couponCode')}:</span>
-                  <span className="font-mono font-bold text-purple-600">{order.couponCode}</span>
+                  <span className="font-mono font-bold text-blue-600">{order.couponCode}</span>
                 </div>
               )}
             </div>
@@ -300,7 +300,7 @@ export default function OrderDetail() {
                   </span>
                 </div>
               )}
-              <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-purple-600">
+              <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-blue-600">
                 <span>{t('orderDetail.summary.total')}</span><span>{formatPrice(order.totalAmount)}</span>
               </div>
             </div>

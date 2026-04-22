@@ -26,7 +26,7 @@ export default function CategoryFormPage() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <FiLoader className="animate-spin text-3xl text-purple-500" />
+          <FiLoader className="animate-spin text-3xl text-blue-500" />
           <span className="font-medium text-slate-500">
             {t("categories.form.loading")}
           </span>
@@ -83,7 +83,7 @@ export default function CategoryFormPage() {
         <SectionCard
           title={t("categories.form.basicTitle")}
           description={t("categories.form.basicDescription")}
-          icon={<FiTag className="text-xl text-purple-500" />}
+          icon={<FiTag className="text-xl text-blue-500" />}
           className="border-2 border-slate-200 dark:border-slate-700"
         >
           <div className="max-w-2xl">
@@ -147,7 +147,7 @@ export default function CategoryFormPage() {
           title={
             <div className="flex flex-wrap items-center gap-3">
               <span>{t("categories.form.specTitle")}</span>
-              <span className="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-1 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+              <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-1 text-sm font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                 {t("categories.form.specCount", {
                   count: form.specTemplates.length,
                 })}
@@ -155,7 +155,7 @@ export default function CategoryFormPage() {
             </div>
           }
           description={t("categories.form.specDescription")}
-          icon={<FiList className="text-xl text-purple-500" />}
+          icon={<FiList className="text-xl text-blue-500" />}
           action={
             <div className="flex flex-wrap justify-end gap-2">
               <Button
@@ -164,7 +164,7 @@ export default function CategoryFormPage() {
                 variant="ghost"
                 size="sm"
                 icon={<FiPlus />}
-                className="text-purple-600"
+                className="text-blue-600"
               >
                 {t("categories.form.specAdd")}
               </Button>

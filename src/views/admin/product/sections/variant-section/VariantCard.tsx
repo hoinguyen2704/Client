@@ -83,16 +83,16 @@ export default memo(function VariantCard(props: VariantCardProps) {
       style={{ scrollMarginTop: "11rem" }}
       className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${
         isExpanded
-          ? "border-purple-200 shadow-[0_14px_36px_rgba(15,23,42,0.06)] dark:border-purple-800"
+          ? "border-blue-200 shadow-[0_14px_36px_rgba(15,23,42,0.06)] dark:border-blue-900/40"
           : "border-slate-200 shadow-sm dark:border-slate-700"
       }`}
     >
-      <div className="bg-gradient-to-r from-white via-slate-50 to-purple-50/70 px-4 py-3.5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 sm:px-5">
+      <div className="bg-gradient-to-r from-white via-slate-50 to-blue-50/70 px-4 py-3.5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 sm:px-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3 flex-1 min-w-0 pr-0 xl:pr-4">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap items-center gap-2.5">
-                <span className="flex shrink-0 h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-sm font-bold text-white shadow-sm">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm">
                   {variantOrder}
                 </span>
                 <div className="flex flex-wrap items-center gap-2">
@@ -112,7 +112,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                       : t("variantCard.statusInactive")}
                   </span>
                   {isVariantUploading && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-sm font-semibold text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
                       <FiLoader className="animate-spin" />
                       {t("variantCard.uploading")}
                     </span>
@@ -224,12 +224,12 @@ export default memo(function VariantCard(props: VariantCardProps) {
                       updateVariant(index, "sku", e.target.value)
                     }
                     placeholder={t("variantCard.skuPlaceholder")}
-                    className="h-10 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 text-md outline-none transition-colors focus:border-purple-500 focus:ring-2 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                    className="h-10 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-md outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900"
                   />
                   <button
                     type="button"
                     onClick={() => regenerateVariantSku(index)}
-                    className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-purple-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-purple-600"
+                    className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-blue-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-blue-600"
                     title={t("variantCard.regenTitle")}
                   >
                     Regen
@@ -260,7 +260,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     updateVariant(index, "price", e.target.value)
                   }
                   placeholder="0"
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-md outline-none transition-colors focus:border-purple-500 focus:ring-2 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-md outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900"
                 />
               </div>
               <div>
@@ -274,7 +274,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     updateVariant(index, "compareAtPrice", e.target.value)
                   }
                   placeholder={t("variantCard.compareAtPricePlaceholder")}
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-md outline-none transition-colors focus:border-purple-500 focus:ring-2 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-md outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900"
                 />
               </div>
             </div>
@@ -291,7 +291,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     updateVariant(index, "stock", e.target.value)
                   }
                   placeholder="0"
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-md outline-none transition-colors focus:border-purple-500 focus:ring-2 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-800"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-md outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900"
                 />
               </div>
               <div className="flex items-end">
@@ -341,7 +341,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 <button
                   type="button"
                   onClick={onOpenCreateAttributeModal}
-                  className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-purple-200 bg-white px-3 text-sm font-semibold text-purple-600 transition-colors hover:border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:bg-slate-900 dark:text-purple-300 dark:hover:bg-slate-800"
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-blue-200 bg-white px-3 text-sm font-semibold text-blue-700 transition-colors hover:border-blue-300 hover:bg-blue-50 dark:border-blue-900/40 dark:bg-slate-900 dark:text-blue-300 dark:hover:bg-slate-800"
                 >
                   <FiPlus />
                   {t("variantCard.addAttribute")}
@@ -418,7 +418,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   </p>
                 </div>
                 {isVariantUploading && (
-                  <FiLoader className="animate-spin text-purple-500" />
+                  <FiLoader className="animate-spin text-blue-600" />
                 )}
               </div>
 
@@ -442,7 +442,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 onClick={() =>
                   variantFileInputRefs.current[variantUiKey]?.click()
                 }
-                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-purple-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-purple-600"
+                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-blue-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-blue-600"
               >
                 {t("variantCard.uploadImages")}
               </button>
@@ -493,7 +493,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                         className="h-full w-full object-cover"
                       />
                       {img.isPrimary && (
-                        <span className="absolute left-1.5 top-1.5 rounded bg-gradient-to-r from-purple-500 to-indigo-500 px-1.5 py-0.5 text-10 font-bold text-white">
+                        <span className="absolute left-1.5 top-1.5 rounded bg-blue-600 px-1.5 py-0.5 text-10 font-bold text-white">
                           {t("variantCard.primaryBadge")}
                         </span>
                       )}
