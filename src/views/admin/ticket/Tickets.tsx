@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef } from 'react';
 import type { TFunction } from 'i18next';
 import { FiCalendar, FiCheck, FiChevronDown, FiCopy, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import { toast } from 'sonner';
@@ -171,11 +171,10 @@ export default function Tickets() {
     });
   }, [groupMode, ticketSections]);
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [selectedTicket?.messages]);
+  useLayoutEffect(() => {
+    if (!selectedTicket?.id || !messagesEndRef.current) return;
+    messagesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+  }, [selectedTicket?.id, selectedTicket?.messages?.length]);
 
   useEffect(() => () => {
     if (copyResetTimerRef.current !== null) {

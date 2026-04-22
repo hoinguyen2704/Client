@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FiPlus, FiSend, FiX } from 'react-icons/fi';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
@@ -171,9 +171,10 @@ export default function SupportChatWidget({
     if (isOpen) setUnreadCount(0);
   }, [isOpen]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [selectedTicket?.id, selectedTicket?.messages, isOpen]);
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
+  }, [selectedTicket?.id, selectedTicket?.messages?.length, isOpen]);
 
   useEffect(() => {
     if (!isOpen || !isComposingNewConversation) return;
