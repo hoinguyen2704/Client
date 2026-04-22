@@ -161,8 +161,23 @@
     },
     "tabs": {
       "specs": "Technical specifications",
+      "specsMeta": "{{count}} spec items",
+      "specHighlights": "Highlights",
+      "specsIntro": "A quick summary of the most important specifications before diving into the full configuration.",
+      "showMoreSpecs": "Show more specs",
+      "showLessSpecs": "Collapse specs",
       "description": "Product description",
+      "descriptionMeta": "Editorial content",
+      "descriptionEmptyMeta": "No content yet",
+      "descriptionBadge": "Product details",
+      "descriptionTitle": "Description and highlights",
+      "descriptionIntro": "This section presents the full description, key highlights, and rich content provided by the shop or the brand.",
+      "showFullDescription": "Read full description",
+      "showLessDescription": "Collapse description",
       "reviews": "Reviews ({{count}})",
+      "reviewOverviewTitle": "Rating overview",
+      "reviewDistributionTitle": "Star distribution",
+      "reviewVerifiedBadge": "Verified purchase",
       "noSpecs": "No technical specifications are available for this product yet.",
       "noDescription": "No description is available for this product yet.",
       "reviewsCount": "{{count}} reviews",
@@ -174,7 +189,13 @@
       "new": "New",
       "sameDay": "same day",
       "afterDays": "after {{count}} days",
-      "emptyReviews": "There are no reviews for this product yet."
+      "emptyReviews": "There are no reviews for this product yet.",
+      "emptyReviewsFiltered": "No reviews match the current filter.",
+      "reviewFilters": {
+        "all": "All",
+        "star": "{{star}} star ({{count}})",
+        "withComment": "With comment ({{count}})"
+      }
     }
   },
   "productCard": {

@@ -19,6 +19,23 @@ export interface FeedbackResponse {
   editCount?: number;
 }
 
+export interface FeedbackFilterSummaryResponse {
+  total: number;
+  withContent: number;
+  ratingCounts: Record<number, number>;
+}
+
+export interface ProductFeedbackPageResponse {
+  data: FeedbackResponse[];
+  page: number;
+  perPage: number;
+  total: number;
+  lastPage: number;
+  summary: FeedbackFilterSummaryResponse;
+}
+
+export type ProductReviewFilter = 'all' | 'with-comment' | 1 | 2 | 3 | 4 | 5;
+
 export interface FeedbackRequest {
   productId: string;
   variantId?: string;

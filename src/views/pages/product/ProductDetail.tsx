@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { memo, useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -37,6 +37,29 @@ const keepActiveVariants = (product: ProductResponse | null): ProductResponse | 
     variants: (product.variants || []).filter((variant) => variant.active !== false),
   };
 };
+
+const RelatedProductsSection = memo(function RelatedProductsSection({
+  related,
+  title,
+}: {
+  related: ProductResponse[];
+  title: string;
+}) {
+  if (related.length === 0) return null;
+
+  return (
+    <div>
+      <h2 className="mb-8 text-2xl font-bold">{title}</h2>
+      <div className="custom-scrollbar flex snap-x gap-4 overflow-x-auto pb-4 md:gap-6">
+        {related.map((product) => (
+          <div key={product.id} className="w-[240px] shrink-0 snap-start flex-none md:w-[280px]">
+            <ProductCard product={product} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+});
 
 export default function ProductDetail() {
   const { t } = useTranslation(['catalog', 'layout']);
@@ -181,18 +204,10 @@ export default function ProductDetail() {
       <ProductTabs product={product} images={finalGalleryImages} />
 
       {/* Related Products */}
-      {related.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold mb-8">{t('productDetail.relatedTitle', { ns: 'catalog' })}</h2>
-          <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x custom-scrollbar">
-            {related.map(p => (
-              <div key={p.id} className="w-[240px] md:w-[280px] snap-start shrink-0 flex-none">
-                <ProductCard product={p} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <RelatedProductsSection
+        related={related}
+        title={t('productDetail.relatedTitle', { ns: 'catalog' })}
+      />
     </div>
   );
 }

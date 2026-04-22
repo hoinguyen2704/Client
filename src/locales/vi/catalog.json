@@ -161,8 +161,23 @@
     },
     "tabs": {
       "specs": "Thông số kỹ thuật",
+      "specsMeta": "{{count}} mục thông số",
+      "specHighlights": "Thông số nổi bật",
+      "specsIntro": "Nhóm thông số quan trọng để xem nhanh trước khi đọc toàn bộ cấu hình chi tiết.",
+      "showMoreSpecs": "Xem thêm thông số",
+      "showLessSpecs": "Thu gọn thông số",
       "description": "Mô tả sản phẩm",
+      "descriptionMeta": "Bài viết & hình ảnh",
+      "descriptionEmptyMeta": "Chưa có nội dung",
+      "descriptionBadge": "Chi tiết sản phẩm",
+      "descriptionTitle": "Mô tả và điểm nổi bật",
+      "descriptionIntro": "Phần này trình bày đầy đủ mô tả, điểm nổi bật và nội dung chi tiết do shop hoặc thương hiệu cung cấp.",
+      "showFullDescription": "Xem toàn bộ mô tả",
+      "showLessDescription": "Thu gọn mô tả",
       "reviews": "Đánh giá ({{count}})",
+      "reviewOverviewTitle": "Điểm đánh giá",
+      "reviewDistributionTitle": "Phân bố sao",
+      "reviewVerifiedBadge": "Đã mua xác thực",
       "noSpecs": "Chưa có thông số kỹ thuật cho sản phẩm này.",
       "noDescription": "Chưa có mô tả cho sản phẩm này.",
       "reviewsCount": "{{count}} đánh giá",
@@ -174,7 +189,13 @@
       "new": "Mới",
       "sameDay": "trong ngày",
       "afterDays": "sau {{count}} ngày",
-      "emptyReviews": "Chưa có đánh giá nào cho sản phẩm này."
+      "emptyReviews": "Chưa có đánh giá nào cho sản phẩm này.",
+      "emptyReviewsFiltered": "Không có đánh giá nào phù hợp với bộ lọc này.",
+      "reviewFilters": {
+        "all": "Tất cả",
+        "star": "{{star}} sao ({{count}})",
+        "withComment": "Có bình luận ({{count}})"
+      }
     }
   },
   "productCard": {
