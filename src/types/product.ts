@@ -264,6 +264,11 @@ export interface CreateVariantOptionRequest {
   label: string;
 }
 
+export interface CreateVariantAttributeRequest {
+  name: string;
+  optionLabelsText: string;
+}
+
 export interface CategorySpecAttributeRequest {
   attributeId?: string;
   name: string;

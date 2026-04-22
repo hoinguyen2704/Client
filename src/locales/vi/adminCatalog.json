@@ -92,8 +92,8 @@
       "basicDescription": "Thiết lập tên hiển thị cho danh mục.",
       "nameLabel": "Tên danh mục *",
       "namePlaceholder": "VD: Điện thoại, Laptop...",
-      "variantTitle": "Thuộc tính biến thể",
-      "variantDescription": "Khai báo các thuộc tính dùng để sinh biến thể.",
+      "variantTitle": "Thuộc tính phân loại",
+      "variantDescription": "Khai báo các thuộc tính dùng để sinh phân loại.",
       "variantAdd": "Thêm thuộc tính",
       "variantCount": "{{count}} thuộc tính",
       "specTitle": "Thông số kỹ thuật",
@@ -104,13 +104,13 @@
       "collapse": "Thu gọn"
     },
     "variantAttributes": {
-      "header": "Thuộc tính biến thể",
+      "header": "Thuộc tính phân loại",
       "count": "{{count}} thuộc tính",
       "add": "Thêm",
-      "empty": "Chưa có thuộc tính biến thể nào",
+      "empty": "Chưa có thuộc tính phân loại nào",
       "namePlaceholder": "Tên thuộc tính (VD: Màu)",
       "codePlaceholder": "Code (VD: COLOR)",
-      "optionsPlaceholder": "Options, ngăn cách dấu phẩy (VD: Đen, Trắng, Xanh)"
+      "optionsPlaceholder": "Giá trị, ngăn cách dấu phẩy (VD: Đen, Trắng, Xanh)"
     },
     "specTemplates": {
       "header": "Gợi ý thông số kỹ thuật",
@@ -135,7 +135,7 @@
       "loadFailed": "Không thể tải dữ liệu danh mục.",
       "notFound": "Không tìm thấy danh mục.",
       "nameRequired": "Tên danh mục không được để trống.",
-      "attributeOptionsRequired": "Thuộc tính \"{{name}}\" phải có ít nhất một option."
+      "attributeOptionsRequired": "Thuộc tính \"{{name}}\" phải có ít nhất một giá trị."
     }
   },
   "brands": {
@@ -324,15 +324,25 @@
     "title": "Phân loại hàng",
     "count": "{{count}} phân loại",
     "generate": "Sinh tổ hợp",
-    "generateTitle": "Chọn nhanh option theo từng thuộc tính để sinh hàng loạt phân loại",
+    "generateTitle": "Chọn nhanh giá trị theo từng thuộc tính để sinh hàng loạt phân loại",
     "sortLatestUpdated": "Mới cập nhật nhất",
     "sortLatestUpdatedTitle": "Giữ danh sách phân loại theo thời gian cập nhật mới nhất",
     "add": "Thêm phân loại",
+    "addAttributeTitle": "Thêm thuộc tính danh mục",
+    "addAttributeDescription": "Thuộc tính mới sẽ được thêm vào schema của danh mục hiện tại và áp dụng cho toàn bộ phân loại của sản phẩm này. Có thể nhập nhiều giá trị ban đầu, ngăn cách bằng dấu phẩy.",
+    "attributeNameLabel": "Tên thuộc tính",
+    "attributeNamePlaceholder": "VD: Dung lượng pin, Chất liệu...",
+    "attributeFirstValueLabel": "Các giá trị ban đầu",
+    "attributeFirstValuePlaceholder": "VD: A18, A17, Exynos",
+    "addAttributeSubmit": "Thêm thuộc tính",
+    "creatingAttribute": "Đang thêm thuộc tính...",
+    "attributeCreateSuccess": "Đã thêm thuộc tính \"{{attribute}}\" vào danh mục.",
+    "attributeCreateFailed": "Không thể thêm thuộc tính mới cho danh mục.",
     "emptyTitle": "Chưa có phân loại nào",
     "emptyDescription": "Bấm \"Thêm phân loại\" để bắt đầu"
   },
   "variantBulkGenerate": {
-    "description": "Chọn option theo từng thuộc tính để sinh tổ hợp (hệ thống tự bỏ qua tổ hợp đã tồn tại).",
+    "description": "Chọn giá trị theo từng thuộc tính để sinh tổ hợp (hệ thống tự bỏ qua tổ hợp đã tồn tại).",
     "clearAll": "Bỏ chọn tất cả",
     "selectAll": "Chọn tất cả",
     "generate": "Sinh tổ hợp"
@@ -348,6 +358,7 @@
     "net": "Net",
     "expand": "Mở rộng",
     "collapse": "Thu gọn",
+    "reset": "Khôi phục",
     "remove": "Xóa",
     "skuPlaceholder": "VD: IP15P-BLK-256",
     "regenTitle": "Sinh lại SKU theo tổ hợp thuộc tính",
@@ -365,6 +376,11 @@
     "uploadImages": "Tải ảnh cho phân loại",
     "searchPlaceholder": "Tìm giá trị cho {{attribute}}...",
     "addValue": "Thêm giá trị mới",
+    "addAttribute": "Thêm thuộc tính",
+    "attributesTitle": "Thuộc tính danh mục",
+    "attributesDescription": "Các dropdown dưới đây bám theo schema danh mục hiện tại. Có thể thêm nhanh thuộc tính mới ngay tại đây.",
+    "attributesEmptyDescription": "Danh mục này chưa có thuộc tính phân loại nào. Thêm thuộc tính đầu tiên để bắt đầu.",
+    "attributesEmptyState": "Chưa có thuộc tính danh mục để chọn giá trị. Hãy thêm thuộc tính mới rồi chọn giá trị cho phân loại này.",
     "newValuePlaceholder": "Nhập giá trị mới cho {{attribute}}",
     "emptyOptions": "Không có giá trị phù hợp",
     "valueDuplicateHint": "Giá trị này đã tồn tại trong danh sách hiện tại.",

@@ -9,6 +9,8 @@ interface UseAdminListOptions {
   extraParams?: Record<string, any>;
   queryKey: string;
   staleTime?: number;
+  initialSortBy?: string;
+  initialSortDir?: "ASC" | "DESC";
   /** Whether to fetch on mount (default: true) */
   fetchOnMount?: boolean;
 }
@@ -21,6 +23,9 @@ interface UseAdminListReturn<T> {
   setSearchQuery: (q: string) => void;
   page: number;
   setPage: (p: number) => void;
+  sortBy: string;
+  sortDir: "ASC" | "DESC";
+  toggleSort: (column: string) => void;
   /** Manually trigger a refetch */
   refetch: (options?: { silent?: boolean }) => void;
 }
@@ -35,10 +40,20 @@ export default function useAdminList<T>(
   fetchFn: FetchFn<T> | FetchConfigurableFn<T>,
   options: UseAdminListOptions,
 ): UseAdminListReturn<T> {
-  const { size = 10, extraParams, fetchOnMount = true, queryKey, staleTime = 30_000 } = options;
+  const {
+    size = 10,
+    extraParams,
+    fetchOnMount = true,
+    queryKey,
+    staleTime = 30_000,
+    initialSortBy = "createdAt",
+    initialSortDir = "DESC",
+  } = options;
 
   const [searchInput, setSearchInput] = useState('');
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState(initialSortBy);
+  const [sortDir, setSortDir] = useState<"ASC" | "DESC">(initialSortDir);
   const [isPending, startTransition] = useTransition();
   const deferredSearchInput = useDeferredValue(searchInput);
   const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
@@ -69,8 +84,20 @@ export default function useAdminList<T>(
     });
   }, [startTransition]);
 
+  const toggleSort = useCallback((column: string) => {
+    startTransition(() => {
+      if (sortBy === column) {
+        setSortDir((current) => (current === "ASC" ? "DESC" : "ASC"));
+      } else {
+        setSortBy(column);
+        setSortDir("ASC");
+      }
+      setPage(1);
+    });
+  }, [sortBy]);
+
   const query = useQuery({
-    queryKey: ['admin-list', queryKey, page, size, debouncedSearchQuery, extraParamsKey],
+    queryKey: ['admin-list', queryKey, page, size, debouncedSearchQuery, extraParamsKey, sortBy, sortDir],
     queryFn: async ({ signal }) => {
       const fn = fetchFn as FetchConfigurableFn<T>;
       const res = await fn(
@@ -78,6 +105,8 @@ export default function useAdminList<T>(
           keyword: debouncedSearchQuery || undefined,
           page,
           size,
+          sortBy,
+          sortDir,
           ...(extraParamsRef.current ?? {}),
         },
         { signal },
@@ -101,6 +130,9 @@ export default function useAdminList<T>(
     setSearchQuery: handleSetSearchQuery,
     page,
     setPage: handleSetPage,
+    sortBy,
+    sortDir,
+    toggleSort,
     refetch,
   };
 }

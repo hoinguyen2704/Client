@@ -34,6 +34,7 @@ export interface VariantSectionProps {
   variantSchema: VariantAttributeSchemaResponse[];
   uploadingVariantKeys: Record<string, boolean>;
   creatingOptionByFieldKey: Record<string, boolean>;
+  creatingAttribute: boolean;
   variantFileInputRefs: { current: Record<string, HTMLInputElement | null> };
   addVariant: () => string | undefined;
   generateVariantCombinations: (
@@ -46,11 +47,17 @@ export interface VariantSectionProps {
     field: keyof VariantFormData,
     value: string | boolean,
   ) => void;
+  isVariantDirty: (variant: VariantFormData, index: number) => boolean;
+  resetVariant: (index: number) => void;
   updateVariantSelection: (
     index: number,
     attributeId: string,
     optionId: string,
   ) => void;
+  createVariantAttribute: (
+    name: string,
+    optionLabelsText: string,
+  ) => Promise<void>;
   createVariantAttributeOption: (
     index: number,
     variantUiKey: string,

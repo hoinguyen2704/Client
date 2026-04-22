@@ -234,6 +234,7 @@ export default function ProductInfo({
     () => Object.values(selectedOptions).some(Boolean),
     [selectedOptions],
   );
+  const shouldShowClearSelection = isSelectionRequired && hasAnySelection;
 
   const variantSalePriceRange = useMemo(() => {
     const prices = variants
@@ -513,22 +514,26 @@ export default function ProductInfo({
               overMaxWarning={t('productDetail.quantity.overMaxWarning', { ns: 'catalog', count: stock })}
             />
             <span className="text-sm md:text-md text-slate-500 font-medium">
-              {!isSelectionComplete && isSelectionRequired
-                ? t('productDetail.quantity.chooseMore', { ns: 'catalog', attributes: missingAttributeNames.join(', ') })
-                : stock > 0
-                  ? t('productDetail.quantity.availableCount', { ns: 'catalog', count: stock })
-                  : t('productDetail.quantity.outOfStock', { ns: 'catalog' })}
-            </span>
-            {isSelectionRequired && hasAnySelection && (
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={handleClearSelections}
-                className="!h-9 !rounded-xl"
-              >
-                {t('productDetail.quantity.clearSelection', { ns: 'catalog' })}
-              </Button>
-            )}
+                {!isSelectionComplete && isSelectionRequired
+                  ? t('productDetail.quantity.chooseMore', { ns: 'catalog', attributes: missingAttributeNames.join(', ') })
+                  : stock > 0
+                    ? t('productDetail.quantity.availableCount', { ns: 'catalog', count: stock })
+                    : t('productDetail.quantity.outOfStock', { ns: 'catalog' })}
+              </span>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={handleClearSelections}
+              disabled={!shouldShowClearSelection}
+              aria-hidden={!shouldShowClearSelection}
+              className={`!h-9 !rounded-xl shrink-0 transition-opacity ${
+                shouldShowClearSelection
+                  ? 'opacity-100'
+                  : 'invisible pointer-events-none opacity-0'
+              }`}
+            >
+              {t('productDetail.quantity.clearSelection', { ns: 'catalog' })}
+            </Button>
           </div>
         </div>
       </div>

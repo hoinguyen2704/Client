@@ -4,7 +4,9 @@ import type {
   ApiResponse,
   CategoryResponse,
   CategoryRequest,
+  CreateVariantAttributeRequest,
   CreateVariantOptionRequest,
+  VariantAttributeSchemaResponse,
   VariantOptionResponse,
 } from '@/types';
 
@@ -15,6 +17,16 @@ class AdminCategoryService extends BaseService<CategoryResponse, CategoryRequest
 
   getSchema = async (id: string): Promise<ApiResponse<CategoryResponse>> => {
     return this.http.get(`${this.endpoint}/${id}/schema`);
+  };
+
+  createVariantAttribute = async (
+    categoryId: string,
+    data: CreateVariantAttributeRequest,
+  ): Promise<ApiResponse<VariantAttributeSchemaResponse>> => {
+    return this.http.post(
+      `${this.endpoint}/${categoryId}/variant-attributes`,
+      data,
+    );
   };
 
   createVariantAttributeOption = async (

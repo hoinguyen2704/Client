@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FiSend, FiX } from 'react-icons/fi';
+import { FiPlus, FiSend, FiX } from 'react-icons/fi';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import ticketService from '@/apis/services/ticketService';
 import type { SupportRealtimePayload, TicketResponse } from '@/types';
 import { formatDateShort as formatDate } from '@/utils/format';
 import { toast } from 'sonner';
+import Button from '@/components/button/Button';
 import IconButton from '@/components/button/IconButton';
 import CustomSelect from '@/components/input/CustomSelect';
 import { STATUS_CONFIG } from '@/components/ui/constants';
@@ -22,6 +23,7 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
   REALTIME_EVENT_TYPES.SUPPORT_MESSAGE_CREATED,
   REALTIME_EVENT_TYPES.SUPPORT_STATUS_UPDATED,
 ]);
+const NEW_TICKET_OPTION_VALUE = '__new__';
 
 interface SupportChatWidgetProps {
   isOpen: boolean;
@@ -46,12 +48,15 @@ export default function SupportChatWidget({
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse | null>(null);
+  const [isComposingNewConversation, setIsComposingNewConversation] = useState(false);
   const [draft, setDraft] = useState('');
   const supportAvatarUrl = '/admin.png';
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const selectedTicketIdRef = useRef<string | null>(null);
   const isOpenRef = useRef(false);
+  const isComposingNewConversationRef = useRef(false);
+  const draftInputRef = useRef<HTMLInputElement>(null);
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!canDirectSupport) {
@@ -65,11 +70,14 @@ export default function SupportChatWidget({
       const res = await ticketService.getMyTickets(1, 30);
       const nextTickets = res.data?.data || [];
 
-      setSelectedTicketId((prevTicketId) =>
-        prevTicketId && nextTickets.some((ticket) => ticket.id === prevTicketId)
+      setSelectedTicketId((prevTicketId) => {
+        if (isComposingNewConversationRef.current) {
+          return null;
+        }
+        return prevTicketId && nextTickets.some((ticket) => ticket.id === prevTicketId)
           ? prevTicketId
-          : (nextTickets.find((ticket) => !CLOSED_STATUSES.has(ticket.status))?.id || nextTickets[0]?.id || null),
-      );
+          : (nextTickets.find((ticket) => !CLOSED_STATUSES.has(ticket.status))?.id || nextTickets[0]?.id || null);
+      });
       setTickets(nextTickets);
     } catch {
       if (!opts?.silent) setTickets([]);
@@ -114,6 +122,10 @@ export default function SupportChatWidget({
   useEffect(() => {
     selectedTicketIdRef.current = selectedTicketId;
   }, [selectedTicketId]);
+
+  useEffect(() => {
+    isComposingNewConversationRef.current = isComposingNewConversation;
+  }, [isComposingNewConversation]);
 
   useEffect(() => {
     isOpenRef.current = isOpen;
@@ -163,6 +175,22 @@ export default function SupportChatWidget({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [selectedTicket?.id, selectedTicket?.messages, isOpen]);
 
+  useEffect(() => {
+    if (!isOpen || !isComposingNewConversation) return;
+    const timer = window.setTimeout(() => {
+      draftInputRef.current?.focus();
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [isComposingNewConversation, isOpen]);
+
+  const startNewConversation = useCallback(() => {
+    if (!canDirectSupport || sending) return;
+    setIsComposingNewConversation(true);
+    setSelectedTicketId(null);
+    setSelectedTicket(null);
+    setDraft('');
+  }, [canDirectSupport, sending]);
+
   const handleSend = async () => {
     const content = draft.trim();
     if (!content || sending) return;
@@ -174,7 +202,7 @@ export default function SupportChatWidget({
 
     setSending(true);
     try {
-      if (selectedTicketId && selectedTicket && !CLOSED_STATUSES.has(selectedTicket.status)) {
+      if (selectedTicketId && selectedTicket && !CLOSED_STATUSES.has(selectedTicket.status) && !isComposingNewConversation) {
         const res = await ticketService.reply(selectedTicketId, { content });
         setSelectedTicket(res.data);
       } else {
@@ -183,6 +211,7 @@ export default function SupportChatWidget({
           content,
         });
         const created = res.data;
+        setIsComposingNewConversation(false);
         setSelectedTicket(created);
         setSelectedTicketId(created.id);
         toast.success(t('supportChat.createdToast', { ns: 'layout' }));
@@ -197,6 +226,14 @@ export default function SupportChatWidget({
   };
 
   const isClosed = Boolean(selectedTicket && CLOSED_STATUSES.has(selectedTicket.status));
+  const ticketSelectValue = isComposingNewConversation ? NEW_TICKET_OPTION_VALUE : (selectedTicketId || '');
+  const ticketSelectOptions = [
+    { value: NEW_TICKET_OPTION_VALUE, label: t('supportChat.newConversationButton', { ns: 'layout' }) },
+    ...tickets.map((ticket) => ({
+      value: ticket.id,
+      label: `${ticket.subject} – ${resolveStatusLabel(ticket.status)}`,
+    })),
+  ];
 
   return (
     <>
@@ -255,22 +292,42 @@ export default function SupportChatWidget({
             <div className="px-2.5 sm:px-3 py-2 border-b border-slate-100 dark:border-slate-800">
               {loading && tickets.length === 0 ? (
                 <div className="h-9 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
-              ) : tickets.length > 0 ? (
-                <CustomSelect
-                  value={selectedTicketId || ''}
-                  onChange={(val) => setSelectedTicketId(val || null)}
-                  options={tickets.map((ticket) => ({
-                    value: ticket.id,
-                    label: `${ticket.subject} – ${resolveStatusLabel(ticket.status)}`,
-                  }))}
-                  className="w-full"
-                />
               ) : (
-                <p className="text-sm text-slate-500">
-                  {canDirectSupport
-                    ? t('supportChat.noTickets', { ns: 'layout' })
-                    : t('supportChat.loginToStart', { ns: 'layout' })}
-                </p>
+                <div className="flex items-center gap-2">
+                  {tickets.length > 0 ? (
+                    <CustomSelect
+                      value={ticketSelectValue}
+                      onChange={(val) => {
+                        if (val === NEW_TICKET_OPTION_VALUE) {
+                          startNewConversation();
+                          return;
+                        }
+                        setIsComposingNewConversation(false);
+                        setSelectedTicketId(val || null);
+                      }}
+                      options={ticketSelectOptions}
+                      className="min-w-0 flex-1"
+                    />
+                  ) : (
+                    <p className="min-w-0 flex-1 text-sm text-slate-500">
+                      {canDirectSupport
+                        ? t('supportChat.noTickets', { ns: 'layout' })
+                        : t('supportChat.loginToStart', { ns: 'layout' })}
+                    </p>
+                  )}
+                  {canDirectSupport && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      icon={<FiPlus className="text-base" />}
+                      onClick={startNewConversation}
+                      disabled={sending || isComposingNewConversation}
+                      className="shrink-0 !rounded-lg !px-3"
+                    >
+                      {t('supportChat.newConversationShort', { ns: 'layout' })}
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
 
@@ -327,12 +384,25 @@ export default function SupportChatWidget({
                   {t('supportChat.loginButton', { ns: 'layout' })}
                 </button>
               ) : isClosed ? (
-                <div className="h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-md flex items-center">
-                  {t('supportChat.closedHint', { ns: 'layout' })}
+                <div className="flex items-center gap-2">
+                  <div className="min-w-0 flex-1 h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-md flex items-center">
+                    {t('supportChat.closedHint', { ns: 'layout' })}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    icon={<FiPlus className="text-base" />}
+                    onClick={startNewConversation}
+                    disabled={sending}
+                    className="shrink-0 !rounded-lg !px-3"
+                  >
+                    {t('supportChat.newConversationShort', { ns: 'layout' })}
+                  </Button>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <input
+                    ref={draftInputRef}
                     className="flex-1 h-9 sm:h-10 px-3 rounded-lg text-md bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                     placeholder={t('supportChat.inputPlaceholder', { ns: 'layout' })}
                     value={draft}

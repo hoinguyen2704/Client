@@ -14,6 +14,7 @@ import {
   Pagination,
   ActionButtons,
   ConfirmDialog,
+  SortableHeaderLabel,
   StatusBadge,
   TableRowSkeleton,
 } from "@/components";
@@ -36,11 +37,16 @@ export default function Categories() {
     setSearchQuery,
     page,
     setPage,
+    sortBy,
+    sortDir,
+    toggleSort,
     refetch: fetchCategories,
   } = useAdminList<CategoryResponse>(adminCategoryService.getAll, {
     queryKey: "admin-categories",
     size: PAGE_SIZE.LARGE,
     extraParams,
+    initialSortBy: "name",
+    initialSortDir: "ASC",
   });
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
@@ -128,14 +134,48 @@ export default function Categories() {
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x-2 divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">{t("categories.table.index")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("categories.table.category")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("categories.table.slug")}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t("categories.table.specs")}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">
-                  {t("categories.table.productCount")}
+                <th className="p-3 sm:p-4 font-medium">
+                  <SortableHeaderLabel
+                    label={t("categories.table.category")}
+                    active={sortBy === "name"}
+                    direction={sortDir}
+                    onClick={() => toggleSort("name")}
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  <SortableHeaderLabel
+                    label={t("categories.table.slug")}
+                    active={sortBy === "slug"}
+                    direction={sortDir}
+                    onClick={() => toggleSort("slug")}
+                  />
                 </th>
                 <th className="p-3 sm:p-4 font-medium text-center">
-                  {t("categories.table.status")}
+                  <SortableHeaderLabel
+                    label={t("categories.table.specs")}
+                    active={sortBy === "specCount"}
+                    direction={sortDir}
+                    onClick={() => toggleSort("specCount")}
+                    align="center"
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  <SortableHeaderLabel
+                    label={t("categories.table.productCount")}
+                    active={sortBy === "productCount"}
+                    direction={sortDir}
+                    onClick={() => toggleSort("productCount")}
+                    align="center"
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  <SortableHeaderLabel
+                    label={t("categories.table.status")}
+                    active={sortBy === "status"}
+                    direction={sortDir}
+                    onClick={() => toggleSort("status")}
+                    align="center"
+                  />
                 </th>
                 <th className="p-3 sm:p-4 font-medium text-center w-[232px]">
                   {t("categories.table.actions")}

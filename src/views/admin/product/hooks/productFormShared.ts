@@ -5,6 +5,16 @@ import type {
   VariantFormData,
 } from "@/types";
 
+export type VariantResetBaseline = {
+  sku: string;
+  skuMode: VariantFormData["skuMode"];
+  selections: Record<string, string>;
+  price: VariantFormData["price"];
+  compareAtPrice: VariantFormData["compareAtPrice"];
+  stock: VariantFormData["stock"];
+  active: boolean;
+};
+
 export type CategorySpecTemplate = {
   id: string;
   specKey: string;
@@ -14,6 +24,18 @@ export type CategorySpecTemplate = {
 
 export const createVariantUiKey = () =>
   `variant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+export const createVariantResetBaseline = (
+  variant: VariantFormData,
+): VariantResetBaseline => ({
+  sku: variant.sku,
+  skuMode: variant.skuMode ?? "suggested",
+  selections: { ...variant.selections },
+  price: variant.price,
+  compareAtPrice: variant.compareAtPrice,
+  stock: variant.stock,
+  active: variant.active,
+});
 
 export const getNextVariantDisplayOrder = (variants: VariantFormData[]) =>
   variants.reduce(

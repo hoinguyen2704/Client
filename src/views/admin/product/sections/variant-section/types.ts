@@ -29,7 +29,10 @@ export interface VariantCardProps {
   onToggleExpanded: () => void;
   removeVariant: VariantSectionProps["removeVariant"];
   updateVariant: VariantSectionProps["updateVariant"];
+  isDirty: boolean;
+  resetVariant: VariantSectionProps["resetVariant"];
   updateVariantSelection: VariantSectionProps["updateVariantSelection"];
+  onOpenCreateAttributeModal: () => void;
   createVariantAttributeOption: VariantSectionProps["createVariantAttributeOption"];
   creatingOptionByFieldKey: VariantSectionProps["creatingOptionByFieldKey"];
   regenerateVariantSku: VariantSectionProps["regenerateVariantSku"];

@@ -119,6 +119,8 @@
     "emptyConversationGuest": "You need to log in to start live chat with admin.",
     "loginButton": "Log in to chat",
     "closedHint": "This ticket is closed. Send a message to create a new conversation.",
+    "newConversationButton": "New conversation",
+    "newConversationShort": "New",
     "inputPlaceholder": "Type a message...",
     "sendAria": "Send support message",
     "createSubject": "Live support",

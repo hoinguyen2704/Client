@@ -1,9 +1,11 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import {
   FiClock,
+  FiLoader,
   FiPlus,
 } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
+import { Button, FormInput, Modal } from "@/components";
 import VariantBulkGeneratePanel from "./variant-section/VariantBulkGeneratePanel";
 import VariantCard from "./variant-section/VariantCard";
 import type { VariantSectionProps as Props } from "./types";
@@ -15,13 +17,17 @@ export default memo(function VariantSection(props: Props) {
     variantSchema,
     uploadingVariantKeys,
     creatingOptionByFieldKey,
+    creatingAttribute,
     variantFileInputRefs,
     addVariant,
     generateVariantCombinations,
     sortVariantsByLatestUpdated,
     removeVariant,
     updateVariant,
+    isVariantDirty,
+    resetVariant,
     updateVariantSelection,
+    createVariantAttribute,
     createVariantAttributeOption,
     regenerateVariantSku,
     getVariantUiKey,
@@ -34,8 +40,25 @@ export default memo(function VariantSection(props: Props) {
   const [bulkSelections, setBulkSelections] = useState<Record<string, string[]>>({});
   const [expandedVariants, setExpandedVariants] = useState<Record<string, boolean>>({});
   const [focusVariantKey, setFocusVariantKey] = useState<string | null>(null);
+  const [showCreateAttributeModal, setShowCreateAttributeModal] = useState(false);
+  const [newAttributeName, setNewAttributeName] = useState("");
+  const [newAttributeOptionLabelsText, setNewAttributeOptionLabelsText] = useState("");
+  const hasAtLeastOneOptionLabel = useMemo(
+    () =>
+      newAttributeOptionLabelsText
+        .split(/[,，]/)
+        .some((label) => label.trim().length > 0),
+    [newAttributeOptionLabelsText],
+  );
   const bulkActionButtonClass =
     "h-9 px-3 rounded-lg text-sm font-medium border border-slate-200 dark:border-slate-600 text-body-soft";
+  const canCreateAttribute = useMemo(
+    () =>
+      newAttributeName.trim().length > 0
+      && hasAtLeastOneOptionLabel
+      && !creatingAttribute,
+    [creatingAttribute, hasAtLeastOneOptionLabel, newAttributeName],
+  );
 
   useEffect(() => {
     setBulkSelections((prev) =>
@@ -94,6 +117,26 @@ export default memo(function VariantSection(props: Props) {
       }
       return { ...prev, [attributeId]: Array.from(current) };
     });
+  };
+
+  const closeCreateAttributeModal = () => {
+    if (creatingAttribute) return;
+    setShowCreateAttributeModal(false);
+    setNewAttributeName("");
+    setNewAttributeOptionLabelsText("");
+  };
+
+  const handleCreateAttribute = async () => {
+    if (!canCreateAttribute) return;
+    try {
+      await createVariantAttribute(
+        newAttributeName.trim(),
+        newAttributeOptionLabelsText.trim(),
+      );
+      closeCreateAttributeModal();
+    } catch {
+      // Toast is handled by the form hook; keep modal open for retry.
+    }
   };
 
   return (
@@ -204,7 +247,10 @@ export default memo(function VariantSection(props: Props) {
               }
               removeVariant={removeVariant}
               updateVariant={updateVariant}
+              isDirty={isVariantDirty(variant, index)}
+              resetVariant={resetVariant}
               updateVariantSelection={updateVariantSelection}
+              onOpenCreateAttributeModal={() => setShowCreateAttributeModal(true)}
               createVariantAttributeOption={createVariantAttributeOption}
               creatingOptionByFieldKey={creatingOptionByFieldKey}
               regenerateVariantSku={regenerateVariantSku}
@@ -229,6 +275,59 @@ export default memo(function VariantSection(props: Props) {
           </div>
         )}
       </div>
+
+      <Modal
+        open={showCreateAttributeModal}
+        onClose={closeCreateAttributeModal}
+        title={t("variantSection.addAttributeTitle")}
+        size="md"
+      >
+        <div className="space-y-4">
+          <p className="text-md text-slate-500 dark:text-slate-400">
+            {t("variantSection.addAttributeDescription")}
+          </p>
+
+          <FormInput
+            label={t("variantSection.attributeNameLabel")}
+            value={newAttributeName}
+            onChange={(event) => setNewAttributeName(event.target.value)}
+            placeholder={t("variantSection.attributeNamePlaceholder")}
+            disabled={creatingAttribute}
+            autoFocus
+          />
+
+          <FormInput
+            label={t("variantSection.attributeFirstValueLabel")}
+            value={newAttributeOptionLabelsText}
+            onChange={(event) => setNewAttributeOptionLabelsText(event.target.value)}
+            placeholder={t("variantSection.attributeFirstValuePlaceholder")}
+            disabled={creatingAttribute}
+          />
+
+          <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end dark:border-slate-800">
+            <Button
+              onClick={closeCreateAttributeModal}
+              variant="secondary"
+              className="w-full sm:w-auto"
+              disabled={creatingAttribute}
+            >
+              {t("common:modal.cancel")}
+            </Button>
+            <Button
+              onClick={() => {
+                void handleCreateAttribute();
+              }}
+              icon={creatingAttribute ? <FiLoader className="animate-spin" /> : <FiPlus />}
+              className="w-full sm:w-auto"
+              disabled={!canCreateAttribute}
+            >
+              {creatingAttribute
+                ? t("variantSection.creatingAttribute")
+                : t("variantSection.addAttributeSubmit")}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 });

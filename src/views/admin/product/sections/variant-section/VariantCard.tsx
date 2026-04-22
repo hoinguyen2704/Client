@@ -1,5 +1,5 @@
 import { memo, type ChangeEvent, useEffect, useRef } from "react";
-import { FiEye, FiEyeOff, FiLoader, FiTrash2 } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiLoader, FiPlus, FiRotateCcw, FiTrash2 } from "react-icons/fi";
 import { ExpandToggle, SearchableDropdown, TrashButton } from "@/components";
 import { useTranslation } from "react-i18next";
 import { formatDateFull as formatDateTime } from "@/utils/format";
@@ -27,7 +27,10 @@ export default memo(function VariantCard(props: VariantCardProps) {
     onToggleExpanded,
     removeVariant,
     updateVariant,
+    isDirty,
+    resetVariant,
     updateVariantSelection,
+    onOpenCreateAttributeModal,
     createVariantAttributeOption,
     creatingOptionByFieldKey,
     regenerateVariantSku,
@@ -175,6 +178,16 @@ export default memo(function VariantCard(props: VariantCardProps) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+            {isDirty && (
+              <button
+                type="button"
+                onClick={() => resetVariant(index)}
+                className="inline-flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700 transition-colors hover:border-amber-300 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/30"
+              >
+                <FiRotateCcw />
+                {t("variantCard.reset")}
+              </button>
+            )}
             <ExpandToggle
               expanded={isExpanded}
               onToggle={onToggleExpanded}
@@ -313,57 +326,84 @@ export default memo(function VariantCard(props: VariantCardProps) {
               </div>
             </div>
 
-            {variantSchema.length > 0 && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {variantSchema.map((attribute) => {
-                  const selectedOptionId =
-                    variant.selections?.[attribute.id] || "";
-                  const { selectOptions, selectedValue } =
-                    getVariantSelectOptions(attribute, selectedOptionId);
-                  const fieldKey = `${variantUiKey}:${attribute.id}`;
-
-                  return (
-                    <div key={`${variantUiKey}-${attribute.id}`}>
-                      <SearchableDropdown
-                        label={attribute.name}
-                        value={selectedValue}
-                        onChange={(optionId) =>
-                          updateVariantSelection(index, attribute.id, optionId)
-                        }
-                        items={selectOptions.map((option) => ({
-                          id: option.value,
-                          name: option.label,
-                        }))}
-                        onCreateNew={(label) =>
-                          createVariantAttributeOption(
-                            index,
-                            variantUiKey,
-                            attribute.id,
-                            label,
-                          )
-                        }
-                        isCreatingProcess={Boolean(creatingOptionByFieldKey[fieldKey])}
-                        allowClear={false}
-                        required={false}
-                        labelClassName="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted"
-                        buttonClassName="h-10"
-                        placeholder={attribute.name}
-                        searchPlaceholder={t("variantCard.searchPlaceholder", {
-                          attribute: attribute.name,
-                        })}
-                        createPlaceholder={t("variantCard.newValuePlaceholder", {
-                          attribute: attribute.name,
-                        })}
-                        createAddLabel={t("variantCard.addValue")}
-                        emptyLabel={t("variantCard.emptyOptions")}
-                        duplicateCreateHint={t("variantCard.valueDuplicateHint")}
-                        renderMode="portal"
-                      />
-                    </div>
-                  );
-                })}
+            <div className="space-y-4">
+              <div className="flex flex-col gap-3 rounded-xl border border-slate-200/80 bg-slate-50/60 px-3 py-3 dark:border-slate-700 dark:bg-slate-800/40 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-md font-semibold text-body">
+                    {t("variantCard.attributesTitle")}
+                  </p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {variantSchema.length > 0
+                      ? t("variantCard.attributesDescription")
+                      : t("variantCard.attributesEmptyDescription")}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={onOpenCreateAttributeModal}
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-purple-200 bg-white px-3 text-sm font-semibold text-purple-600 transition-colors hover:border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:bg-slate-900 dark:text-purple-300 dark:hover:bg-slate-800"
+                >
+                  <FiPlus />
+                  {t("variantCard.addAttribute")}
+                </button>
               </div>
-            )}
+
+              {variantSchema.length > 0 ? (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {variantSchema.map((attribute) => {
+                    const selectedOptionId =
+                      variant.selections?.[attribute.id] || "";
+                    const { selectOptions, selectedValue } =
+                      getVariantSelectOptions(attribute, selectedOptionId);
+                    const fieldKey = `${variantUiKey}:${attribute.id}`;
+
+                    return (
+                      <div key={`${variantUiKey}-${attribute.id}`}>
+                        <SearchableDropdown
+                          label={attribute.name}
+                          value={selectedValue}
+                          onChange={(optionId) =>
+                            updateVariantSelection(index, attribute.id, optionId)
+                          }
+                          items={selectOptions.map((option) => ({
+                            id: option.value,
+                            name: option.label,
+                          }))}
+                          onCreateNew={(label) =>
+                            createVariantAttributeOption(
+                              index,
+                              variantUiKey,
+                              attribute.id,
+                              label,
+                            )
+                          }
+                          isCreatingProcess={Boolean(creatingOptionByFieldKey[fieldKey])}
+                          allowClear={false}
+                          required={false}
+                          labelClassName="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted"
+                          buttonClassName="h-10"
+                          placeholder={attribute.name}
+                          searchPlaceholder={t("variantCard.searchPlaceholder", {
+                            attribute: attribute.name,
+                          })}
+                          createPlaceholder={t("variantCard.newValuePlaceholder", {
+                            attribute: attribute.name,
+                          })}
+                          createAddLabel={t("variantCard.addValue")}
+                          emptyLabel={t("variantCard.emptyOptions")}
+                          duplicateCreateHint={t("variantCard.valueDuplicateHint")}
+                          renderMode="portal"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-5 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/30 dark:text-slate-400">
+                  {t("variantCard.attributesEmptyState")}
+                </div>
+              )}
+            </div>
 
             <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-700 dark:bg-slate-800/40">
               <div className="flex items-center justify-between gap-3">

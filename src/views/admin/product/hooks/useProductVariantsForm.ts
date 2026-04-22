@@ -18,12 +18,14 @@ import {
   buildVariantDisplayName,
   buildVariantSignature,
   createEmptyVariant,
+  createVariantResetBaseline,
   createVariantUiKey,
   getVariantSelectionRows,
   isSuggestedSkuPattern,
   normalizeSelectionsBySchema,
   parseVariantSignatureOptionCodes,
   sortVariantsByUpdatedAt,
+  type VariantResetBaseline,
 } from "./productFormShared";
 
 export default function useProductVariantsForm() {
@@ -48,9 +50,11 @@ export default function useProductVariantsForm() {
   const [originalSkuByVariantId, setOriginalSkuByVariantId] = useState<Record<string, string>>({});
   const [uploadingVariantKeys, setUploadingVariantKeys] = useState<Record<string, boolean>>({});
   const [creatingOptionByFieldKey, setCreatingOptionByFieldKey] = useState<Record<string, boolean>>({});
+  const [creatingAttribute, setCreatingAttribute] = useState(false);
   const [skuChangeConfirmOpen, setSkuChangeConfirmOpen] = useState(false);
   const [skuChangeConfirmMessage, setSkuChangeConfirmMessage] = useState("");
   const variantsRef = useRef<VariantFormData[]>([]);
+  const variantResetBaselineRef = useRef<Record<string, VariantResetBaseline>>({});
 
   const variantFileInputRefs = useRef<Record<string, HTMLInputElement | null>>(
     {},
@@ -64,6 +68,15 @@ export default function useProductVariantsForm() {
     (variantUiKey: string, attributeId: string) => `${variantUiKey}:${attributeId}`,
     [],
   );
+
+  const setVariantResetBaselines = useCallback((nextVariants: VariantFormData[]) => {
+    variantResetBaselineRef.current = Object.fromEntries(
+      nextVariants.map((variant, index) => [
+        variant.uiKey || variant.id || `variant-${index}`,
+        createVariantResetBaseline(variant),
+      ]),
+    );
+  }, []);
 
   const updateVariantDerived = useCallback(
     (
@@ -245,6 +258,49 @@ export default function useProductVariantsForm() {
     [t],
   );
 
+  const buildVariantRestoredFromBaseline = useCallback(
+    (
+      currentVariant: VariantFormData,
+      index: number,
+      currentVariants: VariantFormData[],
+      schemaOverride: VariantAttributeSchemaResponse[] = variantSchema,
+    ): VariantFormData | null => {
+      const variantKey = currentVariant.uiKey || currentVariant.id || `variant-${index}`;
+      const baseline = variantResetBaselineRef.current[variantKey];
+      if (!baseline) {
+        return null;
+      }
+
+      const normalizedSelections = normalizeSelectionsBySchema(
+        schemaOverride,
+        baseline.selections,
+      );
+      const used = new Set<string>(
+        currentVariants
+          .filter((_, variantIndex) => variantIndex !== index)
+          .map((variant) => variant.sku)
+          .filter(Boolean),
+      );
+
+      return updateVariantDerived(
+        {
+          ...currentVariant,
+          sku: baseline.sku,
+          skuMode: baseline.skuMode,
+          selections: normalizedSelections,
+          price: baseline.price,
+          compareAtPrice: baseline.compareAtPrice,
+          stock: baseline.stock,
+          active: baseline.active,
+          pendingFiles: [],
+        },
+        used,
+        schemaOverride,
+      );
+    },
+    [updateVariantDerived, variantSchema],
+  );
+
   const fetchProduct = useCallback(async () => {
     if (!id) return;
 
@@ -274,7 +330,13 @@ export default function useProductVariantsForm() {
       }
 
       setVariantSchema(schema);
-      setVariants(mapVariantsFromResponse(product, schema, variantsRef.current));
+      const mappedVariants = mapVariantsFromResponse(
+        product,
+        schema,
+        variantsRef.current,
+      );
+      setVariants(mappedVariants);
+      setVariantResetBaselines(mappedVariants);
       setOriginalSkuByVariantId(
         Object.fromEntries(
           (product.variants || [])
@@ -287,7 +349,7 @@ export default function useProductVariantsForm() {
     } finally {
       setLoading(false);
     }
-  }, [id, mapVariantsFromResponse, t, translate]);
+  }, [id, mapVariantsFromResponse, setVariantResetBaselines, t, translate]);
 
   useEffect(() => {
     void fetchProduct();
@@ -303,13 +365,18 @@ export default function useProductVariantsForm() {
         used,
         t("variantPage.defaultVariant"),
       );
-      return sortVariantsByUpdatedAt([
+      const nextVariants = sortVariantsByUpdatedAt([
         {
           ...next,
           uiKey: nextUiKey,
         },
         ...prev,
       ]);
+      const createdVariant = nextVariants.find((variant) => variant.uiKey === nextUiKey);
+      if (createdVariant) {
+        variantResetBaselineRef.current[nextUiKey] = createVariantResetBaseline(createdVariant);
+      }
+      return nextVariants;
     });
     return nextUiKey;
   }, [productCode, t, variantSchema]);
@@ -385,9 +452,22 @@ export default function useProductVariantsForm() {
           });
         });
 
-        return generated.length > 0
-          ? sortVariantsByUpdatedAt([...generated, ...prev])
-          : prev;
+        if (generated.length === 0) {
+          return prev;
+        }
+
+        const nextVariants = sortVariantsByUpdatedAt([...generated, ...prev]);
+        generated.forEach((variant) => {
+          if (!variant.uiKey) return;
+          const resolvedVariant = nextVariants.find(
+            (candidate) => candidate.uiKey === variant.uiKey,
+          );
+          if (resolvedVariant) {
+            variantResetBaselineRef.current[variant.uiKey] =
+              createVariantResetBaseline(resolvedVariant);
+          }
+        });
+        return nextVariants;
       });
     },
     [productCode, t, updateVariantDerived, variantSchema],
@@ -398,7 +478,14 @@ export default function useProductVariantsForm() {
   }, []);
 
   const removeVariant = useCallback((index: number) => {
-    setVariants((prev) => prev.filter((_, variantIndex) => variantIndex !== index));
+    setVariants((prev) => {
+      const target = prev[index];
+      if (target) {
+        const variantKey = target.uiKey || target.id || `variant-${index}`;
+        delete variantResetBaselineRef.current[variantKey];
+      }
+      return prev.filter((_, variantIndex) => variantIndex !== index);
+    });
   }, []);
 
   const updateVariant = useCallback(
@@ -514,6 +601,39 @@ export default function useProductVariantsForm() {
     ],
   );
 
+  const createVariantAttribute = useCallback(
+    async (rawName: string, rawOptionLabelsText: string) => {
+      const name = rawName.trim();
+      const optionLabelsText = rawOptionLabelsText.trim();
+      if (!name || !optionLabelsText || !categoryId) {
+        return;
+      }
+
+      setCreatingAttribute(true);
+      try {
+        const response = await adminCategoryService.createVariantAttribute(categoryId, {
+          name,
+          optionLabelsText,
+        });
+        const nextAttribute = response.data;
+        await refreshVariantSchema(categoryId);
+        toast.success(
+          t("variantSection.attributeCreateSuccess", {
+            attribute: nextAttribute.name,
+          }),
+        );
+      } catch (err: unknown) {
+        toast.error(
+          getApiErrorMessage(err, translate, "variantSection.attributeCreateFailed"),
+        );
+        throw err;
+      } finally {
+        setCreatingAttribute(false);
+      }
+    },
+    [categoryId, refreshVariantSchema, t, translate],
+  );
+
   const regenerateVariantSku = useCallback(
     (index: number) => {
       setVariants((prev) => {
@@ -537,6 +657,70 @@ export default function useProductVariantsForm() {
     (variant: VariantFormData, index: number): string =>
       variant.uiKey || variant.id || `variant-${index}`,
     [],
+  );
+
+  const isVariantDirty = useCallback(
+    (variant: VariantFormData, index: number) => {
+      if (variant.pendingFiles.length > 0) {
+        return true;
+      }
+
+      const restoredVariant = buildVariantRestoredFromBaseline(
+        variant,
+        index,
+        variantsRef.current,
+      );
+      if (!restoredVariant) {
+        return false;
+      }
+
+      const selectionKeys = variantSchema.map((attribute) => attribute.id);
+      const selectionsChanged = selectionKeys.some(
+        (attributeId) =>
+          (variant.selections[attributeId] || "")
+          !== (restoredVariant.selections[attributeId] || ""),
+      );
+
+      return selectionsChanged
+        || variant.sku !== restoredVariant.sku
+        || (variant.skuMode ?? "suggested") !== (restoredVariant.skuMode ?? "suggested")
+        || String(variant.price) !== String(restoredVariant.price)
+        || String(variant.compareAtPrice) !== String(restoredVariant.compareAtPrice)
+        || String(variant.stock) !== String(restoredVariant.stock)
+        || variant.active !== restoredVariant.active;
+    },
+    [buildVariantRestoredFromBaseline, variantSchema],
+  );
+
+  const resetVariant = useCallback(
+    (index: number) => {
+      setVariants((prev) => {
+        const currentVariant = prev[index];
+        if (!currentVariant) {
+          return prev;
+        }
+
+        const restoredVariant = buildVariantRestoredFromBaseline(
+          currentVariant,
+          index,
+          prev,
+        );
+        if (!restoredVariant) {
+          return prev;
+        }
+
+        return prev.map((variant, variantIndex) =>
+          variantIndex === index
+            ? {
+              ...restoredVariant,
+              images: variant.images,
+              pendingFiles: [],
+            }
+            : variant,
+        );
+      });
+    },
+    [buildVariantRestoredFromBaseline],
   );
 
   const handleVariantFilesSelected = useCallback(
@@ -850,6 +1034,7 @@ export default function useProductVariantsForm() {
     skuChangeConfirmMessage,
     uploadingVariantKeys,
     creatingOptionByFieldKey,
+    creatingAttribute,
     variantFileInputRefs,
     addVariant,
     generateVariantCombinations,
@@ -857,6 +1042,9 @@ export default function useProductVariantsForm() {
     removeVariant,
     updateVariant,
     updateVariantSelection,
+    isVariantDirty,
+    resetVariant,
+    createVariantAttribute,
     createVariantAttributeOption,
     regenerateVariantSku,
     getVariantUiKey,

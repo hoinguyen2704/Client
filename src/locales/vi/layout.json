@@ -119,6 +119,8 @@
     "emptyConversationGuest": "Bạn cần đăng nhập để bắt đầu chat trực tiếp với admin.",
     "loginButton": "Đăng nhập để chat",
     "closedHint": "Ticket đã đóng, gửi tin nhắn để tạo cuộc trò chuyện mới.",
+    "newConversationButton": "Cuộc trò chuyện mới",
+    "newConversationShort": "Tạo mới",
     "inputPlaceholder": "Nhập tin nhắn...",
     "sendAria": "Gửi tin nhắn hỗ trợ",
     "createSubject": "Hỗ trợ trực tiếp",

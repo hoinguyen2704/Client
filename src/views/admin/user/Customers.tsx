@@ -4,7 +4,7 @@ import { FiDownload, FiLock, FiUnlock } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
-import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
+import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, SortableHeaderLabel, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { useDebounce } from '@/hooks';
 import type { PageResponse, UserResponse } from '@/types';
@@ -19,12 +19,14 @@ export default function Customers() {
   const [searchInput, setSearchInput] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('fullName');
+  const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('ASC');
 
   const deferredSearchInput = useDeferredValue(searchInput);
   const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
   const usersQueryKey = useMemo(
-    () => ['admin-customers', debouncedSearchQuery, roleFilter, page],
-    [debouncedSearchQuery, page, roleFilter],
+    () => ['admin-customers', debouncedSearchQuery, roleFilter, page, sortBy, sortDir],
+    [debouncedSearchQuery, page, roleFilter, sortBy, sortDir],
   );
 
   const usersQuery = useQuery({
@@ -35,6 +37,8 @@ export default function Customers() {
         role: roleFilter || undefined,
         page,
         size: PAGE_SIZE.LARGE,
+        sortBy,
+        sortDir,
       }, { signal }).then((res) => res.data),
     placeholderData: (previousData) => previousData,
   });
@@ -79,6 +83,18 @@ export default function Customers() {
 
   const handleToggleStatus = async (id: string) => {
     await toggleStatusMutation.mutateAsync(id);
+  };
+
+  const handleSort = (column: string) => {
+    startTransition(() => {
+      if (sortBy === column) {
+        setSortDir((current) => (current === 'ASC' ? 'DESC' : 'ASC'));
+      } else {
+        setSortBy(column);
+        setSortDir('ASC');
+      }
+      setPage(1);
+    });
   };
 
   const handleExport = async () => {
@@ -146,12 +162,57 @@ export default function Customers() {
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">{t('adminCustomers:customers.table.index')}</th>
-                <th className="p-3 sm:p-4 font-medium">{t('adminCustomers:customers.table.user')}</th>
-                <th className="p-3 sm:p-4 font-medium">{t('adminCustomers:customers.table.email')}</th>
-                <th className="p-3 sm:p-4 font-medium">{t('adminCustomers:customers.table.phone')}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t('adminCustomers:customers.table.role')}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t('adminCustomers:customers.table.createdAt')}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t('adminCustomers:customers.table.status')}</th>
+                <th className="p-3 sm:p-4 font-medium">
+                  <SortableHeaderLabel
+                    label={t('adminCustomers:customers.table.user')}
+                    active={sortBy === 'fullName'}
+                    direction={sortDir}
+                    onClick={() => handleSort('fullName')}
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  <SortableHeaderLabel
+                    label={t('adminCustomers:customers.table.email')}
+                    active={sortBy === 'email'}
+                    direction={sortDir}
+                    onClick={() => handleSort('email')}
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium">
+                  <SortableHeaderLabel
+                    label={t('adminCustomers:customers.table.phone')}
+                    active={sortBy === 'phoneNumber'}
+                    direction={sortDir}
+                    onClick={() => handleSort('phoneNumber')}
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  <SortableHeaderLabel
+                    label={t('adminCustomers:customers.table.role')}
+                    active={sortBy === 'role'}
+                    direction={sortDir}
+                    onClick={() => handleSort('role')}
+                    align="center"
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  <SortableHeaderLabel
+                    label={t('adminCustomers:customers.table.createdAt')}
+                    active={sortBy === 'createdAt'}
+                    direction={sortDir}
+                    onClick={() => handleSort('createdAt')}
+                    align="center"
+                  />
+                </th>
+                <th className="p-3 sm:p-4 font-medium text-center">
+                  <SortableHeaderLabel
+                    label={t('adminCustomers:customers.table.status')}
+                    active={sortBy === 'status'}
+                    direction={sortDir}
+                    onClick={() => handleSort('status')}
+                    align="center"
+                  />
+                </th>
                 <th className="p-3 sm:p-4 font-medium text-center">{t('adminCustomers:customers.table.actions')}</th>
               </tr>
             </thead>
