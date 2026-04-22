@@ -535,7 +535,7 @@ export default function ProductInfo({
               onChange={setQuantity}
               min={1}
               max={Math.max(1, stock)}
-              size="sm"
+              size="md"
               disabled={!canPurchase || stock <= 0}
               overMaxWarning={t('productDetail.quantity.overMaxWarning', { ns: 'catalog', count: stock })}
             />
