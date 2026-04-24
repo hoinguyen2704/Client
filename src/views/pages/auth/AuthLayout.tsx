@@ -26,6 +26,8 @@ interface AuthLayoutProps {
   mobileLogoGradient: string;
   /** Shadow color for mobile logo, e.g. "shadow-blue-500/30" */
   mobileLogoShadow?: string;
+  /** Optional form panel class overrides for denser auth variants */
+  formPanelClassName?: string;
 }
 
 export default function AuthLayout({
@@ -37,6 +39,7 @@ export default function AuthLayout({
   features,
   mobileLogoGradient,
   mobileLogoShadow = "shadow-blue-500/30",
+  formPanelClassName = "",
 }: AuthLayoutProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-3 sm:p-4">
@@ -114,7 +117,7 @@ export default function AuthLayout({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="w-full max-w-[680px] bg-white dark:bg-slate-800 p-6 sm:p-10 lg:p-16 rounded-[1.75rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700/50 flex flex-col justify-center gap-6 sm:gap-10 h-full"
+            className={`w-full max-w-[680px] bg-white dark:bg-slate-800 p-6 sm:p-10 lg:p-16 rounded-[1.75rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700/50 flex flex-col justify-center gap-6 sm:gap-10 h-full ${formPanelClassName}`}
           >
             {/* Mobile Logo */}
             <div className="text-center lg:hidden mb-6">

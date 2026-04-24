@@ -46,9 +46,8 @@ export interface LinkedSocialAccountResponse {
   linkedAt?: string;
 }
 
-export interface LinkSocialAccountRequest {
-  provider: "GOOGLE";
-  token: string;
+export interface GoogleLinkIntentResponse {
+  ticket: string;
 }
 
 export interface UnlinkSocialAccountRequest {

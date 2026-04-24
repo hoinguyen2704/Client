@@ -7,7 +7,7 @@ import type {
   VerifyEmailChangeRequest,
   ResendEmailChangeOtpRequest,
   LinkedSocialAccountResponse,
-  LinkSocialAccountRequest,
+  GoogleLinkIntentResponse,
   UnlinkSocialAccountRequest,
 } from '@/types';
 
@@ -43,8 +43,8 @@ const userService = {
   getSocialAccounts: (): Promise<ApiResponse<LinkedSocialAccountResponse[]>> =>
     axios.get(`${USER_URL}/me/social-accounts`),
 
-  linkSocialAccount: (data: LinkSocialAccountRequest): Promise<ApiResponse<LinkedSocialAccountResponse>> =>
-    axios.post(`${USER_URL}/me/social-accounts/link`, data),
+  issueGoogleLinkIntent: (): Promise<ApiResponse<GoogleLinkIntentResponse>> =>
+    axios.post(`${USER_URL}/me/social-accounts/GOOGLE/link-intent`),
 
   unlinkGoogleSocialAccount: (data: UnlinkSocialAccountRequest): Promise<ApiResponse<void>> =>
     axios.delete(`${USER_URL}/me/social-accounts/GOOGLE`, { data }),

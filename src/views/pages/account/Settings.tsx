@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { FiBell, FiLock, FiMail, FiShield, FiKey, FiAlertTriangle, FiSun, FiGlobe, FiLoader } from 'react-icons/fi';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { motion } from 'motion/react';
@@ -8,11 +9,14 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
 import userService from '@/apis/services/userService';
-import { requestGoogleIdToken } from '@/utils/googleAuth';
+import { startGoogleLinkRedirect } from '@/utils/googleAuth';
 import type { LinkedSocialAccountResponse } from '@/types';
 import type { SupportedLanguage } from '@/locales/config';
 
 export default function Settings() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [notifications, setNotifications] = useState({
     email: true,
     app: true,
@@ -41,6 +45,26 @@ export default function Settings() {
   useEffect(() => {
     fetchSocialAccounts();
   }, []);
+
+  useEffect(() => {
+    const status = searchParams.get('google_link_status');
+    if (!status) return;
+
+    const code = searchParams.get('google_error_code');
+    const message = searchParams.get('google_error_message');
+
+    if (status === 'success') {
+      toast.success(t('settings:toasts.googleLinked'));
+    } else if (code === 'GOOGLE_EMAIL_MISMATCH') {
+      toast.error(t('settings:socialAccounts.googleMismatch'));
+    } else if (code === 'SOCIAL_ACCOUNT_ALREADY_LINKED') {
+      toast.error(t('settings:socialAccounts.googleAlreadyLinked'));
+    } else {
+      toast.error(message || t('settings:toasts.googleLinkFailed'));
+    }
+
+    navigate(location.pathname, { replace: true });
+  }, [location.pathname, navigate, searchParams, t]);
 
   const fetchSocialAccounts = async () => {
     setLoadingSocialAccounts(true);
@@ -90,22 +114,21 @@ export default function Settings() {
     if (linkingGoogle) return;
     setLinkingGoogle(true);
     try {
-      const token = await requestGoogleIdToken();
-      await userService.linkSocialAccount({ provider: 'GOOGLE', token });
-      await fetchSocialAccounts();
-      toast.success(t('settings:toasts.googleLinked'));
+      const res = await userService.issueGoogleLinkIntent();
+      const ticket = res.data?.ticket;
+      if (!ticket) {
+        throw new Error('Missing Google link ticket');
+      }
+      startGoogleLinkRedirect(ticket, location.pathname);
     } catch (err: unknown) {
       const code = getApiErrorCode(err);
       if (code === 'GOOGLE_EMAIL_MISMATCH') {
         toast.error(t('settings:socialAccounts.googleMismatch'));
-        return;
-      }
-      if (code === 'SOCIAL_ACCOUNT_ALREADY_LINKED') {
+      } else if (code === 'SOCIAL_ACCOUNT_ALREADY_LINKED') {
         toast.error(t('settings:socialAccounts.googleAlreadyLinked'));
-        return;
+      } else {
+        toast.error(getApiErrorMessage(err, t, 'settings:toasts.googleLinkFailed'));
       }
-      toast.error(getApiErrorMessage(err, t, 'settings:toasts.googleLinkFailed'));
-    } finally {
       setLinkingGoogle(false);
     }
   };
