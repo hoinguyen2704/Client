@@ -48,7 +48,7 @@ export default function Wishlist() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4 2xl:grid-cols-5">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
@@ -90,7 +90,7 @@ export default function Wishlist() {
           </div>
         </motion.div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4 2xl:grid-cols-5">
           <AnimatePresence>
             {items.map((item) => {
               const discount = calculateDiscount(

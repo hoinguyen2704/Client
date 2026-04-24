@@ -50,9 +50,9 @@ const RelatedProductsSection = memo(function RelatedProductsSection({
   return (
     <div>
       <h2 className="mb-8 text-2xl font-bold">{title}</h2>
-      <div className="custom-scrollbar flex snap-x gap-4 overflow-x-auto pb-4 md:gap-6">
+      <div className="custom-scrollbar flex snap-x gap-3 overflow-x-auto pb-4 md:gap-5">
         {related.map((product) => (
-          <div key={product.id} className="w-[240px] shrink-0 snap-start flex-none md:w-[280px]">
+          <div key={product.id} className="w-[220px] shrink-0 snap-start flex-none md:w-[240px] xl:w-[248px]">
             <ProductCard product={product} />
           </div>
         ))}

@@ -38,15 +38,15 @@ export default function ProductSection({
       </div>
       
       {layout === 'scroll' ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
           {products.map(product => (
-            <div key={product.id} className="min-w-[240px] md:min-w-[280px] snap-start">
+            <div key={product.id} className="min-w-[220px] snap-start md:min-w-[240px]">
               <ProductCard product={product} />
             </div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
           {products.map(product => (
             <ProductCard key={product.id} product={product} />
           ))}

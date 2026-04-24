@@ -211,7 +211,7 @@ export default function Search() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4 2xl:grid-cols-5">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="animate-pulse bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
                   <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl mb-4" />
@@ -222,7 +222,7 @@ export default function Search() {
             </div>
           ) : products.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4 2xl:grid-cols-5">
                 {products.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}

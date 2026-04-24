@@ -33,14 +33,14 @@ function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
   }, []);
 
   return (
-    <div className="mb-1.5 sm:mb-4 bg-red-50 dark:bg-red-900/20 px-2 sm:px-3 py-1.5 sm:py-2.5 rounded-lg sm:rounded-2xl border border-red-100 dark:border-red-800/30">
-      <div className="flex items-center justify-between text-10 sm:text-sm font-semibold mb-1 sm:mb-1.5 text-red-600 dark:text-red-400">
-        <span className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-slate-900 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg shadow-sm">
+    <div className="mb-1 sm:mb-3 bg-red-50 dark:bg-red-900/20 px-2 py-1.5 sm:px-2.5 sm:py-2 rounded-lg sm:rounded-xl border border-red-100 dark:border-red-800/30">
+      <div className="flex items-center justify-between text-10 sm:text-sm font-semibold mb-1 text-red-600 dark:text-red-400">
+        <span className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded-md sm:rounded-lg shadow-sm">
           <FiClock className="animate-pulse" /> {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
         </span>
         <span>{t('productCard.flashSaleSold', { percent: totalSold })}</span>
       </div>
-      <div className="w-full bg-white dark:bg-slate-900 rounded-full h-1.5 sm:h-2 overflow-hidden shadow-inner">
+      <div className="w-full bg-white dark:bg-slate-900 rounded-full h-1.5 overflow-hidden shadow-inner sm:h-2">
         <div
           className="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full"
           style={{ width: `${totalSold}%` }}
@@ -123,24 +123,24 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className="group relative flex h-full flex-col rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_22px_40px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 sm:rounded-3xl sm:p-3"
+      className="group relative flex h-full flex-col rounded-xl border border-slate-200 bg-white p-1 shadow-sm transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_32px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 sm:rounded-[26px] sm:p-2.5"
     >
       {/* Badges */}
-      <div className="absolute top-2 sm:top-5 left-2 sm:left-5 z-10 flex flex-col gap-1 sm:gap-2">
+      <div className="absolute left-2 top-2 z-10 flex flex-col gap-1 sm:left-4 sm:top-4 sm:gap-1.5">
         {isNew && (
-        <span className={`bg-blue-600 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
+        <span className={`bg-blue-600 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2 py-0.5 sm:py-0.5 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
             {t('productCard.badges.new', { ns: 'catalog' }).toUpperCase()}
           </span>
         )}
         {discount > 0 && (
-          <span className={`bg-rose-600 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
+          <span className={`bg-rose-600 text-white ${TYPOGRAPHY_TEXT_SIZE.sm} font-black px-1.5 sm:px-2 py-0.5 sm:py-0.5 rounded-md sm:rounded-lg shadow-sm uppercase tracking-wider`}>
             {t('productCard.badges.discount', { ns: 'catalog', percent: discount }).toUpperCase()}
           </span>
         )}
       </div>
 
       {/* Image Container */}
-      <Link to={`/product/${slug}`} className="relative aspect-square rounded-lg sm:rounded-2xl overflow-hidden mb-1.5 sm:mb-3 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 sm:p-4 cursor-pointer">
+      <Link to={`/product/${slug}`} className="relative aspect-square rounded-lg sm:rounded-2xl overflow-hidden mb-1 sm:mb-2.5 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-1.5 sm:p-3 cursor-pointer">
         <img
           src={image}
           alt={name}
@@ -161,16 +161,16 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
       <div className="flex flex-col flex-1 px-0 pb-0">
 
         {/* Label bao quanh Tên */}
-        <Link to={`/product/${slug}`} title={name} className="block w-full bg-transparent sm:bg-slate-50 sm:dark:bg-slate-800/50 hover:bg-transparent sm:hover:bg-slate-100 sm:dark:hover:bg-slate-800 p-0 sm:p-3 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-100 sm:dark:border-slate-800 transition-colors mb-1.5 sm:mb-3 mt-0">
-          <h3 className="font-bold text-12 sm:text-lg text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug">
+        <Link to={`/product/${slug}`} title={name} className="block w-full bg-transparent sm:bg-slate-50 sm:dark:bg-slate-800/50 hover:bg-transparent sm:hover:bg-slate-100 sm:dark:hover:bg-slate-800 p-0 sm:p-2.5 rounded-none sm:rounded-xl border-0 sm:border sm:border-slate-100 sm:dark:border-slate-800 transition-colors mb-1 sm:mb-2.5 mt-0">
+          <h3 className="font-bold text-12 sm:text-md text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug">
             {name}
           </h3>
 
           {(rating > 0 || totalSold > 0) && (
-            <div className="mt-1.5 sm:mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+            <div className="mt-1 sm:mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
               {rating > 0 && (
-                <div className="inline-flex items-center gap-1.5 text-11 sm:text-sm font-semibold text-slate-600 dark:text-slate-300">
-                  <FiStar className="shrink-0 text-11 sm:text-base text-yellow-500 fill-yellow-500" />
+                <div className="inline-flex items-center gap-1 text-11 sm:text-sm font-semibold text-slate-600 dark:text-slate-300">
+                  <FiStar className="shrink-0 text-11 sm:text-sm text-yellow-500 fill-yellow-500" />
                   <span className="font-black text-slate-800 dark:text-slate-100">{rating.toFixed(1)}</span>
                   {reviews > 0 && (
                     <span className="text-10 sm:text-sm font-semibold text-slate-400">({reviews})</span>
@@ -178,7 +178,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                 </div>
               )}
               {totalSold > 0 && (
-                <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 px-2.5 sm:px-3 py-1 sm:py-1.5 text-11 sm:text-sm font-semibold text-slate-500 dark:text-slate-300">
+                <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 px-2 sm:px-2.5 py-0.5 sm:py-1 text-11 sm:text-sm font-semibold text-slate-500 dark:text-slate-300">
                   {t('productCard.sold', {
                     ns: 'catalog',
                     count: soldLabel,
@@ -190,11 +190,11 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
         </Link>
 
         {/* Price & Status — same row */}
-        <div className="mt-auto mb-1.5 rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/40 sm:mb-4 sm:rounded-2xl sm:p-3">
+        <div className="mt-auto mb-1 rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/40 sm:mb-3 sm:rounded-xl sm:p-2.5">
           {originPrice > 0 ? (
             <>
               {/* Giá gốc */}
-              <div className="flex items-center flex-wrap gap-x-1.5 gap-y-0.5 mb-1">
+              <div className="mb-1 flex items-center flex-wrap gap-x-1.5 gap-y-0.5">
                 <span className={`${TYPOGRAPHY_TEXT_SIZE.md} uppercase font-bold tracking-wider text-slate-400`}>{t('productCard.originalPrice', { ns: 'catalog' })}</span>
                 <span className={`text-10 sm:text-sm font-medium ${hasDiscount ? 'text-slate-400 line-through' : 'text-slate-500'}`}>
                   {formatPrice(originPrice)}
@@ -207,20 +207,20 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
               </div>
               {/* Giá bán + trạng thái */}
               <div className="flex items-center justify-between gap-1.5">
-                <span className="text-14 sm:text-base font-black text-slate-800 dark:text-white leading-none">
+                <span className="text-13 sm:text-[15px] font-black text-slate-800 dark:text-white leading-none">
                   {formatPrice(salePrice)}
                 </span>
-                <span className={`${TYPOGRAPHY_TEXT_SIZE.md} font-black uppercase px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg border shrink-0 whitespace-nowrap ${statusBg} ${statusTextColor}`}>
+                <span className={`${TYPOGRAPHY_TEXT_SIZE.md} font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg border shrink-0 whitespace-nowrap ${statusBg} ${statusTextColor}`}>
                   {statusText}
                 </span>
               </div>
             </>
           ) : (
             <div className="flex items-center justify-between gap-1.5">
-              <span className="text-14 sm:text-base font-black text-slate-800 dark:text-white leading-none">
+              <span className="text-13 sm:text-[15px] font-black text-slate-800 dark:text-white leading-none">
                 {formatPrice(salePrice)}
               </span>
-              <span className={`${TYPOGRAPHY_TEXT_SIZE.md} font-black uppercase px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg border shrink-0 whitespace-nowrap ${statusBg} ${statusTextColor}`}>
+              <span className={`${TYPOGRAPHY_TEXT_SIZE.md} font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg border shrink-0 whitespace-nowrap ${statusBg} ${statusTextColor}`}>
                 {statusText}
               </span>
             </div>
@@ -230,7 +230,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
         {isFlashSale && <FlashSaleCountdown totalSold={totalSold} />}
 
         {/* Nút hành động nổi bật ở đáy */}
-        <div className="flex items-center gap-1.5 sm:gap-2 mt-1">
+        <div className="mt-0.5 flex items-center gap-1.5 sm:gap-2">
           <button
             onClick={async (e) => {
               e.preventDefault();
@@ -242,7 +242,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
               if (!productId) return;
               await toggleWishlist(productId);
             }}
-            className={`w-9 h-9 sm:w-12 sm:h-12 shrink-0 border rounded-lg sm:rounded-2xl flex justify-center items-center transition-all shadow-sm group/heart ${liked
+            className={`w-9 h-9 sm:w-11 sm:h-11 shrink-0 border rounded-lg sm:rounded-xl flex justify-center items-center transition-all shadow-sm group/heart ${liked
                 ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
                 : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
               }`}
@@ -274,7 +274,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                 toast.error(getApiErrorMessage(error, translate, 'catalog:productCard.actions.addToCartFailed'));
               } finally { setAddingToCart(false); }
             }}
-            className="flex h-9 flex-1 items-center justify-center gap-1 rounded-lg bg-blue-600 text-11 font-bold text-white shadow-sm shadow-blue-950/10 transition-all hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 group/cart sm:h-12 sm:rounded-2xl sm:text-md sm:gap-2"
+            className="flex h-9 flex-1 items-center justify-center gap-1 rounded-lg bg-blue-600 text-11 font-bold text-white shadow-sm shadow-blue-950/10 transition-all hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 group/cart sm:h-11 sm:rounded-xl sm:text-md sm:gap-2"
           >
             <FiShoppingCart className="text-md sm:text-lg group-hover/cart:-rotate-12 transition-transform" />
             <span className="truncate">
