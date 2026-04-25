@@ -4,28 +4,13 @@ import type {
   PageResponse,
   BannerResponse,
   ArticleResponse,
+  ArticleListParams,
+  ArticleMutationRequest,
+  BannerMutationRequest,
+  CmsImageUploadResponse,
 } from "@/types";
 
 const URL = "/cms";
-
-type BannerMutationRequest = {
-  title: string;
-  imageUrl: string;
-  targetUrl?: string;
-  sortOrder?: number;
-  isActive?: boolean;
-};
-
-type ArticleMutationRequest = {
-  title: string;
-  content: string;
-  thumbnailUrl?: string;
-  isPublished?: boolean;
-};
-
-type CmsImageUploadResponse = {
-  imageUrl: string;
-};
 
 const adminCmsService = {
   //  Banners
@@ -57,10 +42,9 @@ const adminCmsService = {
   },
 
   //  Articles
-  getArticles: (params?: {
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<ArticleResponse>>> =>
+  getArticles: (
+    params?: ArticleListParams,
+  ): Promise<ApiResponse<PageResponse<ArticleResponse>>> =>
     adminAxios.get(`${URL}/articles`, { params }),
 
   createArticle: (

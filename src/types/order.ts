@@ -1,3 +1,5 @@
+import type { ReportExportParams } from "./report";
+
 //  Order
 export interface OrderResponse {
   id: string;
@@ -78,6 +80,30 @@ export interface CheckoutItem {
   variantId: string;
   quantity: number;
   expectedUnitPrice?: number;
+}
+
+export interface OrderListParams {
+  status?: string;
+  page?: number;
+  size?: number;
+}
+
+export interface OrderStatusUpdateRequest {
+  status: string;
+}
+
+export interface AdminOrderListParams {
+  status?: string;
+  keyword?: string;
+  page?: number;
+  size?: number;
+}
+
+export interface OrderExportParams {
+  status?: string;
+  keyword?: string;
+  from?: string;
+  to?: string;
 }
 
 // Return / Refund
@@ -164,4 +190,21 @@ export interface ProcessRefundRequestPayload {
   adminNote: string;
   currency?: string;
   rawPayload?: string;
+}
+
+export interface ReturnListParams {
+  status?: string;
+  keyword?: string;
+  page?: number;
+  size?: number;
+}
+
+export interface ReturnExportParams {
+  status?: string;
+  keyword?: string;
+}
+
+export interface ReturnReportExportParams extends ReportExportParams {
+  status?: string;
+  keyword?: string;
 }

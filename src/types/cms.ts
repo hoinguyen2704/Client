@@ -18,13 +18,21 @@ export interface Banner {
 }
 
 //  Banner Form (admin CMS)
-export type BannerForm = {
+export interface BannerForm {
   title: string;
   imageUrl: string;
   targetUrl: string;
   sortOrder: string;
   isActive: boolean;
-};
+}
+
+export interface BannerMutationRequest {
+  title: string;
+  imageUrl: string;
+  targetUrl?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
 
 //  Article
 export interface ArticleResponse {
@@ -40,9 +48,25 @@ export interface ArticleResponse {
 }
 
 //  Article Form (admin CMS)
-export type ArticleForm = {
+export interface ArticleForm {
   title: string;
   content: string;
   thumbnailUrl: string;
   isPublished: boolean;
-};
+}
+
+export interface ArticleMutationRequest {
+  title: string;
+  content: string;
+  thumbnailUrl?: string;
+  isPublished?: boolean;
+}
+
+export interface ArticleListParams {
+  page?: number;
+  size?: number;
+}
+
+export interface CmsImageUploadResponse {
+  imageUrl: string;
+}

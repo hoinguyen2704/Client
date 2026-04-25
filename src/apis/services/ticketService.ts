@@ -1,5 +1,12 @@
 import axios from '../axios';
-import type { ApiResponse, PageResponse, TicketResponse, TicketRequest, TicketMessageRequest } from '@/types';
+import type {
+  ApiResponse,
+  ContactTicketRequest,
+  PageResponse,
+  TicketMessageRequest,
+  TicketRequest,
+  TicketResponse,
+} from '@/types';
 
 const TICKET_URL = '/tickets';
 
@@ -16,7 +23,7 @@ const ticketService = {
   reply: (id: string, data: TicketMessageRequest): Promise<ApiResponse<TicketResponse>> =>
     axios.post(`${TICKET_URL}/${id}/reply`, data),
 
-  submitContact: (data: { name: string; email: string; phone: string; subject: string; message: string }): Promise<ApiResponse<TicketResponse>> =>
+  submitContact: (data: ContactTicketRequest): Promise<ApiResponse<TicketResponse>> =>
     axios.post('/public/contact', data),
 };
 

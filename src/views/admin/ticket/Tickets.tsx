@@ -21,12 +21,12 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
 
 type TicketGroupMode = 'NONE' | 'DATE' | 'CUSTOMER';
 
-type TicketGroupSection = {
+interface TicketGroupSection {
   key: string;
   title: string;
   subtitle?: string;
   tickets: TicketResponse[];
-};
+}
 
 function formatDateGroupLabel(
   rawDate: string,

@@ -58,3 +58,8 @@ export interface FlashSaleItemForm extends FlashSaleItemRequest {
   netSoldQty?: number;
   stockQuantity?: number;
 }
+
+export interface FlashSaleListParams {
+  page?: number;
+  size?: number;
+}

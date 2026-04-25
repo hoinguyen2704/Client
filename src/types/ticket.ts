@@ -10,6 +10,14 @@ export interface TicketMessageRequest {
   attachmentsJson?: string;
 }
 
+export interface ContactTicketRequest {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
 export interface TicketResponse {
   id: string;
   ticketNumber?: string;

@@ -1,11 +1,11 @@
 import { memo, useMemo } from 'react';
 import type { VariantSelectorProps } from '@/types';
 
-type AttributeGroup = {
+interface AttributeGroup {
   id: string;
   name: string;
   options: Array<{ id: string; label: string }>;
-};
+}
 
 function VariantSelector({
   variants,
@@ -22,12 +22,12 @@ function VariantSelector({
   if (!activeVariant) return null;
 
   const groups = useMemo<AttributeGroup[]>(() => {
-    type MutableGroup = {
+    interface MutableGroup {
       id: string;
       name: string;
       sortOrder: number;
       options: Map<string, { label: string; sortOrder: number }>;
-    };
+    }
 
     const groupMap = new Map<string, MutableGroup>();
 

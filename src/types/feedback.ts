@@ -45,6 +45,26 @@ export interface FeedbackRequest {
   imagesJson?: string;
 }
 
+export interface FeedbackStatusUpdateRequest {
+  status: string;
+}
+
+export interface FeedbackReplyRequest {
+  reply: string;
+}
+
+export interface FeedbackExportParams {
+  status?: string;
+  productId?: string;
+}
+
+export interface ProductFeedbackQueryParams {
+  page?: number;
+  size?: number;
+  rating?: number;
+  hasComment?: boolean;
+}
+
 //  Review UI types (from MyReviews.tsx)
 export type ReviewTab = 'to-review' | 'reviewed';
 

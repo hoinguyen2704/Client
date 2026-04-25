@@ -9,6 +9,11 @@ export interface SettingResponse {
   updatedAt?: string;
 }
 
+export interface SettingUpdateRequest {
+  settingKey: string;
+  settingValue: string;
+}
+
 export interface ShippingConfig {
   defaultShippingFee: number;
   freeShippingThreshold: number;

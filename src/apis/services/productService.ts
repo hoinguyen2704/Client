@@ -1,21 +1,19 @@
 import BaseService from './baseService';
 import axios from '../axios';
-import type { ApiResponse, PageResponse, ProductResponse, ProductRequest } from '@/types';
+import type {
+  ApiResponse,
+  PageResponse,
+  ProductRequest,
+  ProductResponse,
+  ProductSearchParams,
+} from '@/types';
 
 class ProductService extends BaseService<ProductResponse, ProductRequest> {
   constructor() {
     super('/products');
   }
 
-  async search(params: {
-    keyword?: string;
-    categorySlug?: string;
-    brand?: string;
-    page?: number;
-    size?: number;
-    sortBy?: string;
-    sortDir?: string;
-  }): Promise<ApiResponse<PageResponse<ProductResponse>>> {
+  async search(params: ProductSearchParams): Promise<ApiResponse<PageResponse<ProductResponse>>> {
     return axios.get(this.endpoint, { params });
   }
 

@@ -94,6 +94,47 @@ export interface AdminProductVariantSummary {
   imageUrl?: string;
 }
 
+export interface ProductSearchParams {
+  keyword?: string;
+  categorySlug?: string;
+  brand?: string;
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDir?: string;
+}
+
+export interface AdminProductListParams {
+  keyword?: string;
+  categoryId?: string;
+  status?: string;
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDir?: "ASC" | "DESC";
+}
+
+export interface AdminProductPickerListParams {
+  keyword?: string;
+  categoryId?: string;
+  brandId?: string;
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDir?: "ASC" | "DESC";
+}
+
+export interface ProductImageUploadResponse {
+  id: string;
+  imageUrl: string;
+}
+
+export interface ProductExportParams {
+  keyword?: string;
+  categoryId?: string;
+  status?: string;
+}
+
 export interface ProductSpecValueResponse {
   specAttributeId: string;
   name: string;

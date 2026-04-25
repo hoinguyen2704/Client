@@ -7,7 +7,9 @@ import type {
   ReviewReturnRequestPayload,
   UpdateReturnStatusRequestPayload,
   ProcessRefundRequestPayload,
-  ReportExportParams,
+  ReturnExportParams,
+  ReturnListParams,
+  ReturnReportExportParams,
 } from "@/types";
 
 const RETURN_URL = "/returns";
@@ -24,12 +26,9 @@ const returnService = {
         : undefined,
     }),
 
-  getMine: (params?: {
-    status?: string;
-    keyword?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<ReturnRequestResponse>>> =>
+  getMine: (
+    params?: ReturnListParams,
+  ): Promise<ApiResponse<PageResponse<ReturnRequestResponse>>> =>
     axios.get(RETURN_URL, { params }),
 
   getByNumber: (
@@ -43,12 +42,9 @@ const returnService = {
     axios.patch(`${RETURN_URL}/${returnRequestId}/cancel`),
 
   // Admin endpoints (admin/api/v1/returns)
-  adminGetAll: (params?: {
-    status?: string;
-    keyword?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<ReturnRequestResponse>>> =>
+  adminGetAll: (
+    params?: ReturnListParams,
+  ): Promise<ApiResponse<PageResponse<ReturnRequestResponse>>> =>
     adminAxios.get(RETURN_URL, { params }),
 
   adminGetByNumber: (
@@ -79,16 +75,10 @@ const returnService = {
         : undefined,
     }),
 
-  adminExport: (params?: {
-    status?: string;
-    keyword?: string;
-  }): Promise<Blob> =>
+  adminExport: (params?: ReturnExportParams): Promise<Blob> =>
     adminAxios.get(`${RETURN_URL}/export`, { params, responseType: 'blob' }),
 
-  adminExportReportByRange: (params: ReportExportParams & {
-    status?: string;
-    keyword?: string;
-  }): Promise<Blob> =>
+  adminExportReportByRange: (params: ReturnReportExportParams): Promise<Blob> =>
     adminAxios.get(`${RETURN_URL}/report-export`, { params, responseType: 'blob' }),
 };
 

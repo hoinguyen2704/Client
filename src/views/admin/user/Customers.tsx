@@ -160,7 +160,7 @@ export default function Customers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1020px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-ink dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">{t('adminCustomers:customers.table.index')}</th>
                 <th className="p-3 sm:p-4 font-medium">
                   <SortableHeaderLabel
@@ -221,7 +221,7 @@ export default function Customers() {
                 <TableRowSkeleton rows={5} cols={8} />
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                  <td colSpan={8} className="p-12 text-center text-ink border-b border-slate-200 dark:border-slate-700">
                     {t('adminCustomers:customers.table.empty')}
                   </td>
                 </tr>
@@ -231,7 +231,7 @@ export default function Customers() {
                     key={user.id}
                     className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x divide-slate-200 dark:divide-slate-700"
                   >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-slate-400">
+                    <td className="p-3 sm:p-4 text-center font-semibold text-ink">
                       {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
                     </td>
                     <td className="p-3 sm:p-4">
@@ -240,8 +240,8 @@ export default function Customers() {
                         <span className="font-bold">{user.fullName}</span>
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 text-slate-500">{user.email}</td>
-                    <td className="p-3 sm:p-4 text-slate-500">
+                    <td className="p-3 sm:p-4 text-ink">{user.email}</td>
+                    <td className="p-3 sm:p-4 text-ink">
                       {user.phoneNumber || t('common:labels.notAvailable')}
                     </td>
                     <td className="p-3 sm:p-4 text-center">
@@ -249,7 +249,7 @@ export default function Customers() {
                         status={user.role === 'ADMIN' ? 'admin' : 'user'}
                       />
                     </td>
-                    <td className="p-3 sm:p-4 text-slate-500 text-center">
+                    <td className="p-3 sm:p-4 text-ink text-center">
                       {formatDate(user.createdAt)}
                     </td>
                     <td className="p-3 sm:p-4 text-center">

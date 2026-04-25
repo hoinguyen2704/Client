@@ -188,7 +188,7 @@ export default function Brands() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
+                <label className="block text-md font-medium text-ink dark:text-slate-400 mb-1.5">
                   {t("brands.form.nameLabel")}
                 </label>
                 <input
@@ -203,7 +203,7 @@ export default function Brands() {
                 />
               </div>
               <div>
-                <label className="block text-md font-medium text-slate-600 dark:text-slate-400 mb-1.5">
+                <label className="block text-md font-medium text-ink dark:text-slate-400 mb-1.5">
                   {t("brands.form.logoLabel")}
                 </label>
                 <input
@@ -249,7 +249,7 @@ export default function Brands() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[960px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-ink text-md">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">{t("brands.table.index")}</th>
                 <th className="p-3 sm:p-4 font-medium">{t("brands.table.brand")}</th>
                 <th className="p-3 sm:p-4 font-medium">{t("brands.table.slug")}</th>
@@ -264,7 +264,7 @@ export default function Brands() {
                 <TableRowSkeleton rows={5} cols={5} />
               ) : brands.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">
+                  <td colSpan={5} className="p-12 text-center text-ink">
                     {t("brands.table.empty")}
                   </td>
                 </tr>

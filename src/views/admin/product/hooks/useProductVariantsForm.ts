@@ -25,8 +25,8 @@ import {
   normalizeSelectionsBySchema,
   parseVariantSignatureOptionCodes,
   sortVariantsByUpdatedAt,
-  type VariantResetBaseline,
 } from "./productFormShared";
+import type { VariantResetBaseline } from "./types";
 
 export default function useProductVariantsForm() {
   const { t } = useTranslation(["adminCatalog", "common"]);

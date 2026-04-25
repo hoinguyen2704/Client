@@ -1,6 +1,7 @@
 import { adminAxios } from '../axios';
 import type {
   ApiResponse,
+  FlashSaleListParams,
   PageResponse,
   FlashSaleResponse,
   FlashSaleRequest,
@@ -10,10 +11,7 @@ import type {
 const URL = '/flash-sales';
 
 const adminFlashSaleService = {
-  getAll: (params?: {
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<FlashSaleResponse>>> =>
+  getAll: (params?: FlashSaleListParams): Promise<ApiResponse<PageResponse<FlashSaleResponse>>> =>
     adminAxios.get(URL, { params }),
 
   getById: (id: string): Promise<ApiResponse<FlashSaleResponse>> =>

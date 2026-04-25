@@ -163,7 +163,7 @@ export default function AdminVouchers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1080px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-ink text-md">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">{t("vouchers.table.index")}</th>
                 <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.code")}</th>
                 <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.typeValue")}</th>
@@ -180,7 +180,7 @@ export default function AdminVouchers() {
                 <TableRowSkeleton rows={5} cols={9} />
               ) : vouchers.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="p-12 text-center text-slate-400">
+                  <td colSpan={9} className="p-12 text-center text-ink">
                     {t("vouchers.empty")}
                   </td>
                 </tr>
@@ -190,7 +190,7 @@ export default function AdminVouchers() {
                     key={v.id}
                     className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-slate-400">
+                    <td className="p-3 sm:p-4 text-center font-semibold text-ink">
                       {getPaginatedRowNumber(page, PAGE_SIZE.MEDIUM, index)}
                     </td>
                     <td className="p-3 sm:p-4">
@@ -209,7 +209,7 @@ export default function AdminVouchers() {
                           ? `${v.discountValue}%`
                           : formatPrice(v.discountValue)}
                       </div>
-                      <div className="text-sm text-slate-500 flex gap-1 items-center mt-1">
+                      <div className="text-sm text-ink flex gap-1 items-center mt-1">
                         <span
                           className={`px-1.5 py-0.5 rounded ${v.couponCategory === "SHIPPING" ? "bg-teal-100 text-teal-600" : "bg-blue-100 text-blue-600"}`}
                         >
@@ -242,7 +242,7 @@ export default function AdminVouchers() {
                         )}
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 text-md text-slate-500">
+                    <td className="p-3 sm:p-4 text-md text-ink">
                       <div>
                         {t("vouchers.meta.from")}: {v.startDate ? formatDateFull(v.startDate) : "—"}
                       </div>
@@ -254,7 +254,7 @@ export default function AdminVouchers() {
                           <FiGlobe className="text-10" /> {t("vouchers.meta.public")}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-slate-100 text-ink dark:bg-slate-800 dark:text-slate-400">
                           <FiLock className="text-10" /> {t("vouchers.meta.private")}
                         </span>
                       )}
@@ -268,7 +268,7 @@ export default function AdminVouchers() {
                           })}
                         </span>
                       ) : (
-                        <span className="text-sm text-slate-400">{t("vouchers.meta.all")}</span>
+                        <span className="text-sm text-ink">{t("vouchers.meta.all")}</span>
                       )}
                     </td>
                     <td className="p-3 sm:p-4">
@@ -437,14 +437,14 @@ export default function AdminVouchers() {
             <FormInput
               label={
                 form.couponCategory === "SHIPPING" &&
-                form.discountType !== "PERCENTAGE"
+                  form.discountType !== "PERCENTAGE"
                   ? t("vouchers.form.shippingCapLabel")
                   : t("vouchers.form.discountValueLabel")
               }
               type="number"
               placeholder={
                 form.couponCategory === "SHIPPING" &&
-                form.discountType !== "PERCENTAGE"
+                  form.discountType !== "PERCENTAGE"
                   ? t("vouchers.form.shippingCapPlaceholder")
                   : t("vouchers.form.discountValuePlaceholder")
               }
@@ -554,11 +554,10 @@ export default function AdminVouchers() {
                     applicableProductIds: [],
                   })
                 }
-                className={`p-3 rounded-xl border-2 text-left transition-all ${
-                  form.applyType === "ALL"
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
-                    : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
-                }`}
+                className={`p-3 rounded-xl border-2 text-left transition-all ${form.applyType === "ALL"
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
+                  : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                  }`}
               >
                 <div className="text-md font-bold">{t("vouchers.form.applyAllTitle")}</div>
                 <div className="text-sm text-slate-500 mt-0.5">
@@ -570,11 +569,10 @@ export default function AdminVouchers() {
                 onClick={() =>
                   setForm({ ...form, applyType: "SPECIFIC_PRODUCTS" })
                 }
-                className={`p-3 rounded-xl border-2 text-left transition-all ${
-                  form.applyType === "SPECIFIC_PRODUCTS"
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
-                    : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
-                }`}
+                className={`p-3 rounded-xl border-2 text-left transition-all ${form.applyType === "SPECIFIC_PRODUCTS"
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
+                  : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                  }`}
               >
                 <div className="text-md font-bold">{t("vouchers.form.applySpecificTitle")}</div>
                 <div className="text-sm text-slate-500 mt-0.5">

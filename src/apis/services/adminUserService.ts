@@ -1,6 +1,11 @@
 import BaseService from './baseService';
 import { adminAxios } from '../axios';
-import type { AdminUpdatePhoneRequest, ApiResponse, UserResponse } from '@/types';
+import type {
+  AdminUpdatePhoneRequest,
+  AdminUserExportParams,
+  ApiResponse,
+  UserResponse,
+} from '@/types';
 
 class AdminUserService extends BaseService<UserResponse> {
   constructor() {
@@ -11,7 +16,7 @@ class AdminUserService extends BaseService<UserResponse> {
     return this.http.patch(`${this.endpoint}/${id}/status`);
   }
 
-  async export(params?: { keyword?: string; role?: string }): Promise<Blob> {
+  async export(params?: AdminUserExportParams): Promise<Blob> {
     return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
   }
 

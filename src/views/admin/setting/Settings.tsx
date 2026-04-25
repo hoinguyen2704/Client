@@ -4,8 +4,7 @@ import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMouse
 import { Button, CustomSelect, FormInput, Modal, ModalCancelButton, SectionCard, SwitchToggle } from '@/components';
 import { toast } from 'sonner';
 import adminSettingService from '@/apis/services/adminSettingService';
-import type { SettingResponse } from '@/types';
-import type { SettingUpdateRequest } from '@/apis/services/adminSettingService';
+import type { SettingResponse, SettingUpdateRequest } from '@/types';
 
 export default function Settings() {
   const { t } = useTranslation('adminSettings');

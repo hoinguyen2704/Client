@@ -4,6 +4,7 @@ import type {
   FeedbackResponse,
   FeedbackRequest,
   ProductFeedbackPageResponse,
+  ProductFeedbackQueryParams,
 } from '@/types';
 
 const FEEDBACK_URL = '/feedbacks';
@@ -11,7 +12,7 @@ const FEEDBACK_URL = '/feedbacks';
 const feedbackService = {
   getByProduct: (
     productId: string,
-    params?: { page?: number; size?: number; rating?: number; hasComment?: boolean },
+    params?: ProductFeedbackQueryParams,
   ): Promise<ApiResponse<ProductFeedbackPageResponse>> =>
     axios.get(`${FEEDBACK_URL}/product/${productId}`, {
       params: {

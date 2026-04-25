@@ -1,7 +1,16 @@
 import BaseService from './baseService';
 import { adminAxios } from '../axios';
 import type { AxiosRequestConfig } from 'axios';
-import type { AdminOrderListItem, ApiResponse, OrderResponse, PageResponse, ReportExportParams } from '@/types';
+import type {
+  AdminOrderListItem,
+  AdminOrderListParams,
+  ApiResponse,
+  OrderExportParams,
+  OrderResponse,
+  OrderStatusUpdateRequest,
+  PageResponse,
+  ReportExportParams,
+} from '@/types';
 
 class AdminOrderService extends BaseService<OrderResponse> {
   constructor() {
@@ -9,12 +18,7 @@ class AdminOrderService extends BaseService<OrderResponse> {
   }
 
   async getList(
-    params?: {
-      status?: string;
-      keyword?: string;
-      page?: number;
-      size?: number;
-    },
+    params?: AdminOrderListParams,
     config?: AxiosRequestConfig,
   ): Promise<ApiResponse<PageResponse<AdminOrderListItem>>> {
     return this.http.get(this.endpoint, { ...(config || {}), params });
@@ -25,15 +29,11 @@ class AdminOrderService extends BaseService<OrderResponse> {
   }
 
   async updateStatus(id: string, status: string): Promise<ApiResponse<OrderResponse>> {
-    return this.http.patch(`${this.endpoint}/${id}/status`, { status });
+    const data: OrderStatusUpdateRequest = { status };
+    return this.http.patch(`${this.endpoint}/${id}/status`, data);
   }
 
-  async export(params?: {
-    status?: string;
-    keyword?: string;
-    from?: string;
-    to?: string;
-  }): Promise<Blob> {
+  async export(params?: OrderExportParams): Promise<Blob> {
     return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
   }
 

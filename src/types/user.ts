@@ -20,6 +20,11 @@ export interface UpdateUserRequest {
   phoneNumber?: string;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface EmailChangeRequest {
   newEmail: string;
   currentPassword: string;
@@ -37,6 +42,11 @@ export interface ResendEmailChangeOtpRequest {
 export interface AdminUpdatePhoneRequest {
   phoneNumber: string;
   reason: string;
+}
+
+export interface AdminUserExportParams {
+  keyword?: string;
+  role?: string;
 }
 
 export interface LinkedSocialAccountResponse {

@@ -4,23 +4,10 @@ import type {
   VariantAttributeSchemaResponse,
   VariantFormData,
 } from "@/types";
-
-export type VariantResetBaseline = {
-  sku: string;
-  skuMode: VariantFormData["skuMode"];
-  selections: Record<string, string>;
-  price: VariantFormData["price"];
-  compareAtPrice: VariantFormData["compareAtPrice"];
-  stock: VariantFormData["stock"];
-  active: boolean;
-};
-
-export type CategorySpecTemplate = {
-  id: string;
-  specKey: string;
-  hint?: string;
-  sortOrder?: number;
-};
+import type {
+  CategorySpecTemplate,
+  VariantResetBaseline,
+} from "./types";
 
 export const createVariantUiKey = () =>
   `variant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;

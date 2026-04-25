@@ -3,10 +3,14 @@ import { adminAxios } from '../axios';
 import type { AxiosRequestConfig } from 'axios';
 import type {
   AdminProductListItem,
+  AdminProductListParams,
+  AdminProductPickerListParams,
   AdminProductPickerItem,
   AdminProductVariantSummary,
   ApiResponse,
   PageResponse,
+  ProductExportParams,
+  ProductImageUploadResponse,
   ProductBasicRequest,
   ProductResponse,
   ProductRequest,
@@ -19,30 +23,14 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
   }
 
   async getList(
-    params?: {
-      keyword?: string;
-      categoryId?: string;
-      status?: string;
-      page?: number;
-      size?: number;
-      sortBy?: string;
-      sortDir?: 'ASC' | 'DESC';
-    },
+    params?: AdminProductListParams,
     config?: AxiosRequestConfig,
   ): Promise<ApiResponse<PageResponse<AdminProductListItem>>> {
     return this.http.get(this.endpoint, { ...(config || {}), params });
   }
 
   async getPickerList(
-    params?: {
-      keyword?: string;
-      categoryId?: string;
-      brandId?: string;
-      page?: number;
-      size?: number;
-      sortBy?: string;
-      sortDir?: 'ASC' | 'DESC';
-    },
+    params?: AdminProductPickerListParams,
     config?: AxiosRequestConfig,
   ): Promise<ApiResponse<PageResponse<AdminProductPickerItem>>> {
     return this.http.get(`${this.endpoint}/picker`, { ...(config || {}), params });
@@ -68,7 +56,7 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
     return this.http.put(`${this.endpoint}/${id}/variants`, data);
   }
 
-  async uploadImages(productId: string, files: File[]): Promise<ApiResponse<{id: string; imageUrl: string}[]>> {
+  async uploadImages(productId: string, files: File[]): Promise<ApiResponse<ProductImageUploadResponse[]>> {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
     return this.http.post(`${this.endpoint}/${productId}/images`, formData, {
@@ -80,7 +68,7 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
     return this.http.delete(`${this.endpoint}/${productId}/images/${imageId}`);
   }
 
-  async uploadVariantImages(productId: string, variantId: string, files: File[]): Promise<ApiResponse<{id: string; imageUrl: string}[]>> {
+  async uploadVariantImages(productId: string, variantId: string, files: File[]): Promise<ApiResponse<ProductImageUploadResponse[]>> {
     const formData = new FormData();
     files.forEach(file => formData.append('files', file));
     return this.http.post(`${this.endpoint}/${productId}/variants/${variantId}/images`, formData, {
@@ -93,11 +81,7 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
   }
 
   /** Xuất danh sách sản phẩm ra Excel */
-  async export(params?: {
-    keyword?: string;
-    categoryId?: string;
-    status?: string;
-  }): Promise<Blob> {
+  async export(params?: ProductExportParams): Promise<Blob> {
     return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
   }
 }

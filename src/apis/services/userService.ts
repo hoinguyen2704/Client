@@ -1,6 +1,7 @@
 import axios from '../axios';
 import type {
   ApiResponse,
+  ChangePasswordRequest,
   UserResponse,
   UpdateUserRequest,
   EmailChangeRequest,
@@ -20,7 +21,7 @@ const userService = {
   updateProfile: (data: UpdateUserRequest): Promise<ApiResponse<UserResponse>> =>
     axios.put(`${USER_URL}/me`, data),
 
-  changePassword: (data: { currentPassword: string; newPassword: string }): Promise<ApiResponse<void>> =>
+  changePassword: (data: ChangePasswordRequest): Promise<ApiResponse<void>> =>
     axios.put(`${USER_URL}/change-password`, data),
 
   uploadAvatar: (file: File): Promise<ApiResponse<UserResponse>> => {

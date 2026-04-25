@@ -9,12 +9,12 @@ import { useTranslation } from "react-i18next";
 
 const SPEC_COLLAPSE_THRESHOLD = 6;
 
-type Props = BasicInfoSectionProps & {
+type BasicInfoSectionViewProps = BasicInfoSectionProps & {
   showBasicInfo?: boolean;
   showSpecs?: boolean;
 };
 
-export default memo(function BasicInfoSection(props: Props) {
+export default memo(function BasicInfoSection(props: BasicInfoSectionViewProps) {
   const { t } = useTranslation("adminCatalog");
   const {
     name, setName,

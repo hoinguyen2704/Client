@@ -23,3 +23,12 @@ export interface CartItem {
   quantity: number;
   image: string;
 }
+
+export interface AddToCartRequest {
+  variantId: string;
+  quantity: number;
+}
+
+export interface UpdateCartItemQuantityRequest {
+  quantity: number;
+}

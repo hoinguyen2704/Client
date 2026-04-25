@@ -2,8 +2,10 @@ import axios from "../axios";
 import { adminAxios } from "../axios";
 import type {
   ApiResponse,
-  PageResponse,
+  OrderListParams,
   OrderResponse,
+  OrderStatusUpdateRequest,
+  PageResponse,
   CheckoutRequest,
 } from "@/types";
 
@@ -24,11 +26,9 @@ const orderService = {
   getByNumber: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
     axios.get(`${ORDER_URL}/${orderNumber}`),
 
-  getMyOrders: (params?: {
-    status?: string;
-    page?: number;
-    size?: number;
-  }): Promise<ApiResponse<PageResponse<OrderResponse>>> =>
+  getMyOrders: (
+    params?: OrderListParams,
+  ): Promise<ApiResponse<PageResponse<OrderResponse>>> =>
     axios.get(ORDER_URL, { params }),
 
   cancel: (orderId: string): Promise<ApiResponse<OrderResponse>> =>
@@ -38,8 +38,10 @@ const orderService = {
   updateStatus: (
     orderId: string,
     status: string,
-  ): Promise<ApiResponse<OrderResponse>> =>
-    adminAxios.patch(`${ORDER_URL}/${orderId}/status`, { status }),
+  ): Promise<ApiResponse<OrderResponse>> => {
+    const data: OrderStatusUpdateRequest = { status };
+    return adminAxios.patch(`${ORDER_URL}/${orderId}/status`, data);
+  },
 };
 
 export default orderService;

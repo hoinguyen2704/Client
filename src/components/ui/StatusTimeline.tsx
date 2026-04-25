@@ -1,14 +1,13 @@
-import React from 'react';
 import { FiCheck } from 'react-icons/fi';
 import { motion } from 'motion/react';
-import type {StatusTimelineProps } from './types';
+import type { StatusTimelineProps } from './types';
 
-export const StatusTimeline: React.FC<StatusTimelineProps> = ({
+export function StatusTimeline({
   steps,
   currentStepIndex,
   variant = 'horizontal',
   size = 'md',
-}) => {
+}: StatusTimelineProps) {
   const isHorizontal = variant === 'horizontal';
   const sizeClasses = {
     sm: {
@@ -146,4 +145,4 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({
       </div>
     </div>
   );
-};
+}

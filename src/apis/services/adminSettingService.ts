@@ -1,12 +1,7 @@
 import { adminAxios } from '../axios';
-import type { ApiResponse, SettingResponse } from '@/types';
+import type { ApiResponse, SettingResponse, SettingUpdateRequest } from '@/types';
 
 const URL = '/settings';
-
-export interface SettingUpdateRequest {
-  settingKey: string;
-  settingValue: string;
-}
 
 const adminSettingService = {
   /** Lấy toàn bộ settings (grouped by SHOP, PAYMENT, SHIPPING, AI) */

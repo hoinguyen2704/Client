@@ -13,7 +13,9 @@ import { getApiErrorCode, getApiErrorMessage } from '@/utils/error';
 import { startGoogleLoginRedirect } from '@/utils/googleAuth';
 import AuthLayout from './AuthLayout';
 
-type LoginLocationState = { from?: string | { pathname?: string } };
+interface LoginLocationState {
+  from?: string | { pathname?: string };
+}
 
 function resolveFromPath(state: unknown): string {
   const from = (state as LoginLocationState | null)?.from;

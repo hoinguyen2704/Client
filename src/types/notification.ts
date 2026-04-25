@@ -9,6 +9,10 @@ export interface NotificationResponse {
   createdAt: string;
 }
 
+export interface NotificationUnreadCountResponse {
+  count: number;
+}
+
 export interface NotificationState {
   unreadCount: number;
   recentNotifications: NotificationResponse[];

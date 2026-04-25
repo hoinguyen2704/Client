@@ -90,7 +90,7 @@ export default function CustomerDetail() {
   }
 
   if (!user) {
-    return <div className="p-8 text-center text-slate-400">{t('detail.notFound')}</div>;
+    return <div className="p-8 text-center text-ink">{t('detail.notFound')}</div>;
   }
 
   return (
@@ -113,7 +113,7 @@ export default function CustomerDetail() {
               <span className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-800 ${user.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'}`} />
             </div>
             <h2 className="text-lg sm:text-xl font-bold mb-1">{user.fullName}</h2>
-            <p className="text-slate-500 text-md mb-4">@{user.userName || user.email.split('@')[0]}</p>
+            <p className="text-ink text-md mb-4">@{user.userName || user.email.split('@')[0]}</p>
 
             <div className="flex justify-center gap-2 mb-6">
               <StatusBadge
@@ -133,15 +133,15 @@ export default function CustomerDetail() {
             </Button>
 
             <div className="mt-5 sm:mt-6 space-y-3 text-left text-md">
-              <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-3 text-ink dark:text-slate-300">
                 <FiMail className="text-slate-400 shrink-0" />
                 <span className="truncate">{user.email}</span>
               </div>
-              <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-3 text-ink dark:text-slate-300">
                 <FiPhone className="text-slate-400 shrink-0" />
                 <span>{user.phoneNumber || '—'}</span>
               </div>
-              <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-3 text-ink dark:text-slate-300">
                 <FiCalendar className="text-slate-400 shrink-0" />
                 <span>{t('detail.joined', { date: formatDate(user.createdAt) })}</span>
               </div>
