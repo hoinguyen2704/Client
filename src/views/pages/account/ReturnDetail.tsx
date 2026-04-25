@@ -149,7 +149,7 @@ export default function ReturnDetail() {
   /* ---------- Not Found ---------- */
   if (!data) return (
     <div className="text-center py-12">
-      <FiXCircle className="text-6xl text-slate-300 mx-auto mb-4" />
+      <FiXCircle className="text-6xl text-subtle mx-auto mb-4" />
       <h2 className="text-xl font-bold mb-2">{t('returnDetail.notFound.title')}</h2>
       <Link to="/user/returns" className="text-blue-600 hover:underline">← {t('returnDetail.notFound.back')}</Link>
     </div>
@@ -163,7 +163,7 @@ export default function ReturnDetail() {
           <BackButton to="/user/returns" />
           <div>
             <h1 className="text-xl md:text-2xl font-bold">{t('returnDetail.header.title', { returnNumber: data.returnNumber })}</h1>
-            <p className="text-md text-slate-500 mt-0.5">
+            <p className="text-md text-muted mt-0.5">
               {t('returnDetail.header.order')}: <Link to={`/user/orders/${data.orderNumber}`} className="text-blue-600 font-semibold hover:underline">{data.orderNumber}</Link>
             </p>
           </div>
@@ -210,15 +210,15 @@ export default function ReturnDetail() {
                     <div className="w-20 flex-shrink-0 text-right pt-1">
                       {time ? (
                         <>
-                          <div className="text-md font-medium text-slate-800 dark:text-slate-200">
+                          <div className="text-md font-medium text-body">
                             {time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                           </div>
-                          <div className="text-md text-slate-500 mt-1">
+                          <div className="text-md text-muted mt-1">
                             {time.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                           </div>
                         </>
                       ) : (
-                        <div className="text-md text-slate-400 pt-1">—</div>
+                        <div className="text-md text-subtle pt-1">—</div>
                       )}
                     </div>
 
@@ -231,7 +231,7 @@ export default function ReturnDetail() {
 
                     {/* Right: Content */}
                     <div className="pb-8 pt-1 flex-1">
-                      <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                      <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted'}`}>
                         {step.label}
                       </h4>
                     </div>
@@ -254,14 +254,14 @@ export default function ReturnDetail() {
                       {imageUrl ? (
                         <img src={imageUrl} alt={line.productName} className="w-full h-full object-cover" />
                       ) : (
-                        <FiPackage className="text-slate-400 text-3xl" />
+                        <FiPackage className="text-subtle text-3xl" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate" title={line.productName}>
+                      <h4 className="font-bold text-base sm:text-lg text-ink truncate" title={line.productName}>
                         {line.productName}
                       </h4>
-                      <p className="text-md text-slate-500 mt-0.5">
+                      <p className="text-md text-muted mt-0.5">
                         {line.variantName ? `${line.variantName} | ` : ''} 
                         {formatPrice(Number(line.unitPrice || 0))} x {line.requestedQuantity}
                       </p>
@@ -296,20 +296,20 @@ export default function ReturnDetail() {
             <h3 className="text-lg font-bold mb-4">{t('returnDetail.info.title')}</h3>
             <div className="space-y-3 text-md">
               <div className="flex justify-between">
-                <span className="text-slate-500">{t('returnDetail.info.reason')}</span>
+                <span className="text-muted">{t('returnDetail.info.reason')}</span>
                 <span className="font-medium text-right max-w-[60%]">{data.reason}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">{t('returnDetail.info.note')}</span>
+                <span className="text-muted">{t('returnDetail.info.note')}</span>
                 <span className="font-medium text-right max-w-[60%]">{data.evidenceNote || t('returnDetail.info.none')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">{t('returnDetail.info.createdAt')}</span>
+                <span className="text-muted">{t('returnDetail.info.createdAt')}</span>
                 <span className="font-medium">{formatDateTime(data.createdAt)}</span>
               </div>
               {data.resolvedAt && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500">{t('returnDetail.info.resolvedAt')}</span>
+                  <span className="text-muted">{t('returnDetail.info.resolvedAt')}</span>
                   <span className="font-medium">{formatDateTime(data.resolvedAt)}</span>
                 </div>
               )}
@@ -321,11 +321,11 @@ export default function ReturnDetail() {
             <h3 className="text-lg font-bold mb-4">{t('returnDetail.amount.title')}</h3>
             <div className="space-y-3 text-md">
               <div className="flex justify-between">
-                <span className="text-slate-500">{t('returnDetail.amount.requested')}</span>
+                <span className="text-muted">{t('returnDetail.amount.requested')}</span>
                 <span className="font-semibold text-blue-600">{formatPrice(Number(data.requestedAmount || 0))}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">{t('returnDetail.amount.approved')}</span>
+                <span className="text-muted">{t('returnDetail.amount.approved')}</span>
                 <span className="font-semibold">
                   {data.approvedAmount != null ? formatPrice(Number(data.approvedAmount || 0)) : t('returnDetail.amount.pending')}
                 </span>
@@ -352,7 +352,7 @@ export default function ReturnDetail() {
             </div>
 
             {data.refunds.length === 0 ? (
-              <div className="p-5 text-md text-slate-500 flex items-center gap-2">
+              <div className="p-5 text-md text-muted flex items-center gap-2">
                 {canProcessRefund(data.status) ? (
                   <>
                     <FiAlertTriangle className="text-amber-500 flex-shrink-0" />
@@ -370,7 +370,7 @@ export default function ReturnDetail() {
                       <span className="text-md font-semibold">{formatPrice(Number(tx.amount || 0))} {tx.currency}</span>
                       <RefundStatusBadge status={tx.status} />
                     </div>
-                    <div className="text-md text-slate-500 space-y-0.5">
+                    <div className="text-md text-muted space-y-0.5">
                       <p>{t('returnDetail.refunds.provider')}: {tx.provider}</p>
                       {tx.transactionId && <p>{t('returnDetail.refunds.transactionId')}: {tx.transactionId}</p>}
                       <p>{formatDateTime(tx.createdAt)}</p>

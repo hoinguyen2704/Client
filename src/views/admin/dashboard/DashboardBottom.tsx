@@ -28,7 +28,7 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md">
                 <th className="pb-3 font-medium">{t('tables.orders.orderNumber')}</th>
                 <th className="pb-3 font-medium">{t('tables.orders.customer')}</th>
                 <th className="pb-3 font-medium">{t('tables.orders.orderDate')}</th>
@@ -39,7 +39,7 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
             <tbody>
               {(stats.recentOrders || []).length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-400">
+                  <td colSpan={5} className="py-8 text-center text-subtle">
                     {t('overview.bottom.emptyOrders')}
                   </td>
                 </tr>
@@ -48,7 +48,7 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
                   <tr key={index} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="py-4 font-medium">{order.orderNumber}</td>
                     <td className="py-4">{order.customerName}</td>
-                    <td className="py-4 text-slate-500">{formatDate(order.createdAt)}</td>
+                    <td className="py-4 text-muted">{formatDate(order.createdAt)}</td>
                     <td className="py-4 font-bold">{formatPrice(order.totalAmount)}</td>
                     <td className="py-4"><StatusBadge status={order.status} /></td>
                   </tr>
@@ -68,11 +68,11 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
             <div className="flex justify-center text-yellow-400 text-md mb-1">
               {Array.from({ length: 5 }).map((_, i) => <FiStar key={i} className="fill-current" />)}
             </div>
-            <div className="text-sm text-slate-500">{t('overview.bottom.totalReviews', { count: totalReviews })}</div>
+            <div className="text-sm text-muted">{t('overview.bottom.totalReviews', { count: totalReviews })}</div>
           </div>
           <div className="flex-1">
             <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
-              <div className="text-md text-slate-500 mb-1">{t('overview.bottom.monthThis')}</div>
+              <div className="text-md text-muted mb-1">{t('overview.bottom.monthThis')}</div>
               <div className="text-xl font-bold text-blue-600 dark:text-blue-400">+{stats.newFeedbacks}</div>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
               <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${dist.percent}%` }} />
               </div>
-              <div className="w-12 text-right text-slate-500">{dist.percent}%</div>
+              <div className="w-12 text-right text-muted">{dist.percent}%</div>
             </div>
           ))}
         </div>

@@ -45,12 +45,12 @@ export default function SectionCard({
             {icon ? <div className="shrink-0">{icon}</div> : null}
             <div className="min-w-0">
               {title ? (
-                <div className={cn("text-lg font-bold text-slate-900 dark:text-white", titleClassName)}>
+                <div className={cn("text-lg font-bold text-ink", titleClassName)}>
                   {title}
                 </div>
               ) : null}
               {description ? (
-                <div className={cn("mt-1 text-sm text-slate-500", descriptionClassName)}>
+                <div className={cn("mt-1 text-sm text-muted", descriptionClassName)}>
                   {description}
                 </div>
               ) : null}

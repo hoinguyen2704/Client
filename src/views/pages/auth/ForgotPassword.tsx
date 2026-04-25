@@ -42,10 +42,10 @@ export default function ForgotPassword() {
       mobileLogoShadow="shadow-emerald-500/30"
     >
       <div className="text-center lg:text-left">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink mb-3 sm:mb-4 tracking-tight">
           {t('forgotPassword.title')}
         </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg">
+        <p className="text-muted text-base sm:text-lg">
           {t('forgotPassword.subtitle')}
         </p>
       </div>
@@ -53,15 +53,15 @@ export default function ForgotPassword() {
       {!isSubmitted ? (
         <form className="space-y-6 sm:space-y-8" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
+            <label className="block text-base sm:text-lg font-medium text-body mb-2 sm:mb-3 ml-2">
               {t('forgotPassword.identifierLabel')}
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                <FiMail className="text-slate-400 group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
+                <FiMail className="text-subtle group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
               </div>
               <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-ink focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
                 placeholder={t('forgotPassword.identifierPlaceholder')} />
             </div>
           </div>
@@ -77,16 +77,16 @@ export default function ForgotPassword() {
           <div className="mx-auto flex items-center justify-center h-28 w-28 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-8">
             <FiCheckCircle className="h-14 w-14 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+          <h3 className="text-2xl sm:text-3xl font-bold text-ink mb-4">
             {t('forgotPassword.successTitle')}
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg mb-10">
+          <p className="text-muted text-base sm:text-lg mb-10">
             <Trans
               ns="auth"
               i18nKey="forgotPassword.successDescription"
               values={{ email }}
               components={{
-                highlight: <span className="font-semibold text-slate-700 dark:text-slate-300" />,
+                highlight: <span className="font-semibold text-body" />,
               }}
             />
           </p>
@@ -97,7 +97,7 @@ export default function ForgotPassword() {
       )}
 
       <div className="text-center pt-4">
-        <Link to="/login" className="inline-flex items-center text-base sm:text-lg font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+        <Link to="/login" className="inline-flex items-center text-base sm:text-lg font-semibold text-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
           <FiArrowLeft className="mr-3 h-5 w-5 sm:h-6 sm:w-6" /> {t('forgotPassword.backToLogin')}
         </Link>
       </div>

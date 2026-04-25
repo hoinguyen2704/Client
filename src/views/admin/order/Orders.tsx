@@ -138,7 +138,7 @@ export default function AdminOrders() {
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="hidden lg:grid grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md font-semibold text-center rounded-t-2xl">
+        <div className="hidden lg:grid grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md font-semibold text-center rounded-t-2xl">
           <div className="px-4 py-4">{t('orders.table.index')}</div>
           <div className="px-4 py-4 text-left">{t('orders.table.orderNumber')}</div>
           <div className="px-4 py-4">{t('orders.table.orderDate')}</div>
@@ -164,7 +164,7 @@ export default function AdminOrders() {
               </div>
             ))
           ) : orders.length === 0 ? (
-            <div className="p-10 sm:p-16 flex flex-col items-center justify-center text-slate-400">
+            <div className="p-10 sm:p-16 flex flex-col items-center justify-center text-subtle">
               <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4"><FiPackage className="text-2xl" /></div>
               <span>{t('orders.table.empty')}</span>
             </div>
@@ -175,44 +175,44 @@ export default function AdminOrders() {
 
               return (
                 <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
-                  <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-slate-400">
+                  <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-subtle">
                     {rowNumber}
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
                     <div className="font-bold text-blue-600 flex items-center gap-2">
-                      <span className="inline-flex lg:hidden items-center justify-center min-w-9 h-8 px-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 text-sm font-semibold">
+                      <span className="inline-flex lg:hidden items-center justify-center min-w-9 h-8 px-2 rounded-full bg-slate-100 dark:bg-slate-800 text-muted text-sm font-semibold">
                         {rowNumber}
                       </span>
                       <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 lg:hidden"><FiPackage className="text-md" /></div>
                       {order.orderNumber}
                     </div>
-                    <div className="lg:hidden text-slate-500 text-md ">{formatDate(order.createdAt)}</div>
+                    <div className="lg:hidden text-muted text-md ">{formatDate(order.createdAt)}</div>
                   </div>
 
-                  <div className="hidden lg:flex justify-center items-center px-4 py-4 text-slate-700 dark:text-slate-300 font-medium h-full text-center">{formatDate(order.createdAt)}</div>
+                  <div className="hidden lg:flex justify-center items-center px-4 py-4 text-body font-medium h-full text-center">{formatDate(order.createdAt)}</div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.quantityMobile')}</span>
-                    <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max text-slate-700 dark:text-slate-300">
+                    <span className="lg:hidden text-muted text-md">{t('orders.table.quantityMobile')}</span>
+                    <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max text-body">
                       {order.itemCount || 0}
                     </div>
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.totalMobile')}</span>
-                    <div className="font-bold text-slate-800 dark:text-slate-100">{formatPrice(order.totalAmount)}</div>
+                    <span className="lg:hidden text-muted text-md">{t('orders.table.totalMobile')}</span>
+                    <div className="font-bold text-ink">{formatPrice(order.totalAmount)}</div>
                   </div>
 
                   <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.paymentMobile')}</span>
-                    <div className="text-slate-700 dark:text-slate-300 font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
+                    <span className="lg:hidden text-muted text-md">{t('orders.table.paymentMobile')}</span>
+                    <div className="text-body font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
                       {order.paymentMethod}
                     </div>
                   </div>
 
                   <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between lg:justify-center items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-slate-500 text-md">{t('orders.table.statusMobile')}</span>
+                    <span className="lg:hidden text-muted text-md">{t('orders.table.statusMobile')}</span>
                     <div className="w-[170px] sm:w-48 lg:w-[150px]">
                       <CustomSelect
                         value={order.orderStatus}

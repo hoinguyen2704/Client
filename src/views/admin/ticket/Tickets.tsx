@@ -320,7 +320,7 @@ export default function Tickets() {
                 <div key={i} className="p-4 animate-pulse"><div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded mb-2" /><div className="h-3 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></div>
               ))
             ) : tickets.length === 0 ? (
-              <div className="p-12 text-center text-slate-400">{t('tickets.empty')}</div>
+              <div className="p-12 text-center text-subtle">{t('tickets.empty')}</div>
             ) : (
               ticketSections.map((section) => {
                 const stateKey = `${groupMode}:${section.key}`;
@@ -338,22 +338,22 @@ export default function Tickets() {
                         className="group sticky top-0 z-10 !h-auto !justify-start rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-left shadow-sm backdrop-blur transition-all hover:border-blue-200 hover:bg-blue-50/80 dark:border-slate-700 dark:bg-slate-900/95 dark:hover:border-blue-500/40 dark:hover:bg-slate-900"
                       >
                         <div className="flex w-full items-center gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-slate-500 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:ring-blue-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-blue-500/10 dark:group-hover:text-blue-300 dark:group-hover:ring-blue-500/30">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-muted shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:ring-blue-100 dark:bg-slate-800 dark:ring-slate-700 dark:group-hover:bg-blue-500/10 dark:group-hover:text-blue-300 dark:group-hover:ring-blue-500/30">
                             {groupMode === 'DATE' ? <FiCalendar className="text-base" /> : <FiUsers className="text-base" />}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold text-slate-800 transition-colors group-hover:text-blue-700 dark:text-slate-100 dark:group-hover:text-blue-300">
+                            <p className="truncate text-sm font-semibold text-ink transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-300">
                               {section.title}
                             </p>
-                            <p className="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">
+                            <p className="mt-0.5 truncate text-sm text-muted">
                               {section.subtitle}
                             </p>
                           </div>
                           <div className="flex shrink-0 items-center gap-2">
-                            <span className="rounded-full bg-white px-2.5 py-1 text-sm font-semibold text-slate-600 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:ring-blue-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-blue-500/10 dark:group-hover:text-blue-300 dark:group-hover:ring-blue-500/30">
+                            <span className="rounded-full bg-white px-2.5 py-1 text-sm font-semibold text-muted shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:ring-blue-100 dark:bg-slate-800 dark:ring-slate-700 dark:group-hover:bg-blue-500/10 dark:group-hover:text-blue-300 dark:group-hover:ring-blue-500/30">
                               {t('tickets.requestsCount', { count: section.tickets.length })}
                             </span>
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:ring-blue-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:group-hover:bg-blue-500/10 dark:group-hover:text-blue-300 dark:group-hover:ring-blue-500/30">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-muted shadow-sm ring-1 ring-slate-200 transition-colors group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:ring-blue-100 dark:bg-slate-800 dark:ring-slate-700 dark:group-hover:bg-blue-500/10 dark:group-hover:text-blue-300 dark:group-hover:ring-blue-500/30">
                               <FiChevronDown
                                 className={`text-sm transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
                                   }`}
@@ -403,12 +403,12 @@ export default function Tickets() {
                 <div className="flex flex-wrap justify-between items-start gap-3">
                   <div>
                     <h2 className="text-base sm:text-lg font-bold">{selectedTicket.subject}</h2>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-md text-slate-500">
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-md text-muted">
                       <span>{selectedTicket.userName} ({selectedTicket.userEmail})</span>
                       <button
                         type="button"
                         onClick={() => handleCopyCustomerEmail(selectedTicket.userEmail)}
-                        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-sm font-medium text-slate-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-sm font-medium text-muted transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
                         aria-label={t('tickets.copyEmailAria')}
                         title={t('tickets.copyEmailTitle')}
                       >
@@ -427,7 +427,7 @@ export default function Tickets() {
                     <div className={`max-w-[92%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-md sm:text-base ${msg.senderType === 'ADMIN' ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                       }`}>
                       <p>{msg.content}</p>
-                      <p className={`text-10 mt-1 ${msg.senderType === 'ADMIN' ? 'text-blue-200' : 'text-slate-400'}`}>{formatDate(msg.createdAt)}</p>
+                      <p className={`text-10 mt-1 ${msg.senderType === 'ADMIN' ? 'text-blue-200' : 'text-subtle'}`}>{formatDate(msg.createdAt)}</p>
                     </div>
                   </div>
                 ))}
@@ -443,7 +443,7 @@ export default function Tickets() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-400 p-12">{t('tickets.emptyDetail')}</div>
+            <div className="flex-1 flex items-center justify-center text-subtle p-12">{t('tickets.emptyDetail')}</div>
           )}
         </div>
       </div>

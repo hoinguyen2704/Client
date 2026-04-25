@@ -27,7 +27,7 @@ export default function Blog() {
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-8 sm:py-10 md:py-12 space-y-8">
       <div className="text-center">
         <h1 className="text-3xl font-black mb-2">Blog & Tin tức</h1>
-        <p className="text-slate-500">Cập nhật tin tức công nghệ mới nhất</p>
+        <p className="text-muted">Cập nhật tin tức công nghệ mới nhất</p>
       </div>
 
       {loading ? (
@@ -36,9 +36,9 @@ export default function Blog() {
         </div>
       ) : articles.length === 0 ? (
         <div className="text-center py-12">
-          <FiBook className="text-5xl text-slate-300 mx-auto mb-4" />
+          <FiBook className="text-5xl text-subtle mx-auto mb-4" />
           <h3 className="text-xl font-bold mb-2">Chưa có bài viết</h3>
-          <p className="text-slate-500">Hãy quay lại sau để đọc các bài viết mới.</p>
+          <p className="text-muted">Hãy quay lại sau để đọc các bài viết mới.</p>
         </div>
       ) : (
         <>
@@ -49,7 +49,7 @@ export default function Blog() {
                 {articles[0].thumbnailUrl ? (
                   <img src={articles[0].thumbnailUrl} alt={articles[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-300"><FiBook className="text-6xl" /></div>
+                  <div className="w-full h-full flex items-center justify-center text-subtle"><FiBook className="text-6xl" /></div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6 text-white">
                   <h2 className="text-2xl font-bold mb-2 group-hover:text-blue-300 transition-colors">{articles[0].title}</h2>
@@ -70,7 +70,7 @@ export default function Blog() {
                     )}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold line-clamp-2 group-hover:text-blue-600 transition-colors">{art.title}</h3>
-                      <span className="text-sm text-slate-500 mt-1 block">{formatDate(art.createdAt)}</span>
+                      <span className="text-sm text-muted mt-1 block">{formatDate(art.createdAt)}</span>
                     </div>
                   </Link>
                 ))}
@@ -87,12 +87,12 @@ export default function Blog() {
                     {art.thumbnailUrl ? (
                       <img src={art.thumbnailUrl} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-300"><FiBook className="text-3xl" /></div>
+                      <div className="w-full h-full flex items-center justify-center text-subtle"><FiBook className="text-3xl" /></div>
                     )}
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold line-clamp-2 group-hover:text-blue-600 transition-colors mb-2">{art.title}</h3>
-                    <div className="flex items-center gap-3 text-sm text-slate-500">
+                    <div className="flex items-center gap-3 text-sm text-muted">
                       {art.authorName && <span>{art.authorName}</span>}
                       <span>{formatDate(art.createdAt)}</span>
                     </div>

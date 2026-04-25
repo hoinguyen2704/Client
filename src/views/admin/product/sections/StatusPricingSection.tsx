@@ -40,7 +40,7 @@ export default memo(function StatusPricingSection(props: Props) {
                       : "bg-slate-400"
                 }`}
               />
-              <span className="text-slate-900 dark:text-slate-100">
+              <span className="text-ink">
                 {status === "ACTIVE"
                   ? t("statusPricing.statusOptions.active")
                   : status === "DRAFT"
@@ -49,7 +49,7 @@ export default memo(function StatusPricingSection(props: Props) {
               </span>
             </div>
             <FiChevronDown
-              className={`text-slate-400 transition-transform ${showStatusDropdown ? "rotate-180" : ""}`}
+              className={`text-subtle transition-transform ${showStatusDropdown ? "rotate-180" : ""}`}
             />
           </button>
           {showStatusDropdown && (
@@ -81,7 +81,7 @@ export default memo(function StatusPricingSection(props: Props) {
                   className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-md transition-colors text-left ${
                     status === opt.value
                       ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
-                      : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                      : "hover:bg-slate-50 dark:hover:bg-slate-700 text-body"
                   }`}
                 >
                   <span
@@ -116,7 +116,7 @@ export default memo(function StatusPricingSection(props: Props) {
           placeholder="0"
           className="w-full h-12 rounded-xl border border-slate-200 bg-white px-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
         />
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-subtle mt-1">
           {t("statusPricing.originPriceHint")}
         </p>
       </div>
@@ -138,14 +138,14 @@ export default memo(function StatusPricingSection(props: Props) {
               className={
                 isFeatured
                   ? "text-amber-500 fill-amber-500"
-                  : "text-slate-400"
+                  : "text-subtle"
               }
             />
             <span
               className={
                 isFeatured
                   ? "text-amber-700 dark:text-amber-300 font-medium"
-                  : "text-slate-500"
+                  : "text-muted"
               }
             >
               {isFeatured

@@ -96,7 +96,7 @@ export default function MyReturns() {
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             className="w-full h-12 pl-12 pr-12 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
           />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle text-xl" />
           <button
             onClick={handleSearch}
             className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-3 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors"
@@ -119,11 +119,11 @@ export default function MyReturns() {
           ))
         ) : returns.length === 0 ? (
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-100 dark:border-slate-800">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl sm:text-4xl">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-subtle text-3xl sm:text-4xl">
               <FiClipboard />
             </div>
             <h3 className="text-lg sm:text-xl font-bold mb-2">{t('returns.empty.title')}</h3>
-            <p className="text-md sm:text-base text-slate-500 mb-6">{t('returns.empty.description')}</p>
+            <p className="text-md sm:text-base text-muted mb-6">{t('returns.empty.description')}</p>
             <Link to="/user/orders" className="inline-flex h-11 px-6 rounded-xl items-center justify-center font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">
               {t('returns.empty.action')}
             </Link>
@@ -141,16 +141,16 @@ export default function MyReturns() {
                     <ReturnStatusBadge status={item.status} />
                     <RefundStatusBadge status={item.refundStatus} />
                   </div>
-                  <p className="text-md text-slate-500">
-                    {t('returns.orderNumber')}: <span className="font-semibold text-slate-700 dark:text-slate-200">{item.orderNumber}</span>
+                  <p className="text-md text-muted">
+                    {t('returns.orderNumber')}: <span className="font-semibold text-body">{item.orderNumber}</span>
                   </p>
-                  <p className="text-md text-slate-500">{t('returns.createdAt')}: {formatDateTime(item.createdAt)}</p>
+                  <p className="text-md text-muted">{t('returns.createdAt')}: {formatDateTime(item.createdAt)}</p>
                 </div>
                 <div className="text-left sm:text-right">
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">{t('returns.requestedAmount')}</p>
+                  <p className="text-sm text-muted uppercase tracking-wide">{t('returns.requestedAmount')}</p>
                   <p className="text-lg font-bold text-blue-600">{formatPrice(Number(item.requestedAmount || 0))}</p>
                   {item.approvedAmount != null && (
-                    <p className="text-sm text-slate-500 mt-1">
+                    <p className="text-sm text-muted mt-1">
                       {t('returns.approvedAmount')}: <span className="font-semibold">{formatPrice(Number(item.approvedAmount || 0))}</span>
                     </p>
                   )}
@@ -158,7 +158,7 @@ export default function MyReturns() {
               </div>
 
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto_auto] sm:items-center">
-                <p className="text-md text-slate-600 dark:text-slate-300 line-clamp-1">
+                <p className="text-md text-muted line-clamp-1">
                   {t('returns.reason')}: <span className="font-medium">{item.reason}</span>
                 </p>
 

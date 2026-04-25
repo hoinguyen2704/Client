@@ -13,7 +13,7 @@ const typeIcons: Record<string, React.ReactNode> = {
   SUPPORT: <FiMessageSquare className="text-amber-500" />,
   TICKET: <FiMessageSquare className="text-amber-500" />,
   PROMOTION: <FiTag className="text-blue-500" />,
-  SYSTEM: <FiInfo className="text-slate-500" />,
+  SYSTEM: <FiInfo className="text-muted" />,
 };
 
 export default function Notifications() {
@@ -73,9 +73,9 @@ export default function Notifications() {
         <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-20 bg-slate-200 dark:bg-slate-700 rounded-2xl animate-pulse" />)}</div>
       ) : notifications.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
-          <FiBell className="text-5xl text-slate-300 mx-auto mb-4" />
+          <FiBell className="text-5xl text-subtle mx-auto mb-4" />
           <h3 className="text-xl font-bold mb-2">{t('notificationsPage.empty.title')}</h3>
-          <p className="text-slate-500">{t('notificationsPage.empty.description')}</p>
+          <p className="text-muted">{t('notificationsPage.empty.description')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -91,11 +91,11 @@ export default function Notifications() {
                     <h4 className="font-bold text-md">{n.title}</h4>
                     {!n.isRead && <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />}
                   </div>
-                  <p className="text-md text-slate-500 line-clamp-2">{n.content}</p>
-                  <span className="text-sm text-slate-400 mt-2 block">{formatDate(n.createdAt)}</span>
+                  <p className="text-md text-muted line-clamp-2">{n.content}</p>
+                  <span className="text-sm text-subtle mt-2 block">{formatDate(n.createdAt)}</span>
                 </div>
                 {!n.isRead && (
-                  <button className="p-1 text-slate-400 hover:text-green-600 shrink-0" title={t('notificationsPage.markReadTitle')}><FiCheck /></button>
+                  <button className="p-1 text-subtle hover:text-green-600 shrink-0" title={t('notificationsPage.markReadTitle')}><FiCheck /></button>
                 )}
               </div>
             </div>

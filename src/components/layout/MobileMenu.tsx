@@ -7,9 +7,9 @@ import { navItems } from './Header';
 import type { MobileMenuProps } from './types';
 
 const MOBILE_NAV_IDLE_CLASS =
-  'text-body-soft hover:bg-slate-50 dark:hover:bg-slate-800';
+  'text-muted hover:bg-slate-50 dark:hover:bg-slate-800';
 const MOBILE_MENU_LINK_CLASS =
-  'flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-body-soft hover:bg-slate-50 dark:hover:bg-slate-800';
+  'flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-muted hover:bg-slate-50 dark:hover:bg-slate-800';
 
 export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMenuProps) {
   const { t } = useTranslation(['layout', 'common']);
@@ -67,7 +67,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                 onKeyDown={handleSearch}
                 className="w-full h-10 pl-4 pr-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
               />
-              <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-subtle" />
             </div>
 
             {/* Mobile Nav Items */}
@@ -96,7 +96,7 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
                 <>
                   <div className="px-4 py-2">
                     <p className="font-bold text-md truncate">{user.email}</p>
-                    <p className="text-sm text-slate-500 capitalize mt-0.5">
+                    <p className="text-sm text-muted capitalize mt-0.5">
                       {user.role?.toLowerCase() === 'admin'
                         ? t('roles.admin', { ns: 'common' })
                         : t('roles.customer', { ns: 'common' })}

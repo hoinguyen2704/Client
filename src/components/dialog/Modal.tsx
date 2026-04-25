@@ -24,7 +24,7 @@ export default function Modal({
   containerClassName = "",
 }: ModalProps) {
   const closeButtonClass =
-    "rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors";
+    "rounded-full text-subtle hover:text-body hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors";
   // Stable ref for onClose — avoids re-attaching listener when parent re-renders
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -86,7 +86,7 @@ export default function Modal({
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg sm:text-xl font-bold text-ink">
                   {title}
                 </h3>
                 <IconButton

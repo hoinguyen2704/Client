@@ -89,7 +89,7 @@ export const ORDER_STATUS_OPTIONS = [
     label: 'Returned',
     labelKey: 'adminSales:orders.statusOptions.returned',
     colorClass:
-      'bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-400',
+      'bg-slate-50 text-muted border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/20',
   },
 ] satisfies OrderStatusOption[];
 
@@ -218,7 +218,7 @@ const CLIENT_STATUS_BADGE_CONFIG: Record<AdminOrderStatus, BadgeConfig> = {
     labelKey: 'account:orders.badges.returned',
     icon: FiXCircle,
     className:
-      'bg-slate-50 border border-slate-200 text-slate-600 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-400',
+      'bg-slate-50 border border-slate-200 text-muted dark:bg-slate-500/10 dark:border-slate-500/20',
   },
 };
 
@@ -226,7 +226,7 @@ export const getClientStatusBadge = (status: string, t?: TFunction) => {
   const config = CLIENT_STATUS_BADGE_CONFIG[status as AdminOrderStatus];
   if (!config) {
     return (
-      <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm font-bold uppercase tracking-wider">
+      <span className="flex w-max items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-muted text-sm font-bold uppercase tracking-wider">
         {status}
       </span>
     );

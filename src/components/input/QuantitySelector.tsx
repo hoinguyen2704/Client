@@ -61,7 +61,7 @@ export default function QuantitySelector({
         type="button"
         onClick={handleDecrement}
         disabled={disabled || value <= min}
-        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
+        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-body hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
       >
         <FiMinus />
       </button>
@@ -70,13 +70,13 @@ export default function QuantitySelector({
         value={value}
         onChange={handleInputChange}
         disabled={disabled}
-        className={`text-center border-none bg-transparent font-bold focus:ring-0 p-0 disabled:opacity-60 ${s.input}`}
+        className={`text-body text-center border-none bg-transparent font-extrabold focus:ring-0 p-0 disabled:opacity-60 ${s.input}`}
       />
       <button
         type="button"
         onClick={handleIncrement}
         disabled={disabled || (max !== Infinity && value >= max)}
-        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
+        className={`flex items-center justify-center bg-white dark:bg-slate-700 text-body hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none ${s.button}`}
       >
         <FiPlus />
       </button>

@@ -18,12 +18,8 @@ export default function Wishlist() {
   const toggleItem = useWishlistStore((s) => s.toggleItem);
 
   useEffect(() => {
-    // If the items are empty and not loading, give it a sync attempt just in case
-    // Header hasn't finished its global sync yet.
-    if (items.length === 0 && !loading) {
-      syncFromServer();
-    }
-  }, [items.length, loading, syncFromServer]);
+    syncFromServer();
+  }, [syncFromServer]);
 
   const handleRemove = async (productId: string) => {
     await toggleItem(productId);
@@ -41,10 +37,10 @@ export default function Wishlist() {
           <FiHeart className="text-xl" />
           <span>{items.length} sản phẩm</span>
         </div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 sm:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           Danh sách Yêu thích
         </h1>
-        <p className="text-md sm:text-base text-slate-500">Lưu trữ những thiết bị công nghệ bạn đang để mắt tới</p>
+        <p className="text-md sm:text-base text-muted">Lưu trữ những thiết bị công nghệ bạn đang để mắt tới</p>
       </div>
 
       {loading ? (
@@ -73,10 +69,10 @@ export default function Wishlist() {
                 <FiHeart className="text-4xl sm:text-5xl text-red-500" />
               </div>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-slate-800 dark:text-slate-200">
+            <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-body">
               Trái tim bạn đang trống trải!
             </h3>
-            <p className="text-md sm:text-base text-slate-500 max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">
+            <p className="text-md sm:text-base text-muted max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">
               Bạn chưa thêm sản phẩm nào vào danh sách yêu thích. Hãy tiếp tục
               khám phá và lưu lại những món đồ công nghệ ưa thích để mua sau
               nhé.
@@ -124,7 +120,7 @@ export default function Wishlist() {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-3">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-subtle gap-3">
                         <FiShoppingCart className="text-5xl opacity-50" />
                         <span className="text-md font-medium">No Image</span>
                       </div>
@@ -144,11 +140,11 @@ export default function Wishlist() {
 
                     <div className="mt-auto">
                       <div className="flex flex-col gap-0.5 sm:gap-1 mb-3 sm:mb-5">
-                        <span className="w-max text-base font-extrabold text-slate-900 dark:text-slate-50 sm:text-xl">
+                        <span className="w-max text-base font-extrabold text-ink sm:text-xl">
                           {formatPrice(item.productPrice)}
                         </span>
                         {discount > 0 && (
-                          <span className="text-sm sm:text-md text-slate-400 line-through font-medium">
+                          <span className="text-sm sm:text-md text-subtle line-through font-medium">
                             {formatPrice(item.productCompareAtPrice!)}
                           </span>
                         )}
@@ -165,7 +161,7 @@ export default function Wishlist() {
 
                         <Link
                           to={`/product/${item.productSlug}`}
-                          className="group/link flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-slate-100 text-sm font-bold text-slate-700 transition-all hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:text-slate-300 sm:h-12 sm:rounded-2xl sm:gap-2 sm:text-base"
+                          className="group/link flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-slate-100 text-sm font-bold text-body transition-all hover:bg-blue-600 hover:text-white dark:bg-slate-800 sm:h-12 sm:rounded-2xl sm:gap-2 sm:text-base"
                         >
                           Tùy chọn mua{" "}
                           <FiArrowRight className="group-hover/link:translate-x-1 transition-transform" />

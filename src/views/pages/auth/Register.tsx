@@ -94,10 +94,10 @@ export default function Register() {
     { icon: FiHeadphones, title: t('features.support.title', { ns: 'auth' }), desc: t('features.support.desc', { ns: 'auth' }) },
   ];
 
-  const labelClassName = 'block text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300 mb-2 ml-1';
-  const iconClassName = 'text-slate-400 group-focus-within:text-blue-500 transition-colors text-lg sm:text-xl';
+  const labelClassName = 'block text-sm sm:text-base font-medium text-body mb-2 ml-1';
+  const iconClassName = 'text-subtle group-focus-within:text-blue-500 transition-colors text-lg sm:text-xl';
   const inputClassName =
-    'block w-full pl-12 sm:pl-14 pr-4 sm:pr-5 py-3.5 sm:py-4 text-base sm:text-lg border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm';
+    'block w-full pl-12 sm:pl-14 pr-4 sm:pr-5 py-3.5 sm:py-4 text-base sm:text-lg border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-ink focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm';
 
   return (
     <AuthLayout
@@ -119,10 +119,10 @@ export default function Register() {
       formPanelClassName="lg:max-w-[640px] sm:p-8 lg:p-10 gap-5 sm:gap-6"
     >
       <div className="text-center lg:text-left">
-        <h2 className="text-3xl sm:text-4xl lg:text-[2.8rem] font-bold text-slate-900 dark:text-white mb-2 sm:mb-3 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl lg:text-[2.8rem] font-bold text-ink mb-2 sm:mb-3 tracking-tight">
           {t('register.title', { ns: 'auth' })}
         </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base">
+        <p className="text-muted text-sm sm:text-base">
           {t('register.subtitle', { ns: 'auth' })}
         </p>
       </div>
@@ -214,7 +214,7 @@ export default function Register() {
                 className={`${inputClassName} pr-12 sm:pr-14`}
                 placeholder={t('register.passwordPlaceholder', { ns: 'auth' })}
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-5 flex items-center text-slate-400 hover:text-blue-600 transition-colors">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-5 flex items-center text-subtle hover:text-blue-600 transition-colors">
                 {showPassword ? <FiEyeOff className="text-lg sm:text-xl" /> : <FiEye className="text-lg sm:text-xl" />}
               </button>
             </div>
@@ -248,7 +248,7 @@ export default function Register() {
                 className={`${inputClassName} pr-12 sm:pr-14`}
                 placeholder={t('register.confirmPasswordPlaceholder', { ns: 'auth' })}
               />
-              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-5 flex items-center text-slate-400 hover:text-blue-600 transition-colors">
+              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-5 flex items-center text-subtle hover:text-blue-600 transition-colors">
                 {showConfirmPassword ? <FiEyeOff className="text-lg sm:text-xl" /> : <FiEye className="text-lg sm:text-xl" />}
               </button>
             </div>
@@ -259,7 +259,7 @@ export default function Register() {
           <span className="mt-1 shrink-0">
             <Checkbox id="terms" name="terms" required className="h-5 w-5" />
           </span>
-          <label htmlFor="terms" className="ml-3 block text-sm sm:text-base text-slate-600 dark:text-slate-400 cursor-pointer leading-relaxed">
+          <label htmlFor="terms" className="ml-3 block text-sm sm:text-base text-muted cursor-pointer leading-relaxed">
             <Trans
               ns="auth"
               i18nKey="register.terms"
@@ -281,7 +281,7 @@ export default function Register() {
         </motion.button>
 
         <div className="text-center pt-1">
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+          <p className="text-sm sm:text-base text-muted">
             {t('register.loginPrompt', { ns: 'auth' })}{' '}
             <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
               {t('register.loginLink', { ns: 'auth' })}

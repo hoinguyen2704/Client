@@ -171,23 +171,23 @@ export default function Settings() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t('title')}</h1>
+      <h1 className="text-2xl font-bold text-ink">{t('title')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-8">
           {/* Display Options */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold mb-6 text-ink">
               {t('displayOptions.title')}
             </h2>
 
             <div className="space-y-6">
               <label className="flex items-center justify-between cursor-pointer group">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-body-soft transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-muted transition-colors">
                     <FiSun className="text-lg" />
                   </div>
-                  <p className="font-medium text-slate-900 dark:text-white">{t('displayOptions.darkMode')}</p>
+                  <p className="font-medium text-ink">{t('displayOptions.darkMode')}</p>
                 </div>
                 <SwitchToggle
                   checked={darkMode}
@@ -202,7 +202,7 @@ export default function Settings() {
                   <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 transition-colors">
                     <FiGlobe className="text-lg" />
                   </div>
-                  <p className="font-medium text-slate-900 dark:text-white">{t('displayOptions.language')}</p>
+                  <p className="font-medium text-ink">{t('displayOptions.language')}</p>
                 </div>
                 <div className="w-40 h-9">
                   <CustomSelect
@@ -222,7 +222,7 @@ export default function Settings() {
                   <div className="w-8 h-8 rounded-full bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-pink-500 transition-colors">
                     <FiBell className="text-lg" />
                   </div>
-                  <p className="font-medium text-slate-900 dark:text-white">{t('displayOptions.promotions')}</p>
+                  <p className="font-medium text-ink">{t('displayOptions.promotions')}</p>
                 </div>
                 <SwitchToggle
                   checked={notifications.promotions}
@@ -236,7 +236,7 @@ export default function Settings() {
 
           {/* Notifications */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-ink">
               <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
                 <FiBell />
               </div>
@@ -245,16 +245,16 @@ export default function Settings() {
 
             <div className="space-y-6">
               <div className="space-y-4">
-                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">{t('settings:notifications.channels')}</h3>
+                <h3 className="font-medium text-ink border-b border-slate-100 dark:border-slate-800 pb-2">{t('settings:notifications.channels')}</h3>
 
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-muted group-hover:text-blue-600 transition-colors">
                       <FiMail />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:notifications.emailTitle')}</p>
-                      <p className="text-md text-slate-500">{t('settings:notifications.emailDesc')}</p>
+                      <p className="font-medium text-ink">{t('settings:notifications.emailTitle')}</p>
+                      <p className="text-md text-muted">{t('settings:notifications.emailDesc')}</p>
                     </div>
                   </div>
                   <SwitchToggle
@@ -267,12 +267,12 @@ export default function Settings() {
 
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-colors">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-muted group-hover:text-blue-600 transition-colors">
                       <FiBell />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:notifications.appTitle')}</p>
-                      <p className="text-md text-slate-500">{t('settings:notifications.appDesc')}</p>
+                      <p className="font-medium text-ink">{t('settings:notifications.appTitle')}</p>
+                      <p className="text-md text-muted">{t('settings:notifications.appDesc')}</p>
                     </div>
                   </div>
                   <SwitchToggle
@@ -285,12 +285,12 @@ export default function Settings() {
               </div>
 
               <div className="space-y-4 pt-4">
-                <h3 className="font-medium text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">{t('settings:notifications.types')}</h3>
+                <h3 className="font-medium text-ink border-b border-slate-100 dark:border-slate-800 pb-2">{t('settings:notifications.types')}</h3>
 
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{t('settings:notifications.ordersTitle')}</p>
-                    <p className="text-md text-slate-500">{t('settings:notifications.ordersDesc')}</p>
+                    <p className="font-medium text-ink group-hover:text-blue-600 transition-colors">{t('settings:notifications.ordersTitle')}</p>
+                    <p className="text-md text-muted">{t('settings:notifications.ordersDesc')}</p>
                   </div>
                   <SwitchToggle
                     checked={notifications.orders}
@@ -307,7 +307,7 @@ export default function Settings() {
         <div className="space-y-8">
           {/* Security */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-ink">
               <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
                 <FiShield />
               </div>
@@ -319,12 +319,12 @@ export default function Settings() {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-muted">
                       <FiKey />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white">{t('settings:security.password.title')}</p>
-                      <p className="text-md text-slate-500">{t('settings:security.password.lastUpdated')}</p>
+                      <p className="font-medium text-ink">{t('settings:security.password.title')}</p>
+                      <p className="text-md text-muted">{t('settings:security.password.lastUpdated')}</p>
                     </div>
                   </div>
                   <Button
@@ -387,12 +387,12 @@ export default function Settings() {
                 <div className="pointer-events-none select-none space-y-4 opacity-60">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-muted">
                         <FiLock />
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900 dark:text-white">{t('settings:security.twoFactor.title')}</p>
-                        <p className="text-md text-slate-500">{t('settings:security.twoFactor.desc')}</p>
+                        <p className="font-medium text-ink">{t('settings:security.twoFactor.title')}</p>
+                        <p className="text-md text-muted">{t('settings:security.twoFactor.desc')}</p>
                       </div>
                     </div>
                     <SwitchToggle
@@ -404,7 +404,7 @@ export default function Settings() {
                   </div>
 
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
-                    <p className="text-md text-muted-strong mb-4">{t('settings:security.twoFactor.setupDescription')}</p>
+                    <p className="text-md text-muted mb-4">{t('settings:security.twoFactor.setupDescription')}</p>
                     <div className="flex gap-2 w-full">
                       <input
                         type="text"
@@ -425,7 +425,7 @@ export default function Settings() {
 
           {/* Social Accounts */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">{t('settings:socialAccounts.title')}</h2>
+            <h2 className="text-xl font-bold mb-6 text-ink">{t('settings:socialAccounts.title')}</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
                 <div className="flex items-center gap-3">
@@ -433,17 +433,17 @@ export default function Settings() {
                     <FaGoogle />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white">Google</p>
+                    <p className="font-medium text-ink">Google</p>
                     {loadingSocialAccounts ? (
-                      <p className="text-md text-slate-500">{t('settings:socialAccounts.loading')}</p>
+                      <p className="text-md text-muted">{t('settings:socialAccounts.loading')}</p>
                     ) : isGoogleLinked ? (
-                      <p className="text-md text-slate-500">
+                      <p className="text-md text-muted">
                         {googleSocialAccount?.email
                           ? t('settings:socialAccounts.linkedWithEmail', { email: googleSocialAccount.email })
                           : t('settings:socialAccounts.linked')}
                       </p>
                     ) : (
-                      <p className="text-md text-slate-500">{t('settings:socialAccounts.notLinked')}</p>
+                      <p className="text-md text-muted">{t('settings:socialAccounts.notLinked')}</p>
                     )}
                   </div>
                 </div>
@@ -453,7 +453,7 @@ export default function Settings() {
                   disabled={loadingSocialAccounts || linkingGoogle || unlinkingGoogle}
                   onClick={isGoogleLinked ? openUnlinkGoogleModal : handleLinkGoogle}
                   icon={linkingGoogle ? <FiLoader className="animate-spin" /> : undefined}
-                  className={`text-md ${isGoogleLinked ? 'text-slate-500 hover:text-red-500' : 'text-blue-600 hover:text-blue-700'}`}
+                  className={`text-md ${isGoogleLinked ? 'text-muted hover:text-red-500' : 'text-blue-600 hover:text-blue-700'}`}
                 >
                   {linkingGoogle ? t('settings:socialAccounts.linking') : isGoogleLinked ? t('settings:socialAccounts.unlink') : t('settings:socialAccounts.linkNow')}
                 </Button>
@@ -465,15 +465,15 @@ export default function Settings() {
                     <FaFacebook />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white">Facebook</p>
-                    <p className="text-md text-slate-500">{t('settings:socialAccounts.facebookComingSoon')}</p>
+                    <p className="font-medium text-ink">Facebook</p>
+                    <p className="text-md text-muted">{t('settings:socialAccounts.facebookComingSoon')}</p>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   disabled
-                  className="text-md text-slate-400 cursor-not-allowed"
+                  className="text-md text-subtle cursor-not-allowed"
                 >
                   {t('settings:socialAccounts.unsupported')}
                 </Button>
@@ -520,7 +520,7 @@ export default function Settings() {
         }
       >
         <div className="space-y-4">
-          <p className="text-md text-muted-strong">
+          <p className="text-md text-muted">
             {t('settings:unlinkGoogleModal.description')}
           </p>
           <div>

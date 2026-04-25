@@ -13,7 +13,7 @@ export default function ProductVariantsPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-3">
           <FiLoader className="animate-spin text-3xl text-blue-600" />
-          <span className="text-slate-500 font-medium">
+          <span className="text-muted font-medium">
             {t("variantPage.loading")}
           </span>
         </div>
@@ -34,7 +34,7 @@ export default function ProductVariantsPage() {
             <h1 className="text-xl sm:text-2xl font-bold">
               {t("variantPage.title")}
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted">
               {form.productName
                 ? `${form.productName}${form.categoryName ? ` • ${form.categoryName}` : ""}`
                 : t("variantPage.fallbackDescription")}
@@ -68,7 +68,7 @@ export default function ProductVariantsPage() {
         </div>
       )}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-muted shadow-sm dark:border-slate-800 dark:bg-slate-900">
         {t("variantPage.schemaHint")}
       </div>
 

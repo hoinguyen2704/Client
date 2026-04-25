@@ -27,7 +27,7 @@ export default function CategoryFormPage() {
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <FiLoader className="animate-spin text-3xl text-blue-500" />
-          <span className="font-medium text-slate-500">
+          <span className="font-medium text-muted">
             {t("categories.form.loading")}
           </span>
         </div>

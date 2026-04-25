@@ -32,10 +32,10 @@ export default function ProductDescriptionPanel({ description }: ProductDescript
   if (!cleanedDescription) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-800/40">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-muted dark:bg-slate-800">
           <FiFileText className="text-xl" />
         </div>
-        <p className="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">
+        <p className="mt-4 text-base font-semibold text-body">
           {t('productDetail.tabs.noDescription')}
         </p>
       </div>
@@ -48,10 +48,10 @@ export default function ProductDescriptionPanel({ description }: ProductDescript
         <span className="inline-flex items-center rounded-full border border-blue-200 bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-blue-700 dark:border-blue-800 dark:bg-slate-900/70 dark:text-blue-300">
           {t('productDetail.tabs.descriptionBadge')}
         </span>
-        <h3 className="mt-3 text-lg font-bold text-slate-900 dark:text-slate-50 sm:text-xl">
+        <h3 className="mt-3 text-lg font-bold text-ink sm:text-xl">
           {t('productDetail.tabs.descriptionTitle')}
         </h3>
-        <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400 sm:text-base">
+        <p className="mt-1 max-w-3xl text-sm leading-6 text-muted sm:text-base">
           {t('productDetail.tabs.descriptionIntro')}
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function ProductDescriptionPanel({ description }: ProductDescript
             style={!expanded && hasOverflow ? { maxHeight: COLLAPSED_DESCRIPTION_HEIGHT } : undefined}
           >
             <div
-              className="prose prose-slate max-w-none text-sm leading-7 prose-headings:font-bold prose-headings:text-slate-900 prose-h2:mt-8 prose-h2:text-2xl prose-h3:mt-6 prose-h3:text-xl prose-p:text-slate-700 prose-p:leading-8 prose-strong:text-slate-900 prose-li:my-1 prose-li:text-slate-700 prose-ul:pl-5 prose-ol:pl-5 prose-blockquote:rounded-r-xl prose-blockquote:border-l-4 prose-blockquote:border-blue-300 prose-blockquote:bg-blue-50/60 prose-blockquote:px-4 prose-blockquote:py-2 prose-img:mx-auto prose-img:w-full prose-img:rounded-2xl prose-img:border prose-img:border-slate-200 prose-a:text-blue-700 dark:prose-invert dark:prose-headings:text-slate-100 dark:prose-p:text-slate-300 dark:prose-strong:text-slate-100 dark:prose-li:text-slate-300 dark:prose-blockquote:border-blue-500/60 dark:prose-blockquote:bg-blue-950/20 sm:text-base lg:text-[17px]"
+              className="prose prose-slate max-w-none text-sm leading-7 prose-headings:font-bold prose-headings:text-ink prose-h2:mt-8 prose-h2:text-2xl prose-h3:mt-6 prose-h3:text-xl prose-p:text-body prose-p:leading-8 prose-strong:text-ink prose-li:my-1 prose-li:text-body prose-ul:pl-5 prose-ol:pl-5 prose-blockquote:rounded-r-xl prose-blockquote:border-l-4 prose-blockquote:border-blue-300 prose-blockquote:bg-blue-50/60 prose-blockquote:px-4 prose-blockquote:py-2 prose-img:mx-auto prose-img:w-full prose-img:rounded-2xl prose-img:border prose-img:border-slate-200 prose-a:text-blue-700 dark:prose-invert dark:prose-blockquote:border-blue-500/60 dark:prose-blockquote:bg-blue-950/20 sm:text-base lg:text-[17px]"
               dangerouslySetInnerHTML={{ __html: cleanedDescription }}
             />
           </div>

@@ -310,7 +310,7 @@ export default function SupportChatWidget({
                       className="min-w-0 flex-1"
                     />
                   ) : (
-                    <p className="min-w-0 flex-1 text-sm text-slate-500">
+                    <p className="min-w-0 flex-1 text-sm text-muted">
                       {canDirectSupport
                         ? t('supportChat.noTickets', { ns: 'layout' })
                         : t('supportChat.loginToStart', { ns: 'layout' })}
@@ -335,11 +335,11 @@ export default function SupportChatWidget({
             <div className="px-2.5 sm:px-3 py-2 border-b border-slate-100 dark:border-slate-800 min-h-10 sm:min-h-11">
               {selectedTicket ? (
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm text-slate-500 truncate">{selectedTicket.ticketNumber}</p>
+                  <p className="text-sm text-muted truncate">{selectedTicket.ticketNumber}</p>
                   <StatusBadge status={selectedTicket.status} className="text-10" />
                 </div>
               ) : (
-                <p className="text-sm text-slate-400">{t('supportChat.newSession', { ns: 'layout' })}</p>
+                <p className="text-sm text-subtle">{t('supportChat.newSession', { ns: 'layout' })}</p>
               )}
             </div>
 
@@ -358,14 +358,14 @@ export default function SupportChatWidget({
                       }`}
                     >
                       <p className="leading-relaxed break-words">{msg.content}</p>
-                      <p className={`text-10 mt-1 ${msg.senderType === 'USER' ? 'text-white/70' : 'text-slate-400'}`}>
+                      <p className={`text-10 mt-1 ${msg.senderType === 'USER' ? 'text-white/70' : 'text-subtle'}`}>
                         {formatDate(msg.createdAt)}
                       </p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="h-full min-h-24 flex items-center justify-center text-center text-slate-400 text-md px-4">
+                <div className="h-full min-h-24 flex items-center justify-center text-center text-subtle text-md px-4">
                   <p>
                     {canDirectSupport
                       ? t('supportChat.emptyConversation', { ns: 'layout' })
@@ -386,7 +386,7 @@ export default function SupportChatWidget({
                 </button>
               ) : isClosed ? (
                 <div className="flex items-center gap-2">
-                  <div className="min-w-0 flex-1 h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-md flex items-center">
+                  <div className="min-w-0 flex-1 h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-muted text-md flex items-center">
                     {t('supportChat.closedHint', { ns: 'layout' })}
                   </div>
                   <Button

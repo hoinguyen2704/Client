@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function Forbidden() {
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-[80vh] gap-12 py-8 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+    <div className="flex flex-col items-center justify-center w-full min-h-[80vh] gap-12 py-8 bg-slate-50 dark:bg-slate-900 text-ink">
       <svg className="h-[40vh] aspect-video" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
         <g id="freepik--background-simple--inject-3">
           <path
@@ -213,7 +213,7 @@ export default function Forbidden() {
         <h1 className="text-3xl font-medium text-center">
           You are not authorized
         </h1>
-        <p className="text-xl text-center text-slate-500">
+        <p className="text-xl text-center text-muted">
           You tried to access a page you did not have prior
           authorization for.
         </p>

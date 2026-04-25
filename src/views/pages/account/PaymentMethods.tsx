@@ -34,9 +34,9 @@ export default function PaymentMethods() {
 
       {methods.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-100 dark:border-slate-800 shadow-sm">
-          <FiCreditCard className="text-4xl sm:text-5xl text-slate-300 mx-auto mb-4" />
+          <FiCreditCard className="text-4xl sm:text-5xl text-subtle mx-auto mb-4" />
           <h3 className="text-lg sm:text-xl font-bold mb-2">{t('paymentMethods.empty.title')}</h3>
-          <p className="text-md sm:text-base text-slate-500">{t('paymentMethods.empty.description')}</p>
+          <p className="text-md sm:text-base text-muted">{t('paymentMethods.empty.description')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -81,7 +81,7 @@ export default function PaymentMethods() {
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm hidden sm:flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity z-20">
                   {!method.isDefault && (
                     <button onClick={() => setAsDefault(method.id)}
-                      className="px-4 py-2 bg-white text-slate-900 rounded-lg font-medium hover:bg-slate-100 transition-colors">
+                      className="px-4 py-2 bg-white text-ink rounded-lg font-medium hover:bg-slate-100 transition-colors">
                       {t('paymentMethods.setAsDefault')}
                     </button>
                   )}
@@ -94,7 +94,7 @@ export default function PaymentMethods() {
                 <div className="mt-4 flex sm:hidden items-center gap-2 relative z-10">
                   {!method.isDefault && (
                     <button onClick={() => setAsDefault(method.id)}
-                      className="flex-1 px-3 py-2 bg-white text-slate-900 rounded-lg text-md font-semibold hover:bg-slate-100 transition-colors">
+                      className="flex-1 px-3 py-2 bg-white text-ink rounded-lg text-md font-semibold hover:bg-slate-100 transition-colors">
                       {t('paymentMethods.setDefault')}
                     </button>
                   )}
@@ -120,7 +120,7 @@ export default function PaymentMethods() {
             <label className="block font-medium mb-2">{t('paymentMethods.modal.cardNumber')}</label>
             <div className="relative">
               <input type="text" placeholder="0000 0000 0000 0000" className="w-full h-11 sm:h-12 pl-11 sm:pl-12 pr-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 font-mono tracking-widest text-md sm:text-base" maxLength={19} />
-              <FiCreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+              <FiCreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle text-xl" />
             </div>
           </div>
           <div><label className="block font-medium mb-2">{t('paymentMethods.modal.cardholderInput')}</label><input type="text" placeholder="NGUYEN VAN A" className="w-full h-11 sm:h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 uppercase text-md sm:text-base" /></div>

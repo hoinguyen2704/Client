@@ -254,7 +254,7 @@ export default function AdminVouchers() {
                           <FiGlobe className="text-10" /> {t("vouchers.meta.public")}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-slate-100 text-ink dark:bg-slate-800 dark:text-slate-400">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-slate-100 text-body dark:bg-slate-800">
                           <FiLock className="text-10" /> {t("vouchers.meta.private")}
                         </span>
                       )}
@@ -519,11 +519,11 @@ export default function AdminVouchers() {
                   {form.isPublic ? (
                     <FiGlobe className="text-blue-500" />
                   ) : (
-                    <FiLock className="text-slate-400" />
+                    <FiLock className="text-subtle" />
                   )}
                   {t("vouchers.form.visibilityTitle")}
                 </div>
-                <p className="text-sm text-slate-500 mt-0.5">
+                <p className="text-sm text-muted mt-0.5">
                   {form.isPublic
                     ? t("vouchers.form.visibilityPublicDescription")
                     : t("vouchers.form.visibilityPrivateDescription")}
@@ -560,7 +560,7 @@ export default function AdminVouchers() {
                   }`}
               >
                 <div className="text-md font-bold">{t("vouchers.form.applyAllTitle")}</div>
-                <div className="text-sm text-slate-500 mt-0.5">
+                <div className="text-sm text-muted mt-0.5">
                   {t("vouchers.form.applyAllDescription")}
                 </div>
               </button>
@@ -575,7 +575,7 @@ export default function AdminVouchers() {
                   }`}
               >
                 <div className="text-md font-bold">{t("vouchers.form.applySpecificTitle")}</div>
-                <div className="text-sm text-slate-500 mt-0.5">
+                <div className="text-sm text-muted mt-0.5">
                   {t("vouchers.form.applySpecificDescription")}
                 </div>
               </button>

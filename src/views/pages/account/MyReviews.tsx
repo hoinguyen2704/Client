@@ -213,7 +213,7 @@ export default function MyReviews() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t('myReviews.title')}</h1>
+      <h1 className="text-2xl font-bold text-ink">{t('myReviews.title')}</h1>
 
       <SlidingTabs
         tabs={[
@@ -250,9 +250,9 @@ export default function MyReviews() {
                       />
                       <div className="min-w-0">
                         <h3 className="font-bold line-clamp-2">{item.productName}</h3>
-                        <p className="text-md text-slate-500 mt-1">{t('myReviews.item.variant')}: {item.variantName || t('myReviews.item.defaultVariant')}</p>
-                        <p className="text-md text-slate-500">{t('myReviews.item.order')}: {item.orderNumber}</p>
-                        <p className="text-md text-slate-500">{t('myReviews.item.deliveredAt')}: {formatDate(item.deliveredAt)}</p>
+                        <p className="text-md text-muted mt-1">{t('myReviews.item.variant')}: {item.variantName || t('myReviews.item.defaultVariant')}</p>
+                        <p className="text-md text-muted">{t('myReviews.item.order')}: {item.orderNumber}</p>
+                        <p className="text-md text-muted">{t('myReviews.item.deliveredAt')}: {formatDate(item.deliveredAt)}</p>
                         {item.feedbacks.length > 0 && (
                           <p className="text-sm text-orange-600 mt-1">{t('myReviews.item.reviewedCount', { count: item.feedbacks.length, max: MAX_REVIEW_ATTEMPTS })}</p>
                         )}
@@ -265,11 +265,11 @@ export default function MyReviews() {
                 ))
               ) : (
                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
-                  <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl">
+                  <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-subtle text-3xl">
                     <FiStar />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('myReviews.empty.allReviewedTitle')}</h3>
-                  <p className="text-slate-500">{t('myReviews.empty.allReviewedDescription')}</p>
+                  <h3 className="text-xl font-bold text-ink mb-2">{t('myReviews.empty.allReviewedTitle')}</h3>
+                  <p className="text-muted">{t('myReviews.empty.allReviewedDescription')}</p>
                 </div>
               )}
             </div>
@@ -302,22 +302,22 @@ export default function MyReviews() {
                               </span>
                             )}
                           </div>
-                          <p className="text-md text-slate-500">{t('myReviews.item.variant')}: {entry.variantName || t('myReviews.item.defaultVariant')}</p>
-                          <p className="text-md text-slate-500">{t('myReviews.item.order')}: {entry.orderNumber}</p>
-                          <p className="text-md text-slate-500">{t('myReviews.item.reviewDate')}: {formatDate(entry.review.createdAt)}</p>
+                          <p className="text-md text-muted">{t('myReviews.item.variant')}: {entry.variantName || t('myReviews.item.defaultVariant')}</p>
+                          <p className="text-md text-muted">{t('myReviews.item.order')}: {entry.orderNumber}</p>
+                          <p className="text-md text-muted">{t('myReviews.item.reviewDate')}: {formatDate(entry.review.createdAt)}</p>
                         </div>
                       </div>
 
                       <div className="mt-4 space-y-3">
                         <StarRating value={entry.review.rating} onChange={() => {}} readOnly size="sm" />
-                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{entry.review.content}</p>
+                        <p className="text-body leading-relaxed">{entry.review.content}</p>
 
                         {entry.review.adminReply && (
                           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
                             <div className="flex items-center gap-2 mb-1 text-blue-600 font-bold text-md">
                               <FiMessageSquare /> {t('myReviews.adminReplyTitle')}
                             </div>
-                            <p className="text-md text-slate-600 dark:text-slate-400">{entry.review.adminReply}</p>
+                            <p className="text-md text-muted">{entry.review.adminReply}</p>
                           </div>
                         )}
                       </div>
@@ -392,35 +392,35 @@ export default function MyReviews() {
                 className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800"
               />
               <div>
-                <h4 className="font-bold text-slate-900 dark:text-white line-clamp-2">{selectedItem.productName}</h4>
-                <p className="text-md text-slate-500">{t('myReviews.item.variant')}: {selectedItem.variantName || t('myReviews.item.defaultVariant')}</p>
-                <p className="text-md text-slate-500">{t('myReviews.item.order')}: {selectedItem.orderNumber}</p>
+                <h4 className="font-bold text-ink line-clamp-2">{selectedItem.productName}</h4>
+                <p className="text-md text-muted">{t('myReviews.item.variant')}: {selectedItem.variantName || t('myReviews.item.defaultVariant')}</p>
+                <p className="text-md text-muted">{t('myReviews.item.order')}: {selectedItem.orderNumber}</p>
               </div>
             </div>
 
             <form id="review-form" onSubmit={handleSubmitReview} className="space-y-6">
               {selectedItem.feedbacks.length > 0 && (
                 <div className="space-y-3">
-                  <p className="text-md font-semibold text-slate-700 dark:text-slate-300">{t('myReviews.modal.previousReviews')}</p>
+                  <p className="text-md font-semibold text-body">{t('myReviews.modal.previousReviews')}</p>
                   {selectedItem.feedbacks.map((fb, idx) => (
                     <div key={fb.id} className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
                       <div className="flex items-center justify-between mb-1">
                         <p className="text-md font-semibold">{t('myReviews.modal.roundLabel', { count: idx + 1 })}</p>
                         <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
                       </div>
-                      <p className="text-md text-slate-600 dark:text-slate-400">{fb.content}</p>
+                      <p className="text-md text-muted">{fb.content}</p>
                     </div>
                   ))}
                 </div>
               )}
 
               <div>
-                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">{t('myReviews.modal.ratingLabel')}</label>
+                <label className="block text-md font-medium text-body mb-2">{t('myReviews.modal.ratingLabel')}</label>
                 <StarRating value={rating} onChange={setRating} />
               </div>
 
               <div>
-                <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">{t('myReviews.modal.contentLabel')}</label>
+                <label className="block text-md font-medium text-body mb-2">{t('myReviews.modal.contentLabel')}</label>
                 <textarea
                   required
                   value={reviewContent}

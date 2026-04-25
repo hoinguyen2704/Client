@@ -26,21 +26,21 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryTotal')}</p>
+          <p className="text-10 sm:text-sm text-muted mb-1 leading-tight">{t('overview.charts.revenue.summaryTotal')}</p>
           <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryAverage')}</p>
+          <p className="text-10 sm:text-sm text-muted mb-1 leading-tight">{t('overview.charts.revenue.summaryAverage')}</p>
           <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{avg >= 1e6 ? `${(avg / 1e6).toFixed(0)}M` : avg.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-2.5 sm:p-4">
-          <p className="text-10 sm:text-sm text-slate-500 dark:text-slate-400 mb-1 leading-tight">{t('overview.charts.revenue.summaryPeak', { label: maxItem.name.split('|')[0] })}</p>
+          <p className="text-10 sm:text-sm text-muted mb-1 leading-tight">{t('overview.charts.revenue.summaryPeak', { label: maxItem.name.split('|')[0] })}</p>
           <p className="text-md sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{maxItem.revenue >= 1e6 ? `${(maxItem.revenue / 1e6).toFixed(0)}M` : maxItem.revenue.toLocaleString()}</p>
         </div>
       </div>
 
       {chartData.length === 0 ? (
-        <div className="h-64 sm:h-80 flex items-center justify-center text-slate-400">{t('overview.charts.revenue.empty')}</div>
+        <div className="h-64 sm:h-80 flex items-center justify-center text-subtle">{t('overview.charts.revenue.empty')}</div>
       ) : (
         <div className="h-64 sm:h-80 min-w-0">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={256}>

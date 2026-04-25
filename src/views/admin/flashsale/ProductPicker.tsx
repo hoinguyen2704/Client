@@ -215,16 +215,16 @@ export default function ProductPicker() {
           <div className="flex items-center gap-3">
             <button
               onClick={handleCancel}
-              className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 hover:text-slate-700"
+              className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-muted hover:text-body"
             >
               <FiArrowLeft size={20} />
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-ink flex items-center gap-2">
                 <FiPackage className="text-blue-500" />
                 {t('productPicker.heroTitle')}
               </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
+              <p className="text-sm text-muted mt-0.5">
                 {t('productPicker.heroDescription')}
               </p>
             </div>
@@ -256,12 +256,12 @@ export default function ProductPicker() {
               }}
               autoFocus
               clearable
-              inputClassName="border border-slate-300 dark:border-slate-700 text-15 font-medium focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
+              inputClassName="border border-slate-300 dark:border-slate-700 text-15 font-medium focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-subtle"
             />
           </div>
           <div className="flex flex-col lg:flex-row gap-2 lg:items-center">
-            <div className="inline-flex items-center gap-2 text-sm text-slate-500 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-              <FiFilter className="text-slate-400" />
+            <div className="inline-flex items-center gap-2 text-sm text-muted px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+              <FiFilter className="text-subtle" />
               {t('productPicker.filtersTitle')}
             </div>
             <CustomSelect
@@ -324,15 +324,15 @@ export default function ProductPicker() {
         <div className="border border-slate-300 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-900 overflow-hidden shadow-md">
           {loading ? (
             <div className="p-12 text-center">
-              <div className="inline-flex items-center gap-3 text-slate-400">
+              <div className="inline-flex items-center gap-3 text-subtle">
                 <div className="w-5 h-5 border-2 border-slate-300 border-t-blue-500 rounded-full animate-spin" />
                 {t('productPicker.loading')}
               </div>
             </div>
           ) : products.length === 0 ? (
             <div className="p-12 text-center">
-              <FiPackage className="mx-auto text-slate-300 mb-3" size={40} />
-              <p className="text-slate-400 text-md">{t('productPicker.empty')}</p>
+              <FiPackage className="mx-auto text-subtle mb-3" size={40} />
+              <p className="text-subtle text-md">{t('productPicker.empty')}</p>
               {(keyword || hasActiveFilters) && (
                 <button
                   onClick={() => {
@@ -352,7 +352,7 @@ export default function ProductPicker() {
             </div>
           ) : (
             <div className="divide-y divide-slate-200 dark:divide-slate-700">
-              <div className="hidden md:grid grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 bg-slate-100 dark:bg-slate-800/60 text-13 font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700">
+              <div className="hidden md:grid grid-cols-[minmax(0,1fr)_170px_140px_170px] gap-0 bg-slate-100 dark:bg-slate-800/60 text-13 font-bold uppercase tracking-wide text-muted border-b border-slate-300 dark:border-slate-700">
                 <div className="px-4 py-3.5">{t('productPicker.table.product')}</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">{t('productPicker.table.sold')}</div>
                 <div className="px-4 py-3.5 text-right border-l border-slate-300 dark:border-slate-700">{t('productPicker.table.stock')}</div>
@@ -389,7 +389,7 @@ export default function ProductPicker() {
       {/* ── Sticky Footer ── */}
       <div className="sticky bottom-0 z-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-md text-slate-500">
+          <div className="text-md text-muted">
             {selectedCount > 0 ? (
               <Trans i18nKey="adminCatalog:productPicker.footerSelected" values={{ count: selectedCount }} components={{ strong: <strong className="text-blue-600" /> }} />
             ) : (

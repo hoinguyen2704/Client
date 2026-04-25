@@ -145,7 +145,7 @@ const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, on
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="font-mono font-bold text-lg tracking-wider">{v.code}</span>
-              <button className="p-1 text-slate-400 hover:text-blue-500 transition-colors"><FiCopy className="text-lg" /></button>
+              <button className="p-1 text-subtle hover:text-blue-500 transition-colors"><FiCopy className="text-lg" /></button>
               <span className={`px-2 py-1 rounded-md text-10 font-bold tracking-wide uppercase ${getVoucherType(v) === 'FREESHIP'
                 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                 : 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300'
@@ -158,14 +158,14 @@ const VoucherCard = memo(({ v, showSaveBtn = false, isSaving, onCopy, onSave, on
                 ? t('checkout:voucherCard.discountPercent', { value: v.discountValue })
                 : t('checkout:voucherCard.discountAmount', { value: formatPrice(v.discountValue) })}
             </div>
-            <div className="text-sm text-slate-500 mt-0.5 h-5">
+            <div className="text-sm text-muted mt-0.5 h-5">
               {v.maxDiscountAmount ? t('account:vouchers.card.maxDiscount', { value: formatPrice(v.maxDiscountAmount) }) : ''}
             </div>
           </div>
         </div>
 
         {/* Details */}
-        <div className="mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-700 flex flex-wrap gap-3 text-sm text-slate-500">
+        <div className="mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-700 flex flex-wrap gap-3 text-sm text-muted">
           {v.minOrderValue && (
             <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">
               {t('account:vouchers.card.minOrder', { value: formatPrice(v.minOrderValue) })}
@@ -321,7 +321,7 @@ const VoucherSection = memo(({
           {searchResult && (
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-md font-bold text-slate-600 uppercase tracking-wide">{t('account:vouchers.searchResultTitle')}</h3>
+                <h3 className="text-md font-bold text-muted uppercase tracking-wide">{t('account:vouchers.searchResultTitle')}</h3>
               </div>
               <VoucherCard v={searchResult} showSaveBtn onCopy={copyCode} onSave={handleSave} onUnsave={handleUnsave} isSaving={savingId === searchResult.id} />
             </motion.div>
@@ -375,7 +375,7 @@ const VoucherSection = memo(({
       {/* Notes */}
       <Card className="rounded-2xl p-6">
         <h2 className="text-lg font-bold mb-3">{t('account:vouchers.notesTitle')}</h2>
-        <ul className="space-y-2 text-md text-slate-500">
+        <ul className="space-y-2 text-md text-muted">
           <li>• {t('account:vouchers.notes.item1')}</li>
           <li>• {t('account:vouchers.notes.item2')}</li>
           <li>• {t('account:vouchers.notes.item3')}</li>

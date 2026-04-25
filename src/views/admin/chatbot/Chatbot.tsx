@@ -153,7 +153,7 @@ export default function Chatbot() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 gap-3 text-slate-400">
+      <div className="flex items-center justify-center h-64 gap-3 text-subtle">
         <FiRefreshCw className="animate-spin text-xl" />
         {t("chatbot.states.loading")}
       </div>
@@ -189,7 +189,7 @@ export default function Chatbot() {
             <FiCpu className="text-blue-600" />
             {t("chatbot.title")}
           </h1>
-          <p className="text-md text-slate-500 mt-1">
+          <p className="text-md text-muted mt-1">
             {t("chatbot.subtitle", { model: currentModel })}
           </p>
         </div>
@@ -197,7 +197,7 @@ export default function Chatbot() {
           <button
             onClick={() => setShowResetConfirm(true)}
             disabled={saving}
-            className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
+            className="px-4 h-10 rounded-xl border border-slate-200 dark:border-slate-700 text-muted font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-md flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto"
           >
             <FiRefreshCw className={saving ? "animate-spin" : ""} />
             {t("chatbot.actions.reset")}
@@ -223,14 +223,14 @@ export default function Chatbot() {
       <div className="flex border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
         <button
           onClick={() => setActiveTab("settings")}
-          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "settings" ? "border-blue-600 text-blue-600" : "border-transparent text-muted hover:text-ink"}`}
         >
           <FiSettings className="inline mr-1.5 -mt-0.5" />
           {t("chatbot.tabs.settings")}
         </button>
         <button
           onClick={() => setActiveTab("overview")}
-          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"}`}
+          className={`px-4 sm:px-6 py-3 font-medium text-md border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview" ? "border-blue-600 text-blue-600" : "border-transparent text-muted hover:text-ink"}`}
         >
           <FiActivity className="inline mr-1.5 -mt-0.5" />
           {t("chatbot.tabs.overview")}
@@ -321,7 +321,7 @@ export default function Chatbot() {
                     }
                     className="w-full mt-2 accent-blue-600"
                   />
-                  <div className="flex justify-between text-sm text-slate-400 mt-1">
+                  <div className="flex justify-between text-sm text-subtle mt-1">
                     <span>{t("chatbot.sections.ai.temperatureExact")}</span>
                     <span>{t("chatbot.sections.ai.temperatureCreative")}</span>
                   </div>
@@ -339,13 +339,13 @@ export default function Chatbot() {
                   inputClassName="resize-y font-mono leading-relaxed"
                   placeholder={t("chatbot.sections.ai.systemPromptPlaceholder")}
                 />
-                <p className="text-sm text-slate-500 mt-1.5">
+                <p className="text-sm text-muted mt-1.5">
                   {t("chatbot.sections.ai.systemPromptHint")}
                 </p>
               </div>
 
               <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-4">
-                <h3 className="text-md font-bold text-slate-700 dark:text-slate-300 mb-3">
+                <h3 className="text-md font-bold text-body mb-3">
                   {`⚙️ ${t("chatbot.sections.runtime.title")}`}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -368,7 +368,7 @@ export default function Chatbot() {
                       }
                       inputClassName="h-11"
                     />
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-subtle mt-1">
                       {t("chatbot.sections.runtime.hints.maxProducts")}
                     </p>
                   </div>
@@ -391,7 +391,7 @@ export default function Chatbot() {
                       }
                       inputClassName="h-11"
                     />
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-subtle mt-1">
                       {t("chatbot.sections.runtime.hints.maxRetries")}
                     </p>
                   </div>
@@ -415,7 +415,7 @@ export default function Chatbot() {
                       }
                       inputClassName="h-11"
                     />
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-subtle mt-1">
                       {t("chatbot.sections.runtime.hints.planTimeoutMs")}
                     </p>
                   </div>
@@ -439,7 +439,7 @@ export default function Chatbot() {
                       }
                       inputClassName="h-11"
                     />
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-subtle mt-1">
                       {t("chatbot.sections.runtime.hints.dbTimeoutMs")}
                     </p>
                   </div>
@@ -452,7 +452,7 @@ export default function Chatbot() {
             <SectionCard title={t("chatbot.sections.status.title")}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 mt-1">
+                  <p className="text-sm text-muted mt-1">
                     {config.isEnabled
                       ? t("chatbot.sections.status.enabledDescription")
                       : t("chatbot.sections.status.disabledDescription")}
@@ -460,7 +460,7 @@ export default function Chatbot() {
                 </div>
                 <button
                   onClick={() => updateTopLevel("isEnabled", !config.isEnabled)}
-                  className={`text-3xl transition-colors ${config.isEnabled ? "text-green-500" : "text-slate-300 dark:text-slate-600"}`}
+                  className={`text-3xl transition-colors ${config.isEnabled ? "text-green-500" : "text-subtle"}`}
                   title={
                     config.isEnabled
                       ? t("chatbot.actions.disable")
@@ -567,7 +567,7 @@ export default function Chatbot() {
                 inputClassName="resize-y"
                 placeholder={t("chatbot.sections.welcome.placeholder")}
               />
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted">
                 {t("chatbot.sections.welcome.hint")}
               </p>
             </SectionCard>

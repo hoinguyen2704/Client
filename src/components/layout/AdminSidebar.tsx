@@ -7,9 +7,9 @@ import { SHOP } from '@/constants/shopConstants';
 import { cn } from '@/utils/cn';
 
 const SIDEBAR_COLLAPSE_BUTTON_CLASS =
-  'p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors hidden lg:flex';
+  'p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-subtle hover:text-body transition-colors hidden lg:flex';
 const SIDEBAR_IDLE_ITEM_CLASS =
-  'text-muted-strong hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200';
+  'text-muted hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-ink';
 
 const menuItems = [
   { path: '/admin/dashboard', icon: FiGrid, labelKey: 'adminSidebar.dashboard' },

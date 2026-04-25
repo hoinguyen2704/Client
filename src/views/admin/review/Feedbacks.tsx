@@ -64,7 +64,7 @@ export default function Feedbacks() {
             </div>
           ))
         ) : reviews.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">{t('feedbacks.empty')}</div>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-subtle border border-slate-100 dark:border-slate-800">{t('feedbacks.empty')}</div>
         ) : (
           reviews.map((review) => (
             <div key={review.id} className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -74,16 +74,16 @@ export default function Feedbacks() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
                     <div>
                       <span className="font-bold">{review.userName}</span>
-                      <span className="text-slate-400 text-md ml-2">{formatDate(review.createdAt)}</span>
+                      <span className="text-subtle text-md ml-2">{formatDate(review.createdAt)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <StarRating value={review.rating} onChange={() => {}} readOnly size="sm" showLabel={false} />
                     </div>
                   </div>
-                  <p className="text-md text-slate-500 mb-1">
-                    {t('feedbacks.productLabel')}: <span className="font-medium text-slate-700 dark:text-slate-300">{review.productName}</span>
+                  <p className="text-md text-muted mb-1">
+                    {t('feedbacks.productLabel')}: <span className="font-medium text-body">{review.productName}</span>
                   </p>
-                  <p className="text-slate-700 dark:text-slate-300">{review.content}</p>
+                  <p className="text-body">{review.content}</p>
 
                   {review.adminReply && (
                     <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-md">

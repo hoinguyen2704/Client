@@ -56,8 +56,8 @@ export default function AddressBook() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm gap-3 sm:gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">{t('account:addressBook.title')}</h1>
-          <p className="text-sm sm:text-md text-slate-500 mt-1">{t('account:addressBook.description')}</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-ink">{t('account:addressBook.title')}</h1>
+          <p className="text-sm sm:text-md text-muted mt-1">{t('account:addressBook.description')}</p>
         </div>
         <PrimaryButton onClick={() => { resetForm(); setShowForm(true); }} icon={<FiPlus className="text-base" />} className="w-full sm:w-auto">
           {t('account:addressBook.addNew')}
@@ -72,8 +72,8 @@ export default function AddressBook() {
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4 sm:mb-6 relative z-10 border border-slate-50 dark:border-slate-700">
             <FiMapPin className="text-3xl sm:text-4xl text-blue-500" />
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 relative z-10 text-slate-800 dark:text-white">{t('account:addressBook.emptyTitle')}</h3>
-          <p className="text-md sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm relative z-10">{t('account:addressBook.emptyDescription')}</p>
+          <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 relative z-10 text-ink">{t('account:addressBook.emptyTitle')}</h3>
+          <p className="text-md sm:text-base text-muted mb-6 sm:mb-8 max-w-sm relative z-10">{t('account:addressBook.emptyDescription')}</p>
           <button
             onClick={() => { resetForm(); setShowForm(true); }}
             className="px-6 py-3 bg-white dark:bg-slate-800 border-2 border-blue-100 dark:border-blue-900/50 hover:border-blue-500 hover:text-blue-700 text-blue-600 dark:text-blue-400 font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 shadow-sm hover:shadow-md text-md sm:text-base"
@@ -90,11 +90,11 @@ export default function AddressBook() {
                 <div className="flex-1">
                   <div className="flex items-center flex-wrap gap-2 sm:gap-3 mb-2">
                     <span className="font-bold text-md sm:text-base">{addr.fullName}</span>
-                    <span className="text-slate-400">|</span>
-                    <span className="text-sm sm:text-md text-slate-500">{addr.phoneNumber}</span>
+                    <span className="text-subtle">|</span>
+                    <span className="text-sm sm:text-md text-muted">{addr.phoneNumber}</span>
                     {addr.isDefault && <span className="px-2 py-0.5 rounded text-sm font-medium bg-blue-100 text-blue-600">{t('account:addressBook.default')}</span>}
                   </div>
-                  <p className="text-sm sm:text-md text-slate-500">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
+                  <p className="text-sm sm:text-md text-muted">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3 mt-4 sm:mt-0">
                   {!addr.isDefault && (
@@ -125,7 +125,7 @@ export default function AddressBook() {
         scrollable
         footer={
           <>
-            <button onClick={resetForm} className="px-5 sm:px-10 py-3 sm:py-4 rounded-2xl font-bold text-md sm:text-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">{t('account:addressBook.modal.cancel')}</button>
+            <button onClick={resetForm} className="px-5 sm:px-10 py-3 sm:py-4 rounded-2xl font-bold text-md sm:text-lg text-muted hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">{t('account:addressBook.modal.cancel')}</button>
             <button onClick={handleSubmit} className="px-5 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white text-md sm:text-lg font-bold rounded-2xl transition-all shadow-xl shadow-blue-500/30 transform hover:-translate-y-1">
               {t('account:addressBook.modal.save')}
             </button>
@@ -135,32 +135,32 @@ export default function AddressBook() {
         <div className="space-y-5 sm:space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{t('checkout:address.form.fullName')}</label>
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('checkout:address.form.fullName')}</label>
               <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('checkout:address.form.fullNamePlaceholder')} value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{t('checkout:address.form.phoneNumber')}</label>
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('checkout:address.form.phoneNumber')}</label>
               <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('checkout:address.form.phoneNumberPlaceholder')} value={form.phoneNumber} onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{t('checkout:address.form.province')}</label>
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('checkout:address.form.province')}</label>
               <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('checkout:address.form.provincePlaceholder')} value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{t('checkout:address.form.district')}</label>
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('checkout:address.form.district')}</label>
               <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('checkout:address.form.districtPlaceholder')} value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
             </div>
             <div className="space-y-2 sm:space-y-3">
-              <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{t('checkout:address.form.ward')}</label>
+              <label className="text-md font-semibold text-body uppercase tracking-wider">{t('checkout:address.form.ward')}</label>
               <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('checkout:address.form.wardPlaceholder')} value={form.ward} onChange={(e) => setForm({ ...form, ward: e.target.value })} />
             </div>
           </div>
 
           <div className="space-y-2 sm:space-y-3">
-            <label className="text-md font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{t('checkout:address.form.detailAddress')}</label>
+            <label className="text-md font-semibold text-body uppercase tracking-wider">{t('checkout:address.form.detailAddress')}</label>
             <input className="w-full h-12 sm:h-16 px-4 sm:px-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 focus:ring-0 outline-none transition-all text-md sm:text-lg" placeholder={t('checkout:address.form.detailAddressPlaceholder')} value={form.detailAddress} onChange={(e) => setForm({ ...form, detailAddress: e.target.value })} />
           </div>
 
@@ -174,8 +174,8 @@ export default function AddressBook() {
                 />
               </div>
               <div>
-                <span className="text-md sm:text-lg font-bold text-slate-800 dark:text-slate-200">{t('checkout:address.form.setDefault')}</span>
-                <p className="text-sm sm:text-base text-slate-500 mt-0.5">{t('checkout:address.form.setDefaultHint')}</p>
+                <span className="text-md sm:text-lg font-bold text-body">{t('checkout:address.form.setDefault')}</span>
+                <p className="text-sm sm:text-base text-muted mt-0.5">{t('checkout:address.form.setDefaultHint')}</p>
               </div>
             </label>
           </div>

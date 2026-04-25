@@ -26,7 +26,7 @@ export default function BlogDetail() {
 
   if (!article) return (
     <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-      <FiBook className="text-6xl text-slate-300 mx-auto mb-4" />
+      <FiBook className="text-6xl text-subtle mx-auto mb-4" />
       <h2 className="text-xl font-bold mb-2">Không tìm thấy bài viết</h2>
       <Link to="/blog" className="text-blue-600 hover:underline">← Quay lại Blog</Link>
     </div>
@@ -42,7 +42,7 @@ export default function BlogDetail() {
         )}
         <div className="p-8">
           <h1 className="text-3xl font-black mb-4">{article.title}</h1>
-          <div className="flex items-center gap-4 text-md text-slate-500 mb-8 pb-6 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-4 text-md text-muted mb-8 pb-6 border-b border-slate-100 dark:border-slate-800">
             {article.authorName && <span className="flex items-center gap-1"><FiUser /> {article.authorName}</span>}
             <span className="flex items-center gap-1"><FiCalendar /> {formatDate(article.createdAt)}</span>
           </div>

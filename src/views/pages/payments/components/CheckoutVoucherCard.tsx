@@ -79,18 +79,18 @@ export default function CheckoutVoucherCard({
               {isFreeShip ? t("voucherCard.shippingTag") : t("voucherCard.productTag")}
             </span>
           </div>
-          <p className="mt-0.5 text-md font-bold text-slate-800 dark:text-slate-100">
+          <p className="mt-0.5 text-md font-bold text-ink">
             {voucher.discountType === "PERCENTAGE"
               ? t("voucherCard.discountPercent", { value: voucher.discountValue })
               : t("voucherCard.discountAmount", { value: formatPrice(voucher.discountValue) })}
           </p>
           {voucher.minOrderValue ? (
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-muted">
               {t("voucherCard.minOrderValue", { value: formatPrice(voucher.minOrderValue) })}
             </p>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-500">
+          <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted">
             {voucher.endDate ? (
               <span className="inline-flex items-center rounded-xl bg-white/80 px-3 py-1 dark:bg-slate-900/70">
                 {t("voucherCard.expiry", { date: formatDateFull(voucher.endDate) })}
@@ -144,7 +144,7 @@ export default function CheckoutVoucherCard({
               </PrimaryButton>
             )
           ) : (
-            <span className="text-sm text-slate-400">{t("voucherCard.loginToSave")}</span>
+            <span className="text-sm text-subtle">{t("voucherCard.loginToSave")}</span>
           )}
         </div>
       </div>

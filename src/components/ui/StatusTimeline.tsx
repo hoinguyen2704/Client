@@ -44,7 +44,7 @@ export function StatusTimeline({
             ? 'bg-emerald-500 text-white'
             : isCurrent
             ? step.colorClass ? `bg-gradient-to-r ${step.colorClass} text-white shadow-lg shadow-blue-500/20 ring-4 ring-blue-100 dark:ring-blue-900/30` : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 ring-4 ring-blue-100 dark:ring-blue-900/30'
-            : 'bg-slate-200 dark:bg-slate-700 text-slate-400';
+            : 'bg-slate-200 dark:bg-slate-700 text-subtle';
 
           const lineColor = isPassed ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700';
 
@@ -76,10 +76,10 @@ export function StatusTimeline({
                 <div className="w-24 text-right pt-2 flex-shrink-0">
                   {step.timestamp && (
                     <>
-                      <div className="font-medium text-md text-slate-800 dark:text-slate-200">
+                      <div className="font-medium text-md text-body">
                         {step.timestamp.split(' ')[1]}
                       </div>
-                      <div className="text-sm text-slate-500">{step.timestamp.split(' ')[0]}</div>
+                      <div className="text-sm text-muted">{step.timestamp.split(' ')[0]}</div>
                     </>
                   )}
                 </div>
@@ -123,18 +123,18 @@ export function StatusTimeline({
               >
                 <div
                   className={`font-semibold ${sizeClasses.label} ${
-                    isCurrent ? 'text-blue-600 dark:text-blue-400' : isPending ? 'text-slate-400' : 'text-slate-700 dark:text-slate-300'
+                    isCurrent ? 'text-blue-600 dark:text-blue-400' : isPending ? 'text-subtle' : 'text-body'
                   }`}
                 >
                   {step.label}
                 </div>
                 {step.timestamp && isHorizontal && (
-                  <div className={`mt-1 font-medium text-slate-500 ${sizeClasses.time}`}>
+                  <div className={`mt-1 font-medium text-muted ${sizeClasses.time}`}>
                     {step.timestamp}
                   </div>
                 )}
                 {step.description && (
-                  <div className={`mt-1 text-slate-500 ${sizeClasses.desc}`}>
+                  <div className={`mt-1 text-muted ${sizeClasses.desc}`}>
                     {step.description}
                   </div>
                 )}

@@ -314,7 +314,7 @@ export default function CMS() {
               </div>
             ))
           ) : banners.length === 0 ? (
-            <div className="sm:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800">{t('adminContent:cms.table.emptyBanners')}</div>
+            <div className="sm:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-12 text-center text-subtle border border-slate-100 dark:border-slate-800">{t('adminContent:cms.table.emptyBanners')}</div>
           ) : (
             banners.map((banner) => (
               <div key={banner.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
@@ -344,7 +344,7 @@ export default function CMS() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[860px] text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-muted text-md">
                   <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.title')}</th>
                   <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.author')}</th>
                   <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.createdAt')}</th>
@@ -356,7 +356,7 @@ export default function CMS() {
                 {loading ? (
                   <TableRowSkeleton rows={5} cols={5} />
                 ) : articles.length === 0 ? (
-                  <tr><td colSpan={5} className="p-12 text-center text-slate-400">{t('adminContent:cms.table.emptyArticles')}</td></tr>
+                  <tr><td colSpan={5} className="p-12 text-center text-subtle">{t('adminContent:cms.table.emptyArticles')}</td></tr>
                 ) : (
                   articles.map((a) => (
                     <tr key={a.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
@@ -366,8 +366,8 @@ export default function CMS() {
                           <span className="font-bold line-clamp-1">{a.title}</span>
                         </div>
                       </td>
-                      <td className="p-3 sm:p-4 text-slate-500">{a.authorName || t('common:labels.notAvailable')}</td>
-                      <td className="p-3 sm:p-4 text-slate-500">{formatDate(a.createdAt)}</td>
+                      <td className="p-3 sm:p-4 text-muted">{a.authorName || t('common:labels.notAvailable')}</td>
+                      <td className="p-3 sm:p-4 text-muted">{formatDate(a.createdAt)}</td>
                       <td className="p-3 sm:p-4">
                         <StatusBadge status={a.isPublished ? 'published' : 'draft'} />
                       </td>
@@ -444,7 +444,7 @@ export default function CMS() {
             >
               {uploadingBannerImage ? t('adminContent:cms.banners.uploadingImage') : t('adminContent:cms.banners.chooseImage')}
             </Button>
-            <p className="text-sm text-slate-500">{t('adminContent:cms.banners.helperText')}</p>
+            <p className="text-sm text-muted">{t('adminContent:cms.banners.helperText')}</p>
             {bannerForm.imageUrl && (
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800">
                 <img src={bannerForm.imageUrl} alt={t('adminContent:cms.banners.previewAlt')} className="w-full h-40 object-cover" />
@@ -481,7 +481,7 @@ export default function CMS() {
           <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-800/50">
             <div>
               <p className="text-md font-semibold">{t('adminContent:cms.banners.visibilityTitle')}</p>
-              <p className="text-sm text-slate-500 mt-0.5">{t('adminContent:cms.banners.visibilityDescription')}</p>
+              <p className="text-sm text-muted mt-0.5">{t('adminContent:cms.banners.visibilityDescription')}</p>
             </div>
             <SwitchToggle
               checked={bannerForm.isActive}
@@ -533,7 +533,7 @@ export default function CMS() {
             >
               {uploadingArticleThumbnail ? t('adminContent:cms.articles.uploadingThumbnail') : t('adminContent:cms.articles.chooseThumbnail')}
             </Button>
-            <p className="text-sm text-slate-500">{t('adminContent:cms.articles.helperText')}</p>
+            <p className="text-sm text-muted">{t('adminContent:cms.articles.helperText')}</p>
             {articleForm.thumbnailUrl && (
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800">
                 <img src={articleForm.thumbnailUrl} alt={t('adminContent:cms.articles.previewAlt')} className="w-full h-40 object-cover" />
@@ -565,7 +565,7 @@ export default function CMS() {
           <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-800/50">
             <div>
               <p className="text-md font-semibold">{t('adminContent:cms.articles.publishTitle')}</p>
-              <p className="text-sm text-slate-500 mt-0.5">{t('adminContent:cms.articles.publishDescription')}</p>
+              <p className="text-sm text-muted mt-0.5">{t('adminContent:cms.articles.publishDescription')}</p>
             </div>
             <SwitchToggle
               checked={articleForm.isPublished}

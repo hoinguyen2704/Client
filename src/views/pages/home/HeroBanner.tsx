@@ -53,7 +53,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
         onSubmit={handleSearch} 
         className="relative flex items-center w-full rounded-full border border-white/50 bg-white/95 p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.16)] backdrop-blur-xl transition-all duration-300 focus-within:ring-4 focus-within:ring-blue-500/15 dark:border-slate-700/50 dark:bg-slate-900/90 dark:shadow-[0_18px_40px_rgba(15,23,42,0.34)]"
       >
-        <div className="pl-5 text-slate-400">
+        <div className="pl-5 text-subtle">
           <FiSearch className="text-2xl" />
         </div>
         <input
@@ -67,7 +67,7 @@ const HeroSearchBar = memo(function HeroSearchBar() {
           }}
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-          className="w-full h-14 bg-transparent border-none outline-none pl-4 pr-4 text-slate-900 dark:text-white placeholder-slate-400 text-lg"
+          className="w-full h-14 bg-transparent border-none outline-none pl-4 pr-4 text-ink placeholder-slate-400 text-lg"
         />
         <button 
           type="submit"
@@ -93,8 +93,8 @@ const HeroSearchBar = memo(function HeroSearchBar() {
               >
                 <img src={product.mainImageUrl || ''} alt={product.name} className="w-12 h-12 rounded-lg object-cover" referrerPolicy="no-referrer" />
                 <div>
-                  <h4 className="font-medium text-slate-900 dark:text-white line-clamp-1">{product.name}</h4>
-                  <p className="text-md font-bold text-slate-900 dark:text-slate-100">
+                  <h4 className="font-medium text-ink line-clamp-1">{product.name}</h4>
+                  <p className="text-md font-bold text-ink">
                     {formatPrice(product.variants?.[0]?.price || product.originPrice || 0)}
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="mb-12 max-w-3xl text-xl font-medium text-slate-100/90 drop-shadow-md md:text-2xl"
+            className="mb-12 max-w-3xl text-xl font-medium text-white/90 drop-shadow-md md:text-2xl"
           >
             {banners[currentBanner].subtitle}
           </motion.p>

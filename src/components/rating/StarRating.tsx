@@ -25,7 +25,7 @@ export default function StarRating({
         {[1, 2, 3, 4, 5].map((star) => (
           <FiStar
             key={star}
-            className={`${STAR_SIZE_CLASS[size]} ${star <= value ? 'fill-current' : 'text-slate-300 dark:text-slate-700'}`}
+            className={`${STAR_SIZE_CLASS[size]} ${star <= value ? 'fill-current' : 'text-subtle'}`}
           />
         ))}
       </div>
@@ -47,13 +47,13 @@ export default function StarRating({
             className={
               displayRating >= star
                 ? 'fill-yellow-400 text-yellow-400'
-                : 'text-slate-300 dark:text-slate-700'
+                : 'text-subtle'
             }
           />
         </button>
       ))}
       {showLabel && (
-        <span className="ml-3 text-md font-medium text-slate-500">
+        <span className="ml-3 text-md font-medium text-muted">
           {resolvedLabel}
         </span>
       )}

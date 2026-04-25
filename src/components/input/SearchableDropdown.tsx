@@ -208,7 +208,7 @@ export default function SearchableDropdown({
     >
       <div className="p-2 border-b border-slate-100 dark:border-slate-700">
         <div className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-md" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-subtle text-md" />
           <input
             type="text"
             value={searchTerm}
@@ -231,7 +231,7 @@ export default function SearchableDropdown({
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
               !value
                 ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
-                : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
+                : "hover:bg-slate-50 dark:hover:bg-slate-700 text-muted"
             }`}
           >
             {!value && <FiCheck className="text-blue-500 flex-shrink-0" />}
@@ -240,7 +240,7 @@ export default function SearchableDropdown({
         )}
 
         {filteredItems.length === 0 && (
-          <div className="px-3 py-3 text-sm text-slate-500 dark:text-slate-400">
+          <div className="px-3 py-3 text-sm text-muted">
             {emptyLabel}
           </div>
         )}
@@ -256,7 +256,7 @@ export default function SearchableDropdown({
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
               value === item.id
                 ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
-                : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                : "hover:bg-slate-50 dark:hover:bg-slate-700 text-body"
             }`}
           >
             {value === item.id && (
@@ -299,7 +299,7 @@ export default function SearchableDropdown({
                     setIsCreatingMode(false);
                     setNewName("");
                   }}
-                  className="h-8 px-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm transition-colors"
+                  className="h-8 px-2 rounded-lg text-subtle hover:bg-slate-100 dark:hover:bg-slate-700 text-sm transition-colors"
                 >
                   ✕
                 </button>
@@ -353,12 +353,12 @@ export default function SearchableDropdown({
           } ${buttonClassName}`}
         >
           <span
-            className={value ? "text-slate-900 dark:text-slate-100" : "text-slate-400"}
+            className={value ? "text-ink" : "text-subtle"}
           >
             {selectedItem?.name || placeholder}
           </span>
           <FiChevronDown
-            className={`text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            className={`text-subtle transition-transform ${isOpen ? "rotate-180" : ""}`}
           />
         </button>
 

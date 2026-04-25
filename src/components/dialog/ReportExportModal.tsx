@@ -76,7 +76,7 @@ export default function ReportExportModal({
       size="md"
     >
       <div className="space-y-4">
-        <p className="text-md text-slate-500">
+        <p className="text-md text-muted">
           {description || t('reportExport.description')}
         </p>
 

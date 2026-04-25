@@ -79,7 +79,7 @@ export default function FlashSales() {
         <div className="overflow-x-auto min-h-[300px]">
           <table className="w-full min-w-[960px] text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md bg-slate-50/50 dark:bg-slate-800/50">
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md bg-slate-50/50 dark:bg-slate-800/50">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">
                   {t("flashSales.list.table.index")}
                 </th>
@@ -106,13 +106,13 @@ export default function FlashSales() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-slate-400">
+                  <td colSpan={7} className="p-8 text-center text-subtle">
                     {t("flashSales.list.loading")}
                   </td>
                 </tr>
               ) : sales.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-slate-400">
+                  <td colSpan={7} className="p-8 text-center text-subtle">
                     {t("flashSales.list.empty")}
                   </td>
                 </tr>
@@ -122,21 +122,21 @@ export default function FlashSales() {
                     key={sale.id}
                     className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-slate-400">
+                    <td className="p-3 sm:p-4 text-center font-semibold text-subtle">
                       {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
                     </td>
                     <td className="p-3 sm:p-4">
                       <div className="font-medium text-md">{sale.name}</div>
                       {sale.description && (
-                        <div className="text-sm text-slate-400 mt-1">
+                        <div className="text-sm text-subtle mt-1">
                           {sale.description}
                         </div>
                       )}
                     </td>
-                    <td className="p-3 sm:p-4 text-md text-slate-500">
+                    <td className="p-3 sm:p-4 text-md text-muted">
                       {new Date(sale.startTime).toLocaleString()}
                     </td>
-                    <td className="p-3 sm:p-4 text-md text-slate-500">
+                    <td className="p-3 sm:p-4 text-md text-muted">
                       {new Date(sale.endTime).toLocaleString()}
                     </td>
                     <td className="p-3 sm:p-4 text-md font-medium">
@@ -164,7 +164,7 @@ export default function FlashSales() {
                             label: t("flashSales.list.status.ended"),
                             value: "ENDED",
                             colorClass:
-                              "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-100",
+                              "bg-slate-50 text-body border-slate-200 dark:bg-slate-800 hover:bg-slate-100",
                           },
                         ]}
                         onChange={(val) =>

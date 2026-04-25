@@ -112,8 +112,8 @@ export default function Cart() {
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-5 sm:py-8 md:py-12 space-y-5 sm:space-y-8">
-      <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white mb-1 sm:mb-2">
-        {t('cart.title')} <span className="text-slate-400 font-medium text-base sm:text-xl ml-1 sm:ml-2">{t('cart.itemsCount', { count: items.length })}</span>
+      <h1 className="text-2xl sm:text-3xl font-black text-ink mb-1 sm:mb-2">
+        {t('cart.title')} <span className="text-subtle font-medium text-base sm:text-xl ml-1 sm:ml-2">{t('cart.itemsCount', { count: items.length })}</span>
       </h1>
 
       {loading ? (
@@ -123,10 +123,10 @@ export default function Cart() {
       ) : items.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-8 sm:p-16 text-center border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center">
           <div className="w-24 h-24 sm:w-32 sm:h-32 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
-            <FiShoppingBag className="text-5xl sm:text-6xl text-slate-300 dark:text-slate-600" />
+            <FiShoppingBag className="text-5xl sm:text-6xl text-subtle" />
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-slate-800 dark:text-white">{t('cart.empty.title')}</h3>
-          <p className="text-md sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm">{t('cart.empty.description')}</p>
+          <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-ink">{t('cart.empty.title')}</h3>
+          <p className="text-md sm:text-base text-muted mb-6 sm:mb-8 max-w-sm">{t('cart.empty.description')}</p>
           <Link to="/search" className="px-6 sm:px-8 py-3.5 sm:py-4 text-md sm:text-base bg-gradient-to-r from-blue-600 to-blue-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-blue-500/25 transform hover:-translate-y-1">
             {t('cart.empty.action')}
           </Link>
@@ -158,7 +158,7 @@ export default function Cart() {
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-transparent group-hover:border-blue-300 transition-colors" />
                     ) : (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-blue-50 transition-colors"><FiShoppingBag /></div>
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-subtle group-hover:bg-blue-50 transition-colors"><FiShoppingBag /></div>
                     )}
                   </Link>
                         <div className="min-w-0 flex-1 flex flex-col items-start">
@@ -166,7 +166,7 @@ export default function Cart() {
                       <h3 className="font-bold line-clamp-2 text-md sm:text-base">{item.productName}</h3>
                     </Link>
                     <Link to={`/product/${item.productSlug}`} className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-0.5 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group cursor-pointer" title={t('cart.changeConfigTitle')}>
-                      <p className="text-sm sm:text-md font-medium text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 line-clamp-1">{item.variantName}</p>
+                      <p className="text-sm sm:text-md font-medium text-muted group-hover:text-body line-clamp-1">{item.variantName}</p>
                       <span className="text-10 font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">{t('cart.changeConfig')}</span>
                           </Link>
                           <p className="text-blue-600 font-bold mt-1 text-md sm:text-base">{formatPrice(item.price)}</p>
@@ -195,10 +195,10 @@ export default function Cart() {
           <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-100 dark:border-slate-800 h-fit sticky top-24 sm:top-28 space-y-4 sm:space-y-6 shadow-sm">
             <h2 className="text-lg sm:text-xl font-bold border-b border-slate-100 dark:border-slate-800 pb-3 sm:pb-4">{t('cart.summary.title')}</h2>
             <div className="space-y-3 sm:space-y-4 text-md sm:text-15">
-              <div className="flex justify-between"><span className="text-slate-500 text-lg">{t('cart.summary.selectedItems')}</span><span className="font-medium text-lg">{selectedItems.length}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500 text-lg">{t('cart.summary.subtotal')}</span><span className="font-medium text-lg">{formatPrice(total)}</span></div>
+              <div className="flex justify-between"><span className="text-muted text-lg">{t('cart.summary.selectedItems')}</span><span className="font-medium text-lg">{selectedItems.length}</span></div>
+              <div className="flex justify-between"><span className="text-muted text-lg">{t('cart.summary.subtotal')}</span><span className="font-medium text-lg">{formatPrice(total)}</span></div>
               <div className="flex justify-between">
-                <span className="text-slate-500 text-lg">{t('summary.shippingFee')}</span>
+                <span className="text-muted text-lg">{t('summary.shippingFee')}</span>
                 <span className={`font-medium text-lg ${hasSelectedItems && shippingFee === 0 ? 'text-emerald-600' : ''}`}>
                   {!hasSelectedItems ? formatPrice(0) : shippingFee === 0 ? t('summary.freeShipping') : formatPrice(shippingFee)}
                 </span>

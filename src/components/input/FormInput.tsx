@@ -6,7 +6,7 @@ import {
 
 // Base class shared between input and textarea
 const BASE_CLASS =
-  "w-full rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md text-slate-800 dark:text-slate-100 shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all disabled:opacity-50";
+  "w-full rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-md text-ink shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all disabled:opacity-50";
 
 const INPUT_CLASS = `${BASE_CLASS} h-10 px-4`;
 const TEXTAREA_CLASS = `${BASE_CLASS} p-4 resize-none`;

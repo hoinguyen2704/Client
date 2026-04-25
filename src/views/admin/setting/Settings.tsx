@@ -142,7 +142,7 @@ export default function Settings() {
               <FormInput label={t('general.storeName')} type="text" value={val('SHOP_NAME')} onChange={(e) => set('SHOP_NAME', e.target.value)} />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-md font-medium text-slate-700 dark:text-slate-300">{t('general.currency')}</label>
+                  <label className="text-md font-medium text-body">{t('general.currency')}</label>
                   <CustomSelect
                     value={val('CURRENCY', 'VND')}
                     onChange={(v) => set('CURRENCY', v)}
@@ -156,13 +156,13 @@ export default function Settings() {
                 <div className="flex items-start sm:items-center justify-between gap-3">
                   <div>
                     <h3 className="font-bold text-md">{t('general.enableTax')}</h3>
-                    <p className="text-sm text-slate-500 mt-1">{t('general.enableTaxDesc')}</p>
+                    <p className="text-sm text-muted mt-1">{t('general.enableTaxDesc')}</p>
                   </div>
                   {renderToggle('TAX_ENABLED', 'primary')}
                 </div>
                 <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity ${!bool('TAX_ENABLED') ? 'opacity-50 pointer-events-none select-none' : ''}`}>
                   <div className="space-y-2">
-                    <label className="text-md font-medium text-slate-700 dark:text-slate-300">{t('general.taxMode')}</label>
+                    <label className="text-md font-medium text-body">{t('general.taxMode')}</label>
                     <CustomSelect
                       value={val('TAX_MODE', 'INCLUDED')}
                       onChange={(v) => set('TAX_MODE', v)}
@@ -174,7 +174,7 @@ export default function Settings() {
                   <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900 flex items-start sm:items-center justify-between gap-3">
                     <div>
                       <h4 className="font-semibold text-md">{t('general.taxOnShipping')}</h4>
-                      <p className="text-sm text-slate-500 mt-1">{t('general.taxOnShippingDesc')}</p>
+                      <p className="text-sm text-muted mt-1">{t('general.taxOnShippingDesc')}</p>
                     </div>
                     {renderToggle('TAX_APPLY_ON_SHIPPING', 'primary', !bool('TAX_ENABLED'))}
                   </div>
@@ -222,7 +222,7 @@ export default function Settings() {
                 <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
                   <div>
                     <h3 className="font-bold text-md">{t('ai.recommendation')}</h3>
-                    <p className="text-sm text-slate-500 mt-1">{t('ai.recommendationDesc')}</p>
+                    <p className="text-sm text-muted mt-1">{t('ai.recommendationDesc')}</p>
                   </div>
                   {renderToggle('RECOMMENDATION_ENABLED', 'blue', false)}
                 </div>
@@ -230,7 +230,7 @@ export default function Settings() {
                 <div className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
                   <div>
                     <h3 className="font-bold text-md">{t('ai.aiContent')}</h3>
-                    <p className="text-sm text-slate-500 mt-1">{t('ai.aiContentDesc')}</p>
+                    <p className="text-sm text-muted mt-1">{t('ai.aiContentDesc')}</p>
                   </div>
                   {renderToggle('AI_CONTENT_ENABLED', 'blue', false)}
                 </div>
@@ -239,17 +239,17 @@ export default function Settings() {
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                     <div className="text-indigo-500 mb-1 flex justify-center"><FiTrendingUp /></div>
                     <div className="text-xl font-bold">—</div>
-                    <div className="text-sm text-slate-500">{t('ai.suggestions')}</div>
+                    <div className="text-sm text-muted">{t('ai.suggestions')}</div>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                     <div className="text-blue-500 mb-1 flex justify-center"><FiMousePointer /></div>
                     <div className="text-xl font-bold">—</div>
-                    <div className="text-sm text-slate-500">{t('ai.clickRate')}</div>
+                    <div className="text-sm text-muted">{t('ai.clickRate')}</div>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 text-center">
                     <div className="text-green-500 mb-1 flex justify-center"><FiShoppingCart /></div>
                     <div className="text-xl font-bold">—</div>
-                    <div className="text-sm text-slate-500">{t('ai.conversions')}</div>
+                    <div className="text-sm text-muted">{t('ai.conversions')}</div>
                   </div>
                 </div>
               </div>
@@ -272,7 +272,7 @@ export default function Settings() {
                 <div key={method.key} className="flex items-start sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
                   <div>
                     <h3 className="font-bold text-md">{method.title}</h3>
-                    <p className="text-sm text-slate-500 mt-1">{method.description}</p>
+                    <p className="text-sm text-muted mt-1">{method.description}</p>
                   </div>
                   {renderToggle(method.key)}
                 </div>
@@ -303,7 +303,7 @@ export default function Settings() {
                   value={val('FREE_SHIPPING_THRESHOLD', '500000')}
                   onChange={(e) => set('FREE_SHIPPING_THRESHOLD', e.target.value)}
                 />
-                <p className="text-sm text-slate-500">{t('shipping.freeshipDesc')}</p>
+                <p className="text-sm text-muted">{t('shipping.freeshipDesc')}</p>
               </div>
             </div>
           </SectionCard>

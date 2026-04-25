@@ -59,7 +59,7 @@ export default function CheckoutAppliedCouponCard({
         <span className={`text-sm font-bold ${config.accentClassName}`}>
           {variant === "product" ? t("appliedVoucher.productTitle") : t("appliedVoucher.shippingTitle")}
         </span>
-        <span className="text-slate-600 dark:text-slate-300">
+        <span className="text-muted">
           {t("appliedVoucher.appliedCode", { code: coupon.code })}
         </span>
       </div>
@@ -86,13 +86,13 @@ export default function CheckoutAppliedCouponCard({
           <IconButton
             onClick={onRemove}
             icon={<FiX className="h-4 w-4" />}
-            className="h-7 w-7 rounded-md text-slate-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
+            className="h-7 w-7 rounded-md text-subtle hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
             title={t("appliedVoucher.remove")}
             variant="ghost"
           />
         </div>
       ) : (
-        <span className="text-slate-400">{t("appliedVoucher.loginToSave")}</span>
+        <span className="text-subtle">{t("appliedVoucher.loginToSave")}</span>
       )}
     </div>
   );

@@ -27,7 +27,7 @@ export default function CategoryVariantAttributesSection({
         <div className="flex min-w-0 items-center gap-2">
           <FiList className="text-indigo-500" />
           <span className="font-medium text-md">{t("categories.variantAttributes.header")}</span>
-          <span className="text-sm text-slate-400">
+          <span className="text-sm text-subtle">
             ({t("categories.variantAttributes.count", { count: rows.length })})
           </span>
         </div>
@@ -44,7 +44,7 @@ export default function CategoryVariantAttributesSection({
       </div>
 
       {rows.length === 0 ? (
-        <div className="p-6 text-center text-md text-slate-400">
+        <div className="p-6 text-center text-md text-subtle">
           {t("categories.variantAttributes.empty")}
         </div>
       ) : (

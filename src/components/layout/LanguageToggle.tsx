@@ -24,7 +24,7 @@ export default function LanguageToggle({ className }: LanguageToggleProps) {
       type="button"
       onClick={() => setLanguage(nextLanguage)}
       className={cn(
-        'inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-2.5 text-body-soft transition-colors',
+        'inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-2.5 text-muted transition-colors',
         className,
       )}
       aria-label={t('languageSwitcher.switchTo', {

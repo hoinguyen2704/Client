@@ -10,7 +10,7 @@ import LanguageToggle from './LanguageToggle';
 import type { AdminHeaderProps } from './types';
 
 const ADMIN_HEADER_ICON_BUTTON_CLASS =
-  'p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-700 dark:hover:text-blue-300 text-body-soft transition-colors';
+  'p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-700 dark:hover:text-blue-300 text-muted transition-colors';
 const ADMIN_HEADER_SIDEBAR_BUTTON_CLASS = `lg:hidden ${ADMIN_HEADER_ICON_BUTTON_CLASS}`;
 const ADMIN_HEADER_PILL_BUTTON_CLASS =
   'border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700';
@@ -42,7 +42,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
             placeholder={t('adminHeader.searchPlaceholder', { ns: 'layout' })}
             className="w-full h-11 pl-11 pr-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
           />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-blue-600 transition-colors" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle text-lg group-focus-within:text-blue-600 transition-colors" />
         </div>
       </div>
 
@@ -85,7 +85,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   : t('roles.staff', { ns: 'common' })}
               </p>
             </div>
-            <FiChevronDown className={`text-slate-400 ml-0.5 sm:ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
+            <FiChevronDown className={`text-subtle ml-0.5 sm:ml-1 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {/* Dropdown Menu */}
@@ -104,7 +104,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   <div>
                     <p className="font-bold text-md">{user?.name || 'Admin'}</p>
                     <p className="text-sm text-muted">{user?.email || ''}</p>
-                    <span className="mt-1 inline-block rounded-md bg-slate-100 px-2 py-0.5 text-10 font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                    <span className="mt-1 inline-block rounded-md bg-slate-100 px-2 py-0.5 text-10 font-bold text-muted dark:bg-slate-800">
                       {user?.role === 'ADMIN'
                         ? t('roles.admin', { ns: 'common' })
                         : t('roles.staff', { ns: 'common' })}
@@ -120,7 +120,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
-                  <FiUser className="text-lg text-slate-400" />
+                  <FiUser className="text-lg text-subtle" />
                   {t('adminHeader.profile', { ns: 'layout' })}
                 </Link>
                 <Link 
@@ -128,7 +128,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
-                  <FiSettings className="text-lg text-slate-400" />
+                  <FiSettings className="text-lg text-subtle" />
                   {t('adminHeader.settings', { ns: 'layout' })}
                 </Link>
                 <Link 
@@ -136,7 +136,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
-                  <FiShield className="text-lg text-slate-400" />
+                  <FiShield className="text-lg text-subtle" />
                   {t('adminHeader.accessControl', { ns: 'layout' })}
                 </Link>
                 <Link 
@@ -144,7 +144,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
-                  <FiHelpCircle className="text-lg text-slate-400" />
+                  <FiHelpCircle className="text-lg text-subtle" />
                   {t('adminHeader.support', { ns: 'layout' })}
                 </Link>
               </div>

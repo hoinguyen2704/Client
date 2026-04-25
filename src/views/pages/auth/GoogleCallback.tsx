@@ -94,13 +94,13 @@ export default function GoogleCallback() {
           <>
             <FiAlertCircle className="mx-auto text-5xl text-red-500" />
             <h1 className="text-2xl font-bold">{t('googleCallback.errorTitle', { ns: 'auth' })}</h1>
-            <p className="text-slate-500 dark:text-slate-400">{error}</p>
+            <p className="text-muted">{error}</p>
           </>
         ) : (
           <>
             <FiLoader className="mx-auto text-5xl text-blue-500 animate-spin" />
             <h1 className="text-2xl font-bold">{t('googleCallback.loadingTitle', { ns: 'auth' })}</h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted">
               {t('googleCallback.loadingDescription', { ns: 'auth' })}
             </p>
           </>

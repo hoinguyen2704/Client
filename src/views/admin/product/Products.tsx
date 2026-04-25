@@ -242,7 +242,7 @@ export default function Products() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">{t('adminCatalog:products.title')}</h1>
           {selectedItems.length > 0 ? (
-            <p className="text-md text-slate-500 mt-1">
+            <p className="text-md text-muted mt-1">
               {t('adminCatalog:products.selectedCount', { count: selectedItems.length })}
             </p>
           ) : null}
@@ -317,7 +317,7 @@ export default function Products() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1000px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md divide-x divide-slate-200 dark:divide-slate-700">
                 <th className="p-4 font-medium w-20 text-center">{t('adminCatalog:products.table.index')}</th>
                 <th className="p-4 font-medium w-10 text-center">
                   <Checkbox
@@ -349,7 +349,7 @@ export default function Products() {
                 <TableRowSkeleton rows={5} cols={9} />
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="p-10 sm:p-12 text-center text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                  <td colSpan={9} className="p-10 sm:p-12 text-center text-subtle border-b border-slate-200 dark:border-slate-700">
                     {t('adminCatalog:products.table.empty')}
                   </td>
                 </tr>
@@ -359,7 +359,7 @@ export default function Products() {
                   const rowNumber = getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index);
                   return (
                     <tr key={product.id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group divide-x divide-slate-200 dark:divide-slate-700">
-                      <td className="p-4 text-center font-semibold text-slate-900">{rowNumber}</td>
+                      <td className="p-4 text-center font-semibold text-ink">{rowNumber}</td>
                       <td className="p-4">
                         <Checkbox
                           checked={selectedItems.includes(product.id)}
@@ -375,12 +375,12 @@ export default function Products() {
                           />
                           <div>
                             <span className="font-bold line-clamp-1 max-w-[380px]">{product.name}</span>
-                            <span className="text-sm text-slate-400 block">{product.brandName || ''}</span>
+                            <span className="text-sm text-subtle block">{product.brandName || ''}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 text-slate-500">{product.categoryName || t('common:labels.notAvailable')}</td>
-                      <td className="p-4 font-bold text-slate-900 dark:text-slate-100">{formatPrice(product.lowestPrice ?? product.originPrice)}</td>
+                      <td className="p-4 text-muted">{product.categoryName || t('common:labels.notAvailable')}</td>
+                      <td className="p-4 font-bold text-ink">{formatPrice(product.lowestPrice ?? product.originPrice)}</td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
                           <span className={`font-medium ${stock === 0 ? 'text-red-500' : stock < 10 ? 'text-orange-500' : ''}`}>{stock}</span>
@@ -389,7 +389,7 @@ export default function Products() {
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className={`font-semibold ${(product.totalSold ?? 0) > 50 ? 'text-emerald-600' : (product.totalSold ?? 0) > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400'}`}>
+                        <span className={`font-semibold ${(product.totalSold ?? 0) > 50 ? 'text-emerald-600' : (product.totalSold ?? 0) > 0 ? 'text-body' : 'text-subtle'}`}>
                           {product.totalSold ?? 0}
                         </span>
                       </td>

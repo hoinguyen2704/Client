@@ -121,10 +121,10 @@ function LoginForm() {
   return (
     <>
       <div className="text-center lg:text-left">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ink mb-3 sm:mb-4 tracking-tight">
           {t('login.title', { ns: 'auth' })}
         </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg">
+        <p className="text-muted text-base sm:text-lg">
           {t('login.subtitle', { ns: 'auth', shop: SHOP.name })}
         </p>
       </div>
@@ -140,32 +140,32 @@ function LoginForm() {
       <form className="space-y-6 sm:space-y-8" onSubmit={handleLogin}>
         <div className="space-y-5 sm:space-y-6">
           <div>
-            <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
+            <label className="block text-base sm:text-lg font-medium text-body mb-2 sm:mb-3 ml-2">
               {t('login.identifierLabel', { ns: 'auth' })}
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                <FiUser className="text-slate-400 group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
+                <FiUser className="text-subtle group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
               </div>
               <input type="text" required value={identifier} onChange={(e) => setIdentifier(e.target.value)}
-                className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                className="block w-full pl-14 sm:pl-16 pr-5 sm:pr-6 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-ink focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
                 placeholder={t('login.identifierPlaceholder', { ns: 'auth' })} />
             </div>
           </div>
 
           <div>
-            <label className="block text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2">
+            <label className="block text-base sm:text-lg font-medium text-body mb-2 sm:mb-3 ml-2">
               {t('login.passwordLabel', { ns: 'auth' })}
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                <FiLock className="text-slate-400 group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
+                <FiLock className="text-subtle group-focus-within:text-blue-500 transition-colors text-xl sm:text-2xl" />
               </div>
               <input type={showPassword ? 'text' : 'password'} required value={password} onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
+                className="block w-full pl-14 sm:pl-16 pr-14 sm:pr-16 py-4 sm:py-5 text-base sm:text-xl border border-slate-200/80 dark:border-slate-600/80 rounded-2xl bg-white dark:bg-slate-900/50 text-ink focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
                 placeholder={t('login.passwordPlaceholder', { ns: 'auth' })} />
               <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                className="absolute inset-y-0 right-0 pr-6 flex items-center text-subtle hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 {showPassword ? <FiEyeOff className="text-xl sm:text-2xl" /> : <FiEye className="text-xl sm:text-2xl" />}
               </button>
             </div>
@@ -181,7 +181,7 @@ function LoginForm() {
               onCheckedChange={(checked) => setRememberMe(checked)}
               className="h-5 w-5"
             />
-            <label htmlFor="remember-me" className="ml-3 block text-base sm:text-lg text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+            <label htmlFor="remember-me" className="ml-3 block text-base sm:text-lg text-muted cursor-pointer select-none">
               {t('login.rememberMe', { ns: 'auth' })}
             </label>
           </div>
@@ -207,7 +207,7 @@ function LoginForm() {
             <div className="w-full border-t border-slate-200 dark:border-slate-700" />
           </div>
           <div className="relative flex justify-center text-lg">
-            <span className="px-5 bg-white dark:bg-slate-800 text-slate-500 rounded-full">
+            <span className="px-5 bg-white dark:bg-slate-800 text-muted rounded-full">
               {t('login.divider', { ns: 'auth' })}
             </span>
           </div>
@@ -216,7 +216,7 @@ function LoginForm() {
           <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={handleGoogleLogin}
             disabled={loading || socialLoadingProvider !== null}
-            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
+            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-body hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
             {socialLoadingProvider === 'GOOGLE' ? <FiLoader className="text-2xl animate-spin" /> : <FcGoogle className="text-3xl" />}
             {socialLoadingProvider === 'GOOGLE'
               ? t('login.googleLoading', { ns: 'auth' })
@@ -225,14 +225,14 @@ function LoginForm() {
           <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={handleFacebookLogin}
             disabled={loading || socialLoadingProvider !== null}
-            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
+            className="w-full flex items-center justify-center gap-3 py-5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 text-lg font-medium text-body hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
             <FaFacebook className="text-3xl text-blue-600" /> Facebook
           </motion.button>
         </div>
       </div>
 
       <div className="text-center pt-4">
-        <p className="text-lg text-slate-600 dark:text-slate-400">
+        <p className="text-lg text-muted">
           {t('login.registerPrompt', { ns: 'auth' })}{' '}
           <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
             {t('login.registerLink', { ns: 'auth' })}

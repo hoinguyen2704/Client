@@ -132,7 +132,7 @@ export default function Categories() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1040px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-md divide-x-2 divide-slate-200 dark:divide-slate-700">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md divide-x-2 divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">{t("categories.table.index")}</th>
                 <th className="p-3 sm:p-4 font-medium">
                   <SortableHeaderLabel
@@ -189,7 +189,7 @@ export default function Categories() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="p-12 text-center text-slate-400 border-b-2 border-slate-200 dark:border-slate-700"
+                    className="p-12 text-center text-subtle border-b-2 border-slate-200 dark:border-slate-700"
                   >
                     {t("categories.table.empty")}
                   </td>
@@ -200,13 +200,13 @@ export default function Categories() {
                     key={cat.id}
                     className="border-b-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x-2 divide-slate-200 dark:divide-slate-700"
                   >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-slate-400">
+                    <td className="p-3 sm:p-4 text-center font-semibold text-subtle">
                       {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
                     </td>
                     <td className="p-3 sm:p-4">
                       <span className="font-bold">{cat.name}</span>
                     </td>
-                    <td className="p-3 sm:p-4 text-slate-500 font-mono text-md">
+                    <td className="p-3 sm:p-4 text-muted font-mono text-md">
                       {cat.slug}
                     </td>
                     <td className="p-3 sm:p-4 text-center">
@@ -216,7 +216,7 @@ export default function Categories() {
                           {cat.specAttributes!.length}
                         </span>
                       ) : (
-                        <span className="text-sm text-slate-300">—</span>
+                        <span className="text-sm text-subtle">—</span>
                       )}
                     </td>
                     <td className="p-3 sm:p-4 text-center">

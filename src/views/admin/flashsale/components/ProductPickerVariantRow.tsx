@@ -53,12 +53,12 @@ export default function ProductPickerVariantRow({
 
         <div className="min-w-0 flex-1">
           <div
-            className={`text-md font-semibold ${isNewlySelected ? 'text-blue-800 dark:text-blue-200' : 'text-slate-700 dark:text-slate-200'
+            className={`text-md font-semibold ${isNewlySelected ? 'text-blue-800 dark:text-blue-200' : 'text-body'
               }`}
           >
             {variant.variantName || t('productPicker.variantRow.defaultName')}
           </div>
-          <div className="text-sm text-slate-500">
+          <div className="text-sm text-muted">
             {t('productPicker.variantRow.sku')}: {variant.sku}
             {isAlreadyInSale ? (
               <span className="ml-2 font-medium text-amber-500">
@@ -68,16 +68,16 @@ export default function ProductPickerVariantRow({
           </div>
         </div>
 
-        <div className="flex-shrink-0 text-md font-semibold text-slate-700 dark:text-slate-200">
+        <div className="flex-shrink-0 text-md font-semibold text-body">
           {formatPrice(variant.price)}
         </div>
       </div>
 
       <div className="hidden flex-col items-end justify-center border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex">
-        <span className="font-semibold text-slate-700 dark:text-slate-200">
+        <span className="font-semibold text-body">
           {grossSoldQty.toLocaleString()}
         </span>
-        <span className="text-sm text-slate-500">
+        <span className="text-sm text-muted">
           R {returnedQty.toLocaleString()} / N {netSoldQty.toLocaleString()}
         </span>
       </div>
@@ -93,7 +93,7 @@ export default function ProductPickerVariantRow({
       </div>
 
       <div
-        className={`hidden items-center justify-end border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex ${isNewlySelected ? 'font-bold text-blue-700 dark:text-blue-200' : 'text-slate-500'
+        className={`hidden items-center justify-end border-l border-slate-200 px-4 py-3 text-sm dark:border-slate-700 md:flex ${isNewlySelected ? 'font-bold text-blue-700 dark:text-blue-200' : 'text-muted'
           }`}
       >
         {isNewlySelected
@@ -101,22 +101,22 @@ export default function ProductPickerVariantRow({
           : t('productPicker.variantRow.clickToSelect')}
       </div>
 
-      <div className="flex items-center gap-4 px-14 pb-3 text-sm text-slate-500 md:hidden">
+      <div className="flex items-center gap-4 px-14 pb-3 text-sm text-muted md:hidden">
         <span>
           {t('productPicker.variantRow.gross')}:{' '}
-          <strong className="text-slate-700 dark:text-slate-200">
+          <strong className="text-body">
             {grossSoldQty.toLocaleString()}
           </strong>
         </span>
         <span>
           {t('productPicker.variantRow.netAndReturned')}:{' '}
-          <strong className="text-slate-600 dark:text-slate-300">
+          <strong className="text-muted">
             {netSoldQty.toLocaleString()}/{returnedQty.toLocaleString()}
           </strong>
         </span>
         <span>
           {t('productPicker.variantRow.stock')}:{' '}
-          <strong className="text-slate-700 dark:text-slate-200">
+          <strong className="text-body">
             {stock.toLocaleString()}
           </strong>
         </span>

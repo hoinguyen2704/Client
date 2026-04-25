@@ -143,7 +143,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
       <div className="flex flex-col flex-1 px-0.5 pb-0 sm:px-0">
 
         <Link to={`/product/${slug}`} title={name} className="block w-full transition-colors mb-1.5 sm:mb-2 mt-0">
-          <h3 className="min-h-[2.8rem] font-bold text-12 sm:min-h-[3.15rem] sm:text-[15px] text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug">
+          <h3 className="min-h-[2.8rem] font-bold text-12 sm:min-h-[3.15rem] sm:text-[15px] text-ink line-clamp-2 leading-snug">
             {name}
           </h3>
         </Link>
@@ -153,7 +153,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
             {rating > 0 && (
               <div className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-11 font-semibold text-amber-700 shadow-sm shadow-amber-500/10 dark:border-amber-800/40 dark:bg-amber-950/20 dark:text-amber-300 sm:text-xs">
                 <FiStar className="shrink-0 text-11 text-amber-500 fill-amber-500 sm:text-sm" />
-                <span className="text-[13px] font-black leading-none tracking-tight text-slate-900 dark:text-white sm:text-sm">
+                <span className="text-[13px] font-black leading-none tracking-tight text-ink sm:text-sm">
                   {rating.toFixed(1)}
                 </span>
                 {reviews > 0 && (
@@ -164,7 +164,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
               </div>
             )}
             {totalSold > 0 && (
-              <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 text-11 sm:text-xs font-semibold text-slate-500 dark:text-slate-300">
+              <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 text-11 sm:text-xs font-semibold text-muted">
                 {t('productCard.sold', {
                   ns: 'catalog',
                   count: soldLabel,
@@ -177,7 +177,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
         <div className="mt-auto border-t border-slate-100 pt-1.5 dark:border-slate-800 sm:pt-2">
           {originPrice > 0 && (
             <div className="mb-1 flex items-center flex-wrap gap-x-1.5 gap-y-0.5">
-              <span className={`text-10 sm:text-xs font-medium ${hasDiscount ? 'text-slate-400 line-through' : 'text-slate-500'}`}>
+              <span className={`text-10 sm:text-xs font-medium ${hasDiscount ? 'text-subtle line-through' : 'text-muted'}`}>
                 {formatPrice(originPrice)}
               </span>
             </div>
@@ -185,7 +185,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
 
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex flex-1 flex-wrap items-center gap-x-1.5 gap-y-1">
-              <span className="text-13 sm:text-[15px] font-black text-slate-800 dark:text-white leading-none">
+              <span className="text-13 sm:text-[15px] font-black text-ink leading-none">
                 {formatPrice(salePrice)}
               </span>
               {hasDiscount && (
@@ -208,7 +208,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
               }}
               className={`h-9 w-9 shrink-0 border rounded-lg flex justify-center items-center transition-all shadow-sm group/heart sm:h-10 sm:w-10 sm:rounded-xl ${liked
                   ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
-                  : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
+                  : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-muted hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500'
                 }`}
               title={t('productCard.actions.wishlist', { ns: 'catalog' })}
             >

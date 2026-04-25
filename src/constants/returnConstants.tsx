@@ -107,13 +107,13 @@ export const RETURN_STATUS_META: Record<ReturnStatus, StatusMeta> = {
     label: 'Cancelled',
     labelKey: 'common:status.return.cancelled',
     className:
-      'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30',
+      'bg-slate-100 text-body border border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/30',
   },
   CLOSED: {
     label: 'Closed',
     labelKey: 'common:status.return.closed',
     className:
-      'bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-500/20 dark:text-slate-200 dark:border-slate-500/40',
+      'bg-slate-200 text-body border border-slate-300 dark:bg-slate-500/20 dark:border-slate-500/40',
   },
 };
 
@@ -122,7 +122,7 @@ export const REFUND_STATUS_META: Record<RefundStatus, StatusMeta> = {
     label: 'Refund pending',
     labelKey: 'common:status.refund.pending',
     className:
-      'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30',
+      'bg-slate-100 text-body border border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/30',
   },
   PROCESSING: {
     label: 'Processing',
@@ -154,7 +154,7 @@ const FALLBACK_STATUS_META: StatusMeta = {
   label: 'Unknown',
   labelKey: 'common:status.return.unknown',
   className:
-    'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30',
+    'bg-slate-100 text-body border border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/30',
 };
 
 export const getReturnStatusMeta = (status: string, t?: TFunction): StatusMeta => {

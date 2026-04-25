@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function StatusBadge({ status, label, className }: StatusBadgeProps) {
   const { t } = useTranslation('common');
-  const config = STATUS_CONFIG[status as StatusType] || { label: status, className: 'bg-slate-100 text-slate-600' };
+  const config = STATUS_CONFIG[status as StatusType] || { label: status, className: 'bg-slate-100 text-muted' };
   const resolvedLabel = label || (config.labelKey ? t(config.labelKey, { defaultValue: config.label }) : config.label);
 
   return (

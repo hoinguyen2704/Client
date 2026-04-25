@@ -215,7 +215,7 @@ export default function Profile() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-3">
           <FiLoader className="text-3xl text-blue-500 animate-spin" />
-          <span className="text-slate-500 font-medium">{t('profile.loading.profile')}</span>
+          <span className="text-muted font-medium">{t('profile.loading.profile')}</span>
         </div>
       </div>
     );
@@ -245,15 +245,15 @@ export default function Profile() {
                     <FiAlertCircle className="text-lg" />
                   </div>
                   <div className="min-w-0 flex-1 space-y-1.5">
-                    <p className="text-sm font-semibold text-slate-900">{t('profile.phoneHint.title')}</p>
-                    <p className="text-sm leading-6 text-slate-600">
+                    <p className="text-sm font-semibold text-ink">{t('profile.phoneHint.title')}</p>
+                    <p className="text-sm leading-6 text-muted">
                       {t('profile.phoneHint.description')}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsPhoneHintMinimized(true)}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-subtle transition-colors hover:bg-slate-100 hover:text-body"
                     aria-label={t('profile.phoneHint.minimizeAria')}
                   >
                     <FiX className="text-lg" />
@@ -343,7 +343,7 @@ export default function Profile() {
           <div className="flex-1 w-full space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.fullName')}</label>
+                <label className="block font-medium mb-2 text-body">{t('profile.fields.fullName')}</label>
                 <input
                   type="text"
                   value={fullName}
@@ -352,16 +352,16 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.emailReadonly')}</label>
+                <label className="block font-medium mb-2 text-body">{t('profile.fields.emailReadonly')}</label>
                 <input
                   type="email"
                   value={user?.email || ''}
                   readOnly
-                  className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-none text-slate-500 cursor-not-allowed"
+                  className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-none text-muted cursor-not-allowed"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.phoneNumber')}</label>
+                <label className="block font-medium mb-2 text-body">{t('profile.fields.phoneNumber')}</label>
                 <input
                   type="tel"
                   value={displayPhoneNumber}
@@ -374,18 +374,18 @@ export default function Profile() {
                   readOnly={hasPersistedPhoneNumber}
                   className={`w-full h-12 px-4 rounded-xl border-none ${
                     hasPersistedPhoneNumber
-                      ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-500 cursor-not-allowed'
+                      ? 'bg-slate-50 dark:bg-slate-800/50 text-muted cursor-not-allowed'
                       : 'bg-slate-100 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500'
                   }`}
                 />
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-muted">
                   {hasPersistedPhoneNumber
                     ? t('profile.fields.phoneReadonlyHint')
                     : t('profile.fields.phoneFormatHint')}
                 </p>
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.dateOfBirth')}</label>
+                <label className="block font-medium mb-2 text-body">{t('profile.fields.dateOfBirth')}</label>
                 <input
                   type="date"
                   value={dateOfBirth}
@@ -394,7 +394,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.fields.gender')}</label>
+                <label className="block font-medium mb-2 text-body">{t('profile.fields.gender')}</label>
                 <CustomSelect
                   value={gender}
                   onChange={(v) => setGender(v)}
@@ -411,14 +411,14 @@ export default function Profile() {
 
             <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 space-y-4 bg-slate-50/60 dark:bg-slate-800/30">
               <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">{t('profile.emailOtp.title')}</h3>
-                <p className="text-md text-slate-500 mt-1">
+                <h3 className="text-base font-bold text-ink">{t('profile.emailOtp.title')}</h3>
+                <p className="text-md text-muted mt-1">
                   {t('profile.emailOtp.description')}
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.emailOtp.newEmail')}</label>
+                  <label className="block font-medium mb-2 text-body">{t('profile.emailOtp.newEmail')}</label>
                   <input
                     type="email"
                     value={newEmail}
@@ -428,7 +428,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.emailOtp.currentPassword')}</label>
+                  <label className="block font-medium mb-2 text-body">{t('profile.emailOtp.currentPassword')}</label>
                   <input
                     type="password"
                     value={emailChangePassword}
@@ -448,7 +448,7 @@ export default function Profile() {
                   {sendingEmailOtp ? t('profile.emailOtp.sendingOtp') : t('profile.emailOtp.sendOtp')}
                 </Button>
                 {pendingEmailChange && (
-                  <span className="text-md text-slate-500 self-center">
+                  <span className="text-md text-muted self-center">
                     {t('profile.emailOtp.otpSentTo')} <span className="font-semibold">{pendingEmailChange}</span>
                   </span>
                 )}
@@ -457,7 +457,7 @@ export default function Profile() {
               {pendingEmailChange && (
                 <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3 items-end">
                   <div>
-                    <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.emailOtp.otpCode')}</label>
+                    <label className="block font-medium mb-2 text-body">{t('profile.emailOtp.otpCode')}</label>
                     <input
                       type="text"
                       value={otpCode}
@@ -512,7 +512,7 @@ export default function Profile() {
 
           <div className="space-y-4">
             <div>
-              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.passwordSection.currentPassword')}</label>
+              <label className="block font-medium mb-2 text-body">{t('profile.passwordSection.currentPassword')}</label>
               <input
                 type="password"
                 placeholder="••••••••"
@@ -522,7 +522,7 @@ export default function Profile() {
               />
             </div>
             <div>
-              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.passwordSection.newPassword')}</label>
+              <label className="block font-medium mb-2 text-body">{t('profile.passwordSection.newPassword')}</label>
               <input
                 type="password"
                 placeholder="••••••••"
@@ -532,7 +532,7 @@ export default function Profile() {
               />
             </div>
             <div>
-              <label className="block font-medium mb-2 text-slate-700 dark:text-slate-300">{t('profile.passwordSection.confirmPassword')}</label>
+              <label className="block font-medium mb-2 text-body">{t('profile.passwordSection.confirmPassword')}</label>
               <input
                 type="password"
                 placeholder="••••••••"

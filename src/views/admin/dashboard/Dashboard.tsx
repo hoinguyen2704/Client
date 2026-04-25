@@ -369,7 +369,7 @@ export default function Dashboard() {
           <h1 className="text-xl font-bold sm:text-2xl">{t('overview.title')}</h1>
           <p
             aria-live="polite"
-            className={`mt-1 min-h-5 text-sm text-slate-400 transition-opacity ${
+            className={`mt-1 min-h-5 text-sm text-subtle transition-opacity ${
               isPeriodPending ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -390,7 +390,7 @@ export default function Dashboard() {
                 className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-md font-medium transition-colors ${
                   period === item.value
                     ? 'bg-white text-blue-600 shadow-sm dark:bg-slate-700'
-                    : 'text-slate-500 hover:text-slate-900'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 {item.label}
@@ -485,7 +485,7 @@ export default function Dashboard() {
           </DeferredSection>
         </>
       ) : (
-        <div className="py-12 text-center text-slate-400">{t('overview.empty')}</div>
+        <div className="py-12 text-center text-subtle">{t('overview.empty')}</div>
       )}
 
       <Modal
@@ -523,7 +523,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-max min-w-full border-collapse text-left">
                   <thead>
-                    <tr className="border-b border-slate-200 text-sm text-slate-500 dark:border-slate-800 sm:text-md">
+                    <tr className="border-b border-slate-200 text-sm text-muted dark:border-slate-800 sm:text-md">
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-4 font-medium sm:pb-3">{t('tables.orders.orderNumber')}</th>
                       <th className="whitespace-nowrap pb-2.5 pr-4 font-medium sm:pb-3">{t('tables.orders.customer')}</th>
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-4 font-medium sm:pb-3">{t('tables.orders.orderDate')}</th>
@@ -534,14 +534,14 @@ export default function Dashboard() {
                   <tbody>
                     {loadingBottom ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={5}>{t('overview.loading.recentOrders')}</td>
+                        <td className="py-4 text-center text-muted" colSpan={5}>{t('overview.loading.recentOrders')}</td>
                       </tr>
                     ) : (
                       stats.recentOrders.map((order: RecentOrderItem, index: number) => (
                         <tr key={index} className="border-b border-slate-100 transition-colors hover:bg-slate-50 dark:border-slate-800/50 dark:hover:bg-slate-800/50">
                           <td className="whitespace-nowrap py-2.5 pr-4 text-md font-medium sm:py-4">{order.orderNumber}</td>
                           <td className="whitespace-nowrap py-2.5 pr-4 text-md sm:py-4">{order.customerName}</td>
-                          <td className="whitespace-nowrap py-2.5 pr-4 text-md text-slate-500 sm:py-4">{formatDate(order.createdAt)}</td>
+                          <td className="whitespace-nowrap py-2.5 pr-4 text-md text-muted sm:py-4">{formatDate(order.createdAt)}</td>
                           <td className="whitespace-nowrap py-2.5 pr-4 text-right text-md font-bold sm:py-4">{formatPrice(order.totalAmount)}</td>
                           <td className="whitespace-nowrap py-2.5 sm:py-4"><StatusBadge status={order.status} /></td>
                         </tr>
@@ -554,7 +554,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-full border-collapse text-left">
                   <thead>
-                    <tr className="border-b-2 border-slate-200 text-sm text-slate-500 dark:border-slate-800 sm:text-md">
+                    <tr className="border-b-2 border-slate-200 text-sm text-muted dark:border-slate-800 sm:text-md">
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-3 font-medium sm:pb-3 sm:pr-4">{t('tables.revenue.time')}</th>
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-3 text-center font-medium sm:pb-3 sm:pr-4">{t('tables.revenue.orders')}</th>
                       <th className="w-[1%] whitespace-nowrap pb-2.5 text-right font-medium sm:pb-3">{t('tables.revenue.revenue')}</th>
@@ -563,7 +563,7 @@ export default function Dashboard() {
                   <tbody>
                     {loadingRevenue ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={3}>{t('overview.loading.revenue')}</td>
+                        <td className="py-4 text-center text-muted" colSpan={3}>{t('overview.loading.revenue')}</td>
                       </tr>
                     ) : (
                       stats.revenueChart?.map((item: RevenueChartItem, index: number) => {
@@ -610,7 +610,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-max min-w-full border-collapse text-left">
                   <thead>
-                    <tr className="border-b-2 border-slate-200 text-sm text-slate-500 dark:border-slate-800 sm:text-md">
+                    <tr className="border-b-2 border-slate-200 text-sm text-muted dark:border-slate-800 sm:text-md">
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-4 text-center font-medium sm:pb-3">{t('tables.rank')}</th>
                       <th className="whitespace-nowrap pb-2.5 pr-4 font-medium sm:pb-3">{t('tables.customers.customer')}</th>
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-4 text-center font-medium sm:pb-3">{t('tables.customers.orders')}</th>
@@ -620,22 +620,22 @@ export default function Dashboard() {
                   <tbody>
                     {loadingTopLists ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={4}>{t('overview.loading.customers')}</td>
+                        <td className="py-4 text-center text-muted" colSpan={4}>{t('overview.loading.customers')}</td>
                       </tr>
                     ) : (
                       stats.topCustomers?.map((customer: TopCustomerItem, index: number) => (
                         <tr key={customer.id} className="border-b border-slate-100 transition-colors hover:bg-slate-50 dark:border-slate-800/50 dark:hover:bg-slate-800/50">
-                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-bold text-slate-400 sm:py-4">#{index + 1}</td>
+                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-bold text-subtle sm:py-4">#{index + 1}</td>
                           <td className="py-2.5 pr-4 sm:py-4">
                             <div className="flex items-center gap-2 sm:gap-3">
                               <UserAvatar name={customer.name} size="sm" />
                               <div className="min-w-0">
                                 <p className="truncate text-md font-bold">{customer.name}</p>
-                                <p className="text-sm text-slate-500">{customer.email || t('overview.noEmail')}</p>
+                                <p className="text-sm text-muted">{customer.email || t('overview.noEmail')}</p>
                               </div>
                             </div>
                           </td>
-                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md text-slate-500 sm:py-4">{customer.totalOrders}</td>
+                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md text-muted sm:py-4">{customer.totalOrders}</td>
                           <td className="whitespace-nowrap py-2.5 text-right text-md font-bold text-blue-600 sm:py-4">{formatPrice(customer.totalSpent)}</td>
                         </tr>
                       ))
@@ -647,7 +647,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-max min-w-full border-collapse text-left">
                   <thead>
-                    <tr className="border-b-2 border-slate-200 text-sm text-slate-500 dark:border-slate-800 sm:text-md">
+                    <tr className="border-b-2 border-slate-200 text-sm text-muted dark:border-slate-800 sm:text-md">
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-4 text-center font-medium sm:pb-3">{t('tables.rank')}</th>
                       <th className="whitespace-nowrap pb-2.5 pr-4 font-medium sm:pb-3">{t('tables.products.product')}</th>
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-4 text-center font-medium sm:pb-3">{t('tables.products.sold')}</th>
@@ -657,25 +657,25 @@ export default function Dashboard() {
                   <tbody>
                     {loadingTopLists ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={4}>{t('overview.loading.products')}</td>
+                        <td className="py-4 text-center text-muted" colSpan={4}>{t('overview.loading.products')}</td>
                       </tr>
                     ) : (
                       stats.topProducts?.map((product: TopProductItem, index: number) => (
                         <tr key={product.id} className="border-b border-slate-100 transition-colors hover:bg-slate-50 dark:border-slate-800/50 dark:hover:bg-slate-800/50">
-                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-bold text-slate-400 sm:py-4">#{index + 1}</td>
+                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-bold text-subtle sm:py-4">#{index + 1}</td>
                           <td className="py-2.5 pr-4 sm:py-4">
                             <div className="flex items-center gap-2 sm:gap-3">
                               {product.imageUrl ? (
                                 <img src={product.imageUrl} alt={product.name} className="h-10 w-10 rounded-lg object-cover" />
                               ) : (
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-xl font-bold text-slate-300 dark:bg-slate-800">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-xl font-bold text-subtle dark:bg-slate-800">
                                   ?
                                 </div>
                               )}
                               <span className="line-clamp-1 text-md font-bold">{product.name}</span>
                             </div>
                           </td>
-                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-medium text-slate-600 dark:text-slate-300 sm:py-4">{product.totalSold}</td>
+                          <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-medium text-muted sm:py-4">{product.totalSold}</td>
                           <td className="whitespace-nowrap py-2.5 text-right text-md font-bold text-emerald-600 sm:py-4">{formatPrice(product.revenue)}</td>
                         </tr>
                       ))
@@ -687,7 +687,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="table-auto w-max min-w-full border-collapse text-left">
                   <thead>
-                    <tr className="border-b-2 border-slate-200 text-sm text-slate-500 dark:border-slate-800 sm:text-md">
+                    <tr className="border-b-2 border-slate-200 text-sm text-muted dark:border-slate-800 sm:text-md">
                       <th className="w-[1%] whitespace-nowrap pb-2.5 pr-4 text-center font-medium sm:pb-3">{t('tables.rank')}</th>
                       <th className="whitespace-nowrap pb-2.5 pr-4 font-medium sm:pb-3">{t('tables.variants.product')}</th>
                       <th className="whitespace-nowrap pb-2.5 pr-4 font-medium sm:pb-3">{t('tables.variants.variant')}</th>
@@ -700,22 +700,22 @@ export default function Dashboard() {
                   <tbody>
                     {loadingTopVariants ? (
                       <tr>
-                        <td className="py-4 text-center text-slate-500" colSpan={7}>{t('overview.loading.variants')}</td>
+                        <td className="py-4 text-center text-muted" colSpan={7}>{t('overview.loading.variants')}</td>
                       </tr>
                     ) : (
                       (topVariantsQuery.data || []).map((variant: TopVariantItem, index: number) => {
                         const sales = resolveVariantSalesMetrics(variant);
                         return (
                           <tr key={variant.variantId} className="border-b border-slate-100 transition-colors hover:bg-slate-50 dark:border-slate-800/50 dark:hover:bg-slate-800/50">
-                            <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-bold text-slate-400 sm:py-4">#{index + 1}</td>
+                            <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-bold text-subtle sm:py-4">#{index + 1}</td>
                             <td className="py-2.5 pr-4 sm:py-4">
                               <div className="line-clamp-1 text-md font-bold">{variant.productName}</div>
                             </td>
                             <td className="py-2.5 pr-4 sm:py-4">
-                              <span className="text-md text-slate-600 dark:text-slate-300">{variant.variantName || t('overview.defaultVariant')}</span>
+                              <span className="text-md text-muted">{variant.variantName || t('overview.defaultVariant')}</span>
                             </td>
-                            <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-medium text-slate-600 dark:text-slate-300 sm:py-4">{metricNumberFormatter.format(sales.gross)}</td>
-                            <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-medium text-slate-500 dark:text-slate-400 sm:py-4">{metricNumberFormatter.format(sales.returned)}</td>
+                            <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-medium text-muted sm:py-4">{metricNumberFormatter.format(sales.gross)}</td>
+                            <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-medium text-muted sm:py-4">{metricNumberFormatter.format(sales.returned)}</td>
                             <td className="whitespace-nowrap py-2.5 pr-4 text-center text-md font-bold text-indigo-600 dark:text-indigo-400 sm:py-4">{metricNumberFormatter.format(sales.net)}</td>
                             <td className="whitespace-nowrap py-2.5 text-right text-md font-bold text-emerald-600 sm:py-4">{formatPrice(variant.revenue)}</td>
                           </tr>
@@ -741,7 +741,7 @@ export default function Dashboard() {
             ) : activeModal === 'reviews' ? (
               <div className="p-4 sm:p-8">
                 {loadingBottom ? (
-                  <div className="py-8 text-center text-slate-500">{t('overview.loading.reviews')}</div>
+                  <div className="py-8 text-center text-muted">{t('overview.loading.reviews')}</div>
                 ) : (
                   <>
                     <div className="mb-6 flex items-center justify-center gap-5 border-b border-slate-100 pb-6 dark:border-slate-800 sm:mb-8 sm:gap-8 sm:pb-8">
@@ -757,7 +757,7 @@ export default function Dashboard() {
                             : '5.0'}
                         </h2>
                         <div className="my-3 flex justify-center text-2xl text-yellow-400">★★★★★</div>
-                        <p className="font-medium text-slate-500">{t('overview.reviewsSummary', { count: stats.totalFeedbacks })}</p>
+                        <p className="font-medium text-muted">{t('overview.reviewsSummary', { count: stats.totalFeedbacks })}</p>
                       </div>
                     </div>
 
@@ -770,16 +770,16 @@ export default function Dashboard() {
 
                         return (
                           <div key={stars} className="flex items-center gap-4">
-                            <div className="flex w-16 items-center gap-1.5 text-md font-bold text-slate-700 dark:text-slate-300">
+                            <div className="flex w-16 items-center gap-1.5 text-md font-bold text-body">
                               {stars} <span className="text-lg leading-none text-yellow-400">★</span>
                             </div>
                             <div className="h-3.5 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                               <div className="h-full rounded-full bg-yellow-400 transition-all duration-1000" style={{ width: `${percent}%` }} />
                             </div>
-                            <div className="w-12 text-right text-md font-bold text-slate-600 dark:text-slate-400">
+                            <div className="w-12 text-right text-md font-bold text-muted">
                               {percent}%
                             </div>
-                            <div className="w-12 text-right text-md text-slate-400">
+                            <div className="w-12 text-right text-md text-subtle">
                               ({count})
                             </div>
                           </div>
@@ -790,7 +790,7 @@ export default function Dashboard() {
                 )}
               </div>
             ) : (
-              <div className="py-8 text-center text-slate-500">{t('overview.detailsVisible')}</div>
+              <div className="py-8 text-center text-muted">{t('overview.detailsVisible')}</div>
             )}
           </>
         ) : null}

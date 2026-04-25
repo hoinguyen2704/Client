@@ -107,7 +107,7 @@ export default function Home() {
         <ProductSection
           icon={<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-sm shadow-blue-950/15"><FiCpu className="text-2xl" /></div>}
           title={t('sections.featuredTitle')}
-          subtitle={<p className="text-md text-slate-500">{t('sections.featuredSubtitle')}</p>}
+          subtitle={<p className="text-md text-muted">{t('sections.featuredSubtitle')}</p>}
           products={featured}
           layout="scroll"
         />
@@ -125,7 +125,7 @@ export default function Home() {
 
       {newArrivals.length > 0 && (
         <ProductSection
-          icon={<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm shadow-slate-900/15 dark:bg-slate-100 dark:text-slate-900"><FiStar className="text-2xl" /></div>}
+          icon={<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm shadow-slate-900/15 dark:bg-slate-100 dark:text-black"><FiStar className="text-2xl" /></div>}
           title={t('sections.newArrivalsTitle')}
           products={newArrivals}
  layout="scroll"          

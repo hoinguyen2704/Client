@@ -226,7 +226,7 @@ export default function FlashSaleForm() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3 text-slate-400">
+        <div className="flex items-center gap-3 text-subtle">
           <div className="w-5 h-5 border-2 border-slate-300 border-t-yellow-500 rounded-full animate-spin" />
           {t('flashSales.form.loading')}
         </div>
@@ -241,16 +241,16 @@ export default function FlashSaleForm() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/admin/flash-sales')}
-            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 hover:text-slate-700"
+            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-muted hover:text-body"
           >
             <FiArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-strong flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-ink flex items-center gap-2">
               <FiZap className="text-yellow-500" />
               {isEditing ? t('flashSales.form.editTitle') : t('flashSales.form.createTitle')}
             </h1>
-            <p className="text-sm text-slate-500 mt-0.5">
+            <p className="text-sm text-muted mt-0.5">
               {isEditing
                 ? t('flashSales.form.editDescription')
                 : t('flashSales.form.createDescription')}
@@ -284,7 +284,7 @@ export default function FlashSaleForm() {
         <div className="space-y-6">
           {/* ── Form Card ── */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
-            <h2 className="font-semibold text-lg text-strong">{t('flashSales.form.eventInfoTitle')}</h2>
+            <h2 className="font-semibold text-lg text-ink">{t('flashSales.form.eventInfoTitle')}</h2>
 
             <FormInput
               label={t('flashSales.form.nameLabel')}
@@ -319,10 +319,10 @@ export default function FlashSaleForm() {
           {/* ── Products Section ── */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-              <h2 className="font-semibold text-lg text-strong">
+              <h2 className="font-semibold text-lg text-ink">
                 {t('flashSales.form.itemsTitle')}
                 {form.items.length > 0 && (
-                  <span className="ml-2 text-sm font-normal text-slate-500">
+                  <span className="ml-2 text-sm font-normal text-muted">
                     ({t('flashSales.form.itemCount', { count: form.items.length })})
                   </span>
                 )}
@@ -348,8 +348,8 @@ export default function FlashSaleForm() {
                     {form.items.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="p-10 text-center">
-                          <div className="text-slate-400">
-                            <FiPlus className="mx-auto mb-2 text-slate-300" size={32} />
+                          <div className="text-subtle">
+                            <FiPlus className="mx-auto mb-2 text-subtle" size={32} />
                             <p>{t('flashSales.form.empty')}</p>
                             <button
                               onClick={handleOpenPicker}
@@ -374,16 +374,16 @@ export default function FlashSaleForm() {
                                   className="w-10 h-10 object-cover rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0"
                                 />
                                 <div className="min-w-0">
-                                  <div className="font-medium text-strong-soft truncate" title={item.productName}>
+                                  <div className="font-medium text-body truncate" title={item.productName}>
                                     {item.productName}
                                   </div>
-                                  <div className="text-sm text-slate-500">
+                                  <div className="text-sm text-muted">
                                     {item.variantName || t('productPicker.variantFallback')}
                                   </div>
                                 </div>
                               </div>
                             </td>
-                            <td className="p-3 text-slate-500">{formatPrice(item.originalPrice)}</td>
+                            <td className="p-3 text-muted">{formatPrice(item.originalPrice)}</td>
                             <td className="p-3">
                               <input
                                 type="number"
@@ -402,7 +402,7 @@ export default function FlashSaleForm() {
                                   value={item.flashStock}
                                   onChange={(e) => handleChangeItem(actualIndex, 'flashStock', Number(e.target.value))}
                                 />
-                                <div className="text-sm text-slate-500 leading-tight">
+                                <div className="text-sm text-muted leading-tight">
                                   {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
                                     <div>{t('flashSales.form.historyEmpty')}</div>
                                   ) : (
@@ -452,34 +452,34 @@ export default function FlashSaleForm() {
 
         <aside className="space-y-4 xl:sticky xl:top-20">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
-            <h3 className="font-semibold text-strong mb-3 flex items-center gap-2">
-              <FiClock className="text-slate-500" />
+            <h3 className="font-semibold text-ink mb-3 flex items-center gap-2">
+              <FiClock className="text-muted" />
               {t('flashSales.form.summaryTitle')}
             </h3>
             <div className="space-y-2.5 text-md">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">{t('flashSales.form.scheduleStatus')}</span>
-                <span className="font-semibold text-slate-700 dark:text-slate-200">{scheduleStatus}</span>
+                <span className="text-muted">{t('flashSales.form.scheduleStatus')}</span>
+                <span className="font-semibold text-body">{scheduleStatus}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">{t('flashSales.form.participatingVariants')}</span>
-                <span className="font-semibold text-slate-700 dark:text-slate-200">{form.items.length}</span>
+                <span className="text-muted">{t('flashSales.form.participatingVariants')}</span>
+                <span className="font-semibold text-body">{form.items.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">{t('flashSales.form.totalStock')}</span>
-                <span className="font-semibold text-slate-700 dark:text-slate-200">{totalStock.toLocaleString()}</span>
+                <span className="text-muted">{t('flashSales.form.totalStock')}</span>
+                <span className="font-semibold text-body">{totalStock.toLocaleString()}</span>
               </div>
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500">{t('flashSales.form.originalValue')}</span>
-                  <span className="font-medium text-slate-700 dark:text-slate-200">{formatPrice(totalOriginalValue)}</span>
+                  <span className="text-muted">{t('flashSales.form.originalValue')}</span>
+                  <span className="font-medium text-body">{formatPrice(totalOriginalValue)}</span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-slate-500">{t('flashSales.form.flashValue')}</span>
-                  <span className="font-medium text-slate-700 dark:text-slate-200">{formatPrice(totalFlashValue)}</span>
+                  <span className="text-muted">{t('flashSales.form.flashValue')}</span>
+                  <span className="font-medium text-body">{formatPrice(totalFlashValue)}</span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-slate-500 flex items-center gap-1">
+                  <span className="text-muted flex items-center gap-1">
                     <FiTrendingDown className="text-emerald-500" />
                     {t('flashSales.form.estimatedSavings')}
                   </span>
@@ -490,12 +490,12 @@ export default function FlashSaleForm() {
           </div>
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
-            <h3 className="font-semibold text-strong mb-3 flex items-center gap-2">
+            <h3 className="font-semibold text-ink mb-3 flex items-center gap-2">
               <FiAlertTriangle className={hasWarnings ? 'text-amber-500' : 'text-emerald-500'} />
               {t('flashSales.form.validationTitle')}
             </h3>
             {hasWarnings ? (
-              <ul className="space-y-2 text-md text-body-soft">
+              <ul className="space-y-2 text-md text-muted">
                 {invalidTimeRange && (
                   <li>{t('flashSales.form.validationTime')}</li>
                 )}
@@ -510,7 +510,7 @@ export default function FlashSaleForm() {
               <p className="text-md text-emerald-600">{t('flashSales.form.validationValid')}</p>
             )}
             {(startDate || endDate) && (
-              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-sm text-slate-500 space-y-1">
+              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-sm text-muted space-y-1">
                 {startDate && <p>{t('flashSales.form.startAt', { date: formatDateTime(startDate) })}</p>}
                 {endDate && <p>{t('flashSales.form.endAt', { date: formatDateTime(endDate) })}</p>}
               </div>

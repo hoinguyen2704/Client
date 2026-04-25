@@ -4,6 +4,8 @@ import wishlistService from '@/apis/services/wishlistService';
 import type { WishlistResponse } from '@/types';
 import { toast } from 'sonner';
 
+let wishlistSyncPromise: Promise<void> | null = null;
+
 function getPersistedAuthToken() {
   const raw = localStorage.getItem('auth') || sessionStorage.getItem('auth');
   return raw ? JSON.parse(raw)?.state?.token : null;
@@ -26,23 +28,33 @@ const useWishlistStore = create<WishlistStore>()(
       totalItems: 0,
 
       syncFromServer: async () => {
-        try {
-          if (!getPersistedAuthToken()) {
-            set({ items: [], totalItems: 0 }); // reset if guest
-            return;
-          }
-          
-          set({ loading: true });
-          const res = await wishlistService.getMyWishlist(1, 100);
-          const newItems = res.data?.data || [];
-          set({ 
-            items: newItems, 
-            totalItems: newItems.length,
-            loading: false 
-          });
-        } catch {
-          set({ loading: false });
+        if (!getPersistedAuthToken()) {
+          set({ items: [], totalItems: 0, loading: false });
+          return;
         }
+
+        if (wishlistSyncPromise) {
+          return wishlistSyncPromise;
+        }
+
+        wishlistSyncPromise = (async () => {
+          set({ loading: true });
+          try {
+            const res = await wishlistService.getMyWishlist(1, 100);
+            const newItems = res.data?.data || [];
+            set({
+              items: newItems,
+              totalItems: newItems.length,
+            });
+          } catch {
+            // Keep the current optimistic/persisted state if refresh fails.
+          } finally {
+            set({ loading: false });
+            wishlistSyncPromise = null;
+          }
+        })();
+
+        return wishlistSyncPromise;
       },
 
       toggleItem: async (productId: string) => {
@@ -58,10 +70,10 @@ const useWishlistStore = create<WishlistStore>()(
         try {
           if (exists) {
             // Remove
-            set({ 
-              items: items.filter(i => i.productId !== productId),
-              totalItems: items.length - 1
-            });
+            set((state) => ({
+              items: state.items.filter(i => i.productId !== productId),
+              totalItems: Math.max(state.totalItems - 1, 0),
+            }));
             await wishlistService.remove(productId);
             toast.success('Đã xoá khỏi danh sách yêu thích');
             return false;

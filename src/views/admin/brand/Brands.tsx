@@ -188,7 +188,7 @@ export default function Brands() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-md font-medium text-ink dark:text-slate-400 mb-1.5">
+                <label className="block text-md font-medium text-body mb-1.5">
                   {t("brands.form.nameLabel")}
                 </label>
                 <input
@@ -203,7 +203,7 @@ export default function Brands() {
                 />
               </div>
               <div>
-                <label className="block text-md font-medium text-ink dark:text-slate-400 mb-1.5">
+                <label className="block text-md font-medium text-body mb-1.5">
                   {t("brands.form.logoLabel")}
                 </label>
                 <input
@@ -274,7 +274,7 @@ export default function Brands() {
                     key={brand.id}
                     className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-slate-500">
+                    <td className="p-3 sm:p-4 text-center font-semibold text-muted">
                       {getPaginatedRowNumber(page, PAGE_SIZE.MEDIUM, index)}
                     </td>
                     <td className="p-3 sm:p-4">
@@ -293,7 +293,7 @@ export default function Brands() {
                         <span className="font-semibold">{brand.name}</span>
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 text-slate-500">{brand.slug}</td>
+                    <td className="p-3 sm:p-4 text-muted">{brand.slug}</td>
                     <td className="p-3 sm:p-4 text-center">
                       <span className="inline-flex items-center justify-center min-w-8 px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm">
                         {brand.productCount ?? 0}

@@ -8,7 +8,7 @@ import type { VariantCardProps } from "./types";
 import { formatVariantSummaryValue, getVariantSelectOptions } from "./utils";
 
 const summaryChipClass =
-  "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-sm font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300";
+  "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-sm font-medium text-muted dark:border-slate-700 dark:bg-slate-900/80";
 
 export default memo(function VariantCard(props: VariantCardProps) {
   const { t, i18n } = useTranslation("adminCatalog");
@@ -104,7 +104,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     className={`inline-flex items-center rounded-full px-2.5 py-1 text-sm font-semibold ${
                       variant.active
                         ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
-                        : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                        : "bg-slate-200 text-muted dark:bg-slate-800"
                     }`}
                   >
                     {variant.active
@@ -120,16 +120,16 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 </div>
               </div>
 
-              <div className="hidden xl:flex items-center gap-x-4 text-sm font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
+              <div className="hidden xl:flex items-center gap-x-4 text-sm font-medium text-muted whitespace-nowrap">
                 <span>
                   {t("variantCard.createdAt")}:{" "}
-                  <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                  <strong className="font-semibold text-muted">
                     {createdAtText}
                   </strong>
                 </span>
                 <span>
                   {t("variantCard.updatedAt")}:{" "}
-                  <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                  <strong className="font-semibold text-muted">
                     {updatedAtText}
                   </strong>
                 </span>
@@ -161,16 +161,16 @@ export default memo(function VariantCard(props: VariantCardProps) {
             </div>
 
             {/* Mobile fallback for dates */}
-            <div className="flex xl:hidden flex-wrap gap-x-4 gap-y-1 text-sm font-medium text-slate-500 dark:text-slate-400">
+            <div className="flex xl:hidden flex-wrap gap-x-4 gap-y-1 text-sm font-medium text-muted">
               <span>
                 {t("variantCard.createdAt")}:{" "}
-                <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                <strong className="font-semibold text-muted">
                   {createdAtText}
                 </strong>
               </span>
               <span>
                 {t("variantCard.updatedAt")}:{" "}
-                <strong className="font-semibold text-slate-600 dark:text-slate-300">
+                <strong className="font-semibold text-muted">
                   {updatedAtText}
                 </strong>
               </span>
@@ -229,13 +229,13 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   <button
                     type="button"
                     onClick={() => regenerateVariantSku(index)}
-                    className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-blue-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-blue-600"
+                    className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-body transition-colors hover:border-blue-300 dark:border-slate-600 dark:bg-slate-700 dark:hover:border-blue-600"
                     title={t("variantCard.regenTitle")}
                   >
                     Regen
                   </button>
                 </div>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-muted">
                   {variant.skuMode === "manual"
                     ? t("variantCard.skuModeManual")
                     : t("variantCard.skuModeSuggested")}
@@ -245,7 +245,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 <label className="mb-1.5 block text-sm font-semibold uppercase tracking-wider text-muted">
                   {t("variantCard.autoName")}
                 </label>
-                <div className="flex h-10 w-full items-center rounded-lg border border-slate-200 bg-slate-100 px-3 text-md text-slate-700 transition-colors dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                <div className="flex h-10 w-full items-center rounded-lg border border-slate-200 bg-slate-100 px-3 text-md text-body transition-colors dark:border-slate-700 dark:bg-slate-800">
                   {variant.variantName || t("variantCard.defaultName")}
                 </div>
               </div>
@@ -303,7 +303,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-md font-medium transition-colors ${
                     variant.active
                       ? "border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400"
-                      : "border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800"
+                      : "border-slate-200 bg-slate-100 text-subtle dark:border-slate-700 dark:bg-slate-800"
                   }`}
                 >
                   {variant.active ? <FiEye /> : <FiEyeOff />}
@@ -317,7 +317,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   {t("variantCard.salesLabel")}
                 </label>
                 <div className="flex h-10 w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-3 dark:border-slate-700 dark:bg-slate-800">
-                  <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
+                  <p className="text-md font-semibold text-body">
                     {sales.gross.toLocaleString()} /{" "}
                     {sales.returned.toLocaleString()} /{" "}
                     {sales.net.toLocaleString()}
@@ -332,7 +332,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   <p className="text-md font-semibold text-body">
                     {t("variantCard.attributesTitle")}
                   </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-sm text-muted">
                     {variantSchema.length > 0
                       ? t("variantCard.attributesDescription")
                       : t("variantCard.attributesEmptyDescription")}
@@ -399,7 +399,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   })}
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-5 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/30 dark:text-slate-400">
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-5 text-sm text-muted dark:border-slate-700 dark:bg-slate-800/30">
                   {t("variantCard.attributesEmptyState")}
                 </div>
               )}
@@ -411,7 +411,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   <p className="text-md font-semibold text-body">
                     {t("variantCard.imagesTitle")}
                   </p>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-muted">
                     {t("variantCard.imagesDescription", {
                       sku: variant.sku || t("variantCard.notEntered"),
                     })}
@@ -442,7 +442,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 onClick={() =>
                   variantFileInputRefs.current[variantUiKey]?.click()
                 }
-                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-slate-700 transition-colors hover:border-blue-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:border-blue-600"
+                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-body transition-colors hover:border-blue-300 dark:border-slate-600 dark:bg-slate-700 dark:hover:border-blue-600"
               >
                 {t("variantCard.uploadImages")}
               </button>

@@ -14,7 +14,7 @@ import LogoIcon from "../ui/LogoIcon";
 import useShopStore from '@/stores/useShopStore';
 
 const SOCIAL_LINK_CLASS =
-  "w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-body-soft flex items-center justify-center transition-all";
+  "w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-muted flex items-center justify-center transition-all";
 
 export default function Footer() {
   const { t } = useTranslation('layout');
@@ -22,7 +22,7 @@ export default function Footer() {
   useEffect(() => { fetchShopInfo(); }, [fetchShopInfo]);
 
   return (
-    <footer className="bg-white dark:bg-slate-900 text-body-soft pt-16 pb-8 border-t border-slate-200 dark:border-slate-800 mt-auto">
+    <footer className="bg-white dark:bg-slate-900 text-muted pt-16 pb-8 border-t border-slate-200 dark:border-slate-800 mt-auto">
       <div className="w-full px-4 md:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
         {/* Col 1: Brand & Contact */}
         <div className="space-y-6">
@@ -37,19 +37,19 @@ export default function Footer() {
           </p>
           <div className="space-y-2 text-md">
             <p>
-              <strong className="text-slate-800 dark:text-white">
+              <strong className="text-ink">
                 {t('footer.address')}:
               </strong>{" "}
               {shop.address}
             </p>
             <p>
-              <strong className="text-slate-800 dark:text-white">
+              <strong className="text-ink">
                 {t('footer.phone')}:
               </strong>{" "}
               {shop.hotline}
             </p>
             <p>
-              <strong className="text-slate-800 dark:text-white">{t('footer.email')}:</strong>{" "}
+              <strong className="text-ink">{t('footer.email')}:</strong>{" "}
               {shop.supportEmail}
             </p>
           </div>
@@ -57,7 +57,7 @@ export default function Footer() {
 
         {/* Col 2: Về chúng tôi */}
         <div>
-          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
+          <h3 className="text-ink font-bold mb-6 uppercase tracking-wider text-md">
             {t('footer.aboutTitle', { shopName: shop.shopName })}
           </h3>
           <ul className="space-y-3 text-md">
@@ -106,7 +106,7 @@ export default function Footer() {
 
         {/* Col 3: Hỗ trợ khách hàng */}
         <div>
-          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
+          <h3 className="text-ink font-bold mb-6 uppercase tracking-wider text-md">
             {t('footer.supportTitle')}
           </h3>
           <ul className="space-y-3 text-md">
@@ -155,7 +155,7 @@ export default function Footer() {
 
         {/* Col 4: Kết nối & Thanh toán */}
         <div>
-          <h3 className="text-slate-900 dark:text-white font-bold mb-6 uppercase tracking-wider text-md">
+          <h3 className="text-ink font-bold mb-6 uppercase tracking-wider text-md">
             {t('footer.connectTitle')}
           </h3>
           <div className="flex gap-4 mb-8">
@@ -185,7 +185,7 @@ export default function Footer() {
             </a>
           </div>
 
-          <h3 className="text-slate-900 dark:text-white font-bold mb-4 uppercase tracking-wider text-md">
+          <h3 className="text-ink font-bold mb-4 uppercase tracking-wider text-md">
             {t('footer.paymentTitle')}
           </h3>
           <div className="flex gap-3 text-3xl text-subtle">
@@ -196,7 +196,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-md text-slate-500">
+      <div className="w-full px-4 md:px-8 lg:pl-12 lg:pr-25 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-md text-muted">
         <p>{t('footer.rightsReserved', { year: new Date().getFullYear(), shopName: shop.shopName })}</p>
         <p>{t('footer.builtBy')}</p>
       </div>

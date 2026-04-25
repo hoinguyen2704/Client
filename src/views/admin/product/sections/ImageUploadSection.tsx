@@ -76,15 +76,15 @@ export default memo(function ImageUploadSection(props: Props) {
           }`}
         >
           <FiUploadCloud
-            className={`text-2xl ${isDragging ? "text-blue-600 dark:text-blue-300" : "text-slate-400"}`}
+            className={`text-2xl ${isDragging ? "text-blue-600 dark:text-blue-300" : "text-subtle"}`}
           />
         </div>
-        <span className="font-semibold text-md text-slate-600 dark:text-slate-300">
+        <span className="font-semibold text-md text-muted">
           {isDragging
             ? t("imageUpload.dropActive")
             : t("imageUpload.dropIdle")}
         </span>
-        <span className="text-sm text-slate-400 mt-1">
+        <span className="text-sm text-subtle mt-1">
           {t("imageUpload.formatHint")}
         </span>
       </div>

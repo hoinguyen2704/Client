@@ -83,7 +83,7 @@ export default memo(function BasicInfoSection(props: BasicInfoSectionViewProps) 
             readOnly={isEditMode}
             className="w-full h-12 rounded-xl border border-slate-200 bg-white px-4 outline-none focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900"
           />
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted">
             {isEditMode
               ? t("basicInfo.productCode.locked")
               : t("basicInfo.productCode.hint")}
@@ -152,7 +152,7 @@ export default memo(function BasicInfoSection(props: BasicInfoSectionViewProps) 
             </button>
             {showTemplatePopup && (
               <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 p-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-sm text-slate-400 font-medium uppercase tracking-wider mb-2">
+                <p className="text-sm text-subtle font-medium uppercase tracking-wider mb-2">
                   {t("basicInfo.specs.templateModalTitle")}
                 </p>
                 {!categoryId ? (
@@ -191,13 +191,13 @@ export default memo(function BasicInfoSection(props: BasicInfoSectionViewProps) 
                             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-md transition-colors text-left ${
                               alreadyAdded
                                 ? "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-medium"
-                                : "hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                                : "hover:bg-slate-50 dark:hover:bg-slate-700 text-body"
                             }`}
                           >
                             {alreadyAdded ? (
                               <FiCheckSquare className="text-blue-500 flex-shrink-0" />
                             ) : (
-                              <FiSquare className="text-slate-400 flex-shrink-0" />
+                              <FiSquare className="text-subtle flex-shrink-0" />
                             )}
                             {templateKey}
                           </button>
@@ -225,7 +225,7 @@ export default memo(function BasicInfoSection(props: BasicInfoSectionViewProps) 
                         </button>
                         <button
                           onClick={() => setShowTemplatePopup(false)}
-                          className="text-sm font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                          className="text-sm font-medium text-muted hover:text-body"
                         >
                           {t("basicInfo.specs.close")}
                         </button>
@@ -245,7 +245,7 @@ export default memo(function BasicInfoSection(props: BasicInfoSectionViewProps) 
                 type="text"
                 value={spec.key}
                 readOnly
-                className="flex-1 h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-700 border-none outline-none text-md text-slate-600 dark:text-slate-300"
+                className="flex-1 h-10 px-3 rounded-lg bg-slate-100 dark:bg-slate-700 border-none outline-none text-md text-muted"
               />
               <input
                 type="text"
@@ -262,7 +262,7 @@ export default memo(function BasicInfoSection(props: BasicInfoSectionViewProps) 
           ))}
 
           {specs.length === 0 && (
-            <div className="text-center py-6 text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+            <div className="text-center py-6 text-subtle bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
               <p className="text-md">{t("basicInfo.specs.empty")}</p>
             </div>
           )}

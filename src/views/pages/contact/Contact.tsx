@@ -56,7 +56,7 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto"
+            className="text-muted max-w-2xl mx-auto"
           >
             {t('contactPage.description', { ns: 'about', shopName: SHOP.name })}
           </motion.p>
@@ -80,7 +80,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">{t('contactPage.addressLabel', { ns: 'about' })}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.address}</p>
+                    <p className="text-muted text-md">{SHOP.address}</p>
                   </div>
                 </div>
 
@@ -90,8 +90,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">{t('contactPage.phoneLabel', { ns: 'about' })}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.hotline} ({t('contactPage.support247', { ns: 'about' })})</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.hotline} ({t('contactPage.messagingApps', { ns: 'about' })})</p>
+                    <p className="text-muted text-md">{SHOP.hotline} ({t('contactPage.support247', { ns: 'about' })})</p>
+                    <p className="text-muted text-md">{SHOP.hotline} ({t('contactPage.messagingApps', { ns: 'about' })})</p>
                   </div>
                 </div>
 
@@ -101,8 +101,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">{t('contactPage.emailLabel', { ns: 'about' })}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.email}</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">{SHOP.supportEmail}</p>
+                    <p className="text-muted text-md">{SHOP.email}</p>
+                    <p className="text-muted text-md">{SHOP.supportEmail}</p>
                   </div>
                 </div>
 
@@ -112,8 +112,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold mb-1">{t('contactPage.hoursLabel', { ns: 'about' })}</h4>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">{t('contactPage.weekdayHours', { ns: 'about' })}</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-md">{t('contactPage.weekendHours', { ns: 'about' })}</p>
+                    <p className="text-muted text-md">{t('contactPage.weekdayHours', { ns: 'about' })}</p>
+                    <p className="text-muted text-md">{t('contactPage.weekendHours', { ns: 'about' })}</p>
                   </div>
                 </div>
               </div>

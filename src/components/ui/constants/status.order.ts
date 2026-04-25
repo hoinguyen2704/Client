@@ -8,5 +8,5 @@ export const ORDER_STATUS = {
   SHIPPING:   { label: 'Shipping', labelKey: 'status.order.shipping', className: 'bg-cyan-50 uppercase tracking-wider text-cyan-700 border-cyan-200 dark:bg-cyan-500/10 dark:border-cyan-500/20 dark:text-cyan-300' },
   SHIPPED:    { label: 'Delivered', labelKey: 'status.order.shipped', className: 'bg-emerald-50 uppercase tracking-wider text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-300' },
   CANCELLED:  { label: 'Cancelled', labelKey: 'status.order.cancelled', className: 'bg-rose-50 uppercase tracking-wider text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-300' },
-  RETURNED:   { label: 'Returned', labelKey: 'status.order.returned', className: 'bg-slate-100 uppercase tracking-wider text-slate-700 border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/20 dark:text-slate-300' },
+  RETURNED:   { label: 'Returned', labelKey: 'status.order.returned', className: 'bg-slate-100 uppercase tracking-wider text-body border-slate-200 dark:bg-slate-500/10 dark:border-slate-500/20' },
 } as const;

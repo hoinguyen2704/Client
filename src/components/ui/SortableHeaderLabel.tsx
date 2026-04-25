@@ -27,7 +27,7 @@ export default function SortableHeaderLabel({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-1 text-left transition-colors hover:text-slate-900 dark:hover:text-white ${alignmentClassMap[align]}`}
+      className={`flex w-full items-center gap-1 text-left transition-colors hover:text-ink ${alignmentClassMap[align]}`}
     >
       <span>{label}</span>
       {active ? (

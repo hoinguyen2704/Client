@@ -20,7 +20,7 @@ export interface PaginationProps {
 const BTN_BASE =
   'w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl text-md font-semibold transition-all duration-200 select-none';
 const BTN_IDLE =
-  'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-body-soft hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 shadow-[1px_1px_3px_rgba(0,0,0,0.04)]';
+  'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-muted hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 shadow-[1px_1px_3px_rgba(0,0,0,0.04)]';
 const BTN_ACTIVE =
   'bg-blue-600 border border-blue-600 text-white shadow-sm shadow-blue-950/15';
 const BTN_DISABLED =
@@ -76,11 +76,11 @@ export default function Pagination({
       {showInfo && (
         <div className="text-md text-muted">
           {t('pagination.showing')}{' '}
-          <span className="font-semibold text-slate-700 dark:text-slate-200">
+          <span className="font-semibold text-body">
             {start}-{end}
           </span>{' '}
           {t('pagination.of')}{' '}
-          <span className="font-semibold text-slate-700 dark:text-slate-200">
+          <span className="font-semibold text-body">
             {totalItems!.toLocaleString()}
           </span>{' '}
           {resolvedLabel}

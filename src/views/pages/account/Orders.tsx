@@ -111,7 +111,7 @@ export default function Orders() {
           <input type="text" placeholder={t('orders.searchPlaceholder')} value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500" />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle text-xl" />
         </div>
       </div>
 
@@ -129,10 +129,10 @@ export default function Orders() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800 mb-3 sm:mb-4">
                 <div>
                   <span className="font-bold text-base sm:text-lg mr-4">{order.orderNumber}</span>
-                  <div className="text-slate-500 text-sm sm:text-md mt-1">
+                  <div className="text-muted text-sm sm:text-md mt-1">
                     {t('orders.placedAt')}: {formatDate(order.createdAt)}
                   </div>
-                  <div className="text-slate-500 text-sm sm:text-md mt-1">
+                  <div className="text-muted text-sm sm:text-md mt-1">
                     {t('orders.updatedAt')}: {formatDateTime(order.updatedAt || order.createdAt)}
                   </div>
                 </div>
@@ -146,12 +146,12 @@ export default function Orders() {
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
                       ) : (
-                        <FiPackage className="text-slate-400 text-2xl" />
+                        <FiPackage className="text-subtle text-2xl" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-md sm:text-base text-slate-900 dark:text-white line-clamp-1" title={item.productName}>{item.productName}</h3>
-                      <p className="text-sm sm:text-md text-slate-500 mt-1">
+                      <h3 className="font-bold text-md sm:text-base text-ink line-clamp-1" title={item.productName}>{item.productName}</h3>
+                      <p className="text-sm sm:text-md text-muted mt-1">
                         {item.variantName ? `${item.variantName} | ` : ''}{t('orders.quantity')}: x{item.quantity}
                       </p>
                     </div>
@@ -168,7 +168,7 @@ export default function Orders() {
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-slate-100 dark:border-slate-800">
-                <div className="text-slate-500 text-md sm:text-base">
+                <div className="text-muted text-md sm:text-base">
                   {t('orders.total')}: <span className="text-lg sm:text-xl font-bold text-blue-600 ml-2">{formatPrice(order.totalAmount)}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
@@ -177,7 +177,7 @@ export default function Orders() {
                       {t('orders.cancelOrder')}
                     </button>
                   )}
-                  <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
+                  <Link to={`/user/orders/${order.orderNumber}`} className="px-4 py-2 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black font-medium hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
                     {t('orders.viewDetails')} <FiChevronRight />
                   </Link>
                 </div>
@@ -186,9 +186,9 @@ export default function Orders() {
           ))
         ) : (
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-100 dark:border-slate-800">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-3xl sm:text-4xl"><FiPackage /></div>
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-subtle text-3xl sm:text-4xl"><FiPackage /></div>
             <h3 className="text-lg sm:text-xl font-bold mb-2">{t('orders.empty.title')}</h3>
-            <p className="text-md sm:text-base text-slate-500 mb-6">{t('orders.empty.description')}</p>
+            <p className="text-md sm:text-base text-muted mb-6">{t('orders.empty.description')}</p>
             <Button href="/search" size="lg">{t('orders.empty.action')}</Button>
           </div>
         )}
@@ -215,25 +215,25 @@ export default function Orders() {
           <div className="space-y-6">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
               <h4 className="font-bold">{selectedItem.productName}</h4>
-              <p className="text-md text-slate-500 mt-1">{t('orders.reviewModal.variant')}: {selectedItem.variantName}</p>
+              <p className="text-md text-muted mt-1">{t('orders.reviewModal.variant')}: {selectedItem.variantName}</p>
             </div>
             
             {oldFeedbacks.map((fb, idx) => (
               <div key={fb.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 opacity-80">
                  <div className="flex items-center justify-between mb-2">
-                    <p className="font-bold text-md text-slate-700 dark:text-slate-300">
+                    <p className="font-bold text-md text-body">
                       {t('orders.reviewModal.reviewNumber', { count: idx + 1 })}
                     </p>
                     <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
                  </div>
-                 <p className="text-md text-slate-600 dark:text-slate-400">{fb.content}</p>
+                 <p className="text-md text-muted">{fb.content}</p>
               </div>
             ))}
 
             {oldFeedbacks.length < 2 && (
               <div className="space-y-4 pt-2">
                 <div className="flex flex-col items-center gap-2">
-                  <p className="font-medium text-slate-700 dark:text-slate-300">
+                  <p className="font-medium text-body">
                     {oldFeedbacks.length === 1 ? t('orders.reviewModal.additionalReview') : t('orders.reviewModal.quality')}
                   </p>
                   <StarRating value={rating} onChange={setRating} size="lg" />

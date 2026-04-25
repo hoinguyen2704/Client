@@ -114,10 +114,10 @@ export default function Compare() {
     <div className="w-full px-2.5 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="text-center mb-5 sm:mb-8">
-        <h1 className="inline-block text-2xl font-black tracking-tight text-slate-900 dark:text-slate-50 sm:text-3xl">
+        <h1 className="inline-block text-2xl font-black tracking-tight text-ink sm:text-3xl">
           {t("catalog:compare.title")}
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-2 text-md">
+        <p className="text-muted mt-2 text-md">
           {lockedCategoryName ? (
             <Trans
               i18nKey="catalog:compare.descriptionWithCategory"
@@ -164,7 +164,7 @@ export default function Compare() {
           </div>
         </div>
           <h3 className="text-lg sm:text-xl font-bold mb-2">{t("catalog:compare.empty.title")}</h3>
-          <p className="text-slate-500 mb-5 sm:mb-6 max-w-sm text-md">
+          <p className="text-muted mb-5 sm:mb-6 max-w-sm text-md">
             {t("catalog:compare.empty.description")}
           </p>
           <button
@@ -195,7 +195,7 @@ export default function Compare() {
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-700">
                     <th className="p-2.5 sm:p-4 border-r border-slate-200 dark:border-slate-700 align-middle">
-                      <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+                      <span className="text-sm font-bold text-subtle uppercase tracking-wider">
                         {t("catalog:compare.table.title")}
                       </span>
                     </th>
@@ -207,7 +207,7 @@ export default function Compare() {
                         <div className="relative group">
                           <button
                             onClick={() => removeItem(item.id)}
-                            className="absolute -top-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all z-10"
+                            className="absolute -top-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-subtle opacity-100 sm:opacity-0 sm:group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all z-10"
                           >
                             <FiX className="text-md" />
                           </button>
@@ -221,7 +221,7 @@ export default function Compare() {
                                 />
                               </div>
                             ) : (
-                              <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800 mb-2 sm:mb-3 flex items-center justify-center text-slate-300">
+                              <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800 mb-2 sm:mb-3 flex items-center justify-center text-subtle">
                                 <FiShoppingCart className="text-3xl" />
                               </div>
                             )}
@@ -231,7 +231,7 @@ export default function Compare() {
                             >
                               {item.name}
                             </Link>
-                            <div className="text-md font-black text-slate-900 dark:text-slate-50 sm:text-lg">
+                            <div className="text-md font-black text-ink sm:text-lg">
                               {formatPrice(item.price)}
                             </div>
                             {item.rating && (
@@ -248,7 +248,7 @@ export default function Compare() {
                       <th className="p-2.5 sm:p-4 align-middle">
                         <button
                           onClick={() => setIsModalOpen(true)}
-                          className="flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 py-4 text-slate-400 transition-all hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-700 dark:border-slate-700 dark:hover:bg-blue-950/20 dark:hover:text-blue-300 sm:rounded-2xl sm:py-8"
+                          className="flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 py-4 text-subtle transition-all hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-700 dark:border-slate-700 dark:hover:bg-blue-950/20 dark:hover:text-blue-300 sm:rounded-2xl sm:py-8"
                         >
                           <FiPlus className="text-xl sm:text-2xl mb-1" />
                           <span className="text-sm font-medium">{t("catalog:compare.table.addProduct")}</span>
@@ -262,7 +262,7 @@ export default function Compare() {
                 <tbody>
                   {/* Category */}
                   <tr className="bg-slate-50 dark:bg-slate-800/40">
-                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-muted border-b border-r border-slate-200 dark:border-slate-700">
                       {t("catalog:compare.table.category")}
                     </td>
                     {compareItems.map((item) => (
@@ -282,7 +282,7 @@ export default function Compare() {
 
                   {/* Brand */}
                   <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/20 transition-colors">
-                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-muted border-b border-r border-slate-200 dark:border-slate-700">
                       {t("catalog:compare.table.brand")}
                     </td>
                     {compareItems.map((item) => (
@@ -300,7 +300,7 @@ export default function Compare() {
 
                   {/* Price */}
                   <tr className="bg-blue-50/50 dark:bg-blue-950/10">
-                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-muted border-b border-r border-slate-200 dark:border-slate-700">
                       {t("catalog:compare.table.price")}
                     </td>
                     {compareItems.map((item) => {
@@ -311,7 +311,7 @@ export default function Compare() {
                           className={`px-2.5 sm:px-4 py-3 text-center border-b border-r border-slate-200 dark:border-slate-700 last:border-r-0 ${best ? "bg-green-50/80 dark:bg-green-900/10" : ""}`}
                         >
                           <span
-                            className={`font-black text-md sm:text-base ${best ? "text-green-600" : "text-slate-900 dark:text-white"}`}
+                            className={`font-black text-md sm:text-base ${best ? "text-green-600" : "text-ink"}`}
                           >
                             {formatPrice(item.price)}
                           </span>
@@ -330,7 +330,7 @@ export default function Compare() {
 
                   {/* Rating */}
                   <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/20 transition-colors">
-                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700">
+                    <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-muted border-b border-r border-slate-200 dark:border-slate-700">
                       {t("catalog:compare.table.rating")}
                     </td>
                     {compareItems.map((item) => {
@@ -357,7 +357,7 @@ export default function Compare() {
                               )}
                             </>
                           ) : (
-                            <span className="text-slate-300">—</span>
+                            <span className="text-subtle">—</span>
                           )}
                         </td>
                       );
@@ -377,7 +377,7 @@ export default function Compare() {
                         }
                         className="px-3 sm:px-5 py-2.5 sm:py-3 bg-slate-100 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700"
                       >
-                        <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                        <span className="text-sm font-bold text-muted uppercase tracking-wider">
                           {t("catalog:compare.table.specs")}
                         </span>
                       </td>
@@ -390,7 +390,7 @@ export default function Compare() {
                       key={specKey}
                       className={`${idx % 2 === 0 ? "bg-slate-50/50 dark:bg-slate-800/10" : ""} hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors`}
                     >
-                      <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-slate-500 dark:text-slate-400 border-b border-r border-slate-200 dark:border-slate-700 align-middle">
+                      <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-muted border-b border-r border-slate-200 dark:border-slate-700 align-middle">
                         {specKey}
                       </td>
                       {compareItems.map((item) => {
@@ -409,9 +409,9 @@ export default function Compare() {
                               className={
                                 val
                                   ? allSame
-                                    ? "text-slate-600 dark:text-slate-300"
-                                    : "font-bold text-slate-900 dark:text-white"
-                                  : "text-slate-300 dark:text-slate-600"
+                                    ? "text-muted"
+                                    : "font-bold text-ink"
+                                  : "text-subtle"
                               }
                             >
                               {val || "—"}
@@ -450,7 +450,7 @@ export default function Compare() {
             </div>
           )}
           <div className="relative">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle" />
             <input
               type="text"
               placeholder={
@@ -468,12 +468,12 @@ export default function Compare() {
 
         <div className="mt-4 space-y-1.5 max-h-[52vh] overflow-y-auto">
           {searching ? (
-            <div className="flex flex-col items-center py-12 text-slate-400">
+            <div className="flex flex-col items-center py-12 text-subtle">
               <div className="mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600" />
               <span className="text-md">{t("catalog:compare.modal.loading")}</span>
             </div>
           ) : searchResults.length === 0 ? (
-            <div className="flex flex-col items-center py-12 text-slate-400">
+            <div className="flex flex-col items-center py-12 text-subtle">
               <FiSearch className="text-3xl mb-3" />
               <span className="text-md">
                 {searchQuery
@@ -510,7 +510,7 @@ export default function Compare() {
                       className="w-14 h-14 rounded-xl object-cover bg-slate-50 dark:bg-slate-800"
                     />
                   ) : (
-                    <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300">
+                    <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-subtle">
                       <FiShoppingCart />
                     </div>
                   )}
@@ -519,11 +519,11 @@ export default function Compare() {
                       {product.name}
                     </h4>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-md font-bold text-slate-900 dark:text-slate-50">
+                      <span className="text-md font-bold text-ink">
                         {formatPrice(product.price)}
                       </span>
                       {product.categoryName && (
-                        <span className="text-11 text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
+                        <span className="text-11 text-subtle bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
                           {product.categoryName}
                         </span>
                       )}
@@ -539,11 +539,11 @@ export default function Compare() {
                       <FiCheck className="text-md" />
                     </div>
                   ) : isDiffCat ? (
-                    <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-subtle shrink-0">
                       <FiX className="text-md" />
                     </div>
                   ) : (
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-400 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-700 dark:hover:text-blue-300">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-subtle transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-700 dark:hover:text-blue-300">
                       <FiPlus className="text-md" />
                     </div>
                   )}

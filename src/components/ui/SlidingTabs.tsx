@@ -66,7 +66,7 @@ export default function SlidingTabs({
             className={`relative z-10 flex-1 py-3 px-4 rounded-xl font-medium text-center transition-colors duration-300 ${
               activeTab === tab.id
                 ? 'text-white'
-                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'text-muted hover:text-body'
             }`}
           >
             {tab.label}
@@ -90,7 +90,7 @@ export default function SlidingTabs({
           className={`px-4 sm:px-6 py-2.5 sm:py-3 text-md sm:text-base font-medium whitespace-nowrap transition-colors ${
             activeTab === tab.id
               ? 'text-blue-600'
-              : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              : 'text-muted hover:text-ink'
           }`}
         >
           {tab.label}

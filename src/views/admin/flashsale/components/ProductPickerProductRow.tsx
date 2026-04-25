@@ -64,7 +64,7 @@ export default function ProductPickerProductRow({
             onClick={onToggleProduct}
             className="flex w-full items-center gap-3 px-4 py-4 text-left"
           >
-            <div className="text-slate-400 transition-transform duration-200">
+            <div className="text-subtle transition-transform duration-200">
               {isExpanded ? <FiChevronDown size={18} /> : <FiChevronRight size={18} />}
             </div>
             <img
@@ -73,10 +73,10 @@ export default function ProductPickerProductRow({
               className="h-11 w-11 flex-shrink-0 rounded-lg border border-slate-200 object-cover dark:border-slate-700"
             />
             <div className="min-w-0">
-              <div className="truncate font-medium text-slate-800 dark:text-slate-200">
+              <div className="truncate font-medium text-body">
                 {product.name}
               </div>
-              <div className="flex flex-wrap items-center gap-1.5 text-sm text-slate-500">
+              <div className="flex flex-wrap items-center gap-1.5 text-sm text-muted">
                 {product.categoryName ? <span>{product.categoryName}</span> : null}
                 {product.brandName ? <span>• {product.brandName}</span> : null}
                 {product.productCode ? <span>• {product.productCode}</span> : null}
@@ -84,7 +84,7 @@ export default function ProductPickerProductRow({
             </div>
           </button>
 
-          <div className="hidden items-center justify-end border-l border-slate-200 px-4 py-4 text-right text-base font-bold text-slate-700 dark:border-slate-700 dark:text-slate-200 md:flex">
+          <div className="hidden items-center justify-end border-l border-slate-200 px-4 py-4 text-right text-base font-bold text-body dark:border-slate-700 md:flex">
             {totalSold.toLocaleString()}
           </div>
           <div className="hidden items-center justify-end border-l border-slate-200 px-4 py-4 text-right dark:border-slate-700 md:flex">
@@ -109,7 +109,7 @@ export default function ProductPickerProductRow({
               disabled={!canSelectAll}
               className={`flex-shrink-0 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all ${allSelected
                   ? 'border-blue-300 bg-blue-100 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/20 dark:text-blue-300'
-                  : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-blue-300 hover:text-blue-600 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-800'
+                  : 'border-slate-200 bg-slate-50 text-muted hover:border-blue-300 hover:text-blue-600 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-subtle dark:border-slate-700 dark:bg-slate-800'
                 }`}
             >
               {variantsQuery.isPending
@@ -123,16 +123,16 @@ export default function ProductPickerProductRow({
           </div>
         </div>
 
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 pl-14 text-sm text-slate-500 md:hidden">
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 pl-14 text-sm text-muted md:hidden">
           <span>
             {t('productPicker.productRow.sold')}:{' '}
-            <strong className="text-slate-700 dark:text-slate-200">
+            <strong className="text-body">
               {totalSold.toLocaleString()}
             </strong>
           </span>
           <span>
             {t('productPicker.productRow.stock')}:{' '}
-            <strong className="text-slate-700 dark:text-slate-200">
+            <strong className="text-body">
               {totalStock.toLocaleString()}
             </strong>
           </span>
@@ -152,7 +152,7 @@ export default function ProductPickerProductRow({
               {t('productPicker.productRow.loadFailed')}
             </div>
           ) : variants.length === 0 ? (
-            <div className="px-4 py-6 pl-14 text-sm text-slate-500">
+            <div className="px-4 py-6 pl-14 text-sm text-muted">
               {t('productPicker.productRow.noVariants')}
             </div>
           ) : (

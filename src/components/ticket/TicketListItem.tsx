@@ -26,17 +26,17 @@ function TicketListItemRaw({ ticket, isSelected, onClick, showUserName }: Ticket
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="font-bold text-md truncate">{ticket.subject}</p>
-          <p className="text-sm text-slate-500 mt-1">
-            {showUserName && ticket.userName ? <span className="font-medium text-slate-700 dark:text-slate-300">{ticket.userName} • </span> : ''}
+          <p className="text-sm text-muted mt-1">
+            {showUserName && ticket.userName ? <span className="font-medium text-body">{ticket.userName} • </span> : ''}
             {ticket.ticketNumber} • {formatDate(ticket.createdAt)}
           </p>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-subtle mt-1">
             {t('labels.messagesCount', { count: ticket.messages?.length || 0 })}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <StatusBadge status={ticket.status} className="text-10" />
-          <FiChevronRight className="text-slate-400" />
+          <FiChevronRight className="text-subtle" />
         </div>
       </div>
     </button>

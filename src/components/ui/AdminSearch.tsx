@@ -17,7 +17,7 @@ export default function AdminSearch({
   const { t } = useTranslation('common');
   const resolvedPlaceholder = placeholder || t('actions.search');
   const clearButtonClass =
-    'absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm transition-colors';
+    'absolute right-3 top-1/2 -translate-y-1/2 text-subtle hover:text-body text-sm transition-colors';
   const containerClass = boxed
     ? "bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4"
     : "flex flex-col md:flex-row gap-4";
@@ -41,7 +41,7 @@ export default function AdminSearch({
           autoFocus={autoFocus}
           className={`w-full h-12 pl-12 ${clearable && value ? 'pr-16' : 'pr-4'} rounded-xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500 ${inputClassName}`.trim()}
         />
-        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle text-xl" />
         {clearable && value && (
           <button
             type="button"
@@ -63,7 +63,7 @@ export function FilterButton({ onClick, children }: { onClick?: () => void; chil
   return (
     <button
       onClick={onClick}
-      className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 font-medium"
+      className="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-muted hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 font-medium"
     >
       <FiFilter />
       {children || t('actions.filter')}

@@ -14,11 +14,11 @@ const typeIcons: Record<string, React.ReactNode> = {
   SUPPORT: <FiMessageSquare className="text-amber-500" />,
   TICKET: <FiMessageSquare className="text-amber-500" />,
   PROMOTION: <FiTag className="text-indigo-500" />,
-  SYSTEM: <FiInfo className="text-slate-500" />,
+  SYSTEM: <FiInfo className="text-muted" />,
 };
 
 const BELL_BUTTON_CLASS =
-  "p-2 sm:p-2.5 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative";
+  "p-2 sm:p-2.5 text-muted hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative";
 
 export default function NotificationDropdown({ iconSize = 'text-xl' }: NotificationDropdownProps) {
   const { t } = useTranslation(['layout', 'common']);
@@ -130,8 +130,8 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                 </div>
               ) : localNotifications.length === 0 ? (
                 <div className="py-10 text-center">
-                  <FiBell className="text-3xl text-disabled mx-auto mb-3" />
-                  <p className="text-sm text-slate-400">{t('notifications.empty', { ns: 'layout' })}</p>
+                  <FiBell className="text-3xl text-subtle mx-auto mb-3" />
+                  <p className="text-sm text-subtle">{t('notifications.empty', { ns: 'layout' })}</p>
                 </div>
               ) : (
                 localNotifications.map(n => (
@@ -142,7 +142,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                       }`}
                   >
                     <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 text-base">
-                      {typeIcons[n.type] || <FiBell className="text-slate-400" />}
+                      {typeIcons[n.type] || <FiBell className="text-subtle" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 mb-0.5">
@@ -155,7 +155,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                     {!n.isRead && (
                       <button
                         onClick={(e) => { e.stopPropagation(); handleMarkRead(n.id); }}
-                        className="p-1 text-slate-400 hover:text-green-600 shrink-0 mt-0.5"
+                        className="p-1 text-subtle hover:text-green-600 shrink-0 mt-0.5"
                         title={t('notifications.markRead', { ns: 'layout' })}
                       >
                         <FiCheck className="text-sm" />

@@ -155,7 +155,7 @@ export default function Support() {
       <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)] gap-4 sm:gap-6">
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[46dvh] min-h-[300px] sm:min-h-[340px] lg:h-[calc(100dvh-420px)] lg:min-h-[500px]">
           <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-slate-800 space-y-2.5 sm:space-y-3">
-            <h2 className="font-bold text-slate-900 dark:text-white">{t('support.createTitle')}</h2>
+            <h2 className="font-bold text-ink">{t('support.createTitle')}</h2>
             <FormInput
               placeholder={t('support.subjectPlaceholder')}
               value={newSubject}
@@ -188,7 +188,7 @@ export default function Support() {
                 </div>
               ))
             ) : tickets.length === 0 ? (
-              <div className="p-8 text-center text-slate-400">
+              <div className="p-8 text-center text-subtle">
                 <FiMessageSquare className="text-3xl mx-auto mb-2" />
                 <p className="text-md">{t('support.emptyTickets')}</p>
               </div>
@@ -213,7 +213,7 @@ export default function Support() {
                   <h2 className="text-base sm:text-lg font-bold">{selectedTicket.subject}</h2>
                   <StatusBadge status={selectedTicket.status} />
                 </div>
-                <p className="text-md sm:text-base text-slate-500">
+                <p className="text-md sm:text-base text-muted">
                   {selectedTicket.ticketNumber} • {formatDate(selectedTicket.createdAt)}
                 </p>
               </div>
@@ -228,13 +228,13 @@ export default function Support() {
                       className={`max-w-[92%] sm:max-w-[82%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-md sm:text-base ${
                         msg.senderType === 'USER'
                           ? 'bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-br-md'
-                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-bl-md'
+                          : 'bg-white dark:bg-slate-800 text-body border border-slate-100 dark:border-slate-700 rounded-bl-md'
                       }`}
                     >
                       <p className="leading-relaxed break-words">{msg.content}</p>
                       <p
                         className={`text-11 mt-2 ${
-                          msg.senderType === 'USER' ? 'text-white/70' : 'text-slate-400'
+                          msg.senderType === 'USER' ? 'text-white/70' : 'text-subtle'
                         }`}
                       >
                         {formatDate(msg.createdAt)}
@@ -247,7 +247,7 @@ export default function Support() {
 
               <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800">
                 {isChatClosed ? (
-                  <div className="h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-md sm:text-md text-slate-500 flex items-center">
+                  <div className="h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-md sm:text-md text-muted flex items-center">
                     {t('support.closedHint')}
                   </div>
                 ) : (
@@ -273,7 +273,7 @@ export default function Support() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-400 p-10 text-center">
+            <div className="flex-1 flex items-center justify-center text-subtle p-10 text-center">
               <div>
                 <FiMessageSquare className="text-4xl mx-auto mb-3" />
                 <p>{t('support.emptyChatTitle')}</p>

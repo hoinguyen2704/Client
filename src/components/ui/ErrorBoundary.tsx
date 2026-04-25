@@ -42,7 +42,7 @@ export default class ErrorBoundary extends Component<
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+              <h2 className="text-xl font-bold text-ink mb-2">
                 {i18n.t('errorBoundary.title', { ns: 'common' })}
               </h2>
               <p className="text-muted text-md">

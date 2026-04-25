@@ -4,38 +4,14 @@
   @apply text-slate-900 dark:text-slate-100;
 }
 
-@utility text-ink-max {
-  @apply text-slate-900 dark:text-slate-50;
-}
-
-@utility text-strong {
-  @apply text-slate-800 dark:text-slate-100;
-}
-
-@utility text-strong-soft {
+@utility text-body {
   @apply text-slate-800 dark:text-slate-200;
 }
 
-@utility text-body {
+@utility text-muted {
   @apply text-slate-700 dark:text-slate-300;
 }
 
-@utility text-body-soft {
-  @apply text-slate-600 dark:text-slate-300;
-}
-
-@utility text-muted {
-  @apply text-slate-500 dark:text-slate-400;
-}
-
-@utility text-muted-strong {
-  @apply text-slate-600 dark:text-slate-400;
-}
-
-@utility text-disabled {
-  @apply text-slate-300 dark:text-slate-600;
-}
-
 @utility text-subtle {
-  @apply text-slate-400 dark:text-slate-500;
+  @apply text-slate-500 dark:text-slate-400;
 }

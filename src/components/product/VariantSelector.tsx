@@ -160,18 +160,18 @@ function VariantSelector({
   if (groups.length === 0) {
     return (
       <div className={className}>
-        <h3 className="font-bold mb-3">{label}</h3>
+        <h3 className="mb-3 text-base font-extrabold">{label}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {variants.map((variant, idx) => {
             const isActive = idx === selectedIndex;
             const variantButtonClass = isActive
               ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300'
-              : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 text-slate-600 dark:text-slate-300';
+              : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 text-body';
             return (
               <button
                 key={variant.id}
                 onClick={() => onSelect(idx)}
-                className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-center ${variantButtonClass}`}
+                className={`px-4 py-2.5 rounded-xl border-2 font-semibold transition-all text-center ${variantButtonClass}`}
               >
                 {variant.displayName || variant.variantName || variant.sku}
               </button>
@@ -186,7 +186,7 @@ function VariantSelector({
     <div className={`space-y-5 ${className}`}>
       {groups.map((group) => (
         <div key={group.id}>
-          <h3 className="font-bold mb-3">{group.name}</h3>
+          <h3 className="mb-3 text-base font-extrabold">{group.name}</h3>
           <div className="flex flex-wrap gap-3">
             {group.options.map((option) => {
               const isActive = selectedOptions[group.id] === option.id;
@@ -197,10 +197,10 @@ function VariantSelector({
               const targetVariantIdx = resolveVariantIndexBySelection(nextSelection);
               const isDisabled = targetVariantIdx === -1;
               const optionButtonClass = isDisabled
-                ? 'border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/30'
+                ? 'border-slate-200 dark:border-slate-800 text-body cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/30'
                 : isActive
                   ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300'
-                  : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 text-slate-600 dark:text-slate-300';
+                  : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 text-body';
 
               return (
                 <button
@@ -214,7 +214,7 @@ function VariantSelector({
                     }
                   }}
                   disabled={isDisabled && !isActive}
-                  className={`px-4 py-2.5 rounded-xl border-2 font-medium transition-all text-center min-w-[110px] ${optionButtonClass}`}
+                  className={`px-4 py-2.5 rounded-xl border-2 font-semibold transition-all text-center min-w-[110px] ${optionButtonClass}`}
                 >
                   <span className="block">{option.label}</span>
                 </button>

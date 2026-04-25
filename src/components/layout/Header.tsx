@@ -24,11 +24,11 @@ const navItems = [
 export { navItems };
 
 const ICON_BUTTON_CLASS =
-  'p-2 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-700 dark:hover:text-blue-300 rounded-xl transition-colors';
+  'p-2 text-muted hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-700 dark:hover:text-blue-300 rounded-xl transition-colors';
 const HEADER_PILL_BUTTON_CLASS =
   'border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700';
 const USER_MENU_LINK_CLASS =
-  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-body-soft hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors';
+  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-md font-medium text-muted hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors';
 
 export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogout }: HeaderProps) {
   const { t } = useTranslation(['layout', 'common']);
@@ -78,7 +78,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
               onKeyDown={handleSearch}
               className="w-full h-12 pl-4 pr-12 rounded-2xl bg-white border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
             />
-            <FiSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl group-focus-within:text-blue-600 transition-colors" />
+            <FiSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle text-xl group-focus-within:text-blue-600 transition-colors" />
           </div>
 
           {/* Actions */}
@@ -97,13 +97,13 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
             <button className={`md:hidden ${ICON_BUTTON_CLASS}`}>
               <FiSearch className="text-xl" />
             </button>
-            <Link to="/wishlist" className="p-2 text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-rose-500 rounded-xl transition-colors relative">
+            <Link to="/wishlist" className="p-2 text-muted hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-rose-500 rounded-xl transition-colors relative">
               <FiHeart className="text-xl" />
               {wishlistCount > 0 && (
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-800 animate-pulse"></span>
               )}
             </Link>
-            <Link to="/cart" className="p-2 text-body-soft hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-blue-300 rounded-xl transition-colors relative">
+            <Link to="/cart" className="p-2 text-muted hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-blue-300 rounded-xl transition-colors relative">
               <FiShoppingCart className="text-xl" />
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-sm text-white shadow-sm shadow-blue-950/15">
@@ -131,7 +131,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
                     >
                       <div className="p-4 border-b border-slate-100 dark:border-slate-700">
                         <p className="font-bold text-md truncate">{user.email}</p>
-                        <p className="text-sm text-slate-500 capitalize mt-0.5">
+                        <p className="text-sm text-muted capitalize mt-0.5">
                           {user.role?.toLowerCase() === 'admin'
                             ? t('roles.admin', { ns: 'common' })
                             : t('roles.customer', { ns: 'common' })}
@@ -183,7 +183,7 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
         </div>
 
         {/* Navigation Menu */}
-        <nav className="hidden md:flex items-center gap-8 h-12 text-15 font-semibold text-body-soft">
+        <nav className="hidden md:flex items-center gap-8 h-12 text-15 font-semibold text-muted">
           {navItems.map((item) => (
             <NavLink
               key={item.path}

@@ -173,13 +173,13 @@ export default function ProductDetail() {
   return (
     <div className="mx-auto w-full px-4 md:px-8 lg:px-12 py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-sm md:text-md text-slate-500 mb-6">
+      <nav className="flex text-sm md:text-md text-muted mb-6">
         <ol className="flex items-center space-x-2">
           <li><Link to="/" className="transition-colors hover:text-blue-700 dark:hover:text-blue-300">{t('navigation.home', { ns: 'layout' })}</Link></li>
           <li><FiChevronRight /></li>
           <li><Link to="/products" className="transition-colors hover:text-blue-700 dark:hover:text-blue-300">{product.category?.name || t('navigation.products', { ns: 'layout' })}</Link></li>
           <li><FiChevronRight /></li>
-          <li><span className="text-slate-900 dark:text-slate-100 font-medium line-clamp-1">{product.name}</span></li>
+          <li><span className="text-ink font-medium line-clamp-1">{product.name}</span></li>
         </ol>
       </nav>
 

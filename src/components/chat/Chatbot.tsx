@@ -340,7 +340,7 @@ export default function Chatbot({
                       "max-w-[92%] sm:max-w-[80%] p-2.5 sm:p-3 rounded-2xl text-md " +
                       (msg.role === "user"
                         ? "bg-blue-600 text-white rounded-tr-none"
-                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-none shadow-sm")
+                        : "bg-white dark:bg-slate-800 text-body border border-slate-100 dark:border-slate-700 rounded-tl-none shadow-sm")
                     }
                   >
                     {msg.role === "user" ? (
@@ -419,7 +419,7 @@ export default function Chatbot({
                   <FiSend />
                 </button>
               </div>
-              <p className="text-10 text-slate-400 dark:text-slate-600 mt-1.5 text-center">
+              <p className="text-10 text-subtle mt-1.5 text-center">
                 Powered by {botName} + AI
               </p>
             </div>

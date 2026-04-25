@@ -45,7 +45,7 @@ export function LoadingScreen() {
           <div className="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-800" />
           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin" />
         </div>
-        <p className="text-md text-slate-500 dark:text-slate-400 font-medium">
+        <p className="text-md text-muted font-medium">
           {t('loading.default')}
         </p>
       </div>

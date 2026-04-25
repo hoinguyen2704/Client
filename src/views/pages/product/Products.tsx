@@ -182,7 +182,7 @@ export default function Products() {
   return (
     <div className="w-full px-3 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-sm sm:text-md text-slate-500 mb-5 sm:mb-8">
+      <nav className="flex text-sm sm:text-md text-muted mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
           <li>
             <Link to="/" className="transition-colors hover:text-blue-700 dark:hover:text-blue-300">
@@ -193,7 +193,7 @@ export default function Products() {
             <span className="mx-2">/</span>
           </li>
           <li>
-            <span className="text-slate-900 dark:text-slate-100 font-medium">
+            <span className="text-ink font-medium">
               {t("products.breadcrumbCurrent")}
             </span>
           </li>
@@ -225,7 +225,7 @@ export default function Products() {
               <div>
                 <h3 className="font-bold mb-4 text-lg">{t("products.searchTitle")}</h3>
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-subtle" />
                   <input
                     type="text"
                     value={keyword}
@@ -245,7 +245,7 @@ export default function Products() {
                   className="flex items-center justify-between w-full mb-4">
                   <h3 className="font-bold text-lg">{t("products.categoriesTitle")}</h3>
                   <motion.span animate={{ rotate: isCategoryOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
-                    <FiChevronDown className="text-slate-400" />
+                    <FiChevronDown className="text-subtle" />
                   </motion.span>
                 </button>
                 <AnimatePresence initial={false}>
@@ -265,7 +265,7 @@ export default function Products() {
                           className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                             !selectedCategorySlug
                               ? "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 font-medium"
-                              : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              : "text-muted hover:bg-slate-50 dark:hover:bg-slate-800"
                           }`}>
                           {t("products.allCategories")}
                         </button>
@@ -276,7 +276,7 @@ export default function Products() {
                             className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${
                               selectedCategorySlug === cat.slug
                                 ? "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 font-medium"
-                                : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                                : "text-muted hover:bg-slate-50 dark:hover:bg-slate-800"
                             }`}>
                             {cat.name}
                           </button>
@@ -295,7 +295,7 @@ export default function Products() {
                     className="flex items-center justify-between w-full mb-4">
                     <h3 className="font-bold text-lg">{t("products.brandsTitle")}</h3>
                     <motion.span animate={{ rotate: isBrandOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
-                      <FiChevronDown className="text-slate-400" />
+                      <FiChevronDown className="text-subtle" />
                     </motion.span>
                   </button>
                   <AnimatePresence initial={false}>
@@ -319,10 +319,10 @@ export default function Products() {
                                 onCheckedChange={() => handleBrandChange(brand.slug)}
                                 className="w-5 h-5 rounded border-slate-300 dark:border-slate-600"
                               />
-                              <span className="text-slate-700 dark:text-slate-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                              <span className="text-body group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                                 {brand.name}
                                 {brand.productCount > 0 && (
-                                  <span className="text-sm text-slate-400 ml-1">
+                                  <span className="text-sm text-subtle ml-1">
                                     ({brand.productCount})
                                   </span>
                                 )}
@@ -365,13 +365,13 @@ export default function Products() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
             <h1 className="text-xl sm:text-2xl font-bold">
               {t("products.pageTitle")}{" "}
-              <span className="text-slate-500 text-md sm:text-lg font-normal">
+              <span className="text-muted text-md sm:text-lg font-normal">
                 ({pageInfo?.total || 0})
               </span>
             </h1>
 
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-sm sm:text-md text-slate-500">{t("products.sortBy")}</span>
+              <span className="text-sm sm:text-md text-muted">{t("products.sortBy")}</span>
               <div>
                 <CustomSelect
                   value={currentSortValue()}
@@ -422,12 +422,12 @@ export default function Products() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center py-14 sm:py-20 text-center">
               <div className="w-28 h-28 sm:w-40 sm:h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
-                <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
+                <FiSearch className="text-4xl sm:text-6xl text-subtle" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold mb-2">
                 {t("products.empty.title")}
               </h2>
-              <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
+              <p className="text-md sm:text-base text-muted mb-6 sm:mb-8 max-w-md">
                 {t("products.empty.description")}
               </p>
               <Button onClick={handleClearFilters} size="md">

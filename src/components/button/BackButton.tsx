@@ -6,7 +6,7 @@ export default function BackButton({ to, label, className = '' }: BackButtonProp
     return (
       <Link
         to={to}
-        className={`inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium ${className}`}>
+        className={`inline-flex items-center gap-2 text-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium ${className}`}>
         <FiArrowLeft />
         {label}
       </Link>

@@ -99,7 +99,7 @@ export default function OrderDetail() {
   }
 
   if (!order) {
-    return <div className="p-8 text-center text-slate-400">{t('orderDetail.notFound')}</div>;
+    return <div className="p-8 text-center text-subtle">{t('orderDetail.notFound')}</div>;
   }
 
   return (
@@ -113,12 +113,12 @@ export default function OrderDetail() {
               {t('orderDetail.title', { orderNumber: order.orderNumber })}
               <StatusBadge status={order.orderStatus} />
             </h1>
-            <p className="text-slate-500 text-md mt-1">{formatDate(order.createdAt)}</p>
+            <p className="text-muted text-md mt-1">{formatDate(order.createdAt)}</p>
           </div>
         </div>
       <div className="flex flex-col sm:flex-row sm:items-end gap-3">
           <div className="w-full sm:w-56">
-            <label className="block text-sm font-semibold text-slate-500 mb-1.5">{t('orderDetail.statusLabel')}</label>
+            <label className="block text-sm font-semibold text-muted mb-1.5">{t('orderDetail.statusLabel')}</label>
             <CustomSelect
               value={editStatus || order.orderStatus}
               onChange={handleUpdateStatus}
@@ -149,10 +149,10 @@ export default function OrderDetail() {
                     <div key={history.id} className="flex gap-4">
                       {/* Left: Time */}
                       <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
-                        <div className="text-md font-medium text-strong-soft">
+                        <div className="text-md font-medium text-body">
                           {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>
-                        <div className="text-sm text-slate-500 mt-1">
+                        <div className="text-sm text-muted mt-1">
                           {time.toLocaleDateString()}
                         </div>
                       </div>
@@ -168,7 +168,7 @@ export default function OrderDetail() {
 
                       {/* Right: Content */}
                       <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted-strong'}`}>
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted'}`}>
                           {history.status === 'SHIPPED' ? t('orderDetail.timelineDelivered') : history.description}
                         </h4>
                         {isFirst && history.status === 'SHIPPED' && (
@@ -192,7 +192,7 @@ export default function OrderDetail() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[620px] text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md">
                     <th className="pb-3 font-medium">{t('orderDetail.table.product')}</th>
                     <th className="pb-3 font-medium text-center">{t('orderDetail.table.unitPrice')}</th>
                     <th className="pb-3 font-medium text-center">{t('orderDetail.table.quantity')}</th>
@@ -204,7 +204,7 @@ export default function OrderDetail() {
                     <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0">
                       <td className="py-4">
                         <div className="font-bold">{item.productName}</div>
-                        <div className="text-md text-slate-500">{item.variantName}</div>
+                        <div className="text-md text-muted">{item.variantName}</div>
                       </td>
                       <td className="py-4 text-center font-medium">{formatPrice(item.unitPrice)}</td>
                       <td className="py-4 text-center font-medium">{item.quantity}</td>
@@ -233,19 +233,19 @@ export default function OrderDetail() {
             <div className="space-y-3 text-md">
               {order.customerName && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">{t('orderDetail.fullName')}:</span>
+                  <span className="text-muted">{t('orderDetail.fullName')}:</span>
                   <span className="font-medium">{order.customerName}</span>
                 </div>
               )}
               {order.customerEmail && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">{t('orderDetail.email')}:</span>
+                  <span className="text-muted">{t('orderDetail.email')}:</span>
                   <span className="font-medium text-blue-600">{order.customerEmail}</span>
                 </div>
               )}
               {order.customerPhone && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">{t('orderDetail.phone')}:</span>
+                  <span className="text-muted">{t('orderDetail.phone')}:</span>
                   <span className="font-medium">{order.customerPhone}</span>
                 </div>
               )}
@@ -263,16 +263,16 @@ export default function OrderDetail() {
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><FiCreditCard className="text-green-600" /> {t('orderDetail.paymentTitle')}</h2>
             <div className="space-y-3 text-md">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-slate-500">{t('orderDetail.paymentMethod')}:</span>
+                <span className="text-muted">{t('orderDetail.paymentMethod')}:</span>
                 <span className="font-medium">{order.paymentMethod}</span>
               </div>
               <div className="flex items-start justify-between gap-3">
-                <span className="text-slate-500">{t('orderDetail.paymentStatus')}:</span>
+                <span className="text-muted">{t('orderDetail.paymentStatus')}:</span>
                 <StatusBadge status={order.paymentStatus} />
               </div>
               {order.couponCode && (
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-slate-500">{t('orderDetail.couponCode')}:</span>
+                  <span className="text-muted">{t('orderDetail.couponCode')}:</span>
                   <span className="font-mono font-bold text-blue-600">{order.couponCode}</span>
                 </div>
               )}
@@ -283,19 +283,19 @@ export default function OrderDetail() {
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
             <h2 className="text-lg font-bold mb-4">{t('orderDetail.summaryTitle')}</h2>
             <div className="space-y-3 text-md">
-              <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.subtotal')}</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.subtotal)}</span></div>
-              <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.shippingFee')}</span><span className="font-medium text-slate-900 dark:text-white">{formatPrice(order.shippingFee)}</span></div>
-              {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.productDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
-              {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-slate-500"><span>{t('orderDetail.summary.shippingDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
+              <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.subtotal')}</span><span className="font-medium text-ink">{formatPrice(order.subtotal)}</span></div>
+              <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.shippingFee')}</span><span className="font-medium text-ink">{formatPrice(order.shippingFee)}</span></div>
+              {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.productDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
+              {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.shippingDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
               {(order.taxAmount || 0) > 0 && (
-                <div className="flex justify-between text-slate-500">
+                <div className="flex justify-between text-muted">
                   <span>
                     {t('orderDetail.summary.vat', {
                       percent: order.taxPercent ?? 0,
                       suffix: order.taxMode === 'INCLUDED' ? t('orderDetail.summary.vatIncluded') : '',
                     })}
                   </span>
-                  <span className={`font-medium ${order.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
+                  <span className={`font-medium ${order.taxMode === 'EXCLUDED' ? 'text-ink' : 'text-muted'}`}>
                     {order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}
                   </span>
                 </div>
@@ -321,18 +321,18 @@ export default function OrderDetail() {
         <div className="text-right">
           <h1 className="text-2xl font-bold uppercase tracking-widest text-[#2539e6]">{t('orderDetail.invoice.title')}</h1>
           <p className="font-bold text-lg mt-2 font-mono">#{order.orderNumber}</p>
-          <p className="text-md text-slate-600">{t('orderDetail.invoice.date')}: {formatDate(order.createdAt)}</p>
+          <p className="text-md text-muted">{t('orderDetail.invoice.date')}: {formatDate(order.createdAt)}</p>
         </div>
       </div>
 
       <div className="mb-8 border-t border-slate-200 pt-6 flex justify-between">
         <div>
-          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">{t('orderDetail.invoice.customer')}</h3>
+          <h3 className="font-bold text-muted uppercase text-sm mb-2">{t('orderDetail.invoice.customer')}</h3>
           <p className="font-bold text-base">{order.customerName}</p>
           <p className="text-md">{order.shippingAddress || t('orderDetail.invoice.pickupFallback')}</p>
         </div>
         <div className="text-right">
-          <h3 className="font-bold text-slate-500 uppercase text-sm mb-2">{t('orderDetail.invoice.paymentShipping')}</h3>
+          <h3 className="font-bold text-muted uppercase text-sm mb-2">{t('orderDetail.invoice.paymentShipping')}</h3>
           <p className="text-md"><strong>{t('orderDetail.paymentMethod')}:</strong> {order.paymentMethod}</p>
           <p className="text-md"><strong>{t('orderDetail.paymentStatus')}:</strong> {order.paymentStatus === 'PAID' ? t('orderDetail.invoice.paid') : t('orderDetail.invoice.unpaid')}</p>
         </div>
@@ -388,15 +388,15 @@ export default function OrderDetail() {
       <div className="flex justify-between text-center mx-12 mt-16 text-md">
         <div>
           <p className="font-bold mb-24">{t('orderDetail.invoice.buyer')}</p>
-          <p className="text-slate-500 italic">{t('orderDetail.invoice.signatureHint')}</p>
+          <p className="text-muted italic">{t('orderDetail.invoice.signatureHint')}</p>
         </div>
         <div>
           <p className="font-bold mb-24">{t('orderDetail.invoice.seller')}</p>
-          <p className="text-slate-500 italic">{t('orderDetail.invoice.signatureHint')}</p>
+          <p className="text-muted italic">{t('orderDetail.invoice.signatureHint')}</p>
         </div>
       </div>
 
-      <div className="mt-20 text-center text-sm text-slate-500 border-t border-slate-200 pt-4">
+      <div className="mt-20 text-center text-sm text-muted border-t border-slate-200 pt-4">
         {t('orderDetail.invoice.thanks', { shopName: shop.shopName })}
       </div>
     </div>

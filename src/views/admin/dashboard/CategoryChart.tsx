@@ -20,12 +20,12 @@ export default function CategoryChart({ stats }: DashboardChildProps) {
       </h2>
 
       {chartData.length === 0 ? (
-        <div className="h-72 sm:h-96 flex items-center justify-center text-slate-400">{t('overview.charts.categories.empty')}</div>
+        <div className="h-72 sm:h-96 flex items-center justify-center text-subtle">{t('overview.charts.categories.empty')}</div>
       ) : (
         <>
           <div className="flex items-center gap-2 mb-4">
             <div className="w-4 h-3 bg-blue-500 rounded-sm" />
-            <span className="text-md text-slate-500">{t('overview.charts.categories.legendSold')}</span>
+            <span className="text-md text-muted">{t('overview.charts.categories.legendSold')}</span>
           </div>
           <div className="h-72 sm:h-96 min-w-0">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>

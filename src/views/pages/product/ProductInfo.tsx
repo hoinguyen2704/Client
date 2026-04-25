@@ -405,7 +405,7 @@ export default function ProductInfo({
     <div className="w-full min-w-0 flex flex-col gap-4 lg:gap-5">
       <h1 className="text-3xl md:text-[2.45rem] font-bold leading-[1.08]">{product.name}</h1>
 
-      <div className="flex items-center gap-x-3 gap-y-2 flex-wrap text-sm md:text-[15px]">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold md:text-[15px]">
         {rating > 0 && (
           <>
             <div className="flex items-center gap-1 text-yellow-400">
@@ -413,13 +413,13 @@ export default function ProductInfo({
                 <FiStar key={star} className={star <= Math.round(rating) ? 'fill-current' : ''} />
               ))}
             </div>
-            <span className="font-medium">{rating.toFixed(1)}/5</span>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-slate-500">{t('productDetail.meta.reviewsCount', { ns: 'catalog', count: reviews })}</span>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <span className="font-bold text-body">{rating.toFixed(1)}/5</span>
+            <span className="text-subtle">•</span>
+            <span className="text-body">{t('productDetail.meta.reviewsCount', { ns: 'catalog', count: reviews })}</span>
+            <span className="text-subtle">•</span>
           </>
         )}
-        <span className="text-slate-500">
+        <span className="text-body">
           {isSelectionComplete && activeVariant
             ? t('productDetail.meta.selectedVariantSold', {
                 ns: 'catalog',
@@ -432,8 +432,10 @@ export default function ProductInfo({
         </span>
         {product.brandName && (
           <>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span className="text-slate-500">{t('productDetail.meta.brand', { ns: 'catalog' })}: <strong>{product.brandName}</strong></span>
+            <span className="text-subtle">•</span>
+            <span className="text-body">
+              {t('productDetail.meta.brand', { ns: 'catalog' })}: <strong className="font-extrabold text-ink">{product.brandName}</strong>
+            </span>
           </>
         )}
       </div>
@@ -446,7 +448,7 @@ export default function ProductInfo({
             </span>
             {comparePrice > price && (
               <>
-                <span className="mb-0.5 whitespace-nowrap text-lg text-slate-400 line-through md:text-xl">{formatPrice(comparePrice)}</span>
+                <span className="mb-0.5 whitespace-nowrap text-lg text-subtle line-through md:text-xl">{formatPrice(comparePrice)}</span>
                 {discountPercent > 0 ? (
                   <span className="mb-0.5 inline-flex whitespace-nowrap rounded-xl bg-rose-600 px-2.5 py-1 text-sm font-black uppercase tracking-[0.08em] text-white shadow-sm md:text-sm">
                     {discountPercent}% giảm
@@ -462,7 +464,7 @@ export default function ProductInfo({
               : `${formatPrice(variantSalePriceRange.min)} - ${formatPrice(variantSalePriceRange.max)}`}
           </span>
         ) : (
-          <span className="text-lg font-semibold text-slate-500 dark:text-slate-300">
+          <span className="text-lg font-semibold text-muted">
             {t('productDetail.pricing.chooseVariantToSeePrice', { ns: 'catalog' })}
           </span>
         )}
@@ -472,7 +474,7 @@ export default function ProductInfo({
           {metaChips.map((chip) => (
             <span
               key={chip}
-              className="inline-flex min-h-8 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+              className="inline-flex min-h-8 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-body dark:border-slate-700 dark:bg-slate-800"
             >
               {chip}
             </span>
@@ -508,7 +510,7 @@ export default function ProductInfo({
           {highlightSpecs.map(([key, value]) => (
             <span
               key={key}
-              className="max-w-full whitespace-normal break-words rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-sm font-medium leading-snug text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 md:text-md"
+              className="max-w-full whitespace-normal break-words rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-sm font-medium leading-snug text-body dark:border-slate-700 dark:bg-slate-800 md:text-md"
             >
               {value}
             </span>
@@ -528,7 +530,7 @@ export default function ProductInfo({
         />
 
         <div className="pt-1">
-          <h3 className="font-bold mb-3 text-base">{t('productDetail.quantity.title', { ns: 'catalog' })}</h3>
+          <h3 className="mb-3 text-base font-extrabold">{t('productDetail.quantity.title', { ns: 'catalog' })}</h3>
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <QuantitySelector
               value={quantity}
@@ -539,7 +541,7 @@ export default function ProductInfo({
               disabled={!canPurchase || stock <= 0}
               overMaxWarning={t('productDetail.quantity.overMaxWarning', { ns: 'catalog', count: stock })}
             />
-            <span className="text-sm md:text-md text-slate-500 font-medium">
+            <span className="text-sm md:text-md text-body font-semibold">
                 {!isSelectionComplete && isSelectionRequired
                   ? t('productDetail.quantity.chooseMore', { ns: 'catalog', attributes: missingAttributeNames.join(', ') })
                   : stock > 0
@@ -577,7 +579,7 @@ export default function ProductInfo({
           title={t('productDetail.actions.wishlist', { ns: 'catalog' })}
           className={`h-12 w-12 shrink-0 rounded-xl border-2 flex items-center justify-center transition-all ${liked
               ? 'border-red-200 bg-red-50 text-red-500 dark:border-red-800 dark:bg-red-900/20'
-              : 'border-slate-200 dark:border-slate-700 text-slate-500 hover:text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+              : 'border-slate-200 dark:border-slate-700 text-muted hover:text-red-500 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
             }`}
         >
           <FiHeart className={`text-2xl ${liked ? 'fill-red-500 cursor-pointer' : ''}`} />

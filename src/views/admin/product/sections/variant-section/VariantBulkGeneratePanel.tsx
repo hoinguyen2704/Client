@@ -19,7 +19,7 @@ export default memo(function VariantBulkGeneratePanel(
 
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-3 dark:border-slate-700 dark:bg-slate-800/30">
-      <p className="text-sm font-semibold text-body-soft">
+      <p className="text-sm font-semibold text-muted">
         {t("variantBulkGenerate.description")}
       </p>
 
@@ -39,7 +39,7 @@ export default memo(function VariantBulkGeneratePanel(
                       className={`cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-colors ${
                         checked
                           ? "border-blue-400 bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300"
-                          : "border-slate-200 text-body-soft dark:border-slate-700"
+                          : "border-slate-200 text-muted dark:border-slate-700"
                       }`}
                     >
                       <span className="mr-1.5 align-middle">

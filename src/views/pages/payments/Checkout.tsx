@@ -347,7 +347,7 @@ export default function Checkout() {
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-5 sm:py-8 md:py-12 space-y-5 sm:space-y-8">
-      <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white mb-1 sm:mb-2">{t('title')}</h1>
+      <h1 className="text-2xl sm:text-3xl font-black text-ink mb-1 sm:mb-2">{t('title')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
         <div className="lg:col-span-8 space-y-4 sm:space-y-8">
@@ -374,8 +374,8 @@ export default function Checkout() {
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-3 sm:mb-4 relative z-10 border border-slate-100 dark:border-slate-700 group-hover:scale-110 transition-transform">
                   <FiMapPin className="text-xl sm:text-2xl text-blue-500" />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold mb-2 relative z-10 text-slate-800 dark:text-white">{t('address.emptyTitle')}</h3>
-                <p className="text-md text-slate-500 mb-6 max-w-sm relative z-10">{t('address.emptyDescription')}</p>
+                <h3 className="text-base sm:text-lg font-bold mb-2 relative z-10 text-ink">{t('address.emptyTitle')}</h3>
+                <p className="text-md text-muted mb-6 max-w-sm relative z-10">{t('address.emptyDescription')}</p>
                 <Button
                   type="button"
                   onClick={() => { resetForm(); setShowForm(true); }}
@@ -400,9 +400,9 @@ export default function Checkout() {
                     <div className="flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                         <div className="flex items-center flex-wrap gap-2">
-                          <span className="font-bold text-md sm:text-base text-slate-800 dark:text-white">{addr.fullName}</span>
-                          <span className="text-disabled">|</span>
-                          <span className="font-medium text-md sm:text-base text-muted-strong">{addr.phoneNumber}</span>
+                          <span className="font-bold text-md sm:text-base text-ink">{addr.fullName}</span>
+                          <span className="text-subtle">|</span>
+                          <span className="font-medium text-md sm:text-base text-muted">{addr.phoneNumber}</span>
                           {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-11 font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 uppercase tracking-wide">{t('address.default')}</span>}
                         </div>
                         <IconButton
@@ -410,10 +410,10 @@ export default function Checkout() {
                           icon={<FiEdit2 />}
                           title={t('address.edit')}
                           variant="ghost"
-                          className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                          className="text-subtle hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                         />
                       </div>
-                      <p className="text-sm sm:text-md text-muted-strong leading-relaxed">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
+                      <p className="text-sm sm:text-md text-muted leading-relaxed">{addr.detailAddress}, {addr.ward}, {addr.district}, {addr.province}</p>
                     </div>
                   </label>
                 ))}
@@ -429,7 +429,7 @@ export default function Checkout() {
                   {item.imageUrl ? <img src={item.imageUrl} alt={item.productName} className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-slate-50" /> : <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-slate-100 dark:bg-slate-800" />}
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium text-md sm:text-base truncate">{item.productName}</h4>
-                    <p className="text-sm sm:text-md text-slate-500">{item.variantName} | x{item.quantity}</p>
+                    <p className="text-sm sm:text-md text-muted">{item.variantName} | x{item.quantity}</p>
                     {item.available === false && (
                       <p className="text-sm text-red-500 mt-1">{item.issueMessage || t('items.unavailable')}</p>
                     )}
@@ -528,36 +528,36 @@ export default function Checkout() {
           <div className="rounded-2xl border border-slate-100 bg-white/80 p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-950/30">
             <div className="space-y-3.5 sm:space-y-4 text-md sm:text-[15px]">
               <div className="flex items-center justify-between gap-4">
-                <span className="max-w-[58%] text-slate-500">{t('summary.subtotal')}</span>
-                <span className="text-right font-semibold tabular-nums text-slate-900 dark:text-white">{formatPrice(subtotal)}</span>
+                <span className="max-w-[58%] text-muted">{t('summary.subtotal')}</span>
+                <span className="text-right font-semibold tabular-nums text-ink">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="max-w-[58%] text-slate-500">{t('summary.shippingFee')}</span>
-                <span className="text-right font-semibold tabular-nums text-slate-900 dark:text-white">
+                <span className="max-w-[58%] text-muted">{t('summary.shippingFee')}</span>
+                <span className="text-right font-semibold tabular-nums text-ink">
                   {formatPrice(shippingFee)}
                 </span>
               </div>
               {productDiscount > 0 && (
                 <div className="flex items-center justify-between gap-4">
-                  <span className="max-w-[58%] text-slate-500">{t('summary.productDiscount')}</span>
+                  <span className="max-w-[58%] text-muted">{t('summary.productDiscount')}</span>
                   <span className="text-right text-sm font-bold tracking-wide text-emerald-500 tabular-nums uppercase">-{formatPrice(productDiscount)}</span>
                 </div>
               )}
               <div className="flex items-center justify-between gap-4">
-                <span className="max-w-[58%] text-slate-500">{t('summary.shippingDiscount')}</span>
-                <span className={`text-right font-semibold tabular-nums ${shippingDiscount > 0 ? 'text-emerald-500' : 'text-slate-500'}`}>
+                <span className="max-w-[58%] text-muted">{t('summary.shippingDiscount')}</span>
+                <span className={`text-right font-semibold tabular-nums ${shippingDiscount > 0 ? 'text-emerald-500' : 'text-muted'}`}>
                   {shippingDiscount > 0 ? `-${formatPrice(shippingDiscount)}` : formatPrice(0)}
                 </span>
               </div>
               {taxAmount > 0 && (
                 <div className="flex items-center justify-between gap-4">
-                  <span className="max-w-[58%] text-slate-500">
+                  <span className="max-w-[58%] text-muted">
                     {t('summary.vat', {
                       percent: taxConfig.taxPercent,
                       suffix: taxConfig.taxMode === 'INCLUDED' ? t('summary.vatIncluded') : '',
                     })}
                   </span>
-                  <span className={`text-right font-semibold tabular-nums ${taxConfig.taxMode === 'EXCLUDED' ? 'text-slate-900 dark:text-white' : 'text-slate-500'}`}>
+                  <span className={`text-right font-semibold tabular-nums ${taxConfig.taxMode === 'EXCLUDED' ? 'text-ink' : 'text-muted'}`}>
                     {taxConfig.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(taxAmount)}
                   </span>
                 </div>
@@ -567,8 +567,8 @@ export default function Checkout() {
           <div className="rounded-2xl border border-blue-100/80 bg-gradient-to-br from-white via-blue-50/50 to-blue-50/60 p-4 sm:p-5 dark:border-blue-900/40 dark:from-slate-900 dark:via-blue-950/15 dark:to-blue-950/15">
             <div className="space-y-3">
               <div className="min-w-0">
-                <p className="text-lg font-bold text-slate-900 dark:text-white sm:text-xl">{t('summary.total')}</p>
-                <p className="mt-1 max-w-[15rem] text-sm leading-snug text-slate-500 dark:text-slate-400">
+                <p className="text-lg font-bold text-ink sm:text-xl">{t('summary.total')}</p>
+                <p className="mt-1 max-w-[15rem] text-sm leading-snug text-muted">
                   {!taxConfig.enabled ? "" : taxConfig.taxMode === 'INCLUDED' ? t('summary.taxIncluded') : ""}
                 </p>
               </div>
@@ -607,7 +607,7 @@ export default function Checkout() {
           <SectionCard
             title={t('voucherModal.manualTitle')}
             className="bg-slate-50/70 dark:bg-slate-800/30"
-            titleClassName="text-md font-bold uppercase tracking-wide text-body-soft"
+            titleClassName="text-md font-bold uppercase tracking-wide text-muted"
           >
             <div className="flex flex-col sm:flex-row gap-2">
               <input
@@ -647,7 +647,7 @@ export default function Checkout() {
                   <span className="shrink-0 px-2 py-0.5 text-11 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                     {publicVouchers.length}
                   </span>
-                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-blue-600 ${expandPublic ? 'rotate-180' : ''}`} />
+                  <FiChevronDown className={`shrink-0 text-lg text-subtle transition-transform group-hover:text-blue-600 ${expandPublic ? 'rotate-180' : ''}`} />
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
@@ -659,10 +659,10 @@ export default function Checkout() {
                 </div>
               )
             }
-            titleClassName="text-md font-bold uppercase tracking-wide text-body-soft"
+            titleClassName="text-md font-bold uppercase tracking-wide text-muted"
           >
             {publicVouchers.length === 0 ? (
-              <p className="text-md text-slate-400">{t('voucherModal.noPublic')}</p>
+              <p className="text-md text-subtle">{t('voucherModal.noPublic')}</p>
             ) : (
               <div className="space-y-3">
                 {getVisibleVouchers(publicVouchers, expandPublic).map(voucher => (
@@ -699,7 +699,7 @@ export default function Checkout() {
                   <span className="shrink-0 px-2 py-0.5 text-11 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                     {savedVouchers.length}
                   </span>
-                  <FiChevronDown className={`shrink-0 text-lg text-slate-400 transition-transform group-hover:text-blue-600 ${expandSaved ? 'rotate-180' : ''}`} />
+                  <FiChevronDown className={`shrink-0 text-lg text-subtle transition-transform group-hover:text-blue-600 ${expandSaved ? 'rotate-180' : ''}`} />
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
@@ -711,12 +711,12 @@ export default function Checkout() {
                 </div>
               )
             }
-            titleClassName="text-md font-bold uppercase tracking-wide text-body-soft"
+            titleClassName="text-md font-bold uppercase tracking-wide text-muted"
           >
             {!user ? (
-              <p className="text-md text-slate-400">{t('voucherModal.loginToViewSaved')}</p>
+              <p className="text-md text-subtle">{t('voucherModal.loginToViewSaved')}</p>
             ) : savedVouchers.length === 0 ? (
-              <p className="text-md text-slate-400">{t('voucherModal.noSaved')}</p>
+              <p className="text-md text-subtle">{t('voucherModal.noSaved')}</p>
             ) : (
               <div className="space-y-3">
                 {getVisibleVouchers(savedVouchers, expandSaved).map(voucher => (
@@ -798,8 +798,8 @@ export default function Checkout() {
                 />
               </div>
               <div>
-                <span className="text-md sm:text-lg font-bold text-slate-800 dark:text-slate-200">{t('address.form.setDefault')}</span>
-                <p className="text-sm sm:text-base text-slate-500 mt-0.5">{t('address.form.setDefaultHint')}</p>
+                <span className="text-md sm:text-lg font-bold text-body">{t('address.form.setDefault')}</span>
+                <p className="text-sm sm:text-base text-muted mt-0.5">{t('address.form.setDefaultHint')}</p>
               </div>
             </label>
           </div>

@@ -133,16 +133,16 @@ export default function CustomerDetail() {
             </Button>
 
             <div className="mt-5 sm:mt-6 space-y-3 text-left text-md">
-              <div className="flex items-center gap-3 text-ink dark:text-slate-300">
-                <FiMail className="text-slate-400 shrink-0" />
+              <div className="flex items-center gap-3 text-body">
+                <FiMail className="text-subtle shrink-0" />
                 <span className="truncate">{user.email}</span>
               </div>
-              <div className="flex items-center gap-3 text-ink dark:text-slate-300">
-                <FiPhone className="text-slate-400 shrink-0" />
+              <div className="flex items-center gap-3 text-body">
+                <FiPhone className="text-subtle shrink-0" />
                 <span>{user.phoneNumber || '—'}</span>
               </div>
-              <div className="flex items-center gap-3 text-ink dark:text-slate-300">
-                <FiCalendar className="text-slate-400 shrink-0" />
+              <div className="flex items-center gap-3 text-body">
+                <FiCalendar className="text-subtle shrink-0" />
                 <span>{t('detail.joined', { date: formatDate(user.createdAt) })}</span>
               </div>
             </div>
@@ -157,27 +157,27 @@ export default function CustomerDetail() {
             </div>
             <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <span className="text-md text-slate-500">{t('detail.fullName')}</span>
+                <span className="text-md text-muted">{t('detail.fullName')}</span>
                 <p className="font-bold">{user.fullName}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">{t('detail.email')}</span>
+                <span className="text-md text-muted">{t('detail.email')}</span>
                 <p className="font-bold">{user.email}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">{t('detail.phone')}</span>
+                <span className="text-md text-muted">{t('detail.phone')}</span>
                 <p className="font-bold">{user.phoneNumber || '—'}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">{t('detail.gender')}</span>
+                <span className="text-md text-muted">{t('detail.gender')}</span>
                 <p className="font-bold">{user.gender || '—'}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">{t('detail.dateOfBirth')}</span>
+                <span className="text-md text-muted">{t('detail.dateOfBirth')}</span>
                 <p className="font-bold">{user.dateOfBirth ? formatDate(user.dateOfBirth) : '—'}</p>
               </div>
               <div>
-                <span className="text-md text-slate-500">{t('detail.createdAt')}</span>
+                <span className="text-md text-muted">{t('detail.createdAt')}</span>
                 <p className="font-bold">{formatDate(user.createdAt)}</p>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function CustomerDetail() {
                 <h3 className="text-md font-bold">{t('detail.phoneUpdateTitle')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-md text-slate-500 mb-2">{t('detail.newPhone')}</label>
+                    <label className="block text-md text-muted mb-2">{t('detail.newPhone')}</label>
                     <input
                       type="tel"
                       value={phoneNumber}
@@ -197,7 +197,7 @@ export default function CustomerDetail() {
                     />
                   </div>
                   <div>
-                    <label className="block text-md text-slate-500 mb-2">{t('detail.changeReason')}</label>
+                    <label className="block text-md text-muted mb-2">{t('detail.changeReason')}</label>
                     <input
                       type="text"
                       value={phoneReason}

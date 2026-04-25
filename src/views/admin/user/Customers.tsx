@@ -160,7 +160,7 @@ export default function Customers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1020px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-ink dark:text-slate-300 text-md divide-x divide-slate-200 dark:divide-slate-700">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md divide-x divide-slate-200 dark:divide-slate-700">
                 <th className="p-3 sm:p-4 font-medium text-center w-20">{t('adminCustomers:customers.table.index')}</th>
                 <th className="p-3 sm:p-4 font-medium">
                   <SortableHeaderLabel

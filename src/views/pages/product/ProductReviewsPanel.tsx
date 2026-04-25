@@ -28,7 +28,7 @@ function ReviewReply({
         <FiMessageSquare />
         {label}
       </p>
-      <p className="text-sm leading-7 text-slate-700 dark:text-slate-300 sm:text-base">
+      <p className="text-sm leading-7 text-body sm:text-base">
         {content}
       </p>
     </div>
@@ -69,33 +69,33 @@ export default function ProductReviewsPanel({
     <div className="space-y-5">
       <div className="grid gap-4 xl:grid-cols-[220px_minmax(0,1fr)_260px]">
         <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-5 text-center dark:border-slate-800 dark:bg-slate-800/50">
-          <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-semibold uppercase tracking-[0.08em] text-muted">
             {t('productDetail.tabs.reviewOverviewTitle')}
           </p>
-          <div className="mt-3 text-5xl font-black text-slate-900 dark:text-slate-50 sm:text-6xl">
+          <div className="mt-3 text-5xl font-black text-ink sm:text-6xl">
             {rating.toFixed(1)}
           </div>
           <div className="mt-3 flex justify-center">
             <StarRating value={Math.round(rating)} onChange={() => {}} readOnly size="sm" />
           </div>
-          <div className="mt-3 text-sm text-slate-500 dark:text-slate-400 sm:text-base">
+          <div className="mt-3 text-sm text-muted sm:text-base">
             {t('productDetail.tabs.reviewsCount', { count: reviews })}
           </div>
         </div>
 
         <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">
+            <h3 className="text-base font-bold text-ink sm:text-lg">
               {t('productDetail.tabs.reviewDistributionTitle')}
             </h3>
-            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 sm:text-sm">
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-muted dark:border-slate-700 dark:bg-slate-800 sm:text-sm">
               {t('productDetail.tabs.reviewsCount', { count: reviews })}
             </span>
           </div>
           <div className="space-y-2.5">
             {[5, 4, 3, 2, 1].map((star) => (
               <div key={star} className="flex items-center gap-3">
-                <div className="flex w-10 items-center gap-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <div className="flex w-10 items-center gap-1 text-sm font-semibold text-body">
                   {star}
                   <FiStar className="fill-current text-yellow-400" />
                 </div>
@@ -105,7 +105,7 @@ export default function ProductReviewsPanel({
                     style={{ width: `${starDistribution[star]}%` }}
                   />
                 </div>
-                <span className="w-10 text-right text-sm text-slate-400 dark:text-slate-500">
+                <span className="w-10 text-right text-sm text-subtle">
                   {starDistribution[star]}%
                 </span>
               </div>
@@ -118,7 +118,7 @@ export default function ProductReviewsPanel({
             <FiCheckCircle />
             {t('productDetail.tabs.reviewVerifiedBadge')}
           </span>
-          <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300 sm:text-base">
+          <p className="mt-4 text-sm leading-7 text-muted sm:text-base">
             {t('productDetail.tabs.verifiedOnly')}
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function ProductReviewsPanel({
                 className={`rounded-2xl border px-4 py-2 text-sm font-semibold transition-colors sm:text-base ${
                   isActive
                     ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm dark:border-blue-500 dark:bg-blue-950/30 dark:text-blue-300'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-slate-100'
+                    : 'border-slate-200 bg-white text-muted hover:border-slate-300 hover:text-ink dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600'
                 }`}
               >
                 {chip.label}
@@ -193,11 +193,11 @@ export default function ProductReviewsPanel({
 
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                        <h4 className="text-base font-bold text-ink">
                           {mainFeedback.userName}
                         </h4>
                         {mainFeedback.variantName && (
-                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-muted dark:border-slate-700 dark:bg-slate-800">
                             {t('productDetail.tabs.variant', { value: mainFeedback.variantName })}
                           </span>
                         )}
@@ -207,7 +207,7 @@ export default function ProductReviewsPanel({
                           </span>
                         )}
                       </div>
-                      <div className="mt-1 text-sm text-slate-400 dark:text-slate-500">
+                      <div className="mt-1 text-sm text-subtle">
                         {formatDate(mainFeedback.createdAt)}
                       </div>
                     </div>
@@ -219,7 +219,7 @@ export default function ProductReviewsPanel({
                 </div>
 
                 {mainFeedback.content && (
-                  <p className="mt-4 max-w-3xl whitespace-pre-line text-sm leading-7 text-slate-700 dark:text-slate-300 sm:text-base">
+                  <p className="mt-4 max-w-3xl whitespace-pre-line text-sm leading-7 text-body sm:text-base">
                     {mainFeedback.content}
                   </p>
                 )}
@@ -236,14 +236,14 @@ export default function ProductReviewsPanel({
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 sm:text-base">
+                          <p className="text-sm font-semibold text-body sm:text-base">
                             {t('productDetail.tabs.updatedReview', { afterText })}
                           </p>
                           <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-950/20 dark:text-blue-300">
                             {t('productDetail.tabs.new')}
                           </span>
                         </div>
-                        <div className="mt-1 text-sm text-slate-400 dark:text-slate-500">
+                        <div className="mt-1 text-sm text-subtle">
                           {formatDate(updatedFeedback.createdAt)}
                         </div>
                       </div>
@@ -254,7 +254,7 @@ export default function ProductReviewsPanel({
                     </div>
 
                     {updatedFeedback.content && (
-                      <p className="mt-4 max-w-3xl whitespace-pre-line text-sm leading-7 text-slate-700 dark:text-slate-300 sm:text-base">
+                      <p className="mt-4 max-w-3xl whitespace-pre-line text-sm leading-7 text-body sm:text-base">
                         {updatedFeedback.content}
                       </p>
                     )}
@@ -273,7 +273,7 @@ export default function ProductReviewsPanel({
           </div>
         ) : (
           <div className="flex min-h-[260px] items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-800/40">
-            <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+            <p className="text-base font-semibold text-body">
               {activeFilter === 'all'
                 ? t('productDetail.tabs.emptyReviews')
                 : t('productDetail.tabs.emptyReviewsFiltered')}

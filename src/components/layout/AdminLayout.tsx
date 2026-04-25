@@ -46,7 +46,7 @@ export default function AdminLayout() {
 
   return (
     <AdminQueryProvider>
-      <div className="admin-border-strong min-h-screen flex bg-slate-50 dark:bg-slate-900 text-ink-max">
+      <div className="admin-border-strong min-h-screen flex bg-slate-50 dark:bg-slate-900 text-ink">
         <AdminSidebar />
 
         <div className={`flex-1 min-w-0 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'}`}>

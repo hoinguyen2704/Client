@@ -73,22 +73,22 @@ export default function VnpayReturn() {
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <FiCheck className="text-4xl sm:text-5xl text-emerald-500" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-slate-800 dark:text-white">{t('vnpayReturn.success.title')}</h1>
-            <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-ink">{t('vnpayReturn.success.title')}</h1>
+            <p className="text-md sm:text-base text-muted mb-2">
               <Trans
                 i18nKey="checkout:vnpayReturn.success.orderCode"
                 values={{ txnRef }}
-                components={{ strong: <span className="font-bold text-slate-900 dark:text-white" /> }}
+                components={{ strong: <span className="font-bold text-ink" /> }}
               />
             </p>
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-5 text-md text-left space-y-2 border border-slate-100 dark:border-slate-700 w-full inline-block">
                 <div className="flex justify-between">
-                    <span className="text-slate-500">{t('vnpayReturn.success.amount')}:</span>
-                    <span className="font-bold text-slate-800 dark:text-white">{formatPrice(amount)}</span>
+                    <span className="text-muted">{t('vnpayReturn.success.amount')}:</span>
+                    <span className="font-bold text-ink">{formatPrice(amount)}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="text-slate-500">{t('vnpayReturn.success.bank')}:</span>
-                    <span className="font-medium text-slate-800 dark:text-white">{bankCode || 'VNPAY'}</span>
+                    <span className="text-muted">{t('vnpayReturn.success.bank')}:</span>
+                    <span className="font-medium text-ink">{bankCode || 'VNPAY'}</span>
                 </div>
             </div>
             <Button
@@ -99,7 +99,7 @@ export default function VnpayReturn() {
             >
               {t('vnpayReturn.success.trackOrder')}
             </Button>
-            <Link to="/" className="block w-full py-3.5 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
+            <Link to="/" className="block w-full py-3.5 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-ink font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
               {t('vnpayReturn.success.continueShopping')}
             </Link>
           </>
@@ -108,15 +108,15 @@ export default function VnpayReturn() {
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <FiAlertCircle className="text-4xl sm:text-5xl text-red-500" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-slate-800 dark:text-white">{t('vnpayReturn.failed.title')}</h1>
-            <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-ink">{t('vnpayReturn.failed.title')}</h1>
+            <p className="text-md sm:text-base text-muted mb-5 sm:mb-6">
               {t('vnpayReturn.failed.description', { message })}
             </p>
             {txnRef && (
               <div className="bg-red-50 dark:bg-red-900/10 rounded-xl p-3 mb-5 text-md text-left space-y-1 border border-red-100 dark:border-red-900/50">
                   <div className="flex justify-between">
                       <span className="text-red-500 font-medium whitespace-nowrap mr-2">{t('vnpayReturn.failed.orderCode')}:</span>
-                      <span className="font-mono text-slate-700 dark:text-slate-300 truncate">{txnRef}</span>
+                      <span className="font-mono text-body truncate">{txnRef}</span>
                   </div>
               </div>
             )}
@@ -126,7 +126,7 @@ export default function VnpayReturn() {
             >
               <FiCreditCard /> {t('vnpayReturn.failed.retry')}
             </button>
-            <Link to="/cart" className="block w-full py-3.5 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
+            <Link to="/cart" className="block w-full py-3.5 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-ink font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
               {t('vnpayReturn.failed.backToCart')}
             </Link>
           </>

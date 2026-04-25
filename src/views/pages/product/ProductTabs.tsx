@@ -162,13 +162,13 @@ export default function ProductTabs({
                   className={`relative flex min-h-[76px] flex-col items-start justify-center rounded-2xl border px-4 py-3 text-left transition-all ${
                     isActive
                       ? 'border-blue-200 bg-blue-50/80 text-blue-700 shadow-sm dark:border-blue-800/60 dark:bg-blue-950/20 dark:text-blue-300'
-                      : 'border-transparent bg-white text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
+                      : 'border-transparent bg-white text-muted hover:border-slate-200 hover:bg-slate-50 hover:text-ink dark:bg-slate-900 dark:hover:border-slate-700 dark:hover:bg-slate-800/60'
                   }`}
                 >
                   <span className="text-sm font-bold sm:text-base lg:text-lg">
                     {tab.label}
                   </span>
-                  <span className={`mt-1 text-xs font-medium sm:text-sm ${isActive ? 'text-blue-600/80 dark:text-blue-300/80' : 'text-slate-400 dark:text-slate-500'}`}>
+                  <span className={`mt-1 text-xs font-medium sm:text-sm ${isActive ? 'text-blue-600/80 dark:text-blue-300/80' : 'text-subtle'}`}>
                     {tab.meta}
                   </span>
                   {isActive && (

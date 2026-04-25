@@ -23,7 +23,7 @@ export default function CategorySpecTemplatesSection({
         <div className="flex min-w-0 items-center gap-2">
           <FiList className="text-blue-500" />
           <span className="font-medium text-md">{t("categories.specTemplates.header")}</span>
-          <span className="text-sm text-slate-400">
+          <span className="text-sm text-subtle">
             ({t("categories.specTemplates.count", { count: rows.length })})
           </span>
         </div>
@@ -41,7 +41,7 @@ export default function CategorySpecTemplatesSection({
 
       {rows.length === 0 ? (
         <div className="p-6 text-center">
-          <p className="mb-3 text-md text-slate-400">{t("categories.specTemplates.empty")}</p>
+          <p className="mb-3 text-md text-subtle">{t("categories.specTemplates.empty")}</p>
           <Button
             type="button"
             onClick={onAdd}
@@ -55,10 +55,10 @@ export default function CategorySpecTemplatesSection({
       ) : (
         <div className="divide-y-2 divide-slate-200 dark:divide-slate-700">
           <div className="grid grid-cols-[minmax(120px,1fr)_minmax(160px,1.5fr)_40px] gap-2 border-b-2 border-slate-200 bg-slate-50/50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800/30 sm:gap-3 sm:px-4">
-            <span className="text-sm font-medium uppercase tracking-wider text-slate-400">
+            <span className="text-sm font-medium uppercase tracking-wider text-subtle">
               {t("categories.specTemplates.nameHeader")}
             </span>
-            <span className="text-sm font-medium uppercase tracking-wider text-slate-400">
+            <span className="text-sm font-medium uppercase tracking-wider text-subtle">
               {t("categories.specTemplates.hintHeader")}
             </span>
             <span />

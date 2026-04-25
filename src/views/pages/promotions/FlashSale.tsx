@@ -66,7 +66,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-slate-300 dark:text-slate-600">
+          <div className="flex h-full w-full items-center justify-center text-subtle">
             <FiZap className="text-5xl" />
           </div>
         )}
@@ -94,10 +94,10 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
 
       <div className="flex flex-1 flex-col gap-3 p-3.5 sm:p-4">
         <div className="min-h-[72px]">
-          <h3 className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 transition-colors group-hover:text-red-600 dark:text-white sm:text-[15px]">
+          <h3 className="line-clamp-2 text-sm font-bold leading-snug text-ink transition-colors group-hover:text-red-600 dark:text-white sm:text-[15px]">
             {item.productName}
           </h3>
-          <p className="mt-1.5 min-h-[36px] line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm">
+          <p className="mt-1.5 min-h-[36px] line-clamp-2 text-sm leading-relaxed text-muted sm:text-sm">
             {item.variantName || t('flashSale.defaultVariant')}
           </p>
         </div>
@@ -108,7 +108,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
               {formatPrice(item.flashPrice)}
             </span>
             {item.originalPrice > 0 ? (
-              <span className="pb-0.5 text-sm text-slate-400 line-through sm:text-sm">
+              <span className="pb-0.5 text-sm text-subtle line-through sm:text-sm">
                 {formatPrice(item.originalPrice)}
               </span>
             ) : null}
@@ -122,7 +122,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
 
         <div className="mt-auto rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-red-50/60 p-3 dark:border-orange-900/30 dark:from-orange-950/20 dark:to-red-950/10">
           <div className="mb-2 flex items-center justify-between gap-2 text-[11px] font-semibold sm:text-sm">
-            <span className="text-slate-600 dark:text-slate-300">{t('flashSale.progressLabel')}</span>
+            <span className="text-muted">{t('flashSale.progressLabel')}</span>
             <div className="flex items-center gap-2">
               <span className={`rounded-full px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] sm:text-[11px] ${soldOut
                   ? 'bg-red-500/12 text-red-500'
@@ -141,13 +141,13 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
               style={{ width: `${soldPercent}%` }}
             />
           </div>
-          <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-muted">
             <span>{t('flashSale.soldCount', { count: safeSoldCount })}</span>
             <span>{t('flashSale.dealSlots', { count: safeFlashStock })}</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-0.5 text-sm font-semibold text-slate-600 transition-colors group-hover:text-red-500 dark:text-slate-300 sm:text-sm">
+        <div className="flex items-center justify-between pt-0.5 text-sm font-semibold text-muted transition-colors group-hover:text-red-500 sm:text-sm">
           <span>{soldOut ? t('flashSale.actions.viewDetails') : t('flashSale.actions.grabDeal')}</span>
           <FiArrowRight className="text-base transition-transform group-hover:translate-x-1" />
         </div>
@@ -234,10 +234,10 @@ export default function FlashSale() {
           <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-orange-500 text-white shadow-lg shadow-orange-500/25">
             <FiZap className="text-4xl" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white sm:text-3xl">
+          <h2 className="text-2xl font-black text-ink sm:text-3xl">
             {t('flashSale.empty.title')}
           </h2>
-          <p className="mt-3 max-w-md text-md leading-relaxed text-slate-500 dark:text-slate-400 sm:text-base">
+          <p className="mt-3 max-w-md text-md leading-relaxed text-muted sm:text-base">
             {t('flashSale.empty.description')}
           </p>
         </div>
@@ -254,15 +254,15 @@ export default function FlashSale() {
               <FiZap className="text-sm" />
               {t('flashSale.heroEyebrow')}
             </span>
-            <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            <h1 className="mt-3 text-3xl font-black tracking-tight text-ink sm:text-4xl">
               {t('flashSale.heroTitle')}
             </h1>
-            <p className="mt-2 max-w-3xl text-md leading-relaxed text-slate-500 dark:text-slate-400 sm:text-base">
+            <p className="mt-2 max-w-3xl text-md leading-relaxed text-muted sm:text-base">
               {t('flashSale.heroDescription')}
             </p>
           </div>
 
-          <div className="inline-flex items-center gap-2 self-start rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+          <div className="inline-flex items-center gap-2 self-start rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-muted shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <FiTrendingUp className="text-red-500" />
             {t('flashSale.activeCampaigns', { count: activeSalesCount })}
           </div>
@@ -332,7 +332,7 @@ export default function FlashSale() {
                     ))}
                   </div>
                 ) : (
-                  <div className="rounded-[24px] border border-dashed border-slate-200 bg-white/80 px-6 py-10 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-400">
+                  <div className="rounded-[24px] border border-dashed border-slate-200 bg-white/80 px-6 py-10 text-center text-muted dark:border-slate-800 dark:bg-slate-900/70">
                     {t('flashSale.emptyProducts')}
                   </div>
                 )}

@@ -14,7 +14,7 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
     'bg-slate-100 dark:bg-slate-800 text-body hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700',
   danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-950/10',
   ghost:
-    'bg-transparent text-body-soft hover:bg-slate-100 dark:hover:bg-slate-800',
+    'bg-transparent text-muted hover:bg-slate-100 dark:hover:bg-slate-800',
   outline:
     'border-2 border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 bg-transparent',
   success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-950/10',

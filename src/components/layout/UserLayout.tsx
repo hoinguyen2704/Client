@@ -8,7 +8,7 @@ import useNotificationStore from '@/stores/useNotificationStore';
 import { useClickOutside } from '@/hooks';
 
 const USER_LAYOUT_IDLE_ITEM_CLASS =
-  "text-muted-strong hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200";
+  "text-muted hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-ink";
 
 const menuItems = [
   { path: '/user/profile', icon: FiUser, labelKey: 'userLayout.menu.profile' },
@@ -79,13 +79,13 @@ export default function UserLayout() {
             <div className="lg:hidden relative" ref={mobileMenuRef}>
               <button
                 onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-between text-md font-semibold"
+                className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-body flex items-center justify-between text-md font-semibold"
               >
                 <span className="flex items-center gap-2 min-w-0">
                   <ActiveMenuIcon className="text-base shrink-0" />
                   <span className="truncate">{t(activeMenuItem.labelKey, { ns: 'layout' })}</span>
                 </span>
-                <FiChevronDown className={cn('text-base text-slate-400 transition-transform', isMobileMenuOpen && 'rotate-180')} />
+                <FiChevronDown className={cn('text-base text-subtle transition-transform', isMobileMenuOpen && 'rotate-180')} />
               </button>
 
               {isMobileMenuOpen && (

@@ -40,7 +40,7 @@ export default function MainLayout() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-ink-max transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-ink transition-colors duration-300">
       <Header
         user={normalizedUser}
         theme={darkMode ? 'dark' : 'light'}

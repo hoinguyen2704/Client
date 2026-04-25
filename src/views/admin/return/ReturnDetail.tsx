@@ -242,7 +242,7 @@ export default function ReturnDetail() {
     return (
       <div className="space-y-4">
         <BackButton to="/admin/returns" />
-        <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 text-slate-400">
+        <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 text-subtle">
           {t('returns.detail.notFound')}
         </div>
       </div>
@@ -259,8 +259,8 @@ export default function ReturnDetail() {
               {returnRequest.returnNumber}
               <ReturnStatusBadge status={returnRequest.status} />
             </h1>
-            <p className="text-slate-500 text-md mt-1">
-              {t('returns.detail.orderLabel')}: <span className="font-semibold text-slate-700 dark:text-slate-200">{returnRequest.orderNumber}</span> | {t('returns.detail.createdAtLabel')}{' '}
+            <p className="text-muted text-md mt-1">
+              {t('returns.detail.orderLabel')}: <span className="font-semibold text-body">{returnRequest.orderNumber}</span> | {t('returns.detail.createdAtLabel')}{' '}
               {formatDateTime(returnRequest.createdAt)}
             </p>
           </div>
@@ -283,10 +283,10 @@ export default function ReturnDetail() {
                     <div key={history.id} className="flex gap-4">
                       {/* Left: Time */}
                       <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
-                        <div className="text-md font-medium text-slate-800 dark:text-slate-200">
+                        <div className="text-md font-medium text-body">
                           {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>
-                        <div className="text-sm text-slate-500 mt-1">
+                        <div className="text-sm text-muted mt-1">
                           {time.toLocaleDateString()}
                         </div>
                       </div>
@@ -302,7 +302,7 @@ export default function ReturnDetail() {
 
                       {/* Right: Content */}
                       <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted'}`}>
                           {history.description}
                         </h4>
                       </div>
@@ -321,7 +321,7 @@ export default function ReturnDetail() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md">
                     <th className="pb-3 font-medium">{t('returns.detail.table.product')}</th>
                     <th className="pb-3 font-medium">{t('returns.detail.table.variant')}</th>
                     <th className="pb-3 font-medium text-right">{t('returns.detail.table.unitPrice')}</th>
@@ -334,7 +334,7 @@ export default function ReturnDetail() {
                   {returnRequest.items.map((item) => (
                     <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0">
                       <td className="py-4 font-semibold">{item.productName}</td>
-                      <td className="py-4 text-slate-500">{item.variantName || '-'}</td>
+                      <td className="py-4 text-muted">{item.variantName || '-'}</td>
                       <td className="py-4 text-right">{formatPrice(Number(item.unitPrice || 0))}</td>
                       <td className="py-4 text-center">{item.requestedQuantity}</td>
                       <td className="py-4 text-center">{item.approvedQuantity ?? '-'}</td>
@@ -353,14 +353,14 @@ export default function ReturnDetail() {
             </h2>
 
             {returnRequest.refunds.length === 0 ? (
-              <div className="p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-md text-slate-500">
+              <div className="p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-md text-muted">
                 {t('returns.detail.refundTransactionsEmpty')}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[740px] text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 text-md">
+                    <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md">
                       <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.time')}</th>
                       <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.provider')}</th>
                       <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.transactionId')}</th>
@@ -395,24 +395,24 @@ export default function ReturnDetail() {
             </h2>
             <div className="space-y-3 text-md">
               <div>
-                <p className="text-slate-500">{t('returns.detail.customer')}</p>
+                <p className="text-muted">{t('returns.detail.customer')}</p>
                 <p className="font-semibold">{returnRequest.userName || t('returns.detail.unknown')}</p>
-                <p className="text-slate-500">{returnRequest.userEmail || '-'}</p>
+                <p className="text-muted">{returnRequest.userEmail || '-'}</p>
               </div>
               <div>
-                <p className="text-slate-500">{t('returns.detail.reason')}</p>
+                <p className="text-muted">{t('returns.detail.reason')}</p>
                 <p className="font-medium">{returnRequest.reason}</p>
               </div>
               <div>
-                <p className="text-slate-500">{t('returns.detail.customerNote')}</p>
+                <p className="text-muted">{t('returns.detail.customerNote')}</p>
                 <p className="font-medium">{returnRequest.evidenceNote || t('returns.detail.none')}</p>
               </div>
               <div>
-                <p className="text-slate-500">{t('returns.detail.adminNote')}</p>
+                <p className="text-muted">{t('returns.detail.adminNote')}</p>
                 <p className="font-medium">{returnRequest.adminNote || t('returns.detail.noAdminNote')}</p>
               </div>
               {returnRequest.resolvedAt && (
-                <div className="flex items-center gap-2 text-sm text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-2 text-sm text-muted pt-2 border-t border-slate-100 dark:border-slate-800">
                   <FiClock />
                   {t('returns.detail.resolvedAt', { date: formatDateTime(returnRequest.resolvedAt) })}
                 </div>
@@ -427,11 +427,11 @@ export default function ReturnDetail() {
             </h2>
             <div className="space-y-2 text-md">
               <div className="flex justify-between">
-                <span className="text-slate-500">{t('returns.detail.requestedAmount')}</span>
+                <span className="text-muted">{t('returns.detail.requestedAmount')}</span>
                 <span className="font-semibold">{formatPrice(Number(returnRequest.requestedAmount || 0))}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">{t('returns.detail.approvedAmount')}</span>
+                <span className="text-muted">{t('returns.detail.approvedAmount')}</span>
                 <span className="font-semibold">
                   {returnRequest.approvedAmount != null
                     ? formatPrice(Number(returnRequest.approvedAmount || 0))
@@ -439,7 +439,7 @@ export default function ReturnDetail() {
                 </span>
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">{t('returns.detail.refundedAmount')}</span>
+                <span className="text-muted">{t('returns.detail.refundedAmount')}</span>
                 <span className="font-bold text-emerald-600">{formatPrice(Number(returnRequest.refundAmount || 0))}</span>
               </div>
             </div>

@@ -26,9 +26,9 @@ export default function CustomSelect({ value, options, onChange, className = '',
 
   const selectedOption = options.find(o => o.value === value) || options[0];
   const triggerFallbackClass =
-    'bg-white border-slate-200 text-slate-800 dark:bg-slate-900 dark:border-slate-700 dark:text-white hover:border-slate-300 dark:hover:border-slate-600';
+    'bg-white border-slate-200 text-ink dark:bg-slate-900 dark:border-slate-700 dark:text-white hover:border-slate-300 dark:hover:border-slate-600';
   const idleOptionClass =
-    'text-body hover:bg-slate-100 dark:hover:bg-slate-700/70 hover:text-slate-900 dark:hover:text-white';
+    'text-body hover:bg-slate-100 dark:hover:bg-slate-700/70 hover:text-ink';
 
   const updatePosition = useCallback(() => {
     if (!containerRef.current) return;

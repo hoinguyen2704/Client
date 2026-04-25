@@ -51,7 +51,7 @@ export default memo(function VariantSection(props: Props) {
     [newAttributeOptionLabelsText],
   );
   const bulkActionButtonClass =
-    "h-9 px-3 rounded-lg text-sm font-medium border border-slate-200 dark:border-slate-600 text-body-soft";
+    "h-9 px-3 rounded-lg text-sm font-medium border border-slate-200 dark:border-slate-600 text-muted";
   const canCreateAttribute = useMemo(
     () =>
       newAttributeName.trim().length > 0
@@ -162,7 +162,7 @@ export default memo(function VariantSection(props: Props) {
           <button
             type="button"
             onClick={sortVariantsByLatestUpdated}
-            className="text-md font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors"
+            className="text-md font-semibold text-body bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors"
             title={t("variantSection.sortLatestUpdatedTitle")}
           >
             <FiClock />
@@ -283,7 +283,7 @@ export default memo(function VariantSection(props: Props) {
         size="md"
       >
         <div className="space-y-4">
-          <p className="text-md text-slate-500 dark:text-slate-400">
+          <p className="text-md text-muted">
             {t("variantSection.addAttributeDescription")}
           </p>
 

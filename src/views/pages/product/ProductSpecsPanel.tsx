@@ -30,10 +30,10 @@ export default function ProductSpecsPanel({ specEntries }: ProductSpecsPanelProp
   if (specEntries.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-800/40">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-muted dark:bg-slate-800">
           <FiCpu className="text-xl" />
         </div>
-        <p className="mt-4 text-base font-semibold text-slate-700 dark:text-slate-200">
+        <p className="mt-4 text-base font-semibold text-body">
           {t('productDetail.tabs.noSpecs')}
         </p>
       </div>
@@ -48,14 +48,14 @@ export default function ProductSpecsPanel({ specEntries }: ProductSpecsPanelProp
             <span className="inline-flex items-center rounded-full border border-blue-200 bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-blue-700 dark:border-blue-800 dark:bg-slate-900/70 dark:text-blue-300">
               {t('productDetail.tabs.specHighlights')}
             </span>
-            <h3 className="mt-3 text-lg font-bold text-slate-900 dark:text-slate-50 sm:text-xl">
+            <h3 className="mt-3 text-lg font-bold text-ink sm:text-xl">
               {t('productDetail.tabs.specs')}
             </h3>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400 sm:text-base">
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-muted sm:text-base">
               {t('productDetail.tabs.specsIntro')}
             </p>
           </div>
-          <span className="inline-flex w-fit items-center rounded-full bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
+          <span className="inline-flex w-fit items-center rounded-full bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white dark:bg-slate-100 dark:text-black">
             {t('productDetail.tabs.specsMeta', { count: specEntries.length })}
           </span>
         </div>
@@ -70,7 +70,7 @@ export default function ProductSpecsPanel({ specEntries }: ProductSpecsPanelProp
                 <p className="text-xs font-bold uppercase tracking-[0.08em] text-blue-700/80 dark:text-blue-300/80">
                   {label}
                 </p>
-                <p className="mt-2 text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100">
+                <p className="mt-2 text-sm font-semibold leading-6 text-ink">
                   {value}
                 </p>
               </div>
@@ -86,10 +86,10 @@ export default function ProductSpecsPanel({ specEntries }: ProductSpecsPanelProp
               key={`${label}-${index}`}
               className="rounded-2xl border border-slate-100 bg-slate-50/80 px-4 py-4 dark:border-slate-800 dark:bg-slate-800/50"
             >
-              <dt className="text-xs font-bold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+              <dt className="text-xs font-bold uppercase tracking-[0.08em] text-muted">
                 {label}
               </dt>
-              <dd className="mt-2 text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100 sm:text-base">
+              <dd className="mt-2 text-sm font-semibold leading-6 text-ink sm:text-base">
                 {value}
               </dd>
             </div>

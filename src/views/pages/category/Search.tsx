@@ -115,11 +115,11 @@ export default function Search() {
   return (
     <div className="w-full px-3 sm:px-4 md:px-8 lg:px-12 py-5 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex text-sm sm:text-md text-slate-500 mb-5 sm:mb-8">
+      <nav className="flex text-sm sm:text-md text-muted mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
           <li><Link to="/" className="hover:text-blue-600">{t('layout:navigation.home')}</Link></li>
           <li><span className="mx-2">/</span></li>
-          <li><span className="text-slate-900 dark:text-slate-100 font-medium">{t('catalog:search.breadcrumbCurrent')}</span></li>
+          <li><span className="text-ink font-medium">{t('catalog:search.breadcrumbCurrent')}</span></li>
         </ol>
       </nav>
 
@@ -151,7 +151,7 @@ export default function Search() {
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryChange(cat.slug)}
-                      className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${selectedCategory === cat.slug ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                      className={`w-full text-left px-4 py-2.5 rounded-xl transition-colors ${selectedCategory === cat.slug ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-medium' : 'text-muted hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                     >
                       {cat.name}
                     </button>
@@ -170,7 +170,7 @@ export default function Search() {
                           onCheckedChange={() => handleBrandChange(brand.slug)}
                           className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 dark:checked:border-blue-500 dark:checked:bg-blue-500"
                         />
-                      <span className="text-slate-700 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{brand.name}</span>
+                      <span className="text-body group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{brand.name}</span>
                     </label>
                   ))}
                 </div>
@@ -189,11 +189,11 @@ export default function Search() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
             <h1 className="text-xl sm:text-2xl font-bold">
               {query ? t('catalog:search.resultsFor', { query }) : t('catalog:search.allProducts')} 
-              <span className="text-slate-500 text-md sm:text-lg font-normal"> ({totalElements})</span>
+              <span className="text-muted text-md sm:text-lg font-normal"> ({totalElements})</span>
             </h1>
             
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-sm sm:text-md text-slate-500">{t('catalog:search.sortBy')}</span>
+              <span className="text-sm sm:text-md text-muted">{t('catalog:search.sortBy')}</span>
               <div>
                 <CustomSelect 
                   value={sortBy === 'price' ? (sortDir === 'asc' ? 'price-asc' : 'price-desc') : 'newest'}
@@ -237,10 +237,10 @@ export default function Search() {
               className="flex flex-col items-center justify-center py-14 sm:py-20 text-center"
             >
               <div className="w-28 h-28 sm:w-40 sm:h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
-                <FiSearch className="text-4xl sm:text-6xl text-slate-300 dark:text-slate-600" />
+                <FiSearch className="text-4xl sm:text-6xl text-subtle" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold mb-2">{t('catalog:search.empty.title')}</h2>
-              <p className="text-md sm:text-base text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 max-w-md">
+              <p className="text-md sm:text-base text-muted mb-6 sm:mb-8 max-w-md">
                 {t('catalog:search.empty.description')}
               </p>
               <Button onClick={clearFilters} size="md">

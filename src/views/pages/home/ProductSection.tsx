@@ -21,37 +21,39 @@ export default function ProductSection({
   if (!products.length) return null;
 
   return (
-    <section className={`w-full px-4 py-5 md:px-8 md:py-6 lg:px-12 lg:py-7  ${bgClassName} m-12 rounded-2xl shadow-sm border border-slate-200`}>
-      <div className="mb-5 flex items-center justify-between sm:mb-6 ">
-        <div className="flex items-center gap-4">
-          {icon}
-          <div>
-            <h2 className="text-2xl font-bold">{title}</h2>
-            {subtitle && <div className="mt-1">{subtitle}</div>}
+    <section className="w-full px-4 py-5 md:px-8 md:py-6 lg:px-12 lg:py-7">
+      <div className={`rounded-[2rem] border border-slate-200 px-4 py-5 shadow-sm md:px-6 md:py-6 lg:px-8 lg:py-7 ${bgClassName}`}>
+        <div className="mb-5 flex items-center justify-between sm:mb-6">
+          <div className="flex items-center gap-4">
+            {icon}
+            <div>
+              <h2 className="text-2xl font-bold">{title}</h2>
+              {subtitle && <div className="mt-1">{subtitle}</div>}
+            </div>
           </div>
+          {seeAllLink && (
+            <Link to={seeAllLink} className="font-semibold text-blue-700 transition-colors hover:text-blue-800">
+              {seeAllLabel || t('sections.seeAll')}
+            </Link>
+          )}
         </div>
-        {seeAllLink && (
-          <Link to={seeAllLink} className="font-semibold text-blue-700 transition-colors hover:text-blue-800">
-            {seeAllLabel || t('sections.seeAll')}
-          </Link>
+
+        {layout === 'scroll' ? (
+          <div className="custom-scrollbar flex snap-x gap-3 overflow-x-auto pb-2 sm:gap-4 md:gap-5">
+            {products.map(product => (
+              <div key={product.id} className="w-[220px] shrink-0 snap-start md:w-[240px] xl:w-[248px]">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
+            {products.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         )}
       </div>
-      
-      {layout === 'scroll' ? (
-        <div className="custom-scrollbar flex snap-x gap-3 overflow-x-auto pb-2 sm:gap-4 md:gap-5">
-          {products.map(product => (
-            <div key={product.id} className="w-[220px] shrink-0 snap-start md:w-[240px] xl:w-[248px]">
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
-          {products.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      )}
     </section>
   );
 }
