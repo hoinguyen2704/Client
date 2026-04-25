@@ -15,7 +15,7 @@ export interface CartResponse {
   issueMessage?: string;
 }
 
-//  Cart Item (UI — used in OrderSummary, Checkout)
+//  Cart Item (UI)
 export interface CartItem {
   id: string;
   name: string;
