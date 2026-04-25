@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
-import type { ProductResponse } from '@/types/product';
+import type { ProductResponse } from '@/types';
 
 //  Card
 export interface CardProps {

@@ -7,8 +7,7 @@ import { useClickOutside } from '@/hooks';
 import useNotificationStore from '@/stores/useNotificationStore';
 import notificationService from '@/apis/services/notificationService';
 import { formatDateShort as formatDate } from '@/utils/format';
-import type { NotificationResponse } from '@/types';
-import type { NotificationDropdownProps } from '@/types/ui';
+import type { NotificationDropdownProps, NotificationResponse } from '@/types';
 
 const typeIcons: Record<string, React.ReactNode> = {
   ORDER: <FiShoppingBag className="text-blue-500" />,

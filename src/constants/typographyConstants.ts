@@ -1,7 +1,7 @@
 import type {
   TypographyFontWeightKey,
   TypographyTextSizeKey,
-} from '@/types/typography';
+} from '@/types';
 
 export const TYPOGRAPHY_TEXT_SIZE: Record<TypographyTextSizeKey, string> = {
   xs: 'text-[10px] sm:text-xs',

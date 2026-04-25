@@ -14,7 +14,7 @@ import type {
   ChatbotMessage,
   ChatbotResponse,
   WidgetConfig,
-} from "@/apis/services/chatbotService";
+} from "@/types";
 import type { Message } from "../ui/types";
 import { SHOP } from "@/constants/shopConstants";
 

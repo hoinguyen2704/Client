@@ -12,6 +12,7 @@ export * from './wishlist';
 export * from './address';
 export * from './cart';
 export * from './cms';
+export * from './chatbot';
 export * from './dashboard';
 export * from './user';
 export * from './setting';

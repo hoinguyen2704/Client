@@ -10,8 +10,7 @@ import useAuthStore from '@/stores/useAuthStore';
 import { Card, EmptyState, PrimaryButton, TrashButton, ExpandToggle } from '@/components';
 import { getApiErrorMessage } from '@/utils/error';
 
-import type { CouponResponse } from '@/types';
-import type { VoucherCardProps, VoucherSectionProps } from '@/types/ui';
+import type { CouponResponse, VoucherCardProps, VoucherSectionProps } from '@/types';
 
 export default function Vouchers() {
   const { t } = useTranslation(['account', 'checkout', 'common']);

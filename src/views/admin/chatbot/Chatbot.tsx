@@ -18,8 +18,8 @@ import {
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import chatbotService from "@/apis/services/chatbotService";
-import type { ChatbotConfig } from "@/apis/services/chatbotService";
 import { ConfirmDialog, CustomSelect, FormInput, FormTextarea, SectionCard } from "@/components";
+import type { ChatbotConfig } from "@/types";
 import ChatbotOverviewStatCard from "./components/ChatbotOverviewStatCard";
 
 type EditableSection = "shopInfo" | "bot" | "ai";

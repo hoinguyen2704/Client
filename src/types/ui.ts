@@ -5,6 +5,7 @@ import type {
   VariantAttributeSchemaResponse,
 } from './product';
 import type { BannerResponse } from './cms';
+import type { CouponResponse } from './coupon';
 import type { ResolvedVariantPricing } from '@/utils/pricing';
 
 //  Flash Sale / Promotion Countdown
@@ -116,9 +117,6 @@ export interface ExpandToggleProps {
   /** Additional class name */
   className?: string;
 }
-
-// Voucher / Coupon UI
-import type { CouponResponse } from '@/types/coupon';
 
 export interface VoucherCardProps {
   v: CouponResponse;

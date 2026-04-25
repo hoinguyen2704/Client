@@ -5,10 +5,10 @@ import useAuthStore from "@/stores/useAuthStore";
 
 let isLoggingOut = false;
 let isRefreshing = false;
-type RefreshSubscriber = {
+interface RefreshSubscriber {
   onSuccess: (token: string) => void;
   onError: (error: unknown) => void;
-};
+}
 
 let refreshSubscribers: RefreshSubscriber[] = [];
 

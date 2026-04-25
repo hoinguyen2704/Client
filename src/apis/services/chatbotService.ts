@@ -1,5 +1,12 @@
 import axios from "axios";
 import useAuthStore from "@/stores/useAuthStore";
+import type {
+  ChatbotConfig,
+  ChatbotConfigMutationResponse,
+  ChatbotMessage,
+  ChatbotResponse,
+  WidgetConfig,
+} from "@/types";
 
 const CHATBOT_BASE = import.meta.env.VITE_CHATBOT_URL; // http://localhost:6969/api/v1/chatbot
 
@@ -33,73 +40,6 @@ adminAxios.interceptors.request.use((config) => {
   return config;
 });
 
-//  Types
-
-/** Role phải là 'bot' (không phải 'assistant') để chatbot server map đúng sang OpenAI */
-export interface ChatbotMessage {
-  role: "user" | "bot";
-  content: string;
-}
-
-/** Response thực tế từ chatbot server */
-export interface ChatbotResponse {
-  answer: string;
-  mode: "db" | "non_db" | "recommend";
-  data?: unknown;
-  plan?: unknown;
-  sql?: string;
-  params?: unknown[];
-  rowCount?: number;
-  rows?: unknown[];
-}
-
-/** Config cửa hàng */
-export interface ShopInfo {
-  name: string;
-  slogan: string;
-  address: string;
-  hotline: string;
-  email: string;
-  website: string;
-  payments: string[];
-}
-
-/** Config bot widget */
-export interface BotConfig {
-  name: string;
-  subtitle: string;
-  welcomeMessage: string;
-  themeColor: string;
-  avatarUrl: string;
-}
-
-/** Config AI */
-export interface AIConfig {
-  model: string;
-  temperature: number;
-  systemRules: string;
-  maxProducts?: number;
-  planTimeoutMs?: number;
-  maxRetries?: number;
-  dbTimeoutMs?: number;
-}
-
-/** Toàn bộ config */
-export interface ChatbotConfig {
-  shopInfo: ShopInfo;
-  bot: BotConfig;
-  ai: AIConfig;
-  suggestions: string[];
-  isEnabled: boolean;
-}
-
-/** Widget config (public, subset) */
-export interface WidgetConfig {
-  bot: BotConfig;
-  suggestions: string[];
-  isEnabled: boolean;
-}
-
 //  Service
 
 const chatbotService = {
@@ -119,11 +59,11 @@ const chatbotService = {
   /** Cập nhật config (partial update) */
   updateConfig: (
     partial: Partial<ChatbotConfig>,
-  ): Promise<{ message: string; config: ChatbotConfig }> =>
+  ): Promise<ChatbotConfigMutationResponse> =>
     adminAxios.put("/config", partial).then((r) => r.data),
 
   /** Reset config về mặc định  */
-  resetConfig: (): Promise<{ message: string; config: ChatbotConfig }> =>
+  resetConfig: (): Promise<ChatbotConfigMutationResponse> =>
     adminAxios.post("/config/reset").then((r) => r.data),
 
   /** Lấy giá trị mặc định */

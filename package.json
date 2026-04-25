@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
+    "audit:react-types": "node scripts/audit-react-types.mjs",
+    "audit:types": "npm run audit:react-types",
     "audit:slate-text": "node scripts/audit-slate-text.mjs",
     "audit:i18n-literals": "node scripts/audit-i18n-literals.mjs"
   },
