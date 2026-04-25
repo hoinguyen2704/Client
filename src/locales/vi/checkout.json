@@ -85,9 +85,7 @@
     "vat": "Thuế VAT ({{percent}}%{{suffix}})",
     "vatIncluded": ", đã gồm",
     "total": "Tổng thanh toán",
-    "taxDisabled": "(Thuế hiện đang tắt theo cấu hình cửa hàng)",
     "taxIncluded": "(Thuế đã bao gồm trong tổng thanh toán)",
-    "taxExcluded": "(Thuế được cộng thêm theo cấu hình cửa hàng)",
     "submit": "Xác nhận Đặt hàng",
     "submitting": "Đang xử lý..."
   },

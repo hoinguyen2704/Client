@@ -119,7 +119,7 @@ export default function Home() {
           title={t('sections.bestSellersTitle')}
           products={bestSellers}
           layout="scroll"
-          bgClassName="my-10 rounded-[2rem] bg-slate-100/80 dark:bg-slate-800/50"
+          bgClassName="my-3 sm:my-4 rounded-[2rem] bg-slate-100/80 dark:bg-slate-800/50"
         />
       )}
 
@@ -128,6 +128,7 @@ export default function Home() {
           icon={<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm shadow-slate-900/15 dark:bg-slate-100 dark:text-slate-900"><FiStar className="text-2xl" /></div>}
           title={t('sections.newArrivalsTitle')}
           products={newArrivals}
+ layout="scroll"          
           seeAllLink="/products"
         />
       )}

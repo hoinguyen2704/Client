@@ -176,6 +176,7 @@ export default function Products() {
   };
 
   const totalPages = pageInfo?.lastPage || 1;
+  const hasActiveFilters = Boolean(keyword || selectedCategorySlug || selectedBrand);
 
   //  Render
   return (
@@ -209,7 +210,7 @@ export default function Products() {
 
         {/*  Sidebar Filters  */}
         <aside className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
-          <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-0 custom-scrollbar">
+          <div className="h-full overflow-y-auto p-4 sm:p-6 lg:rounded-[24px] lg:border lg:border-slate-200 dark:lg:border-slate-800 lg:bg-white dark:lg:bg-slate-900 lg:p-5 custom-scrollbar">
             <div className="flex items-center justify-between mb-6 lg:hidden">
               <h2 className="text-lg font-bold">{t("products.filterTitle")}</h2>
               <button
@@ -336,13 +337,18 @@ export default function Products() {
               )}
 
               {/* Clear Filters */}
-              {(keyword || selectedCategorySlug || selectedBrand) && (
+              <div className="relative h-14">
                 <button
                   onClick={handleClearFilters}
-                  className="w-full py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors font-medium">
+                  disabled={!hasActiveFilters}
+                  className={`absolute inset-x-0 top-0 w-full rounded-2xl border py-2.5 text-md font-medium transition-all ${
+                    hasActiveFilters
+                      ? "border-red-200/80 bg-red-50/70 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 opacity-100"
+                      : "border-transparent bg-transparent text-transparent opacity-0 pointer-events-none"
+                  }`}>
                   {t("products.clearFilters")}
                 </button>
-              )}
+              </div>
             </div>
           </div>
         </aside>

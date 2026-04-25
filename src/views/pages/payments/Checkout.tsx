@@ -31,7 +31,7 @@ export default function Checkout() {
   const user = useAuthStore((s) => s.user);
   const buyNowItem = location.state?.buyNowItem;
   const selectedCartItems = location.state?.selectedCartItems;
-  
+
   const [cartItems, setCartItems] = useState<CartResponse[]>([]);
   const [addresses, setAddresses] = useState<AddressResponse[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
@@ -76,8 +76,8 @@ export default function Checkout() {
       const res = await addressService.getMyAddresses();
       setAddresses(res.data || []);
       if (res.data?.length) {
-          const def = res.data.find(a => a.isDefault);
-          setSelectedAddressId(def ? def.id : res.data[res.data.length - 1].id);
+        const def = res.data.find(a => a.isDefault);
+        setSelectedAddressId(def ? def.id : res.data[res.data.length - 1].id);
       }
       toast.success(t('address.saveSuccess'));
     } catch {
@@ -153,15 +153,15 @@ export default function Checkout() {
       loadAddressData(),
       loadCouponData(),
       loadPublicVoucherData(),
-      settingService.getShipping().then(res => { if (res.data) setShippingConfig(res.data); }).catch(() => {}),
-      settingService.getTax().then(res => { if (res.data) setTaxConfig(res.data); }).catch(() => {}),
+      settingService.getShipping().then(res => { if (res.data) setShippingConfig(res.data); }).catch(() => { }),
+      settingService.getTax().then(res => { if (res.data) setTaxConfig(res.data); }).catch(() => { }),
       settingService.getPaymentMethods().then(res => {
         if (res.data) {
           setPaymentMethods(res.data.filter(pm => pm.enabled));
           const first = res.data.find(pm => pm.enabled);
           if (first) setPaymentMethod(first.id);
         }
-      }).catch(() => {}),
+      }).catch(() => { }),
     ]).finally(() => setLoading(false));
   }, [user]);
 
@@ -194,7 +194,7 @@ export default function Checkout() {
       const normalized = code.toUpperCase();
       const res = await couponService.validate(normalized, subtotal);
       const coupon = res.data;
-      
+
       if (coupon.couponCategory === 'SHIPPING') {
         setValidatedShippingCoupon(coupon || null);
         setShippingCouponCode(normalized);
@@ -306,9 +306,9 @@ export default function Checkout() {
       }, checkoutIdempotencyKeyRef.current);
       checkoutIdempotencyKeyRef.current = createCheckoutIdempotencyKey();
       if (res.data?.paymentUrl) { window.location.href = res.data.paymentUrl; }
-      else { 
+      else {
         toast.success(t('toasts.orderSuccess'));
-        navigate(`/user/orders/${res.data?.orderNumber}`); 
+        navigate(`/user/orders/${res.data?.orderNumber}`);
       }
     } catch (err: unknown) {
       const errorCode = getApiErrorCode(err);
@@ -401,7 +401,7 @@ export default function Checkout() {
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                         <div className="flex items-center flex-wrap gap-2">
                           <span className="font-bold text-md sm:text-base text-slate-800 dark:text-white">{addr.fullName}</span>
-                          <span className="text-disabled">|</span> 
+                          <span className="text-disabled">|</span>
                           <span className="font-medium text-md sm:text-base text-muted-strong">{addr.phoneNumber}</span>
                           {addr.isDefault && <span className="px-2.5 py-1 rounded-md text-11 font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 uppercase tracking-wide">{t('address.default')}</span>}
                         </div>
@@ -569,11 +569,7 @@ export default function Checkout() {
               <div className="min-w-0">
                 <p className="text-lg font-bold text-slate-900 dark:text-white sm:text-xl">{t('summary.total')}</p>
                 <p className="mt-1 max-w-[15rem] text-sm leading-snug text-slate-500 dark:text-slate-400">
-                  {!taxConfig.enabled
-                    ? t('summary.taxDisabled')
-                    : taxConfig.taxMode === 'INCLUDED'
-                      ? t('summary.taxIncluded')
-                      : t('summary.taxExcluded')}
+                  {!taxConfig.enabled ? "" : taxConfig.taxMode === 'INCLUDED' ? t('summary.taxIncluded') : ""}
                 </p>
               </div>
               <span className="block w-full text-right font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-600 text-[1.7rem] sm:text-[2rem] tabular-nums">
@@ -629,8 +625,8 @@ export default function Checkout() {
             </div>
             {(validatedProductCoupon || validatedShippingCoupon) && (
               <div className="text-sm text-emerald-600 dark:text-emerald-400 space-y-1">
-                 {validatedProductCoupon && <div>{t('voucherModal.appliedProduct', { code: validatedProductCoupon.code })}</div>}
-                 {validatedShippingCoupon && <div>{t('voucherModal.appliedShipping', { code: validatedShippingCoupon.code })}</div>}
+                {validatedProductCoupon && <div>{t('voucherModal.appliedProduct', { code: validatedProductCoupon.code })}</div>}
+                {validatedShippingCoupon && <div>{t('voucherModal.appliedShipping', { code: validatedShippingCoupon.code })}</div>}
               </div>
             )}
           </SectionCard>

@@ -213,8 +213,8 @@ export default function Search() {
           {loading ? (
             <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4 2xl:grid-cols-5">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="animate-pulse bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
-                  <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl mb-4" />
+                <div key={i} className="animate-pulse bg-white dark:bg-slate-900 rounded-2xl p-3 border border-slate-100 dark:border-slate-800">
+                  <div className="aspect-[4/3.15] bg-slate-200 dark:bg-slate-800 rounded-xl mb-3" />
                   <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2" />
                   <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
                 </div>

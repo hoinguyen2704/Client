@@ -21,8 +21,8 @@ export default function ProductSection({
   if (!products.length) return null;
 
   return (
-    <section className={`w-full px-4 md:px-8 lg:px-12 py-10 ${bgClassName}`}>
-      <div className="flex items-center justify-between mb-8">
+    <section className={`w-full px-4 py-5 md:px-8 md:py-6 lg:px-12 lg:py-7  ${bgClassName} m-12 rounded-2xl shadow-sm border border-slate-200`}>
+      <div className="mb-5 flex items-center justify-between sm:mb-6 ">
         <div className="flex items-center gap-4">
           {icon}
           <div>
@@ -38,9 +38,9 @@ export default function ProductSection({
       </div>
       
       {layout === 'scroll' ? (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="custom-scrollbar flex snap-x gap-3 overflow-x-auto pb-2 sm:gap-4 md:gap-5">
           {products.map(product => (
-            <div key={product.id} className="min-w-[220px] snap-start md:min-w-[240px]">
+            <div key={product.id} className="w-[220px] shrink-0 snap-start md:w-[240px] xl:w-[248px]">
               <ProductCard product={product} />
             </div>
           ))}

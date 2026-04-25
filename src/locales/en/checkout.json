@@ -85,9 +85,7 @@
     "vat": "VAT ({{percent}}%{{suffix}})",
     "vatIncluded": ", included",
     "total": "Total payment",
-    "taxDisabled": "(Tax is currently disabled by store settings)",
     "taxIncluded": "(Tax is already included in the total payment)",
-    "taxExcluded": "(Tax is added on top according to store settings)",
     "submit": "Confirm order",
     "submitting": "Processing..."
   },

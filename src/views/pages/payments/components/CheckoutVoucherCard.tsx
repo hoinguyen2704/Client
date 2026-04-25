@@ -1,7 +1,7 @@
 import { PrimaryButton, TrashButton } from "@/components";
 import { useTranslation } from "react-i18next";
 import type { CouponResponse } from "@/types";
-import { formatPrice } from "@/utils/format";
+import { formatDate, formatPrice } from "@/utils/format";
 import { cn } from "@/utils/cn";
 
 interface CheckoutVoucherCardProps {
