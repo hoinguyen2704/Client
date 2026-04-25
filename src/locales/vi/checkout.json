@@ -109,6 +109,8 @@
     "discountPercent": "Giảm {{value}}%",
     "discountAmount": "Giảm {{value}}",
     "minOrderValue": "Đơn tối thiểu {{value}}",
+    "expiry": "HSD {{date}}",
+    "remainingUses": "Còn {{count}} lượt",
     "remove": "Bỏ áp dụng",
     "apply": "Áp dụng",
     "saved": "Đã lưu",

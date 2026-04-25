@@ -109,6 +109,8 @@
     "discountPercent": "Save {{value}}%",
     "discountAmount": "Save {{value}}",
     "minOrderValue": "Minimum order {{value}}",
+    "expiry": "Expires {{date}}",
+    "remainingUses": "{{count}} uses left",
     "remove": "Remove",
     "apply": "Apply",
     "saved": "Saved",

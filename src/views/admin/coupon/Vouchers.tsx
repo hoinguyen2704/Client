@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import adminCouponService from "@/apis/services/adminCouponService";
 import type { CouponResponse, CouponRequest } from "@/types";
-import { formatPrice, formatDate } from "@/utils/format";
+import { formatPrice, formatDateFull } from "@/utils/format";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import {
   Button,
@@ -244,9 +244,9 @@ export default function AdminVouchers() {
                     </td>
                     <td className="p-3 sm:p-4 text-md text-slate-500">
                       <div>
-                        {t("vouchers.meta.from")}: {v.startDate ? formatDate(v.startDate) : "—"}
+                        {t("vouchers.meta.from")}: {v.startDate ? formatDateFull(v.startDate) : "—"}
                       </div>
-                      <div>{t("vouchers.meta.to")}: {v.endDate ? formatDate(v.endDate) : "—"}</div>
+                      <div>{t("vouchers.meta.to")}: {v.endDate ? formatDateFull(v.endDate) : "—"}</div>
                     </td>
                     <td className="p-3 sm:p-4 text-center">
                       {v.isPublic ? (

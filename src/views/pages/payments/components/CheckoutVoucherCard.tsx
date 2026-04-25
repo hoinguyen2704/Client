@@ -1,7 +1,7 @@
 import { PrimaryButton, TrashButton } from "@/components";
 import { useTranslation } from "react-i18next";
 import type { CouponResponse } from "@/types";
-import { formatDate, formatPrice } from "@/utils/format";
+import { formatDateFull, formatPrice } from "@/utils/format";
 import { cn } from "@/utils/cn";
 
 interface CheckoutVoucherCardProps {
@@ -33,6 +33,9 @@ const VOUCHER_STYLES = {
   },
 } as const;
 
+const CTA_BUTTON_CLASS =
+  "h-11 min-w-[8.5rem] shrink-0 justify-center rounded-2xl px-5 text-base font-semibold shadow-none";
+
 export default function CheckoutVoucherCard({
   voucher,
   userLoggedIn,
@@ -47,11 +50,12 @@ export default function CheckoutVoucherCard({
   const { t } = useTranslation("checkout");
   const isFreeShip = voucher.couponCategory === "SHIPPING";
   const style = isFreeShip ? VOUCHER_STYLES.shipping : VOUCHER_STYLES.product;
+  const remainingUses = Math.max(0, (voucher.usageLimit || 0) - (voucher.usedCount || 0));
 
   return (
     <div
       className={cn(
-        "relative overflow-hidden space-y-3 rounded-xl border p-4",
+        "relative overflow-hidden rounded-xl border p-3.5 sm:p-4",
         style.containerClassName,
       )}
     >
@@ -62,8 +66,8 @@ export default function CheckoutVoucherCard({
           style.glowClassName,
         )}
       />
-      <div className="relative flex items-start justify-between gap-3">
-        <div className="min-w-0">
+      <div className="relative grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-4">
+        <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono font-bold">{voucher.code}</span>
             <span
@@ -75,7 +79,7 @@ export default function CheckoutVoucherCard({
               {isFreeShip ? t("voucherCard.shippingTag") : t("voucherCard.productTag")}
             </span>
           </div>
-          <p className="mt-1 text-md font-bold text-slate-800 dark:text-slate-100">
+          <p className="mt-0.5 text-md font-bold text-slate-800 dark:text-slate-100">
             {voucher.discountType === "PERCENTAGE"
               ? t("voucherCard.discountPercent", { value: voucher.discountValue })
               : t("voucherCard.discountAmount", { value: formatPrice(voucher.discountValue) })}
@@ -85,51 +89,64 @@ export default function CheckoutVoucherCard({
               {t("voucherCard.minOrderValue", { value: formatPrice(voucher.minOrderValue) })}
             </p>
           ) : null}
+
+          <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-500">
+            {voucher.endDate ? (
+              <span className="inline-flex items-center rounded-xl bg-white/80 px-3 py-1 dark:bg-slate-900/70">
+                {t("voucherCard.expiry", { date: formatDateFull(voucher.endDate) })}
+              </span>
+            ) : null}
+            {voucher.usageLimit ? (
+              <span className="inline-flex items-center rounded-xl bg-white/80 px-3 py-1 dark:bg-slate-900/70">
+                {t("voucherCard.remainingUses", { count: remainingUses })}
+              </span>
+            ) : null}
+          </div>
         </div>
 
-        {isApplied ? (
-          <PrimaryButton
-            onClick={onRemove}
-            variant="outline"
-            className="h-8 shrink-0 px-3 text-sm shadow-none"
-          >
-            {t("voucherCard.remove")}
-          </PrimaryButton>
-        ) : (
-          <PrimaryButton
-            onClick={() => onApply(voucher)}
-            className="h-8 shrink-0 px-3 text-sm shadow-none hover:translate-y-0"
-          >
-            {t("voucherCard.apply")}
-          </PrimaryButton>
-        )}
-      </div>
-
-      <div className="relative flex justify-end">
-        {userLoggedIn ? (
-          isSaved ? (
-            <div className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
-              {t("voucherCard.saved")}
-              <TrashButton
-                onClick={() => onUnsave(voucher.id)}
-                disabled={isSaving}
-                title={t("voucherCard.removeSaved")}
-                className="h-7 w-7 rounded-lg"
-              />
-            </div>
+        <div className="flex shrink-0 flex-col items-end gap-2.5">
+          {isApplied ? (
+            <PrimaryButton
+              onClick={onRemove}
+              variant="outline"
+              className={CTA_BUTTON_CLASS}
+            >
+              {t("voucherCard.remove")}
+            </PrimaryButton>
           ) : (
             <PrimaryButton
-              onClick={() => onSave(voucher)}
-              disabled={isSaving}
-              variant="outline"
-              className="h-8 px-3 text-sm shadow-none"
+              onClick={() => onApply(voucher)}
+              className={cn(CTA_BUTTON_CLASS, "hover:translate-y-0")}
             >
-              {isSaving ? t("voucherCard.saving") : t("voucherCard.saveToWallet")}
+              {t("voucherCard.apply")}
             </PrimaryButton>
-          )
-        ) : (
-          <span className="text-sm text-slate-400">{t("voucherCard.loginToSave")}</span>
-        )}
+          )}
+
+          {userLoggedIn ? (
+            isSaved ? (
+              <div className="inline-flex items-center justify-end gap-2 text-sm font-semibold text-emerald-600">
+                {t("voucherCard.saved")}
+                <TrashButton
+                  onClick={() => onUnsave(voucher.id)}
+                  disabled={isSaving}
+                  title={t("voucherCard.removeSaved")}
+                  className="h-7 w-7 rounded-lg"
+                />
+              </div>
+            ) : (
+              <PrimaryButton
+                onClick={() => onSave(voucher)}
+                disabled={isSaving}
+                variant="outline"
+                className={CTA_BUTTON_CLASS}
+              >
+                {isSaving ? t("voucherCard.saving") : t("voucherCard.saveToWallet")}
+              </PrimaryButton>
+            )
+          ) : (
+            <span className="text-sm text-slate-400">{t("voucherCard.loginToSave")}</span>
+          )}
+        </div>
       </div>
     </div>
   );
