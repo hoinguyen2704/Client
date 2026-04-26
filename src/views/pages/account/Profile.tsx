@@ -283,276 +283,306 @@ export default function Profile() {
       </AnimatePresence>
 
       <h1 className="text-2xl font-bold">{t('profile.title')}</h1>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          {/* Avatar Upload */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 shadow-lg group flex items-center justify-center overflow-hidden">
-              {user?.avatarUrl ? (
-                <img
-                  src={user.avatarUrl}
-                  alt={t('profile.avatar.alt')}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Hide broken image tag, show fallback
-                    (e.target as HTMLImageElement).style.display = 'none';
-                    (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                  }}
-                />
-              ) : null}
-              <div className={`w-full h-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center ${user?.avatarUrl ? 'hidden' : ''}`}>
-                <FiUser className="text-5xl text-blue-500 dark:text-blue-400" />
-              </div>
-              {/* Upload loading overlay */}
-              {uploadingAvatar && (
-                <div className="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center text-white z-10">
-                  <FiLoader className="text-3xl animate-spin mb-1" />
-                  <span className="text-10 font-medium">{t('profile.loading.avatar')}</span>
+
+      <div className="grid grid-cols-1 items-start gap-8 xl:grid-cols-[minmax(0,1.4fr)_minmax(340px,0.92fr)]">
+        <section className="overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.12),_transparent_40%),radial-gradient(circle_at_bottom_right,_rgba(245,158,11,0.12),_transparent_32%)]">
+            <div className="grid gap-6 p-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:p-8">
+              <div className="rounded-[24px] border border-slate-200/80 bg-white/90 p-5 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/80">
+                <div className="flex flex-col items-center gap-4 text-center">
+                  <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-white bg-slate-100 shadow-lg group dark:border-slate-900 dark:bg-slate-800">
+                    {user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={t('profile.avatar.alt')}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          // Hide broken image tag, show fallback
+                          (e.target as HTMLImageElement).style.display = 'none';
+                          (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : null}
+                    <div className={`flex h-full w-full items-center justify-center bg-blue-50 dark:bg-blue-900/20 ${user?.avatarUrl ? 'hidden' : ''}`}>
+                      <FiUser className="text-5xl text-blue-500 dark:text-blue-400" />
+                    </div>
+                    {uploadingAvatar && (
+                      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-full bg-black/60 text-white">
+                        <FiLoader className="mb-1 text-3xl animate-spin" />
+                        <span className="text-10 font-medium">{t('profile.loading.avatar')}</span>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => avatarInputRef.current?.click()}
+                      disabled={uploadingAvatar}
+                      className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/50 text-white transition-opacity ${uploadingAvatar ? 'pointer-events-none opacity-0' : 'opacity-0 group-hover:opacity-100'}`}
+                    >
+                      <FiCamera className="text-2xl" />
+                    </button>
+                    <input
+                      ref={avatarInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleAvatarUpload(file);
+                        e.target.value = '';
+                      }}
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="text-xl font-bold text-ink">
+                      {fullName.trim() || user?.fullName || user?.email || ''}
+                    </p>
+                    <p className="break-all text-sm text-muted">{user?.email || ''}</p>
+                  </div>
+
+                  <Button
+                    onClick={() => avatarInputRef.current?.click()}
+                    variant="ghost"
+                    size="sm"
+                    className="text-md text-blue-600 hover:underline"
+                  >
+                    {t('profile.avatar.change')}
+                  </Button>
                 </div>
-              )}
-              <button
-                onClick={() => avatarInputRef.current?.click()}
-                disabled={uploadingAvatar}
-                className={`absolute inset-0 bg-black/50 rounded-full flex items-center justify-center text-white transition-opacity ${uploadingAvatar ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover:opacity-100'}`}
-              >
-                <FiCamera className="text-2xl" />
-              </button>
-              <input
-                ref={avatarInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleAvatarUpload(file);
-                  e.target.value = '';
-                }}
-              />
+              </div>
+
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block font-medium text-body">{t('profile.fields.fullName')}</label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="h-12 w-full rounded-xl border-none bg-slate-100 px-4 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block font-medium text-body">{t('profile.fields.emailReadonly')}</label>
+                    <input
+                      type="email"
+                      value={user?.email || ''}
+                      readOnly
+                      className="h-12 w-full cursor-not-allowed rounded-xl border-none bg-slate-50 px-4 text-muted dark:bg-slate-800/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block font-medium text-body">{t('profile.fields.phoneNumber')}</label>
+                    <input
+                      type="tel"
+                      value={displayPhoneNumber}
+                      onChange={(e) => {
+                        if (!hasPersistedPhoneNumber) {
+                          setPhoneNumber(e.target.value);
+                        }
+                      }}
+                      placeholder={hasPersistedPhoneNumber ? '' : t('profile.fields.phonePlaceholder')}
+                      readOnly={hasPersistedPhoneNumber}
+                      className={`h-12 w-full rounded-xl border-none px-4 ${
+                        hasPersistedPhoneNumber
+                          ? 'cursor-not-allowed bg-slate-50 text-muted dark:bg-slate-800/50'
+                          : 'bg-slate-100 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800'
+                      }`}
+                    />
+                    <p className="mt-2 text-sm leading-6 text-muted">
+                      {hasPersistedPhoneNumber
+                        ? t('profile.fields.phoneReadonlyHint')
+                        : t('profile.fields.phoneFormatHint')}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block font-medium text-body">{t('profile.fields.dateOfBirth')}</label>
+                    <input
+                      type="date"
+                      value={dateOfBirth}
+                      onChange={(e) => setDateOfBirth(e.target.value)}
+                      className="h-12 w-full rounded-xl border-none bg-slate-100 px-4 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="mb-2 block font-medium text-body">{t('profile.fields.gender')}</label>
+                    <CustomSelect
+                      value={gender}
+                      onChange={(v) => setGender(v)}
+                      className="h-12 w-full"
+                      options={[
+                        { value: '', label: t('profile.genderOptions.unset') },
+                        { value: 'MALE', label: t('profile.genderOptions.male') },
+                        { value: 'FEMALE', label: t('profile.genderOptions.female') },
+                        { value: 'OTHER', label: t('profile.genderOptions.other') }
+                      ]}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-6 dark:border-slate-800">
+                  <Button
+                    onClick={handleSaveProfile}
+                    disabled={saving}
+                    icon={saving ? <FiLoader className="animate-spin" /> : <FiSave />}
+                    size="lg"
+                    className="h-12 px-6"
+                  >
+                    {saving ? t('profile.actions.savingChanges') : t('profile.actions.saveChanges')}
+                  </Button>
+                </div>
+              </div>
             </div>
-            <Button
-              onClick={() => avatarInputRef.current?.click()}
-              variant="ghost"
-              size="sm"
-              className="text-md text-blue-600 hover:underline"
-            >
-              {t('profile.avatar.change')}
-            </Button>
           </div>
+        </section>
 
-          {/* Profile Form */}
-          <div className="flex-1 w-full space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <section className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-5">
               <div>
-                <label className="block font-medium mb-2 text-body">{t('profile.fields.fullName')}</label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block font-medium mb-2 text-body">{t('profile.fields.emailReadonly')}</label>
-                <input
-                  type="email"
-                  value={user?.email || ''}
-                  readOnly
-                  className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border-none text-muted cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="block font-medium mb-2 text-body">{t('profile.fields.phoneNumber')}</label>
-                <input
-                  type="tel"
-                  value={displayPhoneNumber}
-                  onChange={(e) => {
-                    if (!hasPersistedPhoneNumber) {
-                      setPhoneNumber(e.target.value);
-                    }
-                  }}
-                  placeholder={hasPersistedPhoneNumber ? '' : t('profile.fields.phonePlaceholder')}
-                  readOnly={hasPersistedPhoneNumber}
-                  className={`w-full h-12 px-4 rounded-xl border-none ${
-                    hasPersistedPhoneNumber
-                      ? 'bg-slate-50 dark:bg-slate-800/50 text-muted cursor-not-allowed'
-                      : 'bg-slate-100 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500'
-                  }`}
-                />
-                <p className="mt-2 text-sm text-muted">
-                  {hasPersistedPhoneNumber
-                    ? t('profile.fields.phoneReadonlyHint')
-                    : t('profile.fields.phoneFormatHint')}
-                </p>
-              </div>
-              <div>
-                <label className="block font-medium mb-2 text-body">{t('profile.fields.dateOfBirth')}</label>
-                <input
-                  type="date"
-                  value={dateOfBirth}
-                  onChange={(e) => setDateOfBirth(e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block font-medium mb-2 text-body">{t('profile.fields.gender')}</label>
-                <CustomSelect
-                  value={gender}
-                  onChange={(v) => setGender(v)}
-                  className="w-full h-12"
-                  options={[
-                    { value: '', label: t('profile.genderOptions.unset') },
-                    { value: 'MALE', label: t('profile.genderOptions.male') },
-                    { value: 'FEMALE', label: t('profile.genderOptions.female') },
-                    { value: 'OTHER', label: t('profile.genderOptions.other') }
-                  ]}
-                />
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 space-y-4 bg-slate-50/60 dark:bg-slate-800/30">
-              <div>
-                <h3 className="text-base font-bold text-ink">{t('profile.emailOtp.title')}</h3>
-                <p className="text-md text-muted mt-1">
+                <h3 className="text-lg font-bold text-ink">{t('profile.emailOtp.title')}</h3>
+                <p className="mt-1 text-md leading-6 text-muted">
                   {t('profile.emailOtp.description')}
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div className="space-y-4">
                 <div>
-                  <label className="block font-medium mb-2 text-body">{t('profile.emailOtp.newEmail')}</label>
+                  <label className="mb-2 block font-medium text-body">{t('profile.emailOtp.newEmail')}</label>
                   <input
                     type="email"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500"
+                    className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900"
                   />
                 </div>
+
                 <div>
-                  <label className="block font-medium mb-2 text-body">{t('profile.emailOtp.currentPassword')}</label>
+                  <label className="mb-2 block font-medium text-body">{t('profile.emailOtp.currentPassword')}</label>
                   <input
                     type="password"
                     value={emailChangePassword}
                     onChange={(e) => setEmailChangePassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500"
+                    className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900"
                   />
                 </div>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  onClick={handleRequestEmailChange}
-                  disabled={sendingEmailOtp}
-                  icon={sendingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
-                  size="md"
-                >
-                  {sendingEmailOtp ? t('profile.emailOtp.sendingOtp') : t('profile.emailOtp.sendOtp')}
-                </Button>
-                {pendingEmailChange && (
-                  <span className="text-md text-muted self-center">
-                    {t('profile.emailOtp.otpSentTo')} <span className="font-semibold">{pendingEmailChange}</span>
-                  </span>
-                )}
-              </div>
+
+              <Button
+                onClick={handleRequestEmailChange}
+                disabled={sendingEmailOtp}
+                icon={sendingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
+                size="md"
+                fullWidth
+              >
+                {sendingEmailOtp ? t('profile.emailOtp.sendingOtp') : t('profile.emailOtp.sendOtp')}
+              </Button>
 
               {pendingEmailChange && (
-                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3 items-end">
+                <div className="rounded-2xl border border-blue-100 bg-blue-50/80 p-4 text-sm text-blue-800 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-200">
+                  {t('profile.emailOtp.otpSentTo')} <span className="font-semibold">{pendingEmailChange}</span>
+                </div>
+              )}
+
+              {pendingEmailChange && (
+                <div className="space-y-3 border-t border-slate-100 pt-5 dark:border-slate-800">
                   <div>
-                    <label className="block font-medium mb-2 text-body">{t('profile.emailOtp.otpCode')}</label>
+                    <label className="mb-2 block font-medium text-body">{t('profile.emailOtp.otpCode')}</label>
                     <input
                       type="text"
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value)}
                       placeholder={t('profile.emailOtp.otpPlaceholder')}
-                      className="w-full h-12 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500"
+                      className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900"
                     />
                   </div>
-                  <Button
-                    onClick={handleVerifyEmailChange}
-                    disabled={verifyingEmailOtp}
-                    icon={verifyingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
-                    size="md"
-                  >
-                    {verifyingEmailOtp ? t('profile.emailOtp.verifyingOtp') : t('profile.emailOtp.verifyOtp')}
-                  </Button>
-                  <Button
-                    onClick={handleResendEmailOtp}
-                    disabled={resendingEmailOtp}
-                    icon={resendingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
-                    variant="ghost"
-                    size="md"
-                  >
-                    {resendingEmailOtp ? t('profile.emailOtp.resendingOtp') : t('profile.emailOtp.resendOtp')}
-                  </Button>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <Button
+                      onClick={handleVerifyEmailChange}
+                      disabled={verifyingEmailOtp}
+                      icon={verifyingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
+                      size="md"
+                      fullWidth
+                    >
+                      {verifyingEmailOtp ? t('profile.emailOtp.verifyingOtp') : t('profile.emailOtp.verifyOtp')}
+                    </Button>
+                    <Button
+                      onClick={handleResendEmailOtp}
+                      disabled={resendingEmailOtp}
+                      icon={resendingEmailOtp ? <FiLoader className="animate-spin" /> : undefined}
+                      variant="ghost"
+                      size="md"
+                      fullWidth
+                    >
+                      {resendingEmailOtp ? t('profile.emailOtp.resendingOtp') : t('profile.emailOtp.resendOtp')}
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
+          </section>
 
-            <Button
-              onClick={handleSaveProfile}
-              disabled={saving}
-              icon={saving ? <FiLoader className="animate-spin" /> : <FiSave />}
-              size="lg"
-              className="h-12 px-6"
-            >
-              {saving ? t('profile.actions.savingChanges') : t('profile.actions.saveChanges')}
-            </Button>
-          </div>
-        </div>
-      </div>
+          <section className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 text-xl text-orange-600">
+                <FiLock />
+              </div>
+              <h2 className="text-xl font-bold">{t('profile.passwordSection.title')}</h2>
+            </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
-        {/* Change Password */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">
-              <FiLock />
-            </div>
-            <h2 className="text-xl font-bold">{t('profile.passwordSection.title')}</h2>
-          </div>
+            <div className="space-y-4">
+              <div>
+                <label className="mb-2 block font-medium text-body">{t('profile.passwordSection.currentPassword')}</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="h-12 w-full rounded-xl border-none bg-slate-100 px-4 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800"
+                />
+              </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block font-medium mb-2 text-body">{t('profile.passwordSection.currentPassword')}</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div>
+                <label className="mb-2 block font-medium text-body">{t('profile.passwordSection.newPassword')}</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="h-12 w-full rounded-xl border-none bg-slate-100 px-4 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block font-medium text-body">{t('profile.passwordSection.confirmPassword')}</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="h-12 w-full rounded-xl border-none bg-slate-100 px-4 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800"
+                />
+              </div>
+
+              <Button
+                onClick={handleChangePassword}
+                disabled={savingPassword}
+                icon={savingPassword ? <FiLoader className="animate-spin" /> : undefined}
+                variant="secondary"
+                size="md"
+                fullWidth
+                className="mt-4 bg-slate-900 text-white hover:bg-blue-600 dark:bg-slate-700 dark:hover:bg-blue-600"
+              >
+                {savingPassword ? t('profile.passwordSection.submitting') : t('profile.passwordSection.submit')}
+              </Button>
             </div>
-            <div>
-              <label className="block font-medium mb-2 text-body">{t('profile.passwordSection.newPassword')}</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block font-medium mb-2 text-body">{t('profile.passwordSection.confirmPassword')}</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <Button
-              onClick={handleChangePassword}
-              disabled={savingPassword}
-              icon={savingPassword ? <FiLoader className="animate-spin" /> : undefined}
-              variant="secondary"
-              size="md"
-              fullWidth
-              className="mt-4 bg-slate-900 dark:bg-slate-700 text-white hover:bg-blue-600 dark:hover:bg-blue-600"
-            >
-              {savingPassword ? t('profile.passwordSection.submitting') : t('profile.passwordSection.submit')}
-            </Button>
-          </div>
+          </section>
         </div>
       </div>
     </div>
