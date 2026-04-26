@@ -52,19 +52,10 @@ export default function Products() {
     const loadFilters = async () => {
       try {
         const [catRes, brandRes] = await Promise.all([
-          categoryService.getTree(),
+          categoryService.getAllActive(),
           brandService.getAll(),
         ]);
-        // Flatten category tree for the filter sidebar
-        const flatCats: CategoryResponse[] = [];
-        const flatten = (list: CategoryResponse[]) => {
-          list.forEach((c) => {
-            flatCats.push(c);
-            if (c.children?.length) flatten(c.children);
-          });
-        };
-        if (catRes?.data) flatten(catRes.data);
-        setCategories(flatCats);
+        setCategories(catRes?.data || []);
 
         if (brandRes?.data?.data) setBrands(brandRes.data.data);
         else if (Array.isArray(brandRes?.data))

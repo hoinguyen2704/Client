@@ -14,12 +14,10 @@ import type { VariantAttributeRow } from "../types";
 
 interface CategoryFormData {
   name: string;
-  parentId: string;
 }
 
 const EMPTY_FORM_DATA: CategoryFormData = {
   name: "",
-  parentId: "",
 };
 
 const normalizeCode = (value: string) =>
@@ -113,7 +111,6 @@ export default function useCategoryForm() {
   const hydrateForm = useCallback((category: CategoryResponse) => {
     setFormData({
       name: category.name || "",
-      parentId: "",
     });
     setSpecTemplates(mapCategoryToSpecTemplates(category));
     setVariantAttributes(mapCategoryToVariantAttributes(category));
@@ -286,7 +283,6 @@ export default function useCategoryForm() {
 
     return {
       name: normalizedName,
-      parentId: formData.parentId || undefined,
       specAttributes: normalizedSpecs,
       variantAttributes: normalizedAttributes,
     };

@@ -262,7 +262,6 @@ export interface CategoryResponse {
   active: boolean;
   productCount?: number;
   createdAt?: string;
-  children?: CategoryResponse[];
 
   // New schema
   variantAttributes?: VariantAttributeSchemaResponse[];
@@ -279,7 +278,6 @@ export interface CategorySpecAttributeResponse {
 
 export interface CategoryRequest {
   name: string;
-  parentId?: string;
   active?: boolean;
   variantAttributes?: CategoryVariantAttributeRequest[];
   specAttributes?: CategorySpecAttributeRequest[];

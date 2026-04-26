@@ -30,7 +30,7 @@ export default function Search() {
   // Load categories + brands
   useEffect(() => {
     Promise.allSettled([
-      categoryService.getTree(),
+      categoryService.getAllActive(),
       brandService.getAll(),
     ]).then(([catRes, brandRes]) => {
       if (catRes.status === 'fulfilled') setCategories(catRes.value.data || []);

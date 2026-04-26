@@ -116,7 +116,7 @@
     }
   },
   "productDetail": {
-    "variantFallback": "Phân loại",
+    "variantFallback": "Cấu hình",
     "toasts": {
       "loadFailed": "Không thể tải thông tin sản phẩm!",
       "loginAddToCart": "Vui lòng đăng nhập để thêm vào giỏ hàng!",
@@ -133,14 +133,14 @@
     "meta": {
       "reviewsCount": "{{count}} đánh giá",
       "sold": "Đã bán {{count}}",
-      "selectedVariantSold": "Phân loại đã chọn bán {{count}}",
+      "selectedVariantSold": "Cấu hình đã chọn bán {{count}}",
       "brand": "Thương hiệu",
       "stockRemaining": "Còn {{count}} sản phẩm",
       "available": "Sẵn hàng",
       "discount": "Giảm {{percent}}%"
     },
     "pricing": {
-      "chooseVariantToSeePrice": "Vui lòng chọn đầy đủ phân loại để xem giá.",
+      "chooseVariantToSeePrice": "Vui lòng chọn đầy đủ cấu hình để xem giá.",
       "discountOff": "{{percent}}% giảm",
       "flashSale": "Flash Sale",
       "flashSaleRemaining": "Còn {{count}} suất giá sốc"
@@ -183,7 +183,7 @@
       "reviewsCount": "{{count}} đánh giá",
       "verifiedOnly": "Chỉ khách hàng đã mua và nhận hàng thành công mới có thể đánh giá.",
       "round": "Lần {{count}}",
-      "variant": "Phân loại: {{value}}",
+      "variant": "Cấu hình: {{value}}",
       "shopReply": "Phản hồi từ shop",
       "updatedReview": "Đánh giá lại ({{afterText}})",
       "new": "Mới",

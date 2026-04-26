@@ -1,14 +1,11 @@
-import BaseService from './baseService';
 import axios from '../axios';
-import type { ApiResponse, CategoryResponse, CategoryRequest } from '@/types';
+import type { ApiResponse, CategoryResponse } from '@/types';
 
-class CategoryService extends BaseService<CategoryResponse, CategoryRequest> {
-  constructor() {
-    super('/categories');
-  }
+class CategoryService {
+  private readonly endpoint = '/categories';
 
-  async getTree(): Promise<ApiResponse<CategoryResponse[]>> {
-    return axios.get(`${this.endpoint}/tree`);
+  async getAllActive(): Promise<ApiResponse<CategoryResponse[]>> {
+    return axios.get(this.endpoint);
   }
 
   async getBySlug(slug: string): Promise<ApiResponse<CategoryResponse>> {
