@@ -70,15 +70,15 @@ export default function OrderChart({ stats }: DashboardChildProps) {
               </defs>
               <XAxis
                 dataKey="name"
-                stroke="#475569"
-                fontSize={12}
+                stroke="#000000ff"
+                fontSize={14}
                 tickLine={false}
                 axisLine={false}
                 interval={0}
                 tick={<ChartXAxisTick />}
                 height={48}
               />
-              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#000000ff" fontSize={14} tickLine={false} axisLine={false} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}

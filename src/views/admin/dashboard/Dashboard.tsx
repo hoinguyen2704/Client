@@ -369,8 +369,7 @@ export default function Dashboard() {
           <h1 className="text-xl font-bold sm:text-2xl">{t('overview.title')}</h1>
           <p
             aria-live="polite"
-            className={`mt-1 min-h-5 text-sm text-subtle transition-opacity ${
-              isPeriodPending ? 'opacity-100' : 'opacity-0'
+            className={`mt-1 min-h-5 text-lg text-subtle transition-opacity ${isPeriodPending ? 'opacity-100' : 'opacity-0'
             }`}
           >
             {t('overview.refreshing')}
@@ -378,7 +377,7 @@ export default function Dashboard() {
         </div>
 
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          <div className="flex overflow-x-auto rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+          <div className="flex overflow-x-auto rounded-xl bg-slate-100 p-2 dark:bg-slate-800">
             {[
               { value: 'WEEK', label: t('overview.periods.week') },
               { value: 'MONTH', label: t('overview.periods.month') },
@@ -387,8 +386,7 @@ export default function Dashboard() {
               <button
                 key={item.value}
                 onClick={() => startTransition(() => setPeriod(item.value as DashboardPeriod))}
-                className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-md font-medium transition-colors ${
-                  period === item.value
+                className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-lg font-medium transition-colors ${period === item.value
                     ? 'bg-white text-blue-600 shadow-sm dark:bg-slate-700'
                     : 'text-muted hover:text-ink'
                 }`}

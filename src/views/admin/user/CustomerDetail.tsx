@@ -133,15 +133,15 @@ export default function CustomerDetail() {
             </Button>
 
             <div className="mt-5 sm:mt-6 space-y-3 text-left text-md">
-              <div className="flex items-center gap-3 text-body">
+              <div className="flex items-center gap-3 text-body text-lg">
                 <FiMail className="text-subtle shrink-0" />
                 <span className="truncate">{user.email}</span>
               </div>
-              <div className="flex items-center gap-3 text-body">
+              <div className="flex items-center gap-3 text-body text-lg">
                 <FiPhone className="text-subtle shrink-0" />
                 <span>{user.phoneNumber || '—'}</span>
               </div>
-              <div className="flex items-center gap-3 text-body">
+              <div className="flex items-center gap-3 text-body text-lg">
                 <FiCalendar className="text-subtle shrink-0" />
                 <span>{t('detail.joined', { date: formatDate(user.createdAt) })}</span>
               </div>

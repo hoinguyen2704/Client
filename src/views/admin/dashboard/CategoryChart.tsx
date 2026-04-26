@@ -15,12 +15,12 @@ export default function CategoryChart({ stats }: DashboardChildProps) {
 
   return (
     <Card>
-      <h2 className="text-base sm:text-lg font-bold flex items-center gap-2 mb-5 sm:mb-6">
+      <h2 className="text-body sm:text-lg font-bold flex items-center gap-2 mb-5 sm:mb-6">
         <span className="text-xl">📦</span> {t('overview.charts.categories.title')}
       </h2>
 
       {chartData.length === 0 ? (
-        <div className="h-72 sm:h-96 flex items-center justify-center text-subtle">{t('overview.charts.categories.empty')}</div>
+        <div className="h-72 sm:h-96 flex items-center justify-center text-body">{t('overview.charts.categories.empty')}</div>
       ) : (
         <>
           <div className="flex items-center gap-2 mb-4">
@@ -31,8 +31,8 @@ export default function CategoryChart({ stats }: DashboardChildProps) {
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
               <BarChart data={chartData} margin={{ top: 30, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} dy={8} />
-                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                <XAxis dataKey="name" stroke="#000000ff" fontSize={14} tickLine={false} axisLine={false} dy={8} />
+                <YAxis stroke="#000000ff" fontSize={14} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
                   cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}

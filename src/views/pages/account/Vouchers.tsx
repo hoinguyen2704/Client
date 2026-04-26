@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, memo } from 'react';
-import { FiTag, FiClock, FiCheck, FiBookmark, FiCopy, FiGift, FiPackage } from 'react-icons/fi';
+import { FiTag, FiClock, FiCheck, FiBookmark, FiCopy, FiGift, FiPackage, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import { formatPrice, formatDate } from '@/utils/format';
 import couponService from '@/apis/services/couponService';
 import userCouponService from '@/apis/services/userCouponService';
 import useAuthStore from '@/stores/useAuthStore';
-import { Card, EmptyState, PrimaryButton, TrashButton, ExpandToggle } from '@/components';
+import { Card, EmptyState, PrimaryButton, TrashButton } from '@/components';
 import { getApiErrorMessage } from '@/utils/error';
 
 import type { CouponResponse, VoucherCardProps, VoucherSectionProps } from '@/types';
@@ -240,27 +240,41 @@ const VoucherSection = memo(({
 }: VoucherSectionProps) => {
   const { t } = useTranslation('common');
   const visible = expanded ? vouchers : vouchers.slice(0, minToExpand);
+  const isCollapsible = vouchers.length > minToExpand;
+  const toggleLabel = expanded ? t('actions.collapse') : t('actions.expand');
+  const headerContent = (
+    <div className="flex flex-wrap items-center gap-2 min-w-0">
+      {SECTION_ICONS[iconType]}
+      <h2 className="text-lg font-bold">{title}</h2>
+      <span className={`px-2 py-1 text-sm rounded-full ${badgeClass}`}>
+        {vouchers.length}
+      </span>
+      {isCollapsible && (
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-sm font-medium text-muted transition-colors group-hover:border-blue-200 group-hover:text-blue-600 dark:group-hover:border-blue-800 dark:group-hover:text-blue-300">
+          <span>{toggleLabel}</span>
+          {expanded ? <FiChevronUp className="shrink-0" /> : <FiChevronDown className="shrink-0" />}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <Card className="rounded-2xl p-6 space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          {SECTION_ICONS[iconType]}
-          <h2 className="text-lg font-bold">{title}</h2>
-          <span className={`px-2 py-1 text-sm rounded-full ${badgeClass}`}>
-            {vouchers.length}
-          </span>
+      {isCollapsible ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={expanded}
+          aria-label={`${toggleLabel}: ${title}`}
+          className="group flex w-full items-center justify-start rounded-2xl border border-transparent px-1 py-1 text-left transition-colors hover:border-slate-200 hover:bg-slate-50/70 dark:hover:border-slate-700 dark:hover:bg-slate-800/40"
+        >
+          {headerContent}
+        </button>
+      ) : (
+        <div className="flex items-center justify-start px-1 py-1">
+          {headerContent}
         </div>
-        {vouchers.length > minToExpand && (
-          <ExpandToggle
-            expanded={expanded}
-            onToggle={onToggle}
-            expandLabel={t('actions.expand')}
-            collapseLabel={t('actions.collapse')}
-            variant="outline"
-          />
-        )}
-      </div>
+      )}
 
       {sectionLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

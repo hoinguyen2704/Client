@@ -4,6 +4,14 @@ import { Card } from '@/components';
 import { formatPrice } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 import ChartXAxisTick from './ChartXAxisTick';
+import {
+  DASHBOARD_AREA_CHART_MARGIN,
+  DASHBOARD_CHART_AXIS_COLOR,
+  DASHBOARD_CHART_GRID_COLOR,
+  DASHBOARD_CHART_TOOLTIP_STYLE,
+  formatRevenueAxisValue,
+  getYAxisWidth,
+} from './chartUtils';
 
 export default function RevenueChart({ stats }: DashboardChildProps) {
   const { t } = useTranslation('adminDashboard');
@@ -16,6 +24,7 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
   const total = chartData.reduce((s, d) => s + d.revenue, 0);
   const avg = chartData.length > 0 ? total / chartData.length : 0;
   const maxItem = chartData.reduce((m, d) => d.revenue > m.revenue ? d : m, { name: '-', revenue: 0 });
+  const yAxisWidth = getYAxisWidth(chartData.map((item) => item.revenue), formatRevenueAxisValue, 58, 96);
 
   // Find today's label for reference line
   const todayEntry = chartData.find((d) => d.name.includes('_TODAY'));
@@ -27,15 +36,21 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
       <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
           <p className="text-10 sm:text-sm text-muted mb-1 leading-tight">{t('overview.charts.revenue.summaryTotal')}</p>
-          <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{total >= 1e6 ? `${(total / 1e6).toFixed(0)}M` : total.toLocaleString()}</p>
+          <p className="text-lg sm:text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-400 whitespace-nowrap">
+            {formatPrice(total)}
+          </p>
         </div>
         <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl p-2.5 sm:p-4">
           <p className="text-10 sm:text-sm text-muted mb-1 leading-tight">{t('overview.charts.revenue.summaryAverage')}</p>
-          <p className="text-md sm:text-lg font-bold text-blue-700 dark:text-blue-400">{avg >= 1e6 ? `${(avg / 1e6).toFixed(0)}M` : avg.toLocaleString()}</p>
+          <p className="text-lg sm:text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-400 whitespace-nowrap">
+            {formatPrice(avg)}
+          </p>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/20 dark:to-emerald-800/10 rounded-2xl p-2.5 sm:p-4">
           <p className="text-10 sm:text-sm text-muted mb-1 leading-tight">{t('overview.charts.revenue.summaryPeak', { label: maxItem.name.split('|')[0] })}</p>
-          <p className="text-md sm:text-lg font-bold text-emerald-700 dark:text-emerald-400">{maxItem.revenue >= 1e6 ? `${(maxItem.revenue / 1e6).toFixed(0)}M` : maxItem.revenue.toLocaleString()}</p>
+          <p className="text-lg sm:text-2xl font-bold tracking-tight text-emerald-700 dark:text-emerald-400 whitespace-nowrap">
+            {formatPrice(maxItem.revenue)}
+          </p>
         </div>
       </div>
 
@@ -48,15 +63,15 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
               <defs><linearGradient id="colorRevAPI" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#2563eb" stopOpacity={0.25}/><stop offset="95%" stopColor="#2563eb" stopOpacity={0}/></linearGradient></defs>
               <XAxis
                 dataKey="name"
-                stroke="#475569"
-                fontSize={12}
+                stroke="#000000ff"
+                fontSize={14}
                 tickLine={false}
                 axisLine={false}
                 interval={0}
                 tick={<ChartXAxisTick />}
                 height={48}
               />
-              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v >= 1e6 ? `${v/1e6}M` : v}`} />
+              <YAxis stroke="#000000ff" fontSize={14} tickLine={false} axisLine={false} tickFormatter={(v) => `${v >= 1e6 ? `${v/1e6}M` : v}`} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
