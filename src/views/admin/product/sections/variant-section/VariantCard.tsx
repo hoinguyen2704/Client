@@ -81,8 +81,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
     <div
       ref={rootRef}
       style={{ scrollMarginTop: "11rem" }}
-      className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${
-        isExpanded
+      className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${isExpanded
           ? "border-blue-200 shadow-[0_14px_36px_rgba(15,23,42,0.06)] dark:border-blue-900/40"
           : "border-slate-200 shadow-sm dark:border-slate-700"
       }`}
@@ -101,8 +100,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     {variant.variantName ? ` - ${variant.variantName}` : ""}
                   </span>
                   <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-sm font-semibold ${
-                      variant.active
+                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-sm font-semibold ${variant.active
                         ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
                         : "bg-slate-200 text-muted dark:bg-slate-800"
                     }`}
@@ -193,13 +191,12 @@ export default memo(function VariantCard(props: VariantCardProps) {
               onToggle={onToggleExpanded}
               expandLabel={t("variantCard.expand")}
               collapseLabel={t("variantCard.collapse")}
-              className="!rounded-xl border-slate-200 bg-white/90 dark:border-slate-700 dark:bg-slate-900/80"
+              className="!rounded-xl border-slate-200 bg-white/90 dark:border-slate-700 dark:bg-slate-900/80 text-lg"
             />
             {canRemove && (
               <TrashButton
                 onClick={() => removeVariant(index)}
-                iconOnly={false}
-              >
+                iconOnly={false}>
                 {t("variantCard.remove")}
               </TrashButton>
             )}
@@ -230,8 +227,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     type="button"
                     onClick={() => regenerateVariantSku(index)}
                     className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-md font-medium text-body transition-colors hover:border-blue-300 dark:border-slate-600 dark:bg-slate-700 dark:hover:border-blue-600"
-                    title={t("variantCard.regenTitle")}
-                  >
+                    title={t("variantCard.regenTitle")}>
                     Regen
                   </button>
                 </div>
@@ -300,8 +296,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
                   onClick={() =>
                     updateVariant(index, "active", !variant.active)
                   }
-                  className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-md font-medium transition-colors ${
-                    variant.active
+                  className={`flex h-10 items-center gap-2 rounded-lg border px-4 text-md font-medium transition-colors ${variant.active
                       ? "border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400"
                       : "border-slate-200 bg-slate-100 text-subtle dark:border-slate-700 dark:bg-slate-800"
                   }`}
