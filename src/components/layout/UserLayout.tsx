@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { FiUser, FiMapPin, FiCreditCard, FiShoppingBag, FiRotateCcw, FiTag, FiStar, FiClock, FiBell, FiHelpCircle, FiLogOut, FiSettings, FiChevronDown } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import { cn } from '../../utils/cn';
+import { cn } from '@/utils/cn';
 import useAuthStore from '@/stores/useAuthStore';
 import useNotificationStore from '@/stores/useNotificationStore';
 import { useClickOutside } from '@/hooks';

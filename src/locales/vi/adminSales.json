@@ -245,9 +245,16 @@
       "all": "Tất cả",
       "active": "Đang hoạt động",
       "inactive": "Tạm dừng",
+      "expired": "Hết hạn",
       "pause": "Tạm dừng",
       "activate": "Kích hoạt",
       "applyCount": "{{count}} SP"
+    },
+    "deleteDialog": {
+      "title": "Xóa voucher",
+      "message": "Bạn có chắc muốn xóa voucher \"{{code}}\"? Thao tác này không thể hoàn tác.",
+      "confirm": "Xóa",
+      "cancel": "Hủy"
     },
     "modal": {
       "createTitle": "Tạo Voucher Mới",
@@ -288,6 +295,8 @@
     "toasts": {
       "toggleSuccess": "Cập nhật trạng thái voucher thành công!",
       "toggleFailed": "Cập nhật trạng thái voucher thất bại!",
+      "deleteSuccess": "Xóa voucher thành công!",
+      "deleteFailed": "Xóa voucher thất bại!",
       "updateSuccess": "Cập nhật voucher thành công!",
       "createSuccess": "Tạo voucher thành công!",
       "saveFailed": "Thao tác voucher thất bại!",

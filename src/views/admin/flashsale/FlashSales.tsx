@@ -5,14 +5,14 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import { adminFlashSaleService } from "@/apis";
-import type { FlashSaleResponse, FlashSaleStatus } from "@/types";
+import type { FlashSaleResponse } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
 import {
   Pagination,
   ActionButtons,
   PrimaryButton,
   ConfirmDialog,
-  CustomSelect,
+  StatusBadge,
   TableRowSkeleton,
 } from "@/components";
 import {
@@ -58,17 +58,14 @@ export default function FlashSales() {
     }
   };
 
-  const handleUpdateStatus = async (id: string, status: FlashSaleStatus) => {
-    try {
-      await adminFlashSaleService.updateStatus(id, status);
-      toast.success(t("flashSales.list.toasts.statusSuccess"));
-      fetchSales({ silent: true });
-    } catch (err: unknown) {
-      console.error("Update status failed:", err);
-      toast.error(
-        getApiErrorMessage(err, t("flashSales.list.toasts.statusFailed")),
-      );
+  const getFlashSaleStatusMeta = (status: FlashSaleResponse["status"]) => {
+    if (status === "ACTIVE") {
+      return { badgeStatus: "active" as const, label: t("flashSales.list.status.active") };
     }
+    if (status === "ENDED") {
+      return { badgeStatus: "ended" as const, label: t("flashSales.list.status.ended") };
+    }
+    return { badgeStatus: "upcoming" as const, label: t("flashSales.list.status.scheduled") };
   };
 
   return (
@@ -147,33 +144,15 @@ export default function FlashSales() {
                       })}
                     </AdminTableCell>
                     <AdminTableCell>
-                      <CustomSelect
-                        value={sale.status}
-                        options={[
-                          {
-                            label: t("flashSales.list.status.scheduled"),
-                            value: "SCHEDULED",
-                            colorClass:
-                              "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20 hover:bg-yellow-100",
-                          },
-                          {
-                            label: t("flashSales.list.status.active"),
-                            value: "ACTIVE",
-                            colorClass:
-                              "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 hover:bg-emerald-100",
-                          },
-                          {
-                            label: t("flashSales.list.status.ended"),
-                            value: "ENDED",
-                            colorClass:
-                              "bg-slate-50 text-body border-slate-200 dark:bg-slate-800 hover:bg-slate-100",
-                          },
-                        ]}
-                        onChange={(val) =>
-                          handleUpdateStatus(sale.id, val as FlashSaleStatus)
-                        }
-                        className="w-44 text-md"
-                      />
+                      {(() => {
+                        const statusMeta = getFlashSaleStatusMeta(sale.status);
+                        return (
+                          <StatusBadge
+                            status={statusMeta.badgeStatus}
+                            label={statusMeta.label}
+                          />
+                        );
+                      })()}
                     </AdminTableCell>
                     <AdminTableCell className="text-right">
                       <ActionButtons

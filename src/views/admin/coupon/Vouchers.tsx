@@ -23,6 +23,7 @@ import {
   AdminSearch,
   Pagination,
   ActionButtons,
+  ConfirmDialog,
   StatusBadge,
   TableRowSkeleton,
   Modal,
@@ -62,6 +63,7 @@ export default function AdminVouchers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; code: string } | null>(null);
   const [form, setForm] = useState<Partial<CouponRequest>>({
     discountType: "PERCENTAGE",
     couponCategory: "PRODUCT",
@@ -78,6 +80,18 @@ export default function AdminVouchers() {
     } catch (err) {
       console.error(err);
       toast.error(t("vouchers.toasts.toggleFailed"));
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeleteTarget(null);
+    try {
+      await adminCouponService.delete(id);
+      toast.success(t("vouchers.toasts.deleteSuccess"));
+      fetchVouchers({ silent: true });
+    } catch (err: unknown) {
+      console.error(err);
+      toast.error(getApiErrorMessage(err, t("vouchers.toasts.deleteFailed")));
     }
   };
 
@@ -132,6 +146,16 @@ export default function AdminVouchers() {
       console.error(err);
       toast.error(getApiErrorMessage(err, t("vouchers.toasts.saveFailed")));
     }
+  };
+
+  const getVoucherStatusMeta = (status: string) => {
+    if (status === "ACTIVE") {
+      return { badgeStatus: "active" as const, label: t("vouchers.meta.active") };
+    }
+    if (status === "EXPIRED") {
+      return { badgeStatus: "expired" as const, label: t("vouchers.meta.expired") };
+    }
+    return { badgeStatus: "inactive" as const, label: t("vouchers.meta.inactive") };
   };
 
   return (
@@ -277,14 +301,15 @@ export default function AdminVouchers() {
                       )}
                     </AdminTableCell>
                     <AdminTableCell>
+                      {(() => {
+                        const statusMeta = getVoucherStatusMeta(v.status);
+                        return (
                       <StatusBadge
-                        status={v.status === "ACTIVE" ? "active" : "inactive"}
-                        label={
-                          v.status === "ACTIVE"
-                            ? t("vouchers.meta.active")
-                            : t("vouchers.meta.inactive")
-                        }
+                            status={statusMeta.badgeStatus}
+                            label={statusMeta.label}
                       />
+                        );
+                      })()}
                     </AdminTableCell>
                     <AdminTableCell className="text-right">
                       <ActionButtons
@@ -302,10 +327,15 @@ export default function AdminVouchers() {
                                 <FiToggleLeft className="text-xl" />
                               ),
                             onClick: () => handleToggle(v.id),
+                            hidden: v.status === "EXPIRED",
                           },
                           {
                             type: "edit",
                             onClick: () => openEditModal(v),
+                          },
+                          {
+                            type: "delete",
+                            onClick: () => setDeleteTarget({ id: v.id, code: v.code }),
                           },
                         ]}
                       />
@@ -329,6 +359,17 @@ export default function AdminVouchers() {
           />
         )}
       </AdminTableCard>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title={t("vouchers.deleteDialog.title")}
+        message={t("vouchers.deleteDialog.message", { code: deleteTarget?.code || "" })}
+        confirmLabel={t("vouchers.deleteDialog.confirm")}
+        cancelLabel={t("vouchers.deleteDialog.cancel")}
+        variant="danger"
+        onConfirm={() => deleteTarget && handleDelete(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
 
       <Modal
         open={isModalOpen}

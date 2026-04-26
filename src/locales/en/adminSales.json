@@ -245,9 +245,16 @@
       "all": "All",
       "active": "Active",
       "inactive": "Paused",
+      "expired": "Expired",
       "pause": "Pause",
       "activate": "Activate",
       "applyCount": "{{count}} items"
+    },
+    "deleteDialog": {
+      "title": "Delete voucher",
+      "message": "Are you sure you want to delete voucher \"{{code}}\"? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
     },
     "modal": {
       "createTitle": "Create new voucher",
@@ -288,6 +295,8 @@
     "toasts": {
       "toggleSuccess": "Voucher status updated successfully!",
       "toggleFailed": "Failed to update voucher status!",
+      "deleteSuccess": "Voucher deleted successfully!",
+      "deleteFailed": "Failed to delete voucher!",
       "updateSuccess": "Voucher updated successfully!",
       "createSuccess": "Voucher created successfully!",
       "saveFailed": "Voucher action failed!",
