@@ -44,6 +44,7 @@ export const adminRoutes = (
     <Route path="categories/:id/edit" element={<CategoryFormPage />} />
     <Route path="brands" element={<Brands />} />
     <Route path="customers" element={<Customers />} />
+    <Route path="customers/new" element={<CustomerDetail />} />
     <Route path="customers/:id" element={<CustomerDetail />} />
     <Route path="vouchers" element={<AdminVouchers />} />
     <Route path="flash-sales" element={<FlashSales />} />

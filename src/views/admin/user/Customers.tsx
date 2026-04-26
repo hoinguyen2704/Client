@@ -1,9 +1,11 @@
 import { useDeferredValue, useMemo, useState, startTransition } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { FiDownload, FiLock, FiUnlock } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import { FiDownload, FiLock, FiPlus, FiUnlock } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
+import useAuthStore from '@/stores/useAuthStore';
 import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, SortableHeaderLabel, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { useDebounce } from '@/hooks';
@@ -15,6 +17,8 @@ import { getPaginatedRowNumber } from '@/utils/helpers';
 
 export default function Customers() {
   const { t } = useTranslation(['adminCustomers', 'common']);
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchInput, setSearchInput] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
@@ -114,15 +118,24 @@ export default function Customers() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t('adminCustomers:customers.title')}</h1>
-        <Button
-          onClick={handleExport}
-          variant="success"
-          size="md"
-          icon={<FiDownload />}
-          className="w-full sm:w-auto"
-        >
-          {t('adminCustomers:customers.export')}
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button
+            onClick={handleExport}
+            variant="success"
+            size="md"
+            icon={<FiDownload />}
+            className="w-full sm:w-auto">
+            {t('adminCustomers:customers.export')}
+          </Button>
+          <Button
+            onClick={() => navigate('/admin/customers/new')}
+            variant="primary"
+            size="md"
+            icon={<FiPlus />}
+            className="w-full sm:w-auto">
+            {t('adminCustomers:customers.addCustomer')}
+          </Button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
@@ -152,8 +165,7 @@ export default function Customers() {
             { value: 'USER', label: t('adminCustomers:customers.filters.customer') },
             { value: 'ADMIN', label: t('adminCustomers:customers.filters.admin') },
           ]}
-          className="w-full md:w-48 shrink-0"
-        />
+          className="w-full md:w-48 shrink-0" />
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
@@ -226,62 +238,75 @@ export default function Customers() {
                   </td>
                 </tr>
               ) : (
-                users.map((user, index) => (
-                  <tr
-                    key={user.id}
-                    className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x divide-slate-200 dark:divide-slate-700"
-                  >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-ink">
-                      {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
-                    </td>
-                    <td className="p-3 sm:p-4">
-                      <div className="flex items-center gap-3">
-                        <UserAvatar name={user.fullName} src={user.avatarUrl} />
-                        <span className="font-bold">{user.fullName}</span>
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-ink">{user.email}</td>
-                    <td className="p-3 sm:p-4 text-ink">
-                      {user.phoneNumber || t('common:labels.notAvailable')}
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
-                      <StatusBadge
-                        status={user.role === 'ADMIN' ? 'admin' : 'user'}
-                      />
-                    </td>
-                    <td className="p-3 sm:p-4 text-ink text-center">
-                      {formatDate(user.createdAt)}
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
-                      <StatusBadge
-                        status={user.status === 'ACTIVE' ? 'active' : 'banned'}
-                        label={
-                          user.status === 'ACTIVE'
-                            ? t('adminCustomers:customers.statuses.active')
-                            : t('adminCustomers:customers.statuses.locked')
-                        }
-                      />
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
-                      <ActionButtons
-                        actions={[
-                          {
-                            type: 'view',
-                            href: `/admin/customers/${user.id}`,
-                          },
-                          {
-                            type: user.status === 'ACTIVE' ? 'delete' : 'edit',
-                            onClick: () => handleToggleStatus(user.id),
-                            icon: user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />,
-                            title: user.status === 'ACTIVE'
-                              ? t('adminCustomers:customers.actions.lock')
-                              : t('adminCustomers:customers.actions.unlock'),
-                          },
-                        ]}
-                      />
-                    </td>
-                  </tr>
-                ))
+                users.map((user, index) => {
+                  const isCurrentUser = user.id === currentUserId;
+                  return (
+                    <tr
+                      key={user.id}
+                      className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x divide-slate-200 dark:divide-slate-700 ${isCurrentUser ? 'bg-blue-50/60 dark:bg-blue-950/20' : ''
+                        }`}
+                    >
+                      <td className="p-3 sm:p-4 text-center font-semibold text-ink">
+                        {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
+                      </td>
+                      <td className="p-3 sm:p-4">
+                        <div className="flex items-center gap-3">
+                          <UserAvatar name={user.fullName} src={user.avatarUrl} />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold">{user.fullName}</span>
+                              {isCurrentUser ? (
+                                <span className="inline-flex shrink-0 items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+                                  {t('adminCustomers:customers.badges.currentAccount')}
+                                </span>
+                              ) : null}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3 sm:p-4 text-ink">{user.email}</td>
+                      <td className="p-3 sm:p-4 text-ink">
+                        {user.phoneNumber || t('common:labels.notAvailable')}
+                      </td>
+                      <td className="p-3 sm:p-4 text-center">
+                        <StatusBadge
+                          status={user.role === 'ADMIN' ? 'admin' : 'user'}
+                        />
+                      </td>
+                      <td className="p-3 sm:p-4 text-ink text-center">
+                        {formatDate(user.createdAt)}
+                      </td>
+                      <td className="p-3 sm:p-4 text-center">
+                        <StatusBadge
+                          status={user.status === 'ACTIVE' ? 'active' : 'banned'}
+                          label={
+                            user.status === 'ACTIVE'
+                              ? t('adminCustomers:customers.statuses.active')
+                              : t('adminCustomers:customers.statuses.locked')
+                          }
+                        />
+                      </td>
+                      <td className="p-3 sm:p-4 text-center">
+                        <ActionButtons
+                          actions={[
+                            {
+                              type: 'view',
+                              href: `/admin/customers/${user.id}`,
+                            },
+                            {
+                              type: user.status === 'ACTIVE' ? 'delete' : 'edit',
+                              onClick: () => handleToggleStatus(user.id),
+                              icon: user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />,
+                              title: user.status === 'ACTIVE'
+                                ? t('adminCustomers:customers.actions.lock')
+                                : t('adminCustomers:customers.actions.unlock'),
+                            },
+                          ]}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

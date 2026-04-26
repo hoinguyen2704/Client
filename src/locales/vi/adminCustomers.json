@@ -1,6 +1,7 @@
 {
   "customers": {
     "title": "Quản lý khách hàng",
+    "addCustomer": "Thêm khách hàng",
     "export": "Xuất danh sách",
     "searchPlaceholder": "Tìm kiếm theo tên, email, SĐT...",
     "filters": {
@@ -27,10 +28,45 @@
       "lock": "Khóa tài khoản",
       "unlock": "Mở khóa"
     },
+    "badges": {
+      "currentAccount": "Tài khoản của tôi"
+    },
+    "createModal": {
+      "title": "Thêm khách hàng mới",
+      "description": "Hệ thống sẽ tự sinh username từ email. Khách hàng có thể đăng nhập bằng email và mật khẩu khởi tạo này.",
+      "submit": "Tạo khách hàng",
+      "creating": "Đang tạo...",
+      "cancel": "Hủy",
+      "fields": {
+        "fullName": "Họ tên",
+        "email": "Email",
+        "phoneNumber": "Số điện thoại",
+        "password": "Mật khẩu khởi tạo",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính"
+      },
+      "placeholders": {
+        "fullName": "Nhập họ tên khách hàng",
+        "email": "Nhập email khách hàng",
+        "phoneNumber": "Nhập số điện thoại",
+        "password": "Tối thiểu 6 ký tự",
+        "confirmPassword": "Nhập lại mật khẩu"
+      }
+    },
     "labels": {
       "pagination": "người dùng"
     },
     "toasts": {
+      "createSuccess": "Tạo khách hàng mới thành công!",
+      "createFailed": "Tạo khách hàng mới thất bại!",
+      "fullNameRequired": "Vui lòng nhập họ tên.",
+      "emailRequired": "Vui lòng nhập email.",
+      "phoneRequired": "Vui lòng nhập số điện thoại.",
+      "phoneInvalid": "Số điện thoại không đúng định dạng.",
+      "passwordRequired": "Vui lòng nhập mật khẩu khởi tạo.",
+      "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự.",
+      "confirmPasswordMismatch": "Mật khẩu xác nhận không khớp.",
       "loadFailed": "Tải danh sách người dùng thất bại!",
       "toggleSuccess": "Cập nhật trạng thái người dùng thành công!",
       "toggleFailed": "Cập nhật trạng thái người dùng thất bại!",
@@ -40,32 +76,59 @@
   },
   "detail": {
     "title": "Chi tiết khách hàng",
+    "createPageTitle": "Thêm khách hàng mới",
+    "createPageDescription": "Sử dụng cùng trang chi tiết để khởi tạo tài khoản khách hàng mới và tải ảnh đại diện trước khi lưu.",
     "profile": "Thông tin hồ sơ",
     "orders": "Đơn hàng",
     "returns": "Yêu cầu trả hàng",
     "activity": "Hoạt động gần đây",
     "notFound": "Không tìm thấy người dùng",
     "accountInfo": "Thông tin tài khoản",
+    "createProfileTitle": "",
     "fullName": "Họ tên",
     "email": "Email",
+    "emailPlaceholder": "Nhập email khách hàng",
     "phone": "Số điện thoại",
     "gender": "Giới tính",
     "dateOfBirth": "Ngày sinh",
     "createdAt": "Ngày tạo",
     "joined": "Tham gia: {{date}}",
-    "phoneUpdateTitle": "Cập nhật số điện thoại (Admin)",
+    "createHandleHint": "Tài khoản khách hàng mới",
+    "newCustomerFallbackName": "Khách hàng mới",
+    "profileEditTitle": "Chỉnh sửa hồ sơ khách hàng",
+    "readonlyOtherAccountNotice": "Không thể chỉnh sửa tài khoản admin khác. Bạn chỉ có thể chỉnh sửa tài khoản admin đang đăng nhập của chính mình.",
+    "adminReadonlyAction": "Tài khoản admin",
+    "fullNamePlaceholder": "Nhập họ tên khách hàng",
     "newPhone": "Số điện thoại mới",
     "newPhonePlaceholder": "Nhập số điện thoại",
+    "phoneFormatHint": "Hỗ trợ định dạng 0xxxxxxxxx hoặc +84xxxxxxxxx.",
     "changeReason": "Lý do thay đổi",
     "changeReasonPlaceholder": "Bắt buộc",
-    "savePhone": "Lưu số điện thoại",
-    "savingPhone": "Đang cập nhật...",
+    "uploadAvatar": "Tải ảnh đại diện",
+    "changeAvatar": "Đổi ảnh đại diện",
+    "uploadingAvatar": "Đang tải ảnh...",
+    "avatarHint": "Bạn có thể tải ảnh đại diện trước khi lưu tài khoản.",
+    "saveProfile": "Lưu thay đổi",
+    "savingProfile": "Đang cập nhật...",
+    "resetProfile": "Hủy thay đổi",
+    "resetCreate": "Làm trống biểu mẫu",
+    "genderOptions": {
+      "unset": "Chưa thiết lập",
+      "male": "Nam",
+      "female": "Nữ",
+      "other": "Khác"
+    },
     "toasts": {
       "toggleSuccess": "Cập nhật trạng thái người dùng thành công!",
       "toggleFailed": "Cập nhật trạng thái người dùng thất bại!",
-      "phoneRequired": "Vui lòng nhập số điện thoại.",
+      "avatarUploaded": "Tải ảnh đại diện thành công!",
+      "avatarUploadFailed": "Tải ảnh đại diện thất bại!",
+      "onlySelfEditable": "Không thể chỉnh sửa tài khoản admin khác.",
+      "fullNameRequired": "Vui lòng nhập họ tên.",
+      "phoneInvalid": "Số điện thoại không đúng định dạng.",
       "reasonRequired": "Vui lòng nhập lý do thay đổi.",
-      "phoneUpdated": "Cập nhật số điện thoại thành công!"
+      "profileUpdated": "Cập nhật hồ sơ khách hàng thành công!",
+      "profileUpdateFailed": "Cập nhật hồ sơ khách hàng thất bại!"
     }
   }
 }

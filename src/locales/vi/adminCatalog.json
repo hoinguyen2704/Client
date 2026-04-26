@@ -277,7 +277,7 @@
     "status": "Trạng thái",
     "draftHint": "Tạo mới bước đầu luôn lưu dưới dạng bản nháp. Có thể đổi trạng thái sau khi cấu hình phân loại.",
     "originPrice": "Giá gốc (VNĐ)",
-    "originPriceHint": "Giá sale/giảm giá nằm ở từng phân loại (Giá gốc so sánh)",
+    "originPriceHint": "Giá niêm yết chung của sản phẩm. Giá bán và giá gốc so sánh được cấu hình ở từng phân loại.",
     "featured": "Sản phẩm nổi bật",
     "featuredOn": "Đang hiện trên trang chủ",
     "featuredOff": "Không nổi bật",

@@ -13,6 +13,10 @@ export interface UserResponse {
   createdAt: string;
 }
 
+export interface AvatarUploadResponse {
+  avatarUrl: string;
+}
+
 export interface UpdateUserRequest {
   fullName: string;
   dateOfBirth?: string;
@@ -41,6 +45,25 @@ export interface ResendEmailChangeOtpRequest {
 
 export interface AdminUpdatePhoneRequest {
   phoneNumber: string;
+  reason: string;
+}
+
+export interface AdminCreateUserRequest {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  dateOfBirth?: string | null;
+  gender?: string | null;
+  avatarUrl?: string | null;
+}
+
+export interface AdminUpdateUserProfileRequest {
+  fullName: string;
+  phoneNumber?: string | null;
+  dateOfBirth?: string | null;
+  gender?: string | null;
+  avatarUrl?: string | null;
   reason: string;
 }
 

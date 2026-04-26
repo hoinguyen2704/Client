@@ -131,6 +131,15 @@ export default function ProductForm() {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          <StatusPricingSection
+            isEditMode={form.isEditMode}
+            status={form.status} setStatus={form.setStatus}
+            originPrice={form.originPrice} setOriginPrice={form.setOriginPrice}
+            isFeatured={form.isFeatured} setIsFeatured={form.setIsFeatured}
+            showStatusDropdown={form.showStatusDropdown} setShowStatusDropdown={form.setShowStatusDropdown}
+            statusDropdownRef={form.statusDropdownRef}
+          />
+
           <ImageUploadSection
             isEditMode={form.isEditMode}
             existingImages={form.existingImages}
@@ -141,15 +150,6 @@ export default function ProductForm() {
             handleImageFiles={form.handleImageFiles}
             removePendingFile={form.removePendingFile}
             deleteExistingImage={form.deleteExistingImage}
-          />
-
-          <StatusPricingSection
-            isEditMode={form.isEditMode}
-            status={form.status} setStatus={form.setStatus}
-            originPrice={form.originPrice} setOriginPrice={form.setOriginPrice}
-            isFeatured={form.isFeatured} setIsFeatured={form.setIsFeatured}
-            showStatusDropdown={form.showStatusDropdown} setShowStatusDropdown={form.setShowStatusDropdown}
-            statusDropdownRef={form.statusDropdownRef}
           />
         </div>
       </div>

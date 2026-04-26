@@ -277,7 +277,7 @@
     "status": "Status",
     "draftHint": "New products are initially saved as draft. You can change the status after configuring variants.",
     "originPrice": "Base price (VND)",
-    "originPriceHint": "Sale/discount pricing is configured per variant (compare-at price).",
+    "originPriceHint": "Shared list price for the product. Selling price and compare-at price are configured per variant.",
     "featured": "Featured product",
     "featuredOn": "Visible on homepage",
     "featuredOff": "Not featured",
