@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { TFunction } from 'i18next';
 import { FiCalendar, FiCheck, FiChevronDown, FiCopy, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import { toast } from 'sonner';
@@ -119,6 +120,7 @@ function buildTicketSections(
 
 export default function Tickets() {
   const { t, i18n } = useTranslation(['adminSupport', 'common']);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -131,6 +133,7 @@ export default function Tickets() {
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const copyResetTimerRef = useRef<number | null>(null);
+  const requestedTicketId = searchParams.get('ticketId');
   const dateGroupFormatter = useMemo(
     () =>
       new Intl.DateTimeFormat(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
@@ -196,22 +199,74 @@ export default function Tickets() {
     finally { setLoading(false); }
   }, [page, statusFilter, t]);
 
-  const fetchSelectedTicket = useCallback(async (opts?: { silent?: boolean }) => {
-    if (!selectedTicket?.id) return;
+  const syncSelectedTicketParam = useCallback((ticketId: string | null) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    if (ticketId) {
+      nextSearchParams.set('ticketId', ticketId);
+    } else {
+      nextSearchParams.delete('ticketId');
+    }
+    setSearchParams(nextSearchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  const fetchSelectedTicket = useCallback(async (ticketId: string, opts?: { silent?: boolean }) => {
     try {
-      const res = await adminTicketService.getById(selectedTicket.id);
+      const res = await adminTicketService.getById(ticketId);
       setSelectedTicket(res.data);
     } catch {
       if (!opts?.silent) toast.error(t('tickets.toasts.loadDetailFailed'));
+
+      if (requestedTicketId && requestedTicketId === ticketId) {
+        const fallbackTicket = tickets[0] || null;
+        if (fallbackTicket) {
+          syncSelectedTicketParam(fallbackTicket.id);
+        } else {
+          syncSelectedTicketParam(null);
+          setSelectedTicket(null);
+        }
+      }
     }
-  }, [selectedTicket?.id, t]);
+  }, [requestedTicketId, syncSelectedTicketParam, t, tickets]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
 
   useEffect(() => {
-    if (!selectedTicket?.id) return;
-    fetchSelectedTicket();
-  }, [selectedTicket?.id, fetchSelectedTicket]);
+    if (!tickets.length && requestedTicketId) {
+      if (selectedTicket?.id === requestedTicketId) {
+        return;
+      }
+
+      void fetchSelectedTicket(requestedTicketId, { silent: true });
+      return;
+    }
+
+    if (!tickets.length) {
+      setSelectedTicket(null);
+      return;
+    }
+
+    if (requestedTicketId) {
+      if (selectedTicket?.id === requestedTicketId) {
+        return;
+      }
+
+      const requestedTicket = tickets.find((ticket) => ticket.id === requestedTicketId);
+      if (requestedTicket) {
+        void fetchSelectedTicket(requestedTicket.id, { silent: true });
+        return;
+      }
+
+      void fetchSelectedTicket(requestedTicketId, { silent: true });
+      return;
+    }
+
+    if (selectedTicket?.id && tickets.some((ticket) => ticket.id === selectedTicket.id)) {
+      return;
+    }
+
+    void fetchSelectedTicket(tickets[0].id, { silent: true });
+    syncSelectedTicketParam(tickets[0].id);
+  }, [fetchSelectedTicket, requestedTicketId, selectedTicket?.id, syncSelectedTicketParam, tickets]);
 
   useEffect(() => {
     const unsubscribe = onRealtimeEvent((event) => {
@@ -224,19 +279,29 @@ export default function Tickets() {
 
       fetchTickets({ silent: true });
       if (selectedTicket?.id && eventTicketId && selectedTicket.id === eventTicketId) {
-        fetchSelectedTicket({ silent: true });
+        fetchSelectedTicket(selectedTicket.id, { silent: true });
       }
     });
 
     return unsubscribe;
   }, [fetchTickets, fetchSelectedTicket, selectedTicket?.id]);
 
-  const handleSelectTicket = async (ticket: TicketResponse) => {
+  const handleSelectTicket = async (
+    ticket: TicketResponse,
+    opts?: { silent?: boolean; syncQuery?: boolean },
+  ) => {
+    if (opts?.syncQuery !== false) {
+      syncSelectedTicketParam(ticket.id);
+    }
+
     try {
       const res = await adminTicketService.getById(ticket.id);
       setSelectedTicket(res.data);
     } catch {
       setSelectedTicket(ticket);
+      if (!opts?.silent) {
+        toast.error(t('tickets.toasts.loadDetailFailed'));
+      }
     }
   };
 

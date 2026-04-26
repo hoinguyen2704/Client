@@ -10,6 +10,7 @@
     },
     "toasts": {
       "itemUnavailable": "This product is no longer available",
+      "maxQuantityReached": "The maximum quantity available is {{count}} item(s)",
       "updateQtyFailed": "Failed to update quantity!",
       "removeSuccess": "Removed product from cart",
       "removeFailed": "Failed to remove product!",

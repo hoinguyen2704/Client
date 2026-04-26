@@ -4,7 +4,7 @@ import { FiDownload, FiPackage } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
-import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, ReportExportModal } from '@/components';
+import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, ReportExportModal, SortableHeaderLabel } from '@/components';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { getAdminOrderStatusOptions, getOrderFilterOptions } from '@/constants/orderConstants';
 import { useDebounce } from '@/hooks';
@@ -21,12 +21,14 @@ export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState('');
   const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('DESC');
 
   const deferredSearchInput = useDeferredValue(searchInput);
   const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
   const orderQueryKey = useMemo(
-    () => ['admin-orders', debouncedSearchQuery, statusFilter, page],
-    [debouncedSearchQuery, page, statusFilter],
+    () => ['admin-orders', debouncedSearchQuery, statusFilter, page, sortBy, sortDir],
+    [debouncedSearchQuery, page, sortBy, sortDir, statusFilter],
   );
 
   const ordersQuery = useQuery({
@@ -37,6 +39,8 @@ export default function AdminOrders() {
         status: statusFilter || undefined,
         page,
         size: PAGE_SIZE.LARGE,
+        sortBy,
+        sortDir,
       }, { signal }).then((res) => res.data),
     placeholderData: (previousData) => previousData,
   });
@@ -82,6 +86,18 @@ export default function AdminOrders() {
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     if (!newStatus) return;
     await updateStatusMutation.mutateAsync({ orderId, newStatus });
+  };
+
+  const handleSort = (column: string) => {
+    startTransition(() => {
+      if (sortBy === column) {
+        setSortDir((current) => (current === 'ASC' ? 'DESC' : 'ASC'));
+      } else {
+        setSortBy(column);
+        setSortDir(column === 'createdAt' ? 'DESC' : 'ASC');
+      }
+      setPage(1);
+    });
   };
 
   const handleExport = async () => {
@@ -140,12 +156,59 @@ export default function AdminOrders() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="hidden lg:grid grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md font-semibold text-center rounded-t-2xl">
           <div className="px-4 py-4">{t('orders.table.index')}</div>
-          <div className="px-4 py-4 text-left">{t('orders.table.orderNumber')}</div>
-          <div className="px-4 py-4">{t('orders.table.orderDate')}</div>
-          <div className="px-4 py-4">{t('orders.table.items')}</div>
-          <div className="px-4 py-4 text-right">{t('orders.table.total')}</div>
-          <div className="px-4 py-4 text-right">{t('orders.table.payment')}</div>
-          <div className="px-4 py-4">{t('orders.table.status')}</div>
+          <div className="px-4 py-4 text-left">
+            <SortableHeaderLabel
+              label={t('orders.table.orderNumber')}
+              active={sortBy === 'orderNumber'}
+              direction={sortDir}
+              onClick={() => handleSort('orderNumber')}
+            />
+          </div>
+          <div className="px-4 py-4">
+            <SortableHeaderLabel
+              label={t('orders.table.orderDate')}
+              active={sortBy === 'createdAt'}
+              direction={sortDir}
+              onClick={() => handleSort('createdAt')}
+              align="center"
+            />
+          </div>
+          <div className="px-4 py-4">
+            <SortableHeaderLabel
+              label={t('orders.table.items')}
+              active={sortBy === 'itemCount'}
+              direction={sortDir}
+              onClick={() => handleSort('itemCount')}
+              align="center"
+            />
+          </div>
+          <div className="px-4 py-4 text-right">
+            <SortableHeaderLabel
+              label={t('orders.table.total')}
+              active={sortBy === 'totalAmount'}
+              direction={sortDir}
+              onClick={() => handleSort('totalAmount')}
+              align="right"
+            />
+          </div>
+          <div className="px-4 py-4 text-right">
+            <SortableHeaderLabel
+              label={t('orders.table.payment')}
+              active={sortBy === 'paymentMethod'}
+              direction={sortDir}
+              onClick={() => handleSort('paymentMethod')}
+              align="right"
+            />
+          </div>
+          <div className="px-4 py-4">
+            <SortableHeaderLabel
+              label={t('orders.table.status')}
+              active={sortBy === 'orderStatus'}
+              direction={sortDir}
+              onClick={() => handleSort('orderStatus')}
+              align="center"
+            />
+          </div>
           <div className="px-4 py-4 text-center print:hidden">{t('orders.table.actions')}</div>
         </div>
 

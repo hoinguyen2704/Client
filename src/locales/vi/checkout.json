@@ -10,6 +10,7 @@
     },
     "toasts": {
       "itemUnavailable": "Sản phẩm hiện không còn khả dụng",
+      "maxQuantityReached": "Số lượng tối đa có thể mua là {{count}} sản phẩm",
       "updateQtyFailed": "Cập nhật số lượng thất bại!",
       "removeSuccess": "Đã xóa sản phẩm khỏi giỏ hàng",
       "removeFailed": "Xóa sản phẩm thất bại!",

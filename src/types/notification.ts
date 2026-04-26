@@ -1,3 +1,5 @@
+export type NotificationRole = "ADMIN" | "USER";
+
 //  Notification
 export interface NotificationResponse {
   id: string;
@@ -5,7 +7,12 @@ export interface NotificationResponse {
   content: string;
   isRead: boolean;
   type: string;
+  eventCode?: string;
   orderId?: string;
+  targetUrl?: string;
+  targetType?: string;
+  targetId?: string;
+  metadata?: Record<string, unknown> | null;
   createdAt: string;
 }
 

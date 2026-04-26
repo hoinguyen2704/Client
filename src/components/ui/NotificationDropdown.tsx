@@ -1,31 +1,32 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { FiBell, FiCheck, FiCheckCircle, FiExternalLink } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { useClickOutside } from '@/hooks';
+import useAuthStore from '@/stores/useAuthStore';
 import useNotificationStore from '@/stores/useNotificationStore';
-import notificationService from '@/apis/services/notificationService';
+import { getNotificationApiByRole } from '@/apis/services/notificationApi';
+import {
+  getNotificationCenterPath,
+  getNotificationIcon,
+  getNotificationTargetUrl,
+} from '@/constants/notificationConstants';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { NotificationDropdownProps, NotificationResponse } from '@/types';
-
-const typeIcons: Record<string, React.ReactNode> = {
-  ORDER: <FiShoppingBag className="text-blue-500" />,
-  SUPPORT: <FiMessageSquare className="text-amber-500" />,
-  TICKET: <FiMessageSquare className="text-amber-500" />,
-  PROMOTION: <FiTag className="text-indigo-500" />,
-  SYSTEM: <FiInfo className="text-muted" />,
-};
 
 const BELL_BUTTON_CLASS =
   "p-2 sm:p-2.5 text-muted hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative";
 
 export default function NotificationDropdown({ iconSize = 'text-xl' }: NotificationDropdownProps) {
   const { t } = useTranslation(['layout', 'common']);
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [localNotifications, setLocalNotifications] = useState<NotificationResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const role = useAuthStore((s) => s.user?.role);
+  const notificationApi = getNotificationApiByRole(role);
 
   const unreadCount = useNotificationStore((s) => s.unreadCount);
   const syncFromServer = useNotificationStore((s) => s.syncFromServer);
@@ -40,32 +41,46 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
     if (!isOpen) return;
     let cancelled = false;
     setLoading(true);
-    notificationService.getMyNotifications(1, 5)
+    notificationApi.getMyNotifications(1, 5)
       .then((res) => {
         if (!cancelled) setLocalNotifications(res.data?.data || []);
       })
       .catch(() => { /* ignore */ })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [isOpen]);
+  }, [isOpen, notificationApi]);
 
   const handleToggle = useCallback(() => setIsOpen(prev => !prev), []);
 
   const handleMarkRead = useCallback(async (id: string) => {
     try {
-      await notificationService.markAsRead(id);
+      await notificationApi.markAsRead(id);
       setLocalNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
       useNotificationStore.getState().decrementUnread();
+      return true;
     } catch { /* ignore */ }
-  }, []);
+    return false;
+  }, [notificationApi]);
 
   const handleMarkAllRead = useCallback(async () => {
     try {
-      await notificationService.markAllAsRead();
+      await notificationApi.markAllAsRead();
       setLocalNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       useNotificationStore.getState().clearUnread();
     } catch { /* ignore */ }
-  }, []);
+  }, [notificationApi]);
+
+  const handleNotificationClick = useCallback(async (notification: NotificationResponse) => {
+    if (!notification.isRead) {
+      await handleMarkRead(notification.id);
+    }
+
+    const targetUrl = getNotificationTargetUrl(notification);
+    if (!targetUrl) return;
+
+    setIsOpen(false);
+    navigate(targetUrl);
+  }, [handleMarkRead, navigate]);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -137,12 +152,12 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                 localNotifications.map(n => (
                   <div
                     key={n.id}
-                    onClick={() => !n.isRead && handleMarkRead(n.id)}
-                  className={`px-5 py-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 ${!n.isRead ? 'bg-blue-50/40 dark:bg-blue-950/20' : ''
+                    onClick={() => void handleNotificationClick(n)}
+                    className={`px-5 py-3.5 flex items-start gap-3 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 ${!n.isRead ? 'bg-blue-50/40 dark:bg-blue-950/20' : ''
                       }`}
                   >
                     <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 text-base">
-                      {typeIcons[n.type] || <FiBell className="text-subtle" />}
+                      {getNotificationIcon(n.type)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 mb-0.5">
@@ -154,7 +169,10 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
                     </div>
                     {!n.isRead && (
                       <button
-                        onClick={(e) => { e.stopPropagation(); handleMarkRead(n.id); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          void handleMarkRead(n.id);
+                        }}
                         className="p-1 text-subtle hover:text-green-600 shrink-0 mt-0.5"
                         title={t('notifications.markRead', { ns: 'layout' })}
                       >
@@ -169,7 +187,7 @@ export default function NotificationDropdown({ iconSize = 'text-xl' }: Notificat
             {/* Footer */}
             <div className="px-5 py-3 border-t border-slate-100 dark:border-slate-800">
               <Link
-                to="/user/notifications"
+                to={getNotificationCenterPath(role)}
                 onClick={() => setIsOpen(false)}
                 className="flex items-center justify-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
               >

@@ -97,6 +97,8 @@ export interface AdminOrderListParams {
   keyword?: string;
   page?: number;
   size?: number;
+  sortBy?: string;
+  sortDir?: "ASC" | "DESC";
 }
 
 export interface OrderExportParams {

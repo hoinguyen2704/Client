@@ -25,6 +25,7 @@ const Tickets = lazy(() => import('@/views/admin/ticket/Tickets'));
 const FlashSales = lazy(() => import('@/views/admin/flashsale/FlashSales'));
 const FlashSaleForm = lazy(() => import('@/views/admin/flashsale/FlashSaleForm'));
 const ProductPicker = lazy(() => import('@/views/admin/flashsale/ProductPicker'));
+const AdminNotifications = lazy(() => import('@/views/admin/notification/Notifications'));
 
 export const adminRoutes = (
   <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN"><AdminLayout /></ProtectedRoute>}>
@@ -53,6 +54,7 @@ export const adminRoutes = (
     <Route path="feedbacks" element={<Feedbacks />} />
     <Route path="chatbot" element={<AdminChatbot />} />
     <Route path="cms" element={<CMS />} />
+    <Route path="notifications" element={<AdminNotifications />} />
     <Route path="tickets" element={<Tickets />} />
   </Route>
 );

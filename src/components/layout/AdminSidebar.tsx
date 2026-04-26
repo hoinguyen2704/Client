@@ -1,8 +1,9 @@
 import { NavLink, Link } from 'react-router-dom';
-import { FiGrid, FiShoppingBag, FiRotateCcw, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap, FiAward } from 'react-icons/fi';
+import { FiGrid, FiShoppingBag, FiRotateCcw, FiBox, FiList, FiUsers, FiTag, FiSettings, FiMessageSquare, FiCpu, FiFileText, FiHeadphones, FiChevronLeft, FiZap, FiAward, FiBell } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import LogoIcon from '../ui/LogoIcon';
 import useUIStore from '@/stores/useUIStore';
+import useNotificationStore from '@/stores/useNotificationStore';
 import { SHOP } from '@/constants/shopConstants';
 import { cn } from '@/utils/cn';
 
@@ -21,6 +22,7 @@ const menuItems = [
   { path: '/admin/customers', icon: FiUsers, labelKey: 'adminSidebar.customers' },
   { path: '/admin/vouchers', icon: FiTag, labelKey: 'adminSidebar.vouchers' },
   { path: '/admin/flash-sales', icon: FiZap, labelKey: 'adminSidebar.flashSale' },
+  { path: '/admin/notifications', icon: FiBell, labelKey: 'adminSidebar.notifications' },
   { path: '/admin/feedbacks', icon: FiMessageSquare, labelKey: 'adminSidebar.feedbacks' },
   { path: '/admin/tickets', icon: FiHeadphones, labelKey: 'adminSidebar.tickets' },
   { path: '/admin/chatbot', icon: FiCpu, labelKey: 'adminSidebar.chatbot' },
@@ -31,6 +33,7 @@ const menuItems = [
 export default function AdminSidebar() {
   const { t } = useTranslation(['layout', 'common']);
   const { sidebarCollapsed, toggleSidebar } = useUIStore();
+  const unreadCount = useNotificationStore((s) => s.unreadCount);
 
   return (
     <>
@@ -83,8 +86,35 @@ export default function AdminSidebar() {
                 )}
                 title={sidebarCollapsed ? t(item.labelKey, { ns: 'layout' }) : undefined}
               >
-                <item.icon className="text-base sm:text-lg shrink-0" />
-                {!sidebarCollapsed && t(item.labelKey, { ns: 'layout' })}
+                {({ isActive }) => {
+                  const showUnread = item.path === '/admin/notifications' && unreadCount > 0;
+
+                  return (
+                    <>
+                      <span className="relative flex items-center justify-center shrink-0">
+                        <item.icon className="text-base sm:text-lg shrink-0" />
+                        {sidebarCollapsed && showUnread && (
+                          <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-red-500 border border-white dark:border-slate-900" />
+                        )}
+                      </span>
+                      {!sidebarCollapsed && (
+                        <>
+                          <span className="flex-1">{t(item.labelKey, { ns: 'layout' })}</span>
+                          {showUnread && (
+                            <span className={cn(
+                              'min-w-[22px] rounded-full px-1.5 py-0.5 text-center text-10 font-bold',
+                              isActive
+                                ? 'bg-white/20 text-white'
+                                : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-300',
+                            )}>
+                              {unreadCount > 99 ? '99+' : unreadCount}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </>
+                  );
+                }}
               </NavLink>
             ))}
           </nav>

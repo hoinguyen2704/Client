@@ -5,7 +5,12 @@ import useAuthStore from '@/stores/useAuthStore';
 import useNotificationStore from '@/stores/useNotificationStore';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { emitRealtimeEvent } from '@/realtime/realtimeBus';
-import type { RealtimeEventEnvelope, SupportRealtimePayload, UserNotificationRealtimePayload } from '@/types';
+import type {
+  AdminNotificationRealtimePayload,
+  RealtimeEventEnvelope,
+  SupportRealtimePayload,
+  UserNotificationRealtimePayload,
+} from '@/types';
 
 const RECONNECT_BASE_DELAY_MS = 1000;
 const RECONNECT_MAX_DELAY_MS = 12000;
@@ -59,6 +64,7 @@ function handleUserToast(
 function handleAdminToast(
   event: RealtimeEventEnvelope,
   t: (key: string, options?: Record<string, unknown>) => string,
+  currentUserId?: string,
 ) {
   if (event.type === REALTIME_EVENT_TYPES.SUPPORT_TICKET_CREATED) {
     const payload = (event.data || {}) as SupportRealtimePayload;
@@ -77,10 +83,17 @@ function handleAdminToast(
     }
   }
 
-  // Admin also receives notification events — update badge
-  if (event.type === REALTIME_EVENT_TYPES.USER_NOTIFICATION_CREATED) {
-    const payload = (event.data || {}) as UserNotificationRealtimePayload;
+  if (event.type === REALTIME_EVENT_TYPES.ADMIN_NOTIFICATION_CREATED) {
+    const payload = (event.data || {}) as AdminNotificationRealtimePayload;
+    const actorUserId = typeof payload.metadata?.actorUserId === 'string' ? payload.metadata.actorUserId : null;
+    if (actorUserId && actorUserId === currentUserId) {
+      return;
+    }
     useNotificationStore.getState().incrementUnread(payload as unknown as import('@/types').NotificationResponse);
+    if (payload.type === 'SUPPORT') return;
+    toast.info(payload.title || t('realtime.newNotification', { ns: 'account' }), {
+      description: payload.content || '',
+    });
   }
 }
 
@@ -155,7 +168,7 @@ export default function RealtimeBridge() {
 
           emitRealtimeEvent(parsed);
           if (user.role === 'ADMIN') {
-            handleAdminToast(parsed, t);
+            handleAdminToast(parsed, t, user.id);
           } else {
             handleUserToast(parsed, t);
           }

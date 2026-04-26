@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { FiMessageSquare, FiPlus, FiSend } from 'react-icons/fi';
 import ticketService from '@/apis/services/ticketService';
 import { formatDateShort as formatDate } from '@/utils/format';
@@ -20,6 +21,7 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
 
 export default function Support() {
   const { t } = useTranslation('account');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tickets, setTickets] = useState<TicketResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -31,7 +33,19 @@ export default function Support() {
   const [replyText, setReplyText] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const selectedTicketIdRef = useRef(selectedTicketId);
+  const requestedTicketId = searchParams.get('ticketId');
   selectedTicketIdRef.current = selectedTicketId;
+
+  const syncSelectedTicketId = useCallback((ticketId: string | null) => {
+    setSelectedTicketId(ticketId);
+    const nextSearchParams = new URLSearchParams(searchParams);
+    if (ticketId) {
+      nextSearchParams.set('ticketId', ticketId);
+    } else {
+      nextSearchParams.delete('ticketId');
+    }
+    setSearchParams(nextSearchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const fetchTickets = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
@@ -39,8 +53,11 @@ export default function Support() {
       const res = await ticketService.getMyTickets(1, 30);
       const nextTickets = res.data?.data || [];
       const currentId = selectedTicketIdRef.current;
-      const stillExists = currentId && nextTickets.some((t) => t.id === currentId);
-      if (!stillExists) {
+      const stillExists = currentId ? nextTickets.some((t) => t.id === currentId) : false;
+
+      if (requestedTicketId && requestedTicketId !== currentId) {
+        setSelectedTicketId(requestedTicketId);
+      } else if (!stillExists) {
         setSelectedTicketId(nextTickets[0]?.id || null);
       }
       setTickets(nextTickets);
@@ -49,7 +66,7 @@ export default function Support() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [requestedTicketId]);
 
   const fetchTicketDetail = useCallback(async (ticketId: string, opts?: { silent?: boolean }) => {
     try {
@@ -58,10 +75,25 @@ export default function Support() {
     } catch {
       if (!opts?.silent) toast.error(t('support.toasts.loadDetailFailed'));
       setSelectedTicket(null);
+
+      if (requestedTicketId && requestedTicketId === ticketId) {
+        const fallbackTicketId = tickets[0]?.id || null;
+        if (fallbackTicketId && fallbackTicketId !== ticketId) {
+          syncSelectedTicketId(fallbackTicketId);
+        } else if (!fallbackTicketId) {
+          syncSelectedTicketId(null);
+        }
+      }
     }
-  }, [t]);
+  }, [requestedTicketId, syncSelectedTicketId, t, tickets]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
+
+  useEffect(() => {
+    if (requestedTicketId && requestedTicketId !== selectedTicketId) {
+      setSelectedTicketId(requestedTicketId);
+    }
+  }, [requestedTicketId, selectedTicketId]);
 
   useEffect(() => {
     if (!selectedTicketId) {
@@ -83,7 +115,7 @@ export default function Support() {
       fetchTickets({ silent: true });
 
       if (!selectedTicketId && eventTicketId) {
-        setSelectedTicketId(eventTicketId);
+        syncSelectedTicketId(eventTicketId);
         return;
       }
 
@@ -120,7 +152,7 @@ export default function Support() {
       toast.success(t('support.toasts.createSuccess'));
       await fetchTickets({ silent: true });
       if (created?.id) {
-        setSelectedTicketId(created.id);
+        syncSelectedTicketId(created.id);
         setSelectedTicket(created);
       }
     } catch (e: unknown) {
@@ -198,7 +230,7 @@ export default function Support() {
                   key={ticket.id}
                   ticket={ticket}
                   isSelected={selectedTicketId === ticket.id}
-                  onClick={(t) => setSelectedTicketId(t.id)}
+                  onClick={(ticketResponse) => syncSelectedTicketId(ticketResponse.id)}
                 />
               ))
             )}

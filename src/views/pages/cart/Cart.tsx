@@ -10,6 +10,11 @@ import useCartStore from '@/stores/useCartStore';
 import { Button, Checkbox, IconButton, PrimaryButton, QuantitySelector } from '@/components';
 import type { CartResponse, ShippingConfig } from '@/types';
 
+const sortCartItems = (cartItems: (CartResponse & { selected: boolean })[]) => [
+  ...cartItems.filter((item) => item.available !== false),
+  ...cartItems.filter((item) => item.available === false),
+];
+
 export default function Cart() {
   const { t } = useTranslation('checkout');
   const [items, setItems] = useState<(CartResponse & { selected: boolean })[]>([]);
@@ -35,10 +40,10 @@ export default function Cart() {
     setLoading(true);
     try {
       const res = await cartService.getMyCart();
-      setItems((res.data || []).map(i => ({
+      setItems(sortCartItems((res.data || []).map(i => ({
         ...i,
         selected: i.available !== false,
-      })));
+      }))));
     }
     catch { setItems([]); }
     finally { setLoading(false); }
@@ -53,11 +58,11 @@ export default function Cart() {
     }
     try {
       const res = await cartService.updateQuantity(itemId, qty);
-      setItems(prev => prev.map(i => i.id === itemId ? {
+      setItems(prev => sortCartItems(prev.map(i => i.id === itemId ? {
         ...i,
         ...res.data,
         selected: res.data.available === false ? false : i.selected,
-      } : i));
+      } : i)));
       syncFromServer();
     } catch { toast.error(t('cart.toasts.updateQtyFailed')); }
   };
@@ -181,8 +186,10 @@ export default function Cart() {
                           value={item.quantity}
                           onChange={(val) => handleUpdateQty(item.id, val)}
                           min={1}
+                          max={Math.max(1, item.stockQuantity || 1)}
                           size="md"
                           disabled={item.available === false}
+                          overMaxWarning={t('cart.toasts.maxQuantityReached', { count: item.stockQuantity })}
                         />
                     </div>
                   <IconButton onClick={() => handleRemove(item.id)} variant="ghost" size="lg" icon={<FiTrash2 className="text-[2rem]" />} className="text-red-500 shrink-0" />

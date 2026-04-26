@@ -21,3 +21,4 @@ export interface RealtimeEventEnvelope<T = unknown> {
 }
 
 export type UserNotificationRealtimePayload = NotificationResponse;
+export type AdminNotificationRealtimePayload = NotificationResponse;

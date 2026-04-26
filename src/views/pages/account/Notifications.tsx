@@ -1,23 +1,21 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiBell, FiCheck, FiCheckCircle, FiShoppingBag, FiTag, FiInfo, FiMessageSquare } from 'react-icons/fi';
+import { FiBell, FiCheck, FiCheckCircle } from 'react-icons/fi';
 import notificationService from '@/apis/services/notificationService';
 import useNotificationStore from '@/stores/useNotificationStore';
+import {
+  getNotificationIcon,
+  getNotificationTargetUrl,
+} from '@/constants/notificationConstants';
 import { formatDateShort as formatDate } from '@/utils/format';
 import type { NotificationResponse, UserNotificationRealtimePayload } from '@/types';
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
-const typeIcons: Record<string, React.ReactNode> = {
-  ORDER: <FiShoppingBag className="text-blue-500" />,
-  SUPPORT: <FiMessageSquare className="text-amber-500" />,
-  TICKET: <FiMessageSquare className="text-amber-500" />,
-  PROMOTION: <FiTag className="text-blue-500" />,
-  SYSTEM: <FiInfo className="text-muted" />,
-};
-
 export default function Notifications() {
   const { t } = useTranslation('account');
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,7 +45,9 @@ export default function Notifications() {
       await notificationService.markAsRead(id);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
       useNotificationStore.getState().decrementUnread();
+      return true;
     } catch { /* ignore */ }
+    return false;
   };
 
   const handleMarkAllRead = async () => {
@@ -57,6 +57,17 @@ export default function Notifications() {
       useNotificationStore.getState().clearUnread();
     } catch { /* ignore */ }
   };
+  const handleNotificationClick = async (notification: NotificationResponse) => {
+    if (!notification.isRead) {
+      await handleMarkRead(notification.id);
+    }
+
+    const targetUrl = getNotificationTargetUrl(notification);
+    if (targetUrl) {
+      navigate(targetUrl);
+    }
+  };
+
   const unreadCount = notifications.filter(n => !n.isRead).length;
   return (
     <div className="space-y-6">
@@ -80,11 +91,11 @@ export default function Notifications() {
       ) : (
         <div className="space-y-3">
           {notifications.map(n => (
-            <div key={n.id} onClick={() => !n.isRead && handleMarkRead(n.id)}
+            <div key={n.id} onClick={() => void handleNotificationClick(n)}
               className={`bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border transition-all cursor-pointer hover:shadow-md ${n.isRead ? 'border-slate-100 dark:border-slate-800 opacity-70' : 'border-blue-200 dark:border-blue-800 bg-blue-50/30 dark:bg-blue-900/10'}`}>
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 text-lg">
-                  {typeIcons[n.type] || <FiBell />}
+                  {getNotificationIcon(n.type)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
@@ -95,7 +106,16 @@ export default function Notifications() {
                   <span className="text-sm text-subtle mt-2 block">{formatDate(n.createdAt)}</span>
                 </div>
                 {!n.isRead && (
-                  <button className="p-1 text-subtle hover:text-green-600 shrink-0" title={t('notificationsPage.markReadTitle')}><FiCheck /></button>
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void handleMarkRead(n.id);
+                    }}
+                    className="p-1 text-subtle hover:text-green-600 shrink-0"
+                    title={t('notificationsPage.markReadTitle')}
+                  >
+                    <FiCheck />
+                  </button>
                 )}
               </div>
             </div>

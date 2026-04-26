@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import notificationService from '@/apis/services/notificationService';
+import { getNotificationApiByRole, getStoredNotificationRole } from '@/apis/services/notificationApi';
 import type { NotificationState } from '@/types';
 
 const useNotificationStore = create<NotificationState>()((set) => ({
@@ -15,7 +15,8 @@ const useNotificationStore = create<NotificationState>()((set) => ({
         set({ unreadCount: 0 });
         return;
       }
-      const res = await notificationService.getUnreadCount();
+      const role = getStoredNotificationRole();
+      const res = await getNotificationApiByRole(role).getUnreadCount();
       const count = typeof res.data?.count === 'number' ? res.data.count : 0;
       set({ unreadCount: count });
     } catch {
@@ -28,7 +29,8 @@ const useNotificationStore = create<NotificationState>()((set) => ({
       const raw = localStorage.getItem('auth') || sessionStorage.getItem('auth');
       const token = raw ? JSON.parse(raw)?.state?.token : null;
       if (!token) return;
-      const res = await notificationService.getMyNotifications(1, 5);
+      const role = getStoredNotificationRole();
+      const res = await getNotificationApiByRole(role).getMyNotifications(1, 5);
       set({ recentNotifications: res.data?.data || [] });
     } catch {
       // ignore
