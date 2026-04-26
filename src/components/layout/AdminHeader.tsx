@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiShield, FiHelpCircle, FiMenu, FiMoon, FiSun } from 'react-icons/fi';
+import { FiSearch, FiLogOut, FiUser, FiSettings, FiChevronDown, FiUsers, FiHelpCircle, FiMenu, FiMoon, FiSun } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useClickOutside } from '@/hooks';
@@ -28,7 +28,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
   useClickOutside(menuRef, useCallback(() => setIsMenuOpen(false), []));
 
   return (
-    <header className="h-16 sm:h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-3 sm:px-4 md:px-8 sticky top-0 z-10">
+    <header className="h-16 sm:h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-3 sm:px-4 md:px-8 sticky top-0 z-40">
       <div className="flex items-center gap-2 sm:gap-4 flex-1">
         <button
           onClick={toggleSidebar}
@@ -126,7 +126,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
-                  <FiShield className="text-lg text-subtle" />
+                  <FiUsers className="text-lg text-subtle" />
                   {t('adminHeader.accessControl', { ns: 'layout' })}
                 </Link>
                 <Link

@@ -15,7 +15,7 @@ const INITIAL_DATA: HomeData = { banners: [], featured: [], newArrivals: [], bes
 function HeroBannerSkeleton() {
   return (
     <section className="w-full px-4 md:px-8 lg:px-12 py-6">
-      <div className="relative rounded-2xl overflow-hidden h-[400px] md:h-[500px] lg:h-[600px] bg-slate-100 dark:bg-slate-900">
+      <div className="relative rounded-2xl overflow-hidden h-[320px] md:h-[400px] lg:h-[450px] bg-slate-100 dark:bg-slate-900">
         <Skeleton variant="rectangular" className="absolute inset-0 w-full h-full rounded-none" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-6">

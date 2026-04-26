@@ -526,6 +526,28 @@ export default function ReturnDetail() {
                 <p className="text-muted">{t('returns.detail.customerNote')}</p>
                 <p className="font-medium">{returnRequest.evidenceNote || t('returns.detail.none')}</p>
               </div>
+              {(returnRequest.evidenceImageUrls?.length || 0) > 0 && (
+                <div>
+                  <p className="text-muted mb-2">{t('returns.detail.evidenceImages')}</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {returnRequest.evidenceImageUrls!.map((imageUrl, index) => (
+                      <a
+                        key={`${imageUrl}-${index}`}
+                        href={imageUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 aspect-square"
+                      >
+                        <img
+                          src={imageUrl}
+                          alt={t('returns.detail.evidenceImageAlt', { index: index + 1 })}
+                          className="w-full h-full object-cover transition-transform hover:scale-105"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div>
                 <p className="text-muted">{t('returns.detail.adminNote')}</p>
                 <p className="font-medium">{returnRequest.adminNote || t('returns.detail.noAdminNote')}</p>

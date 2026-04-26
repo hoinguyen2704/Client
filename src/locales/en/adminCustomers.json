@@ -1,7 +1,7 @@
 {
   "customers": {
-    "title": "Customer management",
-    "addCustomer": "Add customer",
+    "title": "Account Management",
+    "addCustomer": "Add account",
     "export": "Export list",
     "searchPlaceholder": "Search by name, email, phone number...",
     "filters": {
@@ -32,9 +32,9 @@
       "currentAccount": "My account"
     },
     "createModal": {
-      "title": "Add new customer",
-      "description": "The system will generate a username from the email. The customer can sign in with the email and this initial password.",
-      "submit": "Create customer",
+      "title": "Add new account",
+      "description": "The system will generate a username from the email. The user can sign in with the email and this initial password.",
+      "submit": "Create account",
       "creating": "Creating...",
       "cancel": "Cancel",
       "fields": {
@@ -44,11 +44,16 @@
         "password": "Initial password",
         "confirmPassword": "Confirm password",
         "dateOfBirth": "Date of birth",
-        "gender": "Gender"
+        "gender": "Gender",
+        "role": "Role"
+      },
+      "roleOptions": {
+        "user": "Customer",
+        "admin": "Admin"
       },
       "placeholders": {
-        "fullName": "Enter customer full name",
-        "email": "Enter customer email",
+        "fullName": "Enter full name",
+        "email": "Enter email",
         "phoneNumber": "Enter phone number",
         "password": "At least 6 characters",
         "confirmPassword": "Re-enter password"
@@ -58,8 +63,8 @@
       "pagination": "users"
     },
     "toasts": {
-      "createSuccess": "Customer created successfully!",
-      "createFailed": "Failed to create customer!",
+      "createSuccess": "Account created successfully!",
+      "createFailed": "Failed to create account!",
       "fullNameRequired": "Please enter a full name.",
       "emailRequired": "Please enter an email.",
       "phoneRequired": "Please enter a phone number.",
@@ -75,9 +80,9 @@
     }
   },
   "detail": {
-    "title": "Customer details",
-    "createPageTitle": "Add new customer",
-    "createPageDescription": "Use the same detail page to create a new customer account and upload an avatar before saving.",
+    "title": "Account details",
+    "createPageTitle": "Add new account",
+    "createPageDescription": "Use the detail page to create a new account and upload an avatar before saving.",
     "profile": "Profile information",
     "orders": "Orders",
     "returns": "Returns",
@@ -87,18 +92,18 @@
     "createProfileTitle": "",
     "fullName": "Full name",
     "email": "Email",
-    "emailPlaceholder": "Enter customer email",
+    "emailPlaceholder": "Enter email",
     "phone": "Phone number",
     "gender": "Gender",
     "dateOfBirth": "Date of birth",
     "createdAt": "Created at",
     "joined": "Joined: {{date}}",
-    "createHandleHint": "New customer account",
-    "newCustomerFallbackName": "New customer",
-    "profileEditTitle": "Edit customer profile",
+    "createHandleHint": "New account",
+    "newCustomerFallbackName": "New account",
+    "profileEditTitle": "Edit profile",
     "readonlyOtherAccountNotice": "Other admin accounts cannot be edited here. You can only edit the admin account you are currently signed in with.",
     "adminReadonlyAction": "Admin account",
-    "fullNamePlaceholder": "Enter customer full name",
+    "fullNamePlaceholder": "Enter full name",
     "newPhone": "New phone number",
     "newPhonePlaceholder": "Enter phone number",
     "phoneFormatHint": "Supports 0xxxxxxxxx or +84xxxxxxxxx formats.",
@@ -127,8 +132,8 @@
       "fullNameRequired": "Please enter a full name.",
       "phoneInvalid": "Invalid phone number format.",
       "reasonRequired": "Please enter the reason for the change.",
-      "profileUpdated": "Customer profile updated successfully!",
-      "profileUpdateFailed": "Failed to update customer profile!"
+      "profileUpdated": "Profile updated successfully!",
+      "profileUpdateFailed": "Failed to update profile!"
     }
   }
 }

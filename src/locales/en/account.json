@@ -145,8 +145,15 @@
       "quantity": "Quantity",
       "reasonLabel": "Return reason",
       "reasonPlaceholder": "Or enter your detailed reason...",
-      "noteLabel": "Additional notes / image links (optional)",
-      "notePlaceholder": "Provide more details or storage links for evidence...",
+      "noteLabel": "Additional notes (optional)",
+      "notePlaceholder": "Provide more context to support this return request...",
+      "imagesLabel": "Evidence images (optional)",
+      "imagesCount": "{{count}} / {{max}} images",
+      "imagesHelper": "Upload photos of the issue, product condition, or missing accessories.",
+      "imagesHint": "Supports PNG, JPG, JPEG, WEBP. Up to {{max}} images.",
+      "chooseImages": "Choose images",
+      "imageAlt": "Evidence image {{index}}",
+      "removeImageAria": "Remove evidence image {{index}}",
       "submit": "Submit return request",
       "quickReasons": {
         "defective": "Product is defective / damaged",
@@ -201,6 +208,8 @@
     "toasts": {
       "reasonRequired": "Please enter a return reason",
       "selectItemsRequired": "Please choose at least one item to return",
+      "invalidEvidenceImageType": "Only image files are supported",
+      "evidenceImageLimitExceeded": "You can upload up to {{max}} images",
       "createSuccess": "Return request submitted successfully",
       "createFailed": "Failed to create return request"
     }
@@ -457,6 +466,8 @@
       "title": "Request information",
       "reason": "Reason",
       "note": "Note",
+      "images": "Evidence images",
+      "imageAlt": "Evidence image {{index}}",
       "none": "None",
       "createdAt": "Created at",
       "resolvedAt": "Completed at"

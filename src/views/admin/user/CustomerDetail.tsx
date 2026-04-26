@@ -17,6 +17,7 @@ type CustomerFormState = {
   phoneNumber: string;
   dateOfBirth: string;
   gender: string;
+  role: string;
   avatarUrl: string;
   password: string;
   confirmPassword: string;
@@ -29,6 +30,7 @@ const EMPTY_FORM: CustomerFormState = {
   phoneNumber: '',
   dateOfBirth: '',
   gender: '',
+  role: 'USER',
   avatarUrl: '',
   password: '',
   confirmPassword: '',
@@ -82,6 +84,7 @@ export default function CustomerDetail() {
       phoneNumber: nextUser.phoneNumber || '',
       dateOfBirth: nextUser.dateOfBirth || '',
       gender: nextUser.gender || '',
+      role: nextUser.role || 'USER',
       avatarUrl: nextUser.avatarUrl || '',
       password: '',
       confirmPassword: '',
@@ -205,6 +208,7 @@ export default function CustomerDetail() {
         password: form.password,
         dateOfBirth: form.dateOfBirth || null,
         gender: form.gender || null,
+        role: form.role || 'USER',
         avatarUrl: form.avatarUrl || null,
       });
       toast.success(t('customers.toasts.createSuccess'));
@@ -333,7 +337,7 @@ export default function CustomerDetail() {
                 status={isCreateMode || user?.status === 'ACTIVE' ? 'active' : 'banned'}
                 label={isCreateMode || user?.status === 'ACTIVE' ? t('customers.statuses.active') : t('customers.statuses.locked')}
               />
-              <StatusBadge status={isCreateMode || user?.role === 'USER' ? 'user' : 'admin'} />
+              <StatusBadge status={isCreateMode ? (form.role === 'ADMIN' ? 'admin' : 'user') : (user?.role === 'USER' ? 'user' : 'admin')} />
             </div>
 
             <input
@@ -513,8 +517,23 @@ export default function CustomerDetail() {
                       />
                     </div>
 
+                    {isCreateMode && (
+                      <div>
+                        <label className="mb-2 block text-md text-muted">{t('customers.createModal.fields.role')}</label>
+                        <CustomSelect
+                          value={form.role}
+                          onChange={(value) => setForm((current) => ({ ...current, role: value }))}
+                          className="h-11 w-full"
+                          options={[
+                            { value: 'USER', label: t('customers.createModal.roleOptions.user') },
+                            { value: 'ADMIN', label: t('customers.createModal.roleOptions.admin') },
+                          ]}
+                        />
+                      </div>
+                    )}
+
                     {isCreateMode ? (
-                      <>
+                      <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="mb-2 block text-md text-muted">{t('customers.createModal.fields.password')}</label>
                           <input
@@ -535,7 +554,7 @@ export default function CustomerDetail() {
                             placeholder={t('customers.createModal.placeholders.confirmPassword')}
                           />
                         </div>
-                      </>
+                      </div>
                     ) : (
                       <div className="sm:col-span-2">
                         <label className="mb-2 block text-md text-muted">{t('detail.changeReason')}</label>

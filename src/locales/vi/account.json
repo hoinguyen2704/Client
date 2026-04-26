@@ -145,8 +145,15 @@
       "quantity": "Số lượng",
       "reasonLabel": "Lý do trả hàng",
       "reasonPlaceholder": "Hoặc nhập chi tiết lý do của bạn...",
-      "noteLabel": "Mô tả thêm / Link ảnh (không bắt buộc)",
-      "notePlaceholder": "Cung cấp thêm thông tin hoặc link ảnh lưu trữ...",
+      "noteLabel": "Mô tả thêm (không bắt buộc)",
+      "notePlaceholder": "Cung cấp thêm thông tin để hỗ trợ duyệt yêu cầu...",
+      "imagesLabel": "Ảnh minh chứng (không bắt buộc)",
+      "imagesCount": "{{count}} / {{max}} ảnh",
+      "imagesHelper": "Tải ảnh chụp lỗi sản phẩm, tem niêm phong hoặc tình trạng thực tế.",
+      "imagesHint": "Hỗ trợ PNG, JPG, JPEG, WEBP. Tối đa {{max}} ảnh.",
+      "chooseImages": "Chọn ảnh",
+      "imageAlt": "Ảnh minh chứng {{index}}",
+      "removeImageAria": "Xóa ảnh minh chứng {{index}}",
       "submit": "Gửi yêu cầu trả hàng",
       "quickReasons": {
         "defective": "Sản phẩm bị lỗi / hỏng",
@@ -201,6 +208,8 @@
     "toasts": {
       "reasonRequired": "Vui lòng nhập lý do trả hàng",
       "selectItemsRequired": "Vui lòng chọn ít nhất 1 sản phẩm cần trả",
+      "invalidEvidenceImageType": "Chỉ hỗ trợ tải lên tệp hình ảnh",
+      "evidenceImageLimitExceeded": "Bạn chỉ có thể tải tối đa {{max}} ảnh",
       "createSuccess": "Đã gửi yêu cầu trả hàng thành công",
       "createFailed": "Tạo yêu cầu trả hàng thất bại"
     }
@@ -457,6 +466,8 @@
       "title": "Thông tin yêu cầu",
       "reason": "Lý do",
       "note": "Ghi chú",
+      "images": "Ảnh minh chứng",
+      "imageAlt": "Ảnh minh chứng {{index}}",
       "none": "Không có",
       "createdAt": "Tạo lúc",
       "resolvedAt": "Kết thúc"

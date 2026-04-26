@@ -125,7 +125,7 @@ export default function HeroBanner({ banners }: HeroBannerProps) {
 
   return (
     <section className="w-full px-4 md:px-8 lg:px-12 py-6">
-      <div className="group relative h-[400px] overflow-hidden rounded-[2rem] bg-slate-950 md:h-[500px] lg:h-[600px]">
+      <div className="group relative h-[320px] overflow-hidden rounded-[2rem] bg-slate-950 md:h-[400px] lg:h-[450px]">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentBanner}

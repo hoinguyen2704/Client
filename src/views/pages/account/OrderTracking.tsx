@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiPackage, FiXCircle, FiCheck, FiTruck } from 'react-icons/fi';
+import { FiPackage, FiXCircle, FiCheck, FiTruck, FiTrash2, FiUploadCloud } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateFull as formatDate } from '@/utils/format';
 import orderService from '@/apis/services/orderService';
@@ -12,8 +12,12 @@ import { BackButton, Button, Checkbox, PrimaryButton, QuantitySelector } from '@
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 
+const MAX_RETURN_EVIDENCE_IMAGES = 5;
 
-
+type ReturnEvidenceFile = {
+  file: File;
+  previewUrl: string;
+};
 export default function OrderTracking() {
   const { t, i18n } = useTranslation(['account', 'common']);
   const { id } = useParams<{ id: string }>();
@@ -27,6 +31,9 @@ export default function OrderTracking() {
   const [returnItemQuantities, setReturnItemQuantities] = useState<Record<string, number>>({});
   const [selectedReturnItems, setSelectedReturnItems] = useState<Record<string, boolean>>({});
   const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
+  const [returnEvidenceFiles, setReturnEvidenceFiles] = useState<ReturnEvidenceFile[]>([]);
+  const returnEvidenceFilesRef = useRef<ReturnEvidenceFile[]>([]);
+  const returnEvidenceInputRef = useRef<HTMLInputElement>(null);
 
   const QUICK_REASONS = [
     t('orderTracking.returnForm.quickReasons.defective'),
@@ -47,6 +54,16 @@ export default function OrderTracking() {
   };
 
   useEffect(() => {
+    returnEvidenceFilesRef.current = returnEvidenceFiles;
+  }, [returnEvidenceFiles]);
+
+  useEffect(() => () => {
+    returnEvidenceFilesRef.current.forEach(({ previewUrl }) => {
+      URL.revokeObjectURL(previewUrl);
+    });
+  }, []);
+
+  useEffect(() => {
     if (!id) return;
     setLoading(true);
     orderService.getByNumber(id).then(res => {
@@ -57,8 +74,25 @@ export default function OrderTracking() {
     }).catch(() => setOrder(null)).finally(() => setLoading(false));
   }, [id]);
 
+  const clearReturnEvidenceFiles = () => {
+    setReturnEvidenceFiles((prev) => {
+      prev.forEach(({ previewUrl }) => {
+        URL.revokeObjectURL(previewUrl);
+      });
+      return [];
+    });
+  };
+
+  const resetReturnForm = () => {
+    setIsReturning(false);
+    setReturnReason('');
+    setReturnNote('');
+    clearReturnEvidenceFiles();
+  };
+
   const handleStartReturn = () => {
     if (!order) return;
+    clearReturnEvidenceFiles();
     const initialQuants: Record<string, number> = {};
     const initialSelected: Record<string, boolean> = {};
     order.items.forEach(item => {
@@ -74,6 +108,54 @@ export default function OrderTracking() {
 
   const handleQuantityChange = (itemId: string, val: number) => {
     setReturnItemQuantities(prev => ({ ...prev, [itemId]: val }));
+  };
+
+  const handleEvidenceFilesSelected = (files: FileList | File[] | null | undefined) => {
+    if (!files) return;
+
+    const incomingFiles = Array.from(files);
+    const imageFiles = incomingFiles.filter((file) => file.type.startsWith('image/'));
+
+    if (imageFiles.length !== incomingFiles.length) {
+      toast.error(t('orderTracking.toasts.invalidEvidenceImageType'));
+    }
+
+    if (imageFiles.length === 0) {
+      return;
+    }
+
+    const remainingSlots = MAX_RETURN_EVIDENCE_IMAGES - returnEvidenceFilesRef.current.length;
+    if (remainingSlots <= 0) {
+      toast.error(t('orderTracking.toasts.evidenceImageLimitExceeded', {
+        max: MAX_RETURN_EVIDENCE_IMAGES,
+      }));
+      return;
+    }
+
+    if (imageFiles.length > remainingSlots) {
+      toast.error(t('orderTracking.toasts.evidenceImageLimitExceeded', {
+        max: MAX_RETURN_EVIDENCE_IMAGES,
+      }));
+    }
+
+    const nextEvidenceFiles = imageFiles
+      .slice(0, remainingSlots)
+      .map((file) => ({
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }));
+
+    setReturnEvidenceFiles((prev) => [...prev, ...nextEvidenceFiles]);
+  };
+
+  const handleRemoveEvidenceFile = (index: number) => {
+    setReturnEvidenceFiles((prev) => {
+      const target = prev[index];
+      if (target) {
+        URL.revokeObjectURL(target.previewUrl);
+      }
+      return prev.filter((_, currentIndex) => currentIndex !== index);
+    });
   };
 
   const handleSubmitReturn = async () => {
@@ -101,10 +183,10 @@ export default function OrderTracking() {
         reason: returnReason.trim(),
         evidenceNote: returnNote.trim() || undefined,
         items: itemsPayload,
-      }, idempotencyKey);
+      }, returnEvidenceFiles.map(({ file }) => file), idempotencyKey);
       
       toast.success(t('orderTracking.toasts.createSuccess'));
-      setIsReturning(false);
+      resetReturnForm();
       fetchReturnStatus(order.orderNumber);
     } catch (err) {
       toast.error(getApiErrorMessage(err, t, 'account:orderTracking.toasts.createFailed'));
@@ -174,7 +256,7 @@ export default function OrderTracking() {
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-blue-500/30 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
             <h2 className="text-xl font-bold text-blue-600">{t('orderTracking.returnForm.title')}</h2>
-            <Button variant="secondary" className="text-muted" onClick={() => setIsReturning(false)}>{t('orderTracking.returnForm.cancel')}</Button>
+            <Button variant="secondary" className="text-muted" onClick={resetReturnForm}>{t('orderTracking.returnForm.cancel')}</Button>
           </div>
 
           <div className="space-y-4">
@@ -221,6 +303,7 @@ export default function OrderTracking() {
               {QUICK_REASONS.map(reason => (
                 <button
                   key={reason}
+                  type="button"
                   onClick={() => setReturnReason(reason)}
                   className={`px-3 py-1.5 rounded-full text-md font-medium transition-colors ${returnReason === reason ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50' : 'bg-slate-100 text-muted hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-transparent'}`}
                 >
@@ -244,6 +327,76 @@ export default function OrderTracking() {
               placeholder={t('orderTracking.returnForm.notePlaceholder')}
               className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
             />
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <label className="block text-md font-semibold">{t('orderTracking.returnForm.imagesLabel')}</label>
+              <span className="text-sm text-muted">
+                {t('orderTracking.returnForm.imagesCount', {
+                  count: returnEvidenceFiles.length,
+                  max: MAX_RETURN_EVIDENCE_IMAGES,
+                })}
+              </span>
+            </div>
+
+            <input
+              ref={returnEvidenceInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/jpg"
+              multiple
+              className="hidden"
+              onChange={(event) => {
+                handleEvidenceFilesSelected(event.target.files);
+                event.target.value = '';
+              }}
+            />
+
+            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/40 p-4 sm:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="space-y-1">
+                  <p className="font-medium text-body">{t('orderTracking.returnForm.imagesHelper')}</p>
+                  <p className="text-sm text-muted">
+                    {t('orderTracking.returnForm.imagesHint', { max: MAX_RETURN_EVIDENCE_IMAGES })}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  icon={<FiUploadCloud />}
+                  className="border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-200"
+                  onClick={() => returnEvidenceInputRef.current?.click()}
+                >
+                  {t('orderTracking.returnForm.chooseImages')}
+                </Button>
+              </div>
+
+              {returnEvidenceFiles.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                  {returnEvidenceFiles.map((evidence, index) => (
+                    <div
+                      key={`${evidence.file.name}-${index}`}
+                      className="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 aspect-square"
+                    >
+                      <img
+                        src={evidence.previewUrl}
+                        alt={t('orderTracking.returnForm.imageAlt', { index: index + 1 })}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveEvidenceFile(index)}
+                        className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/90 text-white shadow-sm transition hover:bg-red-600"
+                        aria-label={t('orderTracking.returnForm.removeImageAria', { index: index + 1 })}
+                      >
+                        <FiTrash2 className="text-sm" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">

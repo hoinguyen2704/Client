@@ -167,6 +167,8 @@
       "customer": "Customer",
       "reason": "Reason",
       "customerNote": "Customer note",
+      "evidenceImages": "Evidence images",
+      "evidenceImageAlt": "Evidence image {{index}}",
       "adminNote": "Admin note",
       "unknown": "Unknown",
       "none": "None",

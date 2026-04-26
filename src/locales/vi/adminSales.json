@@ -167,6 +167,8 @@
       "customer": "Khách hàng",
       "reason": "Lý do",
       "customerNote": "Ghi chú khách",
+      "evidenceImages": "Ảnh minh chứng",
+      "evidenceImageAlt": "Ảnh minh chứng {{index}}",
       "adminNote": "Ghi chú admin",
       "unknown": "Không rõ",
       "none": "Không có",

@@ -121,6 +121,7 @@ export interface ReturnRequestResponse {
   refundStatus: string;
   reason: string;
   evidenceNote?: string;
+  evidenceImageUrls?: string[];
   adminNote?: string;
   requestedAmount: number;
   approvedAmount?: number;

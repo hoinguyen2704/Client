@@ -14,16 +14,39 @@ import type {
 
 const RETURN_URL = "/returns";
 
+const buildCreateReturnRequestFormData = (
+  data: CreateReturnRequestPayload,
+  evidenceFiles?: File[],
+) => {
+  const formData = new FormData();
+  formData.append(
+    "payload",
+    new Blob([JSON.stringify(data)], { type: "application/json" }),
+  );
+
+  evidenceFiles?.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  return formData;
+};
+
 const returnService = {
   // User endpoints (api/v1/returns)
   create: (
     data: CreateReturnRequestPayload,
+    evidenceFiles?: File[],
     idempotencyKey?: string,
   ): Promise<ApiResponse<ReturnRequestResponse>> =>
-    axios.post(RETURN_URL, data, {
+    axios.post(RETURN_URL, buildCreateReturnRequestFormData(data, evidenceFiles), {
       headers: idempotencyKey
-        ? { "Idempotency-Key": idempotencyKey }
-        : undefined,
+        ? {
+            "Content-Type": "multipart/form-data",
+            "Idempotency-Key": idempotencyKey,
+          }
+        : {
+            "Content-Type": "multipart/form-data",
+          },
     }),
 
   getMine: (

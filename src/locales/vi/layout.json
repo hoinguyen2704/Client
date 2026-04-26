@@ -41,7 +41,7 @@
     "toggleTheme": "Chuyển chế độ giao diện",
     "profile": "Hồ sơ cá nhân",
     "settings": "Cài đặt hệ thống",
-    "accessControl": "Phân quyền",
+    "accessControl": "Quản lý tài khoản",
     "support": "Trợ giúp",
     "logout": "Đăng xuất"
   },
@@ -52,7 +52,7 @@
     "products": "Sản phẩm & Kho",
     "categories": "Danh mục",
     "brands": "Thương hiệu",
-    "customers": "Khách hàng",
+    "customers": "Tài khoản",
     "vouchers": "Voucher",
     "flashSale": "Flash Sale",
     "notifications": "Thông báo",

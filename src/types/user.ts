@@ -55,6 +55,7 @@ export interface AdminCreateUserRequest {
   password: string;
   dateOfBirth?: string | null;
   gender?: string | null;
+  role?: string;
   avatarUrl?: string | null;
 }
 

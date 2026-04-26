@@ -41,7 +41,7 @@
     "toggleTheme": "Toggle theme",
     "profile": "Profile",
     "settings": "System settings",
-    "accessControl": "Access control",
+    "accessControl": "Account management",
     "support": "Support",
     "logout": "Log out"
   },
@@ -52,7 +52,7 @@
     "products": "Products & Inventory",
     "categories": "Categories",
     "brands": "Brands",
-    "customers": "Customers",
+    "customers": "Accounts",
     "vouchers": "Vouchers",
     "flashSale": "Flash Sale",
     "notifications": "Notifications",

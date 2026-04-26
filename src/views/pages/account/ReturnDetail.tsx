@@ -303,6 +303,28 @@ export default function ReturnDetail() {
                 <span className="text-muted">{t('returnDetail.info.note')}</span>
                 <span className="font-medium text-right max-w-[60%]">{data.evidenceNote || t('returnDetail.info.none')}</span>
               </div>
+              {(data.evidenceImageUrls?.length || 0) > 0 && (
+                <div className="space-y-2">
+                  <span className="text-muted">{t('returnDetail.info.images')}</span>
+                  <div className="grid grid-cols-3 gap-2">
+                    {data.evidenceImageUrls!.map((imageUrl, index) => (
+                      <a
+                        key={`${imageUrl}-${index}`}
+                        href={imageUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 aspect-square"
+                      >
+                        <img
+                          src={imageUrl}
+                          alt={t('returnDetail.info.imageAlt', { index: index + 1 })}
+                          className="w-full h-full object-cover transition-transform hover:scale-105"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted">{t('returnDetail.info.createdAt')}</span>
                 <span className="font-medium">{formatDateTime(data.createdAt)}</span>

@@ -1,7 +1,7 @@
 {
   "customers": {
-    "title": "Quản lý khách hàng",
-    "addCustomer": "Thêm khách hàng",
+    "title": "Quản lý Tài khoản",
+    "addCustomer": "Thêm tài khoản",
     "export": "Xuất danh sách",
     "searchPlaceholder": "Tìm kiếm theo tên, email, SĐT...",
     "filters": {
@@ -32,9 +32,9 @@
       "currentAccount": "Tài khoản của tôi"
     },
     "createModal": {
-      "title": "Thêm khách hàng mới",
-      "description": "Hệ thống sẽ tự sinh username từ email. Khách hàng có thể đăng nhập bằng email và mật khẩu khởi tạo này.",
-      "submit": "Tạo khách hàng",
+      "title": "Thêm tài khoản mới",
+      "description": "Hệ thống sẽ tự sinh username từ email. Người dùng có thể đăng nhập bằng email và mật khẩu khởi tạo này.",
+      "submit": "Tạo tài khoản",
       "creating": "Đang tạo...",
       "cancel": "Hủy",
       "fields": {
@@ -44,11 +44,16 @@
         "password": "Mật khẩu khởi tạo",
         "confirmPassword": "Xác nhận mật khẩu",
         "dateOfBirth": "Ngày sinh",
-        "gender": "Giới tính"
+        "gender": "Giới tính",
+        "role": "Vai trò"
+      },
+      "roleOptions": {
+        "user": "Khách hàng",
+        "admin": "Admin"
       },
       "placeholders": {
-        "fullName": "Nhập họ tên khách hàng",
-        "email": "Nhập email khách hàng",
+        "fullName": "Nhập họ tên",
+        "email": "Nhập email",
         "phoneNumber": "Nhập số điện thoại",
         "password": "Tối thiểu 6 ký tự",
         "confirmPassword": "Nhập lại mật khẩu"
@@ -58,8 +63,8 @@
       "pagination": "người dùng"
     },
     "toasts": {
-      "createSuccess": "Tạo khách hàng mới thành công!",
-      "createFailed": "Tạo khách hàng mới thất bại!",
+      "createSuccess": "Tạo tài khoản mới thành công!",
+      "createFailed": "Tạo tài khoản mới thất bại!",
       "fullNameRequired": "Vui lòng nhập họ tên.",
       "emailRequired": "Vui lòng nhập email.",
       "phoneRequired": "Vui lòng nhập số điện thoại.",
@@ -75,9 +80,9 @@
     }
   },
   "detail": {
-    "title": "Chi tiết khách hàng",
-    "createPageTitle": "Thêm khách hàng mới",
-    "createPageDescription": "Sử dụng cùng trang chi tiết để khởi tạo tài khoản khách hàng mới và tải ảnh đại diện trước khi lưu.",
+    "title": "Chi tiết tài khoản",
+    "createPageTitle": "Thêm tài khoản mới",
+    "createPageDescription": "Sử dụng trang chi tiết để khởi tạo tài khoản mới và tải ảnh đại diện trước khi lưu.",
     "profile": "Thông tin hồ sơ",
     "orders": "Đơn hàng",
     "returns": "Yêu cầu trả hàng",
@@ -87,18 +92,18 @@
     "createProfileTitle": "",
     "fullName": "Họ tên",
     "email": "Email",
-    "emailPlaceholder": "Nhập email khách hàng",
+    "emailPlaceholder": "Nhập email",
     "phone": "Số điện thoại",
     "gender": "Giới tính",
     "dateOfBirth": "Ngày sinh",
     "createdAt": "Ngày tạo",
     "joined": "Tham gia: {{date}}",
-    "createHandleHint": "Tài khoản khách hàng mới",
-    "newCustomerFallbackName": "Khách hàng mới",
-    "profileEditTitle": "Chỉnh sửa hồ sơ khách hàng",
+    "createHandleHint": "Tài khoản mới",
+    "newCustomerFallbackName": "Tài khoản mới",
+    "profileEditTitle": "Chỉnh sửa hồ sơ",
     "readonlyOtherAccountNotice": "Không thể chỉnh sửa tài khoản admin khác. Bạn chỉ có thể chỉnh sửa tài khoản admin đang đăng nhập của chính mình.",
     "adminReadonlyAction": "Tài khoản admin",
-    "fullNamePlaceholder": "Nhập họ tên khách hàng",
+    "fullNamePlaceholder": "Nhập họ tên",
     "newPhone": "Số điện thoại mới",
     "newPhonePlaceholder": "Nhập số điện thoại",
     "phoneFormatHint": "Hỗ trợ định dạng 0xxxxxxxxx hoặc +84xxxxxxxxx.",
@@ -127,8 +132,8 @@
       "fullNameRequired": "Vui lòng nhập họ tên.",
       "phoneInvalid": "Số điện thoại không đúng định dạng.",
       "reasonRequired": "Vui lòng nhập lý do thay đổi.",
-      "profileUpdated": "Cập nhật hồ sơ khách hàng thành công!",
-      "profileUpdateFailed": "Cập nhật hồ sơ khách hàng thất bại!"
+      "profileUpdated": "Cập nhật hồ sơ thành công!",
+      "profileUpdateFailed": "Cập nhật hồ sơ thất bại!"
     }
   }
 }
