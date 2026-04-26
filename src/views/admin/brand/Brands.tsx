@@ -18,6 +18,16 @@ import {
   PrimaryButton,
   TableRowSkeleton,
 } from "@/components";
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCard,
+  AdminTableCell,
+  AdminTableEmptyRow,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from "@/components/ui/AdminTable";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Brands() {
@@ -245,39 +255,34 @@ export default function Brands() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[960px] text-left border-collapse">
+      <AdminTableCard>
+        <AdminTableScroll>
+          <AdminTable className="min-w-[960px]">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-ink text-md">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">{t("brands.table.index")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("brands.table.brand")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("brands.table.slug")}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">
+              <AdminTableHeadRow>
+                <AdminTableHeadCell className="w-20 text-center">{t("brands.table.index")}</AdminTableHeadCell>
+                <AdminTableHeadCell>{t("brands.table.brand")}</AdminTableHeadCell>
+                <AdminTableHeadCell>{t("brands.table.slug")}</AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">
                   {t("brands.table.productCount")}
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-right">{t("brands.table.actions")}</th>
-              </tr>
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-right">{t("brands.table.actions")}</AdminTableHeadCell>
+              </AdminTableHeadRow>
             </thead>
             <tbody>
               {loading ? (
                 <TableRowSkeleton rows={5} cols={5} />
               ) : brands.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="p-12 text-center text-ink">
-                    {t("brands.table.empty")}
-                  </td>
-                </tr>
+                <AdminTableEmptyRow className="text-ink" colSpan={5}>
+                  {t("brands.table.empty")}
+                </AdminTableEmptyRow>
               ) : (
                 brands.map((brand, index) => (
-                  <tr
-                    key={brand.id}
-                    className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                  >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-muted">
+                  <AdminTableBodyRow key={brand.id}>
+                    <AdminTableCell className="text-center font-semibold text-muted">
                       {getPaginatedRowNumber(page, PAGE_SIZE.MEDIUM, index)}
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <div className="flex items-center gap-3">
                         {brand.logoUrl ? (
                           <img
@@ -292,14 +297,14 @@ export default function Brands() {
                         )}
                         <span className="font-semibold">{brand.name}</span>
                       </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-muted">{brand.slug}</td>
-                    <td className="p-3 sm:p-4 text-center">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-muted">{brand.slug}</AdminTableCell>
+                    <AdminTableCell className="text-center">
                       <span className="inline-flex items-center justify-center min-w-8 px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm">
                         {brand.productCount ?? 0}
                       </span>
-                    </td>
-                    <td className="p-3 sm:p-4 text-right">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-right">
                       <ActionButtons
                         actions={[
                           {
@@ -312,13 +317,13 @@ export default function Brands() {
                           },
                         ]}
                       />
-                    </td>
-                  </tr>
+                    </AdminTableCell>
+                  </AdminTableBodyRow>
                 ))
               )}
             </tbody>
-          </table>
-        </div>
+          </AdminTable>
+        </AdminTableScroll>
 
         {pageData && (
           <Pagination
@@ -331,7 +336,7 @@ export default function Brands() {
             onPageChange={setPage}
           />
         )}
-      </div>
+      </AdminTableCard>
 
       <ConfirmDialog
         open={!!deleteTarget}

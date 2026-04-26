@@ -3,12 +3,21 @@ import { useParams } from 'react-router-dom';
 import { FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiCheck } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
-import { Button, StatusBadge, CustomSelect, BackButton } from '@/components';
+import { Button, StatusBadge, CustomSelect, BackButton, SortableHeaderLabel } from '@/components';
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCell,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from '@/components/ui/AdminTable';
 import { toast } from 'sonner';
 import adminOrderService from '@/apis/services/adminOrderService';
 import { getAdminOrderStatusOptions } from '@/constants/orderConstants';
 
 import type { OrderResponse } from '@/types';
+import { useClientTableSort } from '@/hooks';
 import useShopStore from '@/stores/useShopStore';
 import { downloadBlob } from '@/utils/download';
 
@@ -50,6 +59,19 @@ export default function OrderDetail() {
     () => (order ? getAdminOrderStatusOptions(order.orderStatus, t) : []),
     [order, t],
   );
+  const {
+    sortedItems: sortedOrderItems,
+    sortBy: itemsSortBy,
+    sortDir: itemsSortDir,
+    toggleSort: toggleItemsSort,
+  } = useClientTableSort(order?.items ?? [], {
+    sortAccessors: {
+      productName: (item) => item.productName || '',
+      unitPrice: (item) => Number(item.unitPrice ?? 0),
+      quantity: (item) => item.quantity ?? 0,
+      subtotal: (item) => Number(item.subtotal ?? 0),
+    },
+  });
 
   const handleUpdateStatus = async (newStatus: string) => {
     if (!order || isUpdatingStatus || !newStatus || newStatus === order.orderStatus) return;
@@ -189,31 +211,62 @@ export default function OrderDetail() {
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4 sm:mb-6">
               <FiPackage className="text-blue-600" /> {t('orderDetail.itemsTitle', { count: order.items?.length || 0 })}
             </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-left border-collapse">
+            <AdminTableScroll>
+              <AdminTable className="min-w-[620px]">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md">
-                    <th className="pb-3 font-medium">{t('orderDetail.table.product')}</th>
-                    <th className="pb-3 font-medium text-center">{t('orderDetail.table.unitPrice')}</th>
-                    <th className="pb-3 font-medium text-center">{t('orderDetail.table.quantity')}</th>
-                    <th className="pb-3 font-medium text-right">{t('orderDetail.table.subtotal')}</th>
-                  </tr>
+                  <AdminTableHeadRow>
+                    <AdminTableHeadCell className="px-0 sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('orderDetail.table.product')}
+                        active={itemsSortBy === 'productName'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('productName')}
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 text-center sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('orderDetail.table.unitPrice')}
+                        active={itemsSortBy === 'unitPrice'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('unitPrice')}
+                        align="center"
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 text-center sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('orderDetail.table.quantity')}
+                        active={itemsSortBy === 'quantity'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('quantity')}
+                        align="center"
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 text-right sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('orderDetail.table.subtotal')}
+                        active={itemsSortBy === 'subtotal'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('subtotal')}
+                        align="right"
+                      />
+                    </AdminTableHeadCell>
+                  </AdminTableHeadRow>
                 </thead>
                 <tbody>
-                  {order.items?.map((item) => (
-                    <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0">
-                      <td className="py-4">
+                  {sortedOrderItems.map((item) => (
+                    <AdminTableBodyRow key={item.id}>
+                      <AdminTableCell className="px-0 sm:px-0">
                         <div className="font-bold">{item.productName}</div>
                         <div className="text-md text-muted">{item.variantName}</div>
-                      </td>
-                      <td className="py-4 text-center font-medium">{formatPrice(item.unitPrice)}</td>
-                      <td className="py-4 text-center font-medium">{item.quantity}</td>
-                      <td className="py-4 text-right font-bold text-blue-600">{formatPrice(item.subtotal)}</td>
-                    </tr>
+                      </AdminTableCell>
+                      <AdminTableCell className="px-0 text-center font-medium sm:px-0">{formatPrice(item.unitPrice)}</AdminTableCell>
+                      <AdminTableCell className="px-0 text-center font-medium sm:px-0">{item.quantity}</AdminTableCell>
+                      <AdminTableCell className="px-0 text-right font-bold text-blue-600 sm:px-0">{formatPrice(item.subtotal)}</AdminTableCell>
+                    </AdminTableBodyRow>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </AdminTable>
+            </AdminTableScroll>
           </div>
 
           {/* Note */}

@@ -7,6 +7,16 @@ import { toast } from 'sonner';
 import adminUserService from '@/apis/services/adminUserService';
 import useAuthStore from '@/stores/useAuthStore';
 import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, SortableHeaderLabel, StatusBadge, TableRowSkeleton, UserAvatar } from '@/components';
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCard,
+  AdminTableCell,
+  AdminTableEmptyRow,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from '@/components/ui/AdminTable';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { useDebounce } from '@/hooks';
 import type { PageResponse, UserResponse } from '@/types';
@@ -168,37 +178,37 @@ export default function Customers() {
           className="w-full md:w-48 shrink-0" />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1020px] text-left border-collapse">
+      <AdminTableCard>
+        <AdminTableScroll>
+          <AdminTable className="min-w-[1020px]">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md divide-x divide-slate-200 dark:divide-slate-700">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">{t('adminCustomers:customers.table.index')}</th>
-                <th className="p-3 sm:p-4 font-medium">
+              <AdminTableHeadRow>
+                <AdminTableHeadCell className="w-20 text-center">{t('adminCustomers:customers.table.index')}</AdminTableHeadCell>
+                <AdminTableHeadCell>
                   <SortableHeaderLabel
                     label={t('adminCustomers:customers.table.user')}
                     active={sortBy === 'fullName'}
                     direction={sortDir}
                     onClick={() => handleSort('fullName')}
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   <SortableHeaderLabel
                     label={t('adminCustomers:customers.table.email')}
                     active={sortBy === 'email'}
                     direction={sortDir}
                     onClick={() => handleSort('email')}
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   <SortableHeaderLabel
                     label={t('adminCustomers:customers.table.phone')}
                     active={sortBy === 'phoneNumber'}
                     direction={sortDir}
                     onClick={() => handleSort('phoneNumber')}
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">
                   <SortableHeaderLabel
                     label={t('adminCustomers:customers.table.role')}
                     active={sortBy === 'role'}
@@ -206,8 +216,8 @@ export default function Customers() {
                     onClick={() => handleSort('role')}
                     align="center"
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">
                   <SortableHeaderLabel
                     label={t('adminCustomers:customers.table.createdAt')}
                     active={sortBy === 'createdAt'}
@@ -215,8 +225,8 @@ export default function Customers() {
                     onClick={() => handleSort('createdAt')}
                     align="center"
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">
                   <SortableHeaderLabel
                     label={t('adminCustomers:customers.table.status')}
                     active={sortBy === 'status'}
@@ -224,32 +234,29 @@ export default function Customers() {
                     onClick={() => handleSort('status')}
                     align="center"
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t('adminCustomers:customers.table.actions')}</th>
-              </tr>
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">{t('adminCustomers:customers.table.actions')}</AdminTableHeadCell>
+              </AdminTableHeadRow>
             </thead>
             <tbody>
               {loading ? (
                 <TableRowSkeleton rows={5} cols={8} />
               ) : users.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="p-12 text-center text-ink border-b border-slate-200 dark:border-slate-700">
-                    {t('adminCustomers:customers.table.empty')}
-                  </td>
-                </tr>
+                <AdminTableEmptyRow className="text-ink" colSpan={8}>
+                  {t('adminCustomers:customers.table.empty')}
+                </AdminTableEmptyRow>
               ) : (
                 users.map((user, index) => {
                   const isCurrentUser = user.id === currentUserId;
                   return (
-                    <tr
+                    <AdminTableBodyRow
                       key={user.id}
-                      className={`border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x divide-slate-200 dark:divide-slate-700 ${isCurrentUser ? 'bg-blue-50/60 dark:bg-blue-950/20' : ''
-                        }`}
+                      className={isCurrentUser ? 'bg-blue-50/60 dark:bg-blue-950/20' : undefined}
                     >
-                      <td className="p-3 sm:p-4 text-center font-semibold text-ink">
+                      <AdminTableCell className="text-center font-semibold text-ink">
                         {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
-                      </td>
-                      <td className="p-3 sm:p-4">
+                      </AdminTableCell>
+                      <AdminTableCell>
                         <div className="flex items-center gap-3">
                           <UserAvatar name={user.fullName} src={user.avatarUrl} />
                           <div className="min-w-0">
@@ -263,20 +270,20 @@ export default function Customers() {
                             </div>
                           </div>
                         </div>
-                      </td>
-                      <td className="p-3 sm:p-4 text-ink">{user.email}</td>
-                      <td className="p-3 sm:p-4 text-ink">
+                      </AdminTableCell>
+                      <AdminTableCell className="text-ink">{user.email}</AdminTableCell>
+                      <AdminTableCell className="text-ink">
                         {user.phoneNumber || t('common:labels.notAvailable')}
-                      </td>
-                      <td className="p-3 sm:p-4 text-center">
+                      </AdminTableCell>
+                      <AdminTableCell className="text-center">
                         <StatusBadge
                           status={user.role === 'ADMIN' ? 'admin' : 'user'}
                         />
-                      </td>
-                      <td className="p-3 sm:p-4 text-ink text-center">
+                      </AdminTableCell>
+                      <AdminTableCell className="text-center text-ink">
                         {formatDate(user.createdAt)}
-                      </td>
-                      <td className="p-3 sm:p-4 text-center">
+                      </AdminTableCell>
+                      <AdminTableCell className="text-center">
                         <StatusBadge
                           status={user.status === 'ACTIVE' ? 'active' : 'banned'}
                           label={
@@ -285,8 +292,8 @@ export default function Customers() {
                               : t('adminCustomers:customers.statuses.locked')
                           }
                         />
-                      </td>
-                      <td className="p-3 sm:p-4 text-center">
+                      </AdminTableCell>
+                      <AdminTableCell className="text-center">
                         <ActionButtons
                           actions={[
                             {
@@ -299,18 +306,18 @@ export default function Customers() {
                               icon: user.status === 'ACTIVE' ? <FiLock /> : <FiUnlock />,
                               title: user.status === 'ACTIVE'
                                 ? t('adminCustomers:customers.actions.lock')
-                                : t('adminCustomers:customers.actions.unlock'),
+                              : t('adminCustomers:customers.actions.unlock'),
                             },
                           ]}
                         />
-                      </td>
-                    </tr>
+                      </AdminTableCell>
+                    </AdminTableBodyRow>
                   );
                 })
               )}
             </tbody>
-          </table>
-        </div>
+          </AdminTable>
+        </AdminTableScroll>
 
         {pageData ? (
           <Pagination
@@ -323,7 +330,7 @@ export default function Customers() {
             onPageChange={(nextPage) => startTransition(() => setPage(nextPage))}
           />
         ) : null}
-      </div>
+      </AdminTableCard>
     </div>
   );
 }

@@ -5,15 +5,26 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { adminFlashSaleService } from '@/apis';
-import type { FlashSaleResponse, FlashSaleItemForm } from '@/types';
-import { PrimaryButton, Button, TrashButton, FormInput, FormTextarea, Pagination } from '@/components';
+import type { FlashSaleItemForm } from '@/types';
+import { PrimaryButton, Button, TrashButton, FormInput, FormTextarea, Pagination, SortableHeaderLabel } from '@/components';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import type { SelectedVariant } from '@/components';
 import { formatDateTime, formatPrice } from '@/utils/format';
 import { resolveVariantSalesMetrics } from '@/utils/variantSales';
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCell,
+  AdminTableEmptyRow,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from '@/components/ui/AdminTable';
+import { useClientTableSort } from '@/hooks';
 import { PICKER_RESULT_KEY } from './ProductPicker';
 
 const ITEMS_PER_PAGE = PAGE_SIZE.LARGE;
+const getFlashSaleItemKey = (item: FlashSaleItemForm) => item.id ?? item.variantId;
 
 export default function FlashSaleForm() {
   const { t } = useTranslation(['adminCatalog', 'common']);
@@ -124,18 +135,18 @@ export default function FlashSaleForm() {
     });
   };
 
-  const handleRemoveItem = (index: number) => {
+  const handleRemoveItem = (itemKey: string) => {
     setForm(prev => {
-      const items = [...prev.items];
-      items.splice(index, 1);
+      const items = prev.items.filter((item) => getFlashSaleItemKey(item) !== itemKey);
       return { ...prev, items };
     });
   };
 
-  const handleChangeItem = (index: number, field: 'flashPrice' | 'flashStock', value: number) => {
+  const handleChangeItem = (itemKey: string, field: 'flashPrice' | 'flashStock', value: number) => {
     setForm(prev => {
-      const items = [...prev.items];
-      items[index] = { ...items[index], [field]: value };
+      const items = prev.items.map((item) => (
+        getFlashSaleItemKey(item) === itemKey ? { ...item, [field]: value } : item
+      ));
       return { ...prev, items };
     });
   };
@@ -212,10 +223,23 @@ export default function FlashSaleForm() {
   ).length;
   const invalidStockCount = form.items.filter((item) => Number(item.flashStock) <= 0).length;
   const hasWarnings = invalidTimeRange || invalidPriceCount > 0 || invalidStockCount > 0;
+  const {
+    sortedItems,
+    sortBy,
+    sortDir,
+    toggleSort,
+  } = useClientTableSort(form.items, {
+    sortAccessors: {
+      productName: (item) => item.productName || '',
+      originalPrice: (item) => Number(item.originalPrice ?? 0),
+      flashPrice: (item) => Number(item.flashPrice ?? 0),
+      flashStock: (item) => Number(item.flashStock ?? 0),
+    },
+  });
 
-  const itemsTotalPages = Math.max(1, Math.ceil(form.items.length / ITEMS_PER_PAGE));
+  const itemsTotalPages = Math.max(1, Math.ceil(sortedItems.length / ITEMS_PER_PAGE));
   const startIndex = (itemsPage - 1) * ITEMS_PER_PAGE;
-  const visibleItems = form.items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const visibleItems = sortedItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   useEffect(() => {
     if (itemsPage > itemsTotalPages) {
@@ -333,40 +357,66 @@ export default function FlashSaleForm() {
             </div>
 
             <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[760px] text-left bg-white dark:bg-slate-900 text-md">
-                  <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-                    <tr>
-                      <th className="p-3 font-medium text-muted">{t('flashSales.form.table.product')}</th>
-                      <th className="p-3 font-medium text-muted w-32">{t('flashSales.form.table.originalPrice')}</th>
-                      <th className="p-3 font-medium text-muted w-36">{t('flashSales.form.table.flashPrice')}</th>
-                      <th className="p-3 font-medium text-muted w-40">{t('flashSales.form.table.flashStock')}</th>
-                      <th className="p-3 font-medium text-muted w-16 text-center">{t('flashSales.form.table.remove')}</th>
-                    </tr>
+              <AdminTableScroll>
+                <AdminTable className="min-w-[760px] bg-white text-md dark:bg-slate-900">
+                  <thead>
+                    <AdminTableHeadRow>
+                      <AdminTableHeadCell>
+                        <SortableHeaderLabel
+                          label={t('flashSales.form.table.product')}
+                          active={sortBy === 'productName'}
+                          direction={sortDir}
+                          onClick={() => toggleSort('productName')}
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="w-32">
+                        <SortableHeaderLabel
+                          label={t('flashSales.form.table.originalPrice')}
+                          active={sortBy === 'originalPrice'}
+                          direction={sortDir}
+                          onClick={() => toggleSort('originalPrice')}
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="w-36">
+                        <SortableHeaderLabel
+                          label={t('flashSales.form.table.flashPrice')}
+                          active={sortBy === 'flashPrice'}
+                          direction={sortDir}
+                          onClick={() => toggleSort('flashPrice')}
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="w-40">
+                        <SortableHeaderLabel
+                          label={t('flashSales.form.table.flashStock')}
+                          active={sortBy === 'flashStock'}
+                          direction={sortDir}
+                          onClick={() => toggleSort('flashStock')}
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="w-16 text-center">{t('flashSales.form.table.remove')}</AdminTableHeadCell>
+                    </AdminTableHeadRow>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody>
                     {form.items.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="p-10 text-center">
-                          <div className="text-subtle">
-                            <FiPlus className="mx-auto mb-2 text-subtle" size={32} />
-                            <p>{t('flashSales.form.empty')}</p>
-                            <button
-                              onClick={handleOpenPicker}
-                              className="mt-2 text-sm text-blue-500 hover:underline font-medium"
-                            >
-                              {t('flashSales.form.addNow')}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                      <AdminTableEmptyRow className="p-10" colSpan={5}>
+                        <div className="text-subtle">
+                          <FiPlus className="mx-auto mb-2 text-subtle" size={32} />
+                          <p>{t('flashSales.form.empty')}</p>
+                          <button
+                            onClick={handleOpenPicker}
+                            className="mt-2 text-sm text-blue-500 hover:underline font-medium"
+                          >
+                            {t('flashSales.form.addNow')}
+                          </button>
+                        </div>
+                      </AdminTableEmptyRow>
                     ) : (
-                      visibleItems.map((item, idx) => {
-                        const actualIndex = startIndex + idx;
+                      visibleItems.map((item) => {
+                        const itemKey = getFlashSaleItemKey(item);
                         const sales = resolveVariantSalesMetrics(item);
                         return (
-                          <tr key={`${item.variantId}-${actualIndex}`} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                            <td className="p-3">
+                          <AdminTableBodyRow key={itemKey}>
+                            <AdminTableCell>
                               <div className="flex items-center gap-3">
                                 <img
                                   src={item.imageUrl || '/placeholder.png'}
@@ -382,25 +432,25 @@ export default function FlashSaleForm() {
                                   </div>
                                 </div>
                               </div>
-                            </td>
-                            <td className="p-3 text-muted">{formatPrice(item.originalPrice)}</td>
-                            <td className="p-3">
+                            </AdminTableCell>
+                            <AdminTableCell className="text-muted">{formatPrice(item.originalPrice)}</AdminTableCell>
+                            <AdminTableCell>
                               <input
                                 type="number"
                                 min="0"
                                 className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
                                 value={item.flashPrice}
-                                onChange={(e) => handleChangeItem(actualIndex, 'flashPrice', Number(e.target.value))}
+                                onChange={(e) => handleChangeItem(itemKey, 'flashPrice', Number(e.target.value))}
                               />
-                            </td>
-                            <td className="p-3">
+                            </AdminTableCell>
+                            <AdminTableCell>
                               <div className="space-y-1.5">
                                 <input
                                   type="number"
                                   min="0"
                                   className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
                                   value={item.flashStock}
-                                  onChange={(e) => handleChangeItem(actualIndex, 'flashStock', Number(e.target.value))}
+                                  onChange={(e) => handleChangeItem(itemKey, 'flashStock', Number(e.target.value))}
                                 />
                                 <div className="text-sm text-muted leading-tight">
                                   {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
@@ -423,17 +473,17 @@ export default function FlashSaleForm() {
                                   )}
                                 </div>
                               </div>
-                            </td>
-                            <td className="p-3 text-center">
-                              <TrashButton onClick={() => handleRemoveItem(actualIndex)} />
-                            </td>
-                          </tr>
-                        )
+                            </AdminTableCell>
+                            <AdminTableCell className="text-center">
+                              <TrashButton onClick={() => handleRemoveItem(itemKey)} />
+                            </AdminTableCell>
+                          </AdminTableBodyRow>
+                        );
                       })
                     )}
                   </tbody>
-                </table>
-              </div>
+                </AdminTable>
+              </AdminTableScroll>
             </div>
             {form.items.length > ITEMS_PER_PAGE && (
               <Pagination

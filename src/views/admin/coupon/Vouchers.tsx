@@ -28,6 +28,16 @@ import {
   Modal,
   FormInput,
 } from "@/components";
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCard,
+  AdminTableCell,
+  AdminTableEmptyRow,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from "@/components/ui/AdminTable";
 import useAdminList from "@/hooks/useAdminList";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 import { downloadBlob } from "@/utils/download";
@@ -159,41 +169,36 @@ export default function AdminVouchers() {
         }}
       />
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1080px] text-left border-collapse">
+      <AdminTableCard>
+        <AdminTableScroll>
+          <AdminTable className="min-w-[1080px]">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-ink text-md">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">{t("vouchers.table.index")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.code")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.typeValue")}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t("vouchers.table.used")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.time")}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t("vouchers.table.visibility")}</th>
-                <th className="p-3 sm:p-4 font-medium text-center">{t("vouchers.table.scope")}</th>
-                <th className="p-3 sm:p-4 font-medium">{t("vouchers.table.status")}</th>
-                <th className="p-3 sm:p-4 font-medium text-right">{t("vouchers.table.actions")}</th>
-              </tr>
+              <AdminTableHeadRow>
+                <AdminTableHeadCell className="w-20 text-center">{t("vouchers.table.index")}</AdminTableHeadCell>
+                <AdminTableHeadCell>{t("vouchers.table.code")}</AdminTableHeadCell>
+                <AdminTableHeadCell>{t("vouchers.table.typeValue")}</AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">{t("vouchers.table.used")}</AdminTableHeadCell>
+                <AdminTableHeadCell>{t("vouchers.table.time")}</AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">{t("vouchers.table.visibility")}</AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">{t("vouchers.table.scope")}</AdminTableHeadCell>
+                <AdminTableHeadCell>{t("vouchers.table.status")}</AdminTableHeadCell>
+                <AdminTableHeadCell className="text-right">{t("vouchers.table.actions")}</AdminTableHeadCell>
+              </AdminTableHeadRow>
             </thead>
             <tbody>
               {loading ? (
                 <TableRowSkeleton rows={5} cols={9} />
               ) : vouchers.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="p-12 text-center text-ink">
-                    {t("vouchers.empty")}
-                  </td>
-                </tr>
+                <AdminTableEmptyRow className="text-ink" colSpan={9}>
+                  {t("vouchers.empty")}
+                </AdminTableEmptyRow>
               ) : (
                 vouchers.map((v, index) => (
-                  <tr
-                    key={v.id}
-                    className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                  >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-ink">
+                  <AdminTableBodyRow key={v.id}>
+                    <AdminTableCell className="text-center font-semibold text-ink">
                       {getPaginatedRowNumber(page, PAGE_SIZE.MEDIUM, index)}
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600">
                           <FiTag />
@@ -202,8 +207,8 @@ export default function AdminVouchers() {
                           {v.code}
                         </span>
                       </div>
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <div className="font-bold text-blue-600">
                         {v.discountType === "PERCENTAGE"
                           ? `${v.discountValue}%`
@@ -224,8 +229,8 @@ export default function AdminVouchers() {
                             : t("vouchers.meta.fixed")}
                         </span>
                       </div>
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <div className="flex flex-col items-center">
                         <span className="font-bold">
                           {v.usedCount}/{v.usageLimit || "∞"}
@@ -241,14 +246,14 @@ export default function AdminVouchers() {
                           </div>
                         )}
                       </div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-md text-ink">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-md text-ink">
                       <div>
                         {t("vouchers.meta.from")}: {v.startDate ? formatDateFull(v.startDate) : "—"}
                       </div>
                       <div>{t("vouchers.meta.to")}: {v.endDate ? formatDateFull(v.endDate) : "—"}</div>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-center">
                       {v.isPublic ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                           <FiGlobe className="text-10" /> {t("vouchers.meta.public")}
@@ -258,8 +263,8 @@ export default function AdminVouchers() {
                           <FiLock className="text-10" /> {t("vouchers.meta.private")}
                         </span>
                       )}
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-center">
                       {v.applyType === "SPECIFIC_PRODUCTS" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                           <FiPackage className="text-10" />{" "}
@@ -270,8 +275,8 @@ export default function AdminVouchers() {
                       ) : (
                         <span className="text-sm text-ink">{t("vouchers.meta.all")}</span>
                       )}
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <StatusBadge
                         status={v.status === "ACTIVE" ? "active" : "inactive"}
                         label={
@@ -280,8 +285,8 @@ export default function AdminVouchers() {
                             : t("vouchers.meta.inactive")
                         }
                       />
-                    </td>
-                    <td className="p-3 sm:p-4 text-right">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-right">
                       <ActionButtons
                         actions={[
                           {
@@ -304,13 +309,13 @@ export default function AdminVouchers() {
                           },
                         ]}
                       />
-                    </td>
-                  </tr>
+                    </AdminTableCell>
+                  </AdminTableBodyRow>
                 ))
               )}
             </tbody>
-          </table>
-        </div>
+          </AdminTable>
+        </AdminTableScroll>
 
         {pageData && (
           <Pagination
@@ -323,7 +328,7 @@ export default function AdminVouchers() {
             onPageChange={setPage}
           />
         )}
-      </div>
+      </AdminTableCard>
 
       <Modal
         open={isModalOpen}

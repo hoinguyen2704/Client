@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/utils/cn';
+import { ADMIN_TABLE_CELL_CLASS, ADMIN_TABLE_BODY_ROW_CLASS } from '@/components/ui/AdminTable';
 
 interface SkeletonProps {
   className?: string;
@@ -87,9 +89,9 @@ export function TableRowSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?:
   return (
     <>
       {Array.from({ length: rows }).map((_, i) => (
-        <tr key={i} className="border-b border-slate-100 dark:border-slate-800/50 animate-pulse">
+        <tr key={i} className={cn(ADMIN_TABLE_BODY_ROW_CLASS, 'animate-pulse hover:bg-transparent dark:hover:bg-transparent')}>
           {Array.from({ length: cols }).map((_, j) => (
-            <td key={j} className="p-4">
+            <td key={j} className={ADMIN_TABLE_CELL_CLASS}>
               <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" />
             </td>
           ))}

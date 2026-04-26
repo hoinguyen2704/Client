@@ -18,6 +18,16 @@ import {
   StatusBadge,
   TableRowSkeleton,
 } from "@/components";
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCard,
+  AdminTableCell,
+  AdminTableEmptyRow,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from "@/components/ui/AdminTable";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Categories() {
@@ -128,29 +138,29 @@ export default function Categories() {
       </div>
 
       {/* Categories Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-2 border-slate-200 dark:border-slate-700 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1040px] text-left border-collapse">
+      <AdminTableCard>
+        <AdminTableScroll>
+          <AdminTable className="min-w-[1040px]">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md divide-x-2 divide-slate-200 dark:divide-slate-700">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">{t("categories.table.index")}</th>
-                <th className="p-3 sm:p-4 font-medium">
+              <AdminTableHeadRow>
+                <AdminTableHeadCell className="w-20 text-center">{t("categories.table.index")}</AdminTableHeadCell>
+                <AdminTableHeadCell>
                   <SortableHeaderLabel
                     label={t("categories.table.category")}
                     active={sortBy === "name"}
                     direction={sortDir}
                     onClick={() => toggleSort("name")}
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   <SortableHeaderLabel
                     label={t("categories.table.slug")}
                     active={sortBy === "slug"}
                     direction={sortDir}
                     onClick={() => toggleSort("slug")}
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">
                   <SortableHeaderLabel
                     label={t("categories.table.specs")}
                     active={sortBy === "specCount"}
@@ -158,8 +168,8 @@ export default function Categories() {
                     onClick={() => toggleSort("specCount")}
                     align="center"
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">
                   <SortableHeaderLabel
                     label={t("categories.table.productCount")}
                     active={sortBy === "productCount"}
@@ -167,8 +177,8 @@ export default function Categories() {
                     onClick={() => toggleSort("productCount")}
                     align="center"
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">
                   <SortableHeaderLabel
                     label={t("categories.table.status")}
                     active={sortBy === "status"}
@@ -176,40 +186,32 @@ export default function Categories() {
                     onClick={() => toggleSort("status")}
                     align="center"
                   />
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-center w-[232px]">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="w-[232px] text-center">
                   {t("categories.table.actions")}
-                </th>
-              </tr>
+                </AdminTableHeadCell>
+              </AdminTableHeadRow>
             </thead>
             <tbody>
               {loading ? (
                 <TableRowSkeleton rows={5} cols={7} />
               ) : categories.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="p-12 text-center text-subtle border-b-2 border-slate-200 dark:border-slate-700"
-                  >
-                    {t("categories.table.empty")}
-                  </td>
-                </tr>
+                <AdminTableEmptyRow colSpan={7}>
+                  {t("categories.table.empty")}
+                </AdminTableEmptyRow>
               ) : (
                 categories.map((cat, index) => (
-                  <tr
-                    key={cat.id}
-                    className="border-b-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors divide-x-2 divide-slate-200 dark:divide-slate-700"
-                  >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-subtle">
+                  <AdminTableBodyRow key={cat.id}>
+                    <AdminTableCell className="text-center font-semibold text-subtle">
                       {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <span className="font-bold">{cat.name}</span>
-                    </td>
-                    <td className="p-3 sm:p-4 text-muted font-mono text-md">
+                    </AdminTableCell>
+                    <AdminTableCell className="font-mono text-md text-muted">
                       {cat.slug}
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-center">
                       {(cat.specAttributes?.length || 0) > 0 ? (
                         <span className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-full text-md font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 mx-auto">
                           <FiList className="text-9" />{" "}
@@ -218,20 +220,20 @@ export default function Categories() {
                       ) : (
                         <span className="text-sm text-subtle">—</span>
                       )}
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-center">
                       <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-full text-md font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 mx-auto">
                         {cat.productCount ?? 0}
                       </span>
-                    </td>
-                    <td className="p-3 sm:p-4 text-center">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-center">
                       <div className="flex justify-center">
                         <StatusBadge
                           status={cat.active ? "active" : "hidden"}
                         />
                       </div>
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <ActionButtons
                         actions={[
                           {
@@ -256,13 +258,13 @@ export default function Categories() {
                           },
                         ]}
                       />
-                    </td>
-                  </tr>
+                    </AdminTableCell>
+                  </AdminTableBodyRow>
                 ))
               )}
             </tbody>
-          </table>
-        </div>
+          </AdminTable>
+        </AdminTableScroll>
 
         {pageData && (
           <Pagination
@@ -275,7 +277,7 @@ export default function Categories() {
             onPageChange={setPage}
           />
         )}
-      </div>
+      </AdminTableCard>
 
       <ConfirmDialog
         open={!!deleteTarget}

@@ -9,6 +9,12 @@ import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { getAdminOrderStatusOptions, getOrderFilterOptions } from '@/constants/orderConstants';
 import { useDebounce } from '@/hooks';
 import type { AdminOrderListItem, PageResponse } from '@/types';
+import {
+  ADMIN_GRID_TABLE_HEADER_BASE_CLASS,
+  ADMIN_GRID_TABLE_ROW_BASE_CLASS,
+  ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS,
+  AdminTableCard,
+} from '@/components/ui/AdminTable';
 import { downloadBlob } from '@/utils/download';
 import { formatDate, formatPrice } from '@/utils/format';
 import { getPaginatedRowNumber } from '@/utils/helpers';
@@ -153,8 +159,8 @@ export default function AdminOrders() {
         />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="hidden lg:grid grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md font-semibold text-center rounded-t-2xl">
+      <AdminTableCard>
+        <div className={`${ADMIN_GRID_TABLE_HEADER_BASE_CLASS} grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px]`}>
           <div className="px-4 py-4">{t('orders.table.index')}</div>
           <div className="px-4 py-4 text-left">
             <SortableHeaderLabel
@@ -215,7 +221,7 @@ export default function AdminOrders() {
         <div className="flex flex-col">
           {loading ? (
             Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="flex flex-col lg:grid lg:grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse">
+              <div key={index} className={`${ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS} grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px]`}>
                 <div className="hidden lg:flex px-4 py-4 w-full justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></div>
@@ -237,7 +243,7 @@ export default function AdminOrders() {
               const statusOptions = getAdminOrderStatusOptions(order.orderStatus, t);
 
               return (
-                <div key={order.id} className="group relative flex flex-col lg:grid lg:grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300">
+                <div key={order.id} className={`${ADMIN_GRID_TABLE_ROW_BASE_CLASS} grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px]`}>
                   <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-subtle">
                     {rowNumber}
                   </div>
@@ -314,7 +320,7 @@ export default function AdminOrders() {
             onPageChange={(nextPage) => startTransition(() => setPage(nextPage))}
           />
         ) : null}
-      </div>
+      </AdminTableCard>
 
       <ReportExportModal
         open={isReportExportModalOpen}

@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { BackButton, Button, CustomSelect } from '@/components';
+import { BackButton, Button, CustomSelect, SortableHeaderLabel } from '@/components';
 import returnService from '@/apis/services/returnService';
 import {
   RETURN_STATUS_TRANSITIONS,
@@ -25,8 +25,15 @@ import {
 import { formatDateFull as formatDateTime, formatPrice } from '@/utils/format';
 import { getApiErrorMessage } from '@/utils/error';
 import type { ProcessRefundRequestPayload, ReturnRequestResponse, ReviewReturnRequestPayload } from '@/types';
-
-
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCell,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from '@/components/ui/AdminTable';
+import { useClientTableSort } from '@/hooks';
 
 const createIdempotencyKey = () => {
   if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
@@ -107,6 +114,35 @@ export default function ReturnDetail() {
 
     return histories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [returnRequest, t]);
+  const {
+    sortedItems: sortedReturnItems,
+    sortBy: itemsSortBy,
+    sortDir: itemsSortDir,
+    toggleSort: toggleItemsSort,
+  } = useClientTableSort(returnRequest?.items ?? [], {
+    sortAccessors: {
+      productName: (item) => item.productName || '',
+      variantName: (item) => item.variantName || '',
+      unitPrice: (item) => Number(item.unitPrice ?? 0),
+      requestedQuantity: (item) => item.requestedQuantity ?? 0,
+      approvedQuantity: (item) => Number(item.approvedQuantity ?? -1),
+      subtotal: (item) => Number(item.lineAmount ?? 0),
+    },
+  });
+  const {
+    sortedItems: sortedRefunds,
+    sortBy: refundsSortBy,
+    sortDir: refundsSortDir,
+    toggleSort: toggleRefundsSort,
+  } = useClientTableSort(returnRequest?.refunds ?? [], {
+    sortAccessors: {
+      createdAt: (item) => new Date(item.createdAt).getTime(),
+      provider: (item) => item.provider || '',
+      transactionId: (item) => item.transactionId || '',
+      amount: (item) => Number(item.amount ?? 0),
+      status: (item) => item.status || '',
+    },
+  });
 
   const applyUpdatedReturn = (updated: ReturnRequestResponse) => {
     setReturnRequest(updated);
@@ -318,32 +354,78 @@ export default function ReturnDetail() {
               <FiPackage className="text-blue-600" />
               {t('returns.detail.itemsTitle')}
             </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left border-collapse">
+            <AdminTableScroll>
+              <AdminTable className="min-w-[760px]">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md">
-                    <th className="pb-3 font-medium">{t('returns.detail.table.product')}</th>
-                    <th className="pb-3 font-medium">{t('returns.detail.table.variant')}</th>
-                    <th className="pb-3 font-medium text-right">{t('returns.detail.table.unitPrice')}</th>
-                    <th className="pb-3 font-medium text-center">{t('returns.detail.table.requestedQty')}</th>
-                    <th className="pb-3 font-medium text-center">{t('returns.detail.table.approvedQty')}</th>
-                    <th className="pb-3 font-medium text-right">{t('returns.detail.table.subtotal')}</th>
-                  </tr>
+                  <AdminTableHeadRow>
+                    <AdminTableHeadCell className="px-0 sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('returns.detail.table.product')}
+                        active={itemsSortBy === 'productName'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('productName')}
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('returns.detail.table.variant')}
+                        active={itemsSortBy === 'variantName'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('variantName')}
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 text-right sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('returns.detail.table.unitPrice')}
+                        active={itemsSortBy === 'unitPrice'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('unitPrice')}
+                        align="right"
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 text-center sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('returns.detail.table.requestedQty')}
+                        active={itemsSortBy === 'requestedQuantity'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('requestedQuantity')}
+                        align="center"
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 text-center sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('returns.detail.table.approvedQty')}
+                        active={itemsSortBy === 'approvedQuantity'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('approvedQuantity')}
+                        align="center"
+                      />
+                    </AdminTableHeadCell>
+                    <AdminTableHeadCell className="px-0 text-right sm:px-0">
+                      <SortableHeaderLabel
+                        label={t('returns.detail.table.subtotal')}
+                        active={itemsSortBy === 'subtotal'}
+                        direction={itemsSortDir}
+                        onClick={() => toggleItemsSort('subtotal')}
+                        align="right"
+                      />
+                    </AdminTableHeadCell>
+                  </AdminTableHeadRow>
                 </thead>
                 <tbody>
-                  {returnRequest.items.map((item) => (
-                    <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0">
-                      <td className="py-4 font-semibold">{item.productName}</td>
-                      <td className="py-4 text-muted">{item.variantName || '-'}</td>
-                      <td className="py-4 text-right">{formatPrice(Number(item.unitPrice || 0))}</td>
-                      <td className="py-4 text-center">{item.requestedQuantity}</td>
-                      <td className="py-4 text-center">{item.approvedQuantity ?? '-'}</td>
-                      <td className="py-4 text-right font-bold text-blue-600">{formatPrice(Number(item.lineAmount || 0))}</td>
-                    </tr>
+                  {sortedReturnItems.map((item) => (
+                    <AdminTableBodyRow key={item.id}>
+                      <AdminTableCell className="px-0 font-semibold sm:px-0">{item.productName}</AdminTableCell>
+                      <AdminTableCell className="px-0 text-muted sm:px-0">{item.variantName || '-'}</AdminTableCell>
+                      <AdminTableCell className="px-0 text-right sm:px-0">{formatPrice(Number(item.unitPrice || 0))}</AdminTableCell>
+                      <AdminTableCell className="px-0 text-center sm:px-0">{item.requestedQuantity}</AdminTableCell>
+                      <AdminTableCell className="px-0 text-center sm:px-0">{item.approvedQuantity ?? '-'}</AdminTableCell>
+                      <AdminTableCell className="px-0 text-right font-bold text-blue-600 sm:px-0">{formatPrice(Number(item.lineAmount || 0))}</AdminTableCell>
+                    </AdminTableBodyRow>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </AdminTable>
+            </AdminTableScroll>
           </div>
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -357,32 +439,69 @@ export default function ReturnDetail() {
                 {t('returns.detail.refundTransactionsEmpty')}
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[740px] text-left border-collapse">
+              <AdminTableScroll>
+                <AdminTable className="min-w-[740px]">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md">
-                      <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.time')}</th>
-                      <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.provider')}</th>
-                      <th className="pb-3 font-medium">{t('returns.detail.refundTransactionsTable.transactionId')}</th>
-                      <th className="pb-3 font-medium text-right">{t('returns.detail.refundTransactionsTable.amount')}</th>
-                      <th className="pb-3 font-medium text-right">{t('returns.detail.refundTransactionsTable.status')}</th>
-                    </tr>
+                    <AdminTableHeadRow>
+                      <AdminTableHeadCell className="px-0 sm:px-0">
+                        <SortableHeaderLabel
+                          label={t('returns.detail.refundTransactionsTable.time')}
+                          active={refundsSortBy === 'createdAt'}
+                          direction={refundsSortDir}
+                          onClick={() => toggleRefundsSort('createdAt')}
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="px-0 sm:px-0">
+                        <SortableHeaderLabel
+                          label={t('returns.detail.refundTransactionsTable.provider')}
+                          active={refundsSortBy === 'provider'}
+                          direction={refundsSortDir}
+                          onClick={() => toggleRefundsSort('provider')}
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="px-0 sm:px-0">
+                        <SortableHeaderLabel
+                          label={t('returns.detail.refundTransactionsTable.transactionId')}
+                          active={refundsSortBy === 'transactionId'}
+                          direction={refundsSortDir}
+                          onClick={() => toggleRefundsSort('transactionId')}
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="px-0 text-right sm:px-0">
+                        <SortableHeaderLabel
+                          label={t('returns.detail.refundTransactionsTable.amount')}
+                          active={refundsSortBy === 'amount'}
+                          direction={refundsSortDir}
+                          onClick={() => toggleRefundsSort('amount')}
+                          align="right"
+                        />
+                      </AdminTableHeadCell>
+                      <AdminTableHeadCell className="px-0 text-right sm:px-0">
+                        <SortableHeaderLabel
+                          label={t('returns.detail.refundTransactionsTable.status')}
+                          active={refundsSortBy === 'status'}
+                          direction={refundsSortDir}
+                          onClick={() => toggleRefundsSort('status')}
+                          align="right"
+                        />
+                      </AdminTableHeadCell>
+                    </AdminTableHeadRow>
                   </thead>
                   <tbody>
-                    {returnRequest.refunds.map((tx) => (
-                      <tr key={tx.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0">
-                        <td className="py-3">{formatDateTime(tx.createdAt)}</td>
-                        <td className="py-3">{tx.provider}</td>
-                        <td className="py-3">{tx.transactionId || '-'}</td>
-                        <td className="py-3 text-right font-semibold">
+                    {sortedRefunds.map((tx) => (
+                      <AdminTableBodyRow key={tx.id}>
+                        <AdminTableCell className="px-0 py-3 sm:px-0">{formatDateTime(tx.createdAt)}</AdminTableCell>
+                        <AdminTableCell className="px-0 py-3 sm:px-0">{tx.provider}</AdminTableCell>
+                        <AdminTableCell className="px-0 py-3 sm:px-0">{tx.transactionId || '-'}</AdminTableCell>
+                        <AdminTableCell className="px-0 py-3 text-right font-semibold sm:px-0">
                           {formatPrice(Number(tx.amount || 0))} {tx.currency}
-                        </td>
-                        <td className="py-3 text-right"><RefundStatusBadge status={tx.status} /></td>
-                      </tr>
+                        </AdminTableCell>
+                        <AdminTableCell className="px-0 py-3 text-right sm:px-0"><RefundStatusBadge status={tx.status} /></AdminTableCell>
+                      </AdminTableBodyRow>
                     ))}
                   </tbody>
-                </table>
-              </div>
+                </AdminTable>
+              </AdminTableScroll>
             )}
           </div>
         </div>

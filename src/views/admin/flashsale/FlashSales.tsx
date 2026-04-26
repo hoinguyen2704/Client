@@ -13,7 +13,18 @@ import {
   PrimaryButton,
   ConfirmDialog,
   CustomSelect,
+  TableRowSkeleton,
 } from "@/components";
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCard,
+  AdminTableCell,
+  AdminTableEmptyRow,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from "@/components/ui/AdminTable";
 import useAdminList from "@/hooks/useAdminList";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 
@@ -75,76 +86,67 @@ export default function FlashSales() {
         </PrimaryButton>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-        <div className="overflow-x-auto min-h-[300px]">
-          <table className="w-full min-w-[960px] text-left border-collapse">
+      <AdminTableCard>
+        <AdminTableScroll className="min-h-[300px]">
+          <AdminTable className="min-w-[960px]">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-muted text-md bg-slate-50/50 dark:bg-slate-800/50">
-                <th className="p-3 sm:p-4 font-medium text-center w-20">
+              <AdminTableHeadRow>
+                <AdminTableHeadCell className="w-20 text-center">
                   {t("flashSales.list.table.index")}
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   {t("flashSales.list.table.name")}
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   {t("flashSales.list.table.start")}
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   {t("flashSales.list.table.end")}
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   {t("flashSales.list.table.products")}
-                </th>
-                <th className="p-3 sm:p-4 font-medium">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell>
                   {t("flashSales.list.table.status")}
-                </th>
-                <th className="p-3 sm:p-4 font-medium text-right">
+                </AdminTableHeadCell>
+                <AdminTableHeadCell className="text-right">
                   {t("flashSales.list.table.actions")}
-                </th>
-              </tr>
+                </AdminTableHeadCell>
+              </AdminTableHeadRow>
             </thead>
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan={7} className="p-8 text-center text-subtle">
-                    {t("flashSales.list.loading")}
-                  </td>
-                </tr>
+                <TableRowSkeleton rows={5} cols={7} />
               ) : sales.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="p-8 text-center text-subtle">
-                    {t("flashSales.list.empty")}
-                  </td>
-                </tr>
+                <AdminTableEmptyRow className="p-8" colSpan={7}>
+                  {t("flashSales.list.empty")}
+                </AdminTableEmptyRow>
               ) : (
                 sales.map((sale, index) => (
-                  <tr
-                    key={sale.id}
-                    className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                  >
-                    <td className="p-3 sm:p-4 text-center font-semibold text-subtle">
+                  <AdminTableBodyRow key={sale.id}>
+                    <AdminTableCell className="text-center font-semibold text-subtle">
                       {getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index)}
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <div className="font-medium text-md">{sale.name}</div>
                       {sale.description && (
                         <div className="text-sm text-subtle mt-1">
                           {sale.description}
                         </div>
                       )}
-                    </td>
-                    <td className="p-3 sm:p-4 text-md text-muted">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-md text-muted">
                       {new Date(sale.startTime).toLocaleString()}
-                    </td>
-                    <td className="p-3 sm:p-4 text-md text-muted">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-md text-muted">
                       {new Date(sale.endTime).toLocaleString()}
-                    </td>
-                    <td className="p-3 sm:p-4 text-md font-medium">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-md font-medium">
                       {t("flashSales.list.productsCount", {
                         count: sale.items?.length || 0,
                       })}
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell>
                       <CustomSelect
                         value={sale.status}
                         options={[
@@ -172,8 +174,8 @@ export default function FlashSales() {
                         }
                         className="w-44 text-md"
                       />
-                    </td>
-                    <td className="p-3 sm:p-4">
+                    </AdminTableCell>
+                    <AdminTableCell className="text-right">
                       <ActionButtons
                         actions={[
                           {
@@ -187,13 +189,13 @@ export default function FlashSales() {
                           },
                         ]}
                       />
-                    </td>
-                  </tr>
+                    </AdminTableCell>
+                  </AdminTableBodyRow>
                 ))
               )}
             </tbody>
-          </table>
-        </div>
+          </AdminTable>
+        </AdminTableScroll>
 
         {/* Pagination */}
         {pageData && (
@@ -207,7 +209,7 @@ export default function FlashSales() {
             onPageChange={setPage}
           />
         )}
-      </div>
+      </AdminTableCard>
 
       <ConfirmDialog
         open={!!deleteTarget}

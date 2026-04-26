@@ -19,6 +19,16 @@ import {
   StatusBadge,
   TableRowSkeleton,
 } from '@/components';
+import {
+  AdminTable,
+  AdminTableBodyRow,
+  AdminTableCard,
+  AdminTableCell,
+  AdminTableEmptyRow,
+  AdminTableHeadCell,
+  AdminTableHeadRow,
+  AdminTableScroll,
+} from '@/components/ui/AdminTable';
 import { formatDate } from '@/utils/format';
 
 
@@ -340,38 +350,38 @@ export default function CMS() {
           )}
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[860px] text-left border-collapse">
+        <AdminTableCard>
+          <AdminTableScroll>
+            <AdminTable className="min-w-[860px]">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-muted text-md">
-                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.title')}</th>
-                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.author')}</th>
-                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.createdAt')}</th>
-                  <th className="p-3 sm:p-4 font-medium">{t('adminContent:cms.table.status')}</th>
-                  <th className="p-3 sm:p-4 font-medium text-right">{t('adminContent:cms.table.actions')}</th>
-                </tr>
+                <AdminTableHeadRow>
+                  <AdminTableHeadCell>{t('adminContent:cms.table.title')}</AdminTableHeadCell>
+                  <AdminTableHeadCell>{t('adminContent:cms.table.author')}</AdminTableHeadCell>
+                  <AdminTableHeadCell>{t('adminContent:cms.table.createdAt')}</AdminTableHeadCell>
+                  <AdminTableHeadCell>{t('adminContent:cms.table.status')}</AdminTableHeadCell>
+                  <AdminTableHeadCell className="text-right">{t('adminContent:cms.table.actions')}</AdminTableHeadCell>
+                </AdminTableHeadRow>
               </thead>
               <tbody>
                 {loading ? (
                   <TableRowSkeleton rows={5} cols={5} />
                 ) : articles.length === 0 ? (
-                  <tr><td colSpan={5} className="p-12 text-center text-subtle">{t('adminContent:cms.table.emptyArticles')}</td></tr>
+                  <AdminTableEmptyRow colSpan={5}>{t('adminContent:cms.table.emptyArticles')}</AdminTableEmptyRow>
                 ) : (
                   articles.map((a) => (
-                    <tr key={a.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <td className="p-3 sm:p-4">
+                    <AdminTableBodyRow key={a.id}>
+                      <AdminTableCell>
                         <div className="flex items-center gap-3">
                           {a.thumbnailUrl && <img src={a.thumbnailUrl} className="w-10 h-10 rounded-lg object-cover" />}
                           <span className="font-bold line-clamp-1">{a.title}</span>
                         </div>
-                      </td>
-                      <td className="p-3 sm:p-4 text-muted">{a.authorName || t('common:labels.notAvailable')}</td>
-                      <td className="p-3 sm:p-4 text-muted">{formatDate(a.createdAt)}</td>
-                      <td className="p-3 sm:p-4">
+                      </AdminTableCell>
+                      <AdminTableCell className="text-muted">{a.authorName || t('common:labels.notAvailable')}</AdminTableCell>
+                      <AdminTableCell className="text-muted">{formatDate(a.createdAt)}</AdminTableCell>
+                      <AdminTableCell>
                         <StatusBadge status={a.isPublished ? 'published' : 'draft'} />
-                      </td>
-                      <td className="p-3 sm:p-4 text-right">
+                      </AdminTableCell>
+                      <AdminTableCell className="text-right">
                         <ActionButtons
                           actions={[
                             {
@@ -384,13 +394,13 @@ export default function CMS() {
                             }
                           ]}
                         />
-                      </td>
-                    </tr>
+                      </AdminTableCell>
+                    </AdminTableBodyRow>
                   ))
                 )}
               </tbody>
-            </table>
-          </div>
+            </AdminTable>
+          </AdminTableScroll>
           {articlePageData && (
             <Pagination variant="admin"
               currentPage={articlePage}
@@ -401,7 +411,7 @@ export default function CMS() {
               onPageChange={setArticlePage}
             />
           )}
-        </div>
+        </AdminTableCard>
       )}
 
       <Modal

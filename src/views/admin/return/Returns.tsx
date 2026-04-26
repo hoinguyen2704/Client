@@ -12,6 +12,12 @@ import { downloadBlob } from '@/utils/download';
 import { getPaginatedRowNumber } from '@/utils/helpers';
 import { buildReportFilename } from '@/utils/reportExport';
 import type { PageResponse, ReturnRequestResponse } from '@/types';
+import {
+  ADMIN_GRID_TABLE_HEADER_BASE_CLASS,
+  ADMIN_GRID_TABLE_ROW_BASE_CLASS,
+  ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS,
+  AdminTableCard,
+} from '@/components/ui/AdminTable';
 
 
 
@@ -180,9 +186,9 @@ export default function AdminReturns() {
         />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+      <AdminTableCard>
         {/* Desktop Header */}
-        <div className="hidden lg:grid grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px] divide-x divide-slate-200 dark:divide-slate-700 gap-0 bg-slate-50 dark:bg-slate-800/50 border-b-2 border-slate-200 dark:border-slate-700 text-body text-md font-semibold text-center rounded-t-2xl">
+        <div className={`${ADMIN_GRID_TABLE_HEADER_BASE_CLASS} grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px]`}>
           <div className="px-4 py-4">{t('returns.list.table.index')}</div>
           <div className="px-4 py-4 text-left">{t('returns.list.table.returnNumber')}</div>
           <div className="px-4 py-4 text-left">{t('returns.list.table.orderNumber')}</div>
@@ -198,7 +204,7 @@ export default function AdminReturns() {
             Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="flex flex-col lg:grid lg:grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px] lg:divide-x divide-slate-200 dark:divide-slate-700 items-center border-b border-slate-200 dark:border-slate-700 animate-pulse"
+                className={`${ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS} grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px]`}
               >
                 <div className="hidden lg:flex px-4 py-4 w-full justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full"><div className="h-4 w-28 bg-slate-200 dark:bg-slate-700 rounded" /></div>
@@ -224,7 +230,7 @@ export default function AdminReturns() {
               return (
                 <div
                   key={item.id}
-                  className="group relative flex flex-col lg:grid lg:grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px] lg:divide-x divide-slate-200 dark:divide-slate-700 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-300"
+                  className={`${ADMIN_GRID_TABLE_ROW_BASE_CLASS} grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px]`}
                 >
                   <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-subtle">
                     {rowNumber}
@@ -317,7 +323,7 @@ export default function AdminReturns() {
             onPageChange={setPage}
           />
         )}
-      </div>
+      </AdminTableCard>
 
       <ReportExportModal
         open={isReportExportModalOpen}
