@@ -34,6 +34,14 @@
       "moveToDraft": "Move to draft",
       "activate": "Activate product"
     },
+    "deleteDialog": {
+      "title": "Delete product",
+      "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "bulkTitle": "Delete multiple products",
+      "bulkMessage": "Are you sure you want to delete {{count}} selected products? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
     "toasts": {
       "loadFailed": "Failed to load product list",
       "deleteConfirm": "Confirm deleting this product?",

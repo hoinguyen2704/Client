@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { FiTrash2, FiDownload } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import Modal from '../dialog/Modal';
-import Button from '../button/Button';
-import type { ConfirmDialogProps } from '../ui/types';
-import { CONFIRM_VARIANT_CONFIG } from '../ui/constants';
+import Modal from '@/components/dialog/Modal';
+import Button from '@/components/button/Button';
+import type { ConfirmDialogProps } from '@/components/ui/types';
+import { CONFIRM_VARIANT_CONFIG } from '@/components/ui/constants';
 
 function resolveConfirmIcon(label: string) {
   const normalized = label.toLowerCase();

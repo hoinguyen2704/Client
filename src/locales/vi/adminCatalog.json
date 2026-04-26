@@ -34,6 +34,14 @@
       "moveToDraft": "Chuyển về bản nháp",
       "activate": "Kích hoạt sản phẩm"
     },
+    "deleteDialog": {
+      "title": "Xóa sản phẩm",
+      "message": "Bạn có chắc muốn xóa sản phẩm \"{{name}}\"? Thao tác này không thể hoàn tác.",
+      "bulkTitle": "Xóa nhiều sản phẩm",
+      "bulkMessage": "Bạn có chắc muốn xóa {{count}} sản phẩm đã chọn? Thao tác này không thể hoàn tác.",
+      "confirm": "Xóa",
+      "cancel": "Hủy"
+    },
     "toasts": {
       "loadFailed": "Lỗi khi tải danh sách sản phẩm",
       "deleteConfirm": "Xác nhận xóa sản phẩm này?",

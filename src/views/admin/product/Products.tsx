@@ -1,11 +1,11 @@
 import { useDeferredValue, useEffect, useMemo, useState, startTransition } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { FiDownload, FiInfo, FiPlus, FiToggleLeft, FiToggleRight, FiTrash2 } from 'react-icons/fi';
+import { FiDownload, FiPlus, FiToggleLeft, FiToggleRight, FiTrash2 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import adminCategoryService from '@/apis/services/adminCategoryService';
 import adminProductService from '@/apis/services/adminProductService';
-import { ActionButtons, AdminSearch, Button, Checkbox, CustomSelect, Pagination, PrimaryButton, SortableHeaderLabel, StatusBadge, TableRowSkeleton } from '@/components';
+import { ActionButtons, AdminSearch, Button, Checkbox, ConfirmDialog, CustomSelect, Pagination, PrimaryButton, SortableHeaderLabel, StatusBadge, TableRowSkeleton } from '@/components';
 import {
   AdminTable,
   AdminTableBodyRow,
@@ -24,6 +24,11 @@ import { getApiErrorMessage } from '@/utils/error';
 import { formatPrice } from '@/utils/format';
 import { getPaginatedRowNumber } from '@/utils/helpers';
 
+type DeleteDialogState =
+  | { mode: 'single'; id: string; name: string }
+  | { mode: 'bulk'; ids: string[]; count: number }
+  | null;
+
 export default function Products() {
   const { t } = useTranslation(['adminCatalog', 'common']);
   const queryClient = useQueryClient();
@@ -34,6 +39,7 @@ export default function Products() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('DESC');
+  const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>(null);
 
   const deferredSearchInput = useDeferredValue(searchInput);
   const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
@@ -161,17 +167,8 @@ export default function Products() {
     });
   };
 
-  const handleDelete = async (id: string) => {
-    toast(t('adminCatalog:products.toasts.deleteConfirm'), {
-      icon: <FiInfo className="text-red-500" />,
-      action: {
-        label: t('common:actions.delete'),
-        onClick: async () => {
-          await deleteMutation.mutateAsync(id);
-          toast.success(t('adminCatalog:products.toasts.deleteSuccess'));
-        },
-      },
-    });
+  const handleDelete = (id: string, name: string) => {
+    setDeleteDialog({ mode: 'single', id, name });
   };
 
   const handleToggleStatus = async (id: string, currentStatus: string) => {
@@ -203,27 +200,39 @@ export default function Products() {
   };
 
   const handleDeleteSelected = () => {
-    toast(t('adminCatalog:products.toasts.deleteManyConfirm', { count: selectedItems.length }), {
-      icon: <FiInfo className="text-red-500" />,
-      description: t('adminCatalog:products.toasts.deleteManyDescription'),
-      action: {
-        label: t('adminCatalog:products.actions.deleteAll'),
-        onClick: async () => {
-          const toDelete = [...selectedItems];
-          const results = await Promise.allSettled(toDelete.map((id) => deleteMutation.mutateAsync(id)));
-          const successCount = results.filter((result) => result.status === 'fulfilled').length;
-          setSelectedItems([]);
-          if (successCount === toDelete.length) {
-            toast.success(t('adminCatalog:products.toasts.deleteManySuccess', { count: successCount }));
-          } else {
-            toast.warning(t('adminCatalog:products.toasts.deleteManyPartial', {
-              success: successCount,
-              total: toDelete.length,
-            }));
-          }
-        },
-      },
+    setDeleteDialog({
+      mode: 'bulk',
+      ids: [...selectedItems],
+      count: selectedItems.length,
     });
+  };
+
+  const handleConfirmDelete = async () => {
+    const currentDialog = deleteDialog;
+    if (!currentDialog) return;
+
+    setDeleteDialog(null);
+
+    if (currentDialog.mode === 'single') {
+      await deleteMutation.mutateAsync(currentDialog.id);
+      toast.success(t('adminCatalog:products.toasts.deleteSuccess'));
+      return;
+    }
+
+    const toDelete = [...currentDialog.ids];
+    const results = await Promise.allSettled(toDelete.map((id) => deleteMutation.mutateAsync(id)));
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    setSelectedItems([]);
+
+    if (successCount === toDelete.length) {
+      toast.success(t('adminCatalog:products.toasts.deleteManySuccess', { count: successCount }));
+      return;
+    }
+
+    toast.warning(t('adminCatalog:products.toasts.deleteManyPartial', {
+      success: successCount,
+      total: toDelete.length,
+    }));
   };
 
   const getStatusLabel = (status: string) => {
@@ -451,7 +460,7 @@ export default function Products() {
                             },
                             {
                               type: 'delete',
-                              onClick: () => handleDelete(product.id),
+                              onClick: () => handleDelete(product.id, product.name),
                             },
                           ]}
                         />
@@ -476,6 +485,29 @@ export default function Products() {
           />
         ) : null}
       </AdminTableCard>
+
+      <ConfirmDialog
+        open={!!deleteDialog}
+        title={
+          deleteDialog?.mode === 'bulk'
+            ? t('adminCatalog:products.deleteDialog.bulkTitle')
+            : t('adminCatalog:products.deleteDialog.title')
+        }
+        message={
+          deleteDialog?.mode === 'bulk'
+            ? t('adminCatalog:products.deleteDialog.bulkMessage', { count: deleteDialog.count })
+            : t('adminCatalog:products.deleteDialog.message', { name: deleteDialog?.name || '' })
+        }
+        confirmLabel={
+          deleteDialog?.mode === 'bulk'
+            ? t('adminCatalog:products.actions.deleteAll')
+            : t('adminCatalog:products.deleteDialog.confirm')
+        }
+        cancelLabel={t('adminCatalog:products.deleteDialog.cancel')}
+        variant="danger"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteDialog(null)}
+      />
     </div>
   );
 }
