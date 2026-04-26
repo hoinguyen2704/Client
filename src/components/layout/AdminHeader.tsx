@@ -32,18 +32,9 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
       <div className="flex items-center gap-2 sm:gap-4 flex-1">
         <button
           onClick={toggleSidebar}
-          className={ADMIN_HEADER_SIDEBAR_BUTTON_CLASS}
-        >
+          className={ADMIN_HEADER_SIDEBAR_BUTTON_CLASS}>
           <FiMenu className="text-lg sm:text-xl" />
         </button>
-        <div className="relative w-80 lg:w-96 hidden md:block group">
-          <input
-            type="text"
-            placeholder={t('adminHeader.searchPlaceholder', { ns: 'layout' })}
-            className="w-full h-11 pl-11 pr-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
-          />
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle text-lg group-focus-within:text-blue-600 transition-colors" />
-        </div>
       </div>
 
       <div className="flex items-center gap-1.5 sm:gap-4">
@@ -52,8 +43,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
           onClick={toggleDarkMode}
           className={`${ADMIN_HEADER_ICON_BUTTON_CLASS} ${ADMIN_HEADER_PILL_BUTTON_CLASS}`}
           aria-label={t('adminHeader.toggleTheme', { ns: 'layout' })}
-          title={t('adminHeader.toggleTheme', { ns: 'layout' })}
-        >
+          title={t('adminHeader.toggleTheme', { ns: 'layout' })}>
           {darkMode ? <FiSun className="text-lg sm:text-xl" /> : <FiMoon className="text-lg sm:text-xl" />}
         </button>
 
@@ -66,7 +56,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
 
         {/* User Menu */}
         <div className="relative" ref={menuRef}>
-          <button 
+          <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 sm:p-2 rounded-xl transition-colors"
           >
@@ -115,32 +105,32 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
 
               {/* Menu Items */}
               <div className="py-1">
-                <Link 
-                  to="/user/profile" 
+                <Link
+                  to="/user/profile"
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
                   <FiUser className="text-lg text-subtle" />
                   {t('adminHeader.profile', { ns: 'layout' })}
                 </Link>
-                <Link 
-                  to="/admin/settings" 
+                <Link
+                  to="/admin/settings"
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
                   <FiSettings className="text-lg text-subtle" />
                   {t('adminHeader.settings', { ns: 'layout' })}
                 </Link>
-                <Link 
-                  to="/admin/customers" 
+                <Link
+                  to="/admin/customers"
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
                   <FiShield className="text-lg text-subtle" />
                   {t('adminHeader.accessControl', { ns: 'layout' })}
                 </Link>
-                <Link 
-                  to="/admin/tickets" 
+                <Link
+                  to="/admin/tickets"
                   onClick={() => setIsMenuOpen(false)}
                   className={ADMIN_MENU_LINK_CLASS}
                 >
@@ -151,7 +141,7 @@ export default function AdminHeader({ onLogout }: AdminHeaderProps) {
 
               {/* Logout */}
               <div className="border-t border-slate-100 dark:border-slate-800 pt-1">
-                <button 
+                <button
                   onClick={() => { setIsMenuOpen(false); onLogout(); }}
                   className="flex items-center gap-3 px-4 py-2.5 text-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors w-full"
                 >

@@ -36,16 +36,16 @@ export default function DashboardStats({ stats, onOpenModal }: DashboardStatsPro
         const Icon = card.icon;
         return (
           <div key={card.key} onClick={() => onOpenModal(card.key)}
-            className={`bg-white dark:bg-slate-900 rounded-2xl p-2.5 sm:p-3 shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer sm:hover:scale-[1.02] transition-all duration-300 h-full flex flex-col justify-between ${c.border}`}>
-            <div className="flex justify-between items-start gap-1 mb-1.5 sm:mb-2">
-              <p className="text-muted text-10 sm:text-sm font-medium leading-tight line-clamp-2">{card.label}</p>
-              <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg ${c.bg} ${c.text} flex items-center justify-center shrink-0`}>
-                <Icon className="text-sm sm:text-md" />
+            className={`bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer sm:hover:scale-[1.02] transition-all duration-300 h-full flex flex-col justify-between ${c.border}`}>
+            <div className="flex justify-between items-start gap-2 mb-2 sm:mb-3">
+              <p className="text-muted text-xs sm:text-base font-semibold leading-tight line-clamp-2">{card.label}</p>
+              <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-lg ${c.bg} ${c.text} flex items-center justify-center shrink-0`}>
+                <Icon className="text-base sm:text-lg" />
               </div>
             </div>
             <div>
-              <h3 className="text-md sm:text-base xl:text-lg font-bold mb-0.5 sm:mb-1 leading-tight break-words">{card.value}</h3>
-              {card.sub && <div className="text-10 sm:text-sm text-muted hidden sm:block">{card.sub}</div>}
+              <h3 className="text-lg sm:text-2xl xl:text-[1.75rem] font-bold tracking-tight mb-1 leading-tight break-words">{card.value}</h3>
+              {card.sub && <div className="text-xs sm:text-sm text-muted hidden sm:block">{card.sub}</div>}
             </div>
           </div>
         );

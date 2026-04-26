@@ -4,6 +4,14 @@ import { Card } from '@/components';
 import { FiShoppingBag, FiCheckCircle, FiXCircle, FiTrendingUp } from 'react-icons/fi';
 import type { DashboardChildProps } from './types';
 import ChartXAxisTick from './ChartXAxisTick';
+import {
+  DASHBOARD_AREA_CHART_MARGIN,
+  DASHBOARD_CHART_AXIS_COLOR,
+  DASHBOARD_CHART_GRID_COLOR,
+  DASHBOARD_CHART_TOOLTIP_STYLE,
+  formatOrderAxisValue,
+  getYAxisWidth,
+} from './chartUtils';
 
 export default function OrderChart({ stats }: DashboardChildProps) {
   const { t } = useTranslation('adminDashboard');
@@ -14,6 +22,7 @@ export default function OrderChart({ stats }: DashboardChildProps) {
 
   const totalOrders = chartData.reduce((s, d) => s + d.orders, 0);
   const maxItem = chartData.reduce((m, d) => d.orders > m.orders ? d : m, { name: '-', orders: 0 });
+  const yAxisWidth = getYAxisWidth(chartData.map((item) => item.orders), formatOrderAxisValue);
 
   // Find today's label for reference line
   const todayEntry = chartData.find((d) => d.name.includes('_TODAY'));
@@ -62,7 +71,7 @@ export default function OrderChart({ stats }: DashboardChildProps) {
       ) : (
         <div className="h-64 sm:h-80 min-w-0">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={256}>
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 24 }}>
+            <AreaChart data={chartData} margin={DASHBOARD_AREA_CHART_MARGIN}>
               <defs>
                 <linearGradient id="colorOrdersAPI" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.25}/><stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
@@ -70,18 +79,29 @@ export default function OrderChart({ stats }: DashboardChildProps) {
               </defs>
               <XAxis
                 dataKey="name"
-                stroke="#000000ff"
-                fontSize={14}
+                stroke={DASHBOARD_CHART_AXIS_COLOR}
+                fontSize={13}
                 tickLine={false}
                 axisLine={false}
                 interval={0}
                 tick={<ChartXAxisTick />}
-                height={48}
+                height={58}
+                tickMargin={10}
+                padding={{ left: 8, right: 18 }}
               />
-              <YAxis stroke="#000000ff" fontSize={14} tickLine={false} axisLine={false} />
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+              <YAxis
+                stroke={DASHBOARD_CHART_AXIS_COLOR}
+                fontSize={13}
+                width={yAxisWidth}
+                tickMargin={12}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={formatOrderAxisValue}
+              />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={DASHBOARD_CHART_GRID_COLOR} />
               <Tooltip
-                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                wrapperStyle={{ outline: 'none' }}
+                contentStyle={DASHBOARD_CHART_TOOLTIP_STYLE}
                 formatter={(value: number) => [value.toLocaleString(), t('overview.charts.orders.tooltipSeries')]}
                 labelFormatter={(label: string) => {
                   const parts = label.replace('|_TODAY', '').split('|');

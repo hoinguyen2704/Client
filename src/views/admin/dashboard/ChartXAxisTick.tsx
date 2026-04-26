@@ -1,7 +1,13 @@
 import { ChartXAxisTickProps } from './ChartXAxisTickProps';
 import { useTranslation } from 'react-i18next';
 
-export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTickProps) {
+export default function ChartXAxisTick({
+  x = 0,
+  y = 0,
+  index = 0,
+  visibleTicksCount,
+  payload,
+}: ChartXAxisTickProps) {
   const { t } = useTranslation('adminDashboard');
   if (!payload) return null;
 
@@ -41,7 +47,11 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
         ? `T${monthNumber}`
         : parts[0];
 
-  const textColor = isToday ? '#2563eb' : '#64748b';
+  const isFirstTick = index === 0;
+  const isLastTick = visibleTicksCount !== undefined && index === visibleTicksCount - 1;
+  const textAnchor = isFirstTick ? 'start' : isLastTick ? 'end' : 'middle';
+  const labelOffsetX = isFirstTick ? 4 : isLastTick ? -4 : 0;
+  const textColor = isToday ? '#002d8dff' : '#000000ff';
   const fontWeight = isToday ? 700 : 500;
 
   return (
@@ -57,12 +67,12 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
       {/* Day of week (line 1) */}
       {isWeekLabel && (
         <text
-          x={0}
+          x={labelOffsetX}
           y={5}
           dy={0}
-          textAnchor="middle"
-          fill={isToday ? '#2563eb' : '#94a3b8'}
-          fontSize={10}
+          textAnchor={textAnchor}
+          fill={isToday ? '#2563eb' : '#000000'}
+          fontSize={14}
           fontWeight={isToday ? 700 : 500}
         >
           {line1}
@@ -71,12 +81,12 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
 
       {/* Date (line 2) */}
       <text
-        x={0}
-        y={isWeekLabel ? 17 : 9}
+        x={labelOffsetX}
+        y={isWeekLabel ? 19 : 10}
         dy={0}
-        textAnchor="middle"
+        textAnchor={textAnchor}
         fill={textColor}
-        fontSize={isToday ? 12 : 11}
+        fontSize={isToday ? 16 : 14}
         fontWeight={fontWeight}
       >
         {line2}
@@ -85,12 +95,12 @@ export default function ChartXAxisTick({ x = 0, y = 0, payload }: ChartXAxisTick
       {/* Today label */}
       {isToday && (
         <text
-          x={0}
-          y={isWeekLabel ? 30 : 21}
+          x={labelOffsetX}
+          y={isWeekLabel ? 34 : 23}
           dy={0}
-          textAnchor="middle"
+          textAnchor={textAnchor}
           fill="#2563eb"
-          fontSize={9}
+          fontSize={14}
           fontWeight={700}
         >
           {t('overview.today')}
