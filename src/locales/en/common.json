@@ -26,7 +26,16 @@
   "confirmDialog": {
     "title": "Confirm",
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "iconKeywords": {
+      "delete": "delete,remove",
+      "download": "export,download"
+    }
+  },
+  "searchableDropdown": {
+    "createPlaceholder": "New name",
+    "createAddLabel": "Add new",
+    "emptyLabel": "No matching results"
   },
   "modal": {
     "cancel": "Cancel",
@@ -72,11 +81,20 @@
     "refreshFailed": "Session refresh failed. Please sign in again.",
     "contactSubmitFailed": "Unable to send your message. Please try again.",
     "addToCartFailed": "Unable to add this item to cart.",
+    "googleBackendUrlMissing": "Missing VITE_BACKEND_URL configuration for Google sign-in.",
     "reviewReturnFailed": "Unable to review the return request.",
     "updateStatusFailed": "Unable to update the status.",
     "processRefundFailed": "Unable to process the refund.",
     "updatePhoneFailed": "Unable to update the phone number.",
     "saveFlashSaleFailed": "Unable to save Flash Sale."
+  },
+  "wishlist": {
+    "toasts": {
+      "loginRequired": "Please log in to add this item to your wishlist.",
+      "removed": "Removed from wishlist.",
+      "added": "Added to wishlist.",
+      "failed": "Action failed. Please try again."
+    }
   },
   "roles": {
     "admin": "Administrator",

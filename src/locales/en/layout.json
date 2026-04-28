@@ -108,6 +108,18 @@
     "markRead": "Mark as read",
     "viewAll": "View all notifications"
   },
+  "blogPage": {
+    "title": "Blog & News",
+    "description": "Stay up to date with the latest tech news",
+    "empty": {
+      "title": "No articles yet",
+      "description": "Please check back later for new articles."
+    },
+    "notFound": {
+      "title": "Article not found"
+    },
+    "back": "Back to Blog"
+  },
   "supportChat": {
     "openAria": "Open live support",
     "adminAvatarAlt": "Support admin",

@@ -1,6 +1,6 @@
 /**
- * Thông tin cửa hàng — Single source of truth cho toàn bộ frontend.
- * Khi đổi tên/branding chỉ cần sửa file này.
+ * Store information — single source of truth for the frontend.
+ * Update this file when the shop name or branding changes.
  */
 export const SHOP = {
   name: 'Hozitech',

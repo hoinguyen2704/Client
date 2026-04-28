@@ -306,6 +306,7 @@
   },
   "feedbacks": {
     "title": "Review moderation",
+    "export": "Export Excel",
     "empty": "No reviews found",
     "productLabel": "Product",
     "adminLabel": "Admin",
@@ -316,7 +317,9 @@
     "toasts": {
       "loadFailed": "Failed to load review list!",
       "statusFailed": "Failed to update review status!",
-      "replyFailed": "Failed to send review reply!"
+      "replyFailed": "Failed to send review reply!",
+      "exportSuccess": "Review list exported successfully!",
+      "exportFailed": "Failed to export review list!"
     }
   },
   "reportExport": {

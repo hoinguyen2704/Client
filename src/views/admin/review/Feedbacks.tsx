@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { FiMessageCircle } from 'react-icons/fi';
+import { FiDownload, FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
@@ -7,12 +7,15 @@ import { Button, CustomSelect, Pagination, StarRating, UserAvatar } from '@/comp
 import { getFeedbackFilterOptions, getFeedbackStatusOptions } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
+import { downloadBlob } from '@/utils/download';
+import { getApiErrorMessage } from '@/utils/error';
 import { formatDate } from '@/utils/format';
 
 export default function Feedbacks() {
   const { t } = useTranslation(['adminSales', 'common']);
   const [reviews, setReviews] = useState<FeedbackResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageData, setPageData] = useState<PageResponse<FeedbackResponse> | null>(null);
@@ -48,12 +51,41 @@ export default function Feedbacks() {
     } catch (err) { console.error('Reply failed:', err);
        toast.error(t('feedbacks.toasts.replyFailed')); }
   };
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const blob = await adminFeedbackService.export({
+        status: statusFilter || undefined,
+      });
+      downloadBlob(blob, `feedbacks_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      toast.success(t('feedbacks.toasts.exportSuccess'));
+    } catch (err) {
+      console.error('Export failed:', err);
+      toast.error(getApiErrorMessage(err, t, 'feedbacks.toasts.exportFailed'));
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t('feedbacks.title')}</h1>
-        <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
-          options={getFeedbackFilterOptions(t)} className="w-full sm:w-48 z-20 shrink-0" />
+        <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3">
+          <Button
+            onClick={handleExport}
+            variant="success"
+            size="md"
+            icon={<FiDownload />}
+            loading={isExporting}
+            className="w-full sm:w-auto"
+          >
+            {t('feedbacks.export')}
+          </Button>
+          <CustomSelect value={statusFilter} onChange={(val) => { setStatusFilter(val); setPage(1); }}
+            options={getFeedbackFilterOptions(t)} className="w-full sm:w-48 z-20 shrink-0" />
+        </div>
       </div>
 
       <div className="space-y-3 sm:space-y-4">

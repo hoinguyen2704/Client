@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import {
   FiChevronDown,
   FiSearch,
@@ -51,16 +52,17 @@ export default function SearchableDropdown({
   searchPlaceholder,
   onCreateNew,
   isCreatingProcess = false,
-  createPlaceholder = "Tên mới",
-  createAddLabel = "Thêm mới",
+  createPlaceholder,
+  createAddLabel,
   allowClear = true,
-  emptyLabel = "Không có dữ liệu phù hợp",
+  emptyLabel,
   duplicateCreateHint,
   labelClassName,
   buttonClassName = "h-12",
   required = true,
   renderMode = "inline",
 }: SearchableDropdownProps) {
+  const { t } = useTranslation("common");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreatingMode, setIsCreatingMode] = useState(false);
@@ -76,6 +78,11 @@ export default function SearchableDropdown({
     item.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
   const trimmedNewName = newName.trim();
+  const resolvedCreatePlaceholder =
+    createPlaceholder ?? t("searchableDropdown.createPlaceholder");
+  const resolvedCreateAddLabel =
+    createAddLabel ?? t("searchableDropdown.createAddLabel");
+  const resolvedEmptyLabel = emptyLabel ?? t("searchableDropdown.emptyLabel");
   const hasDuplicateName = items.some(
     (item) => item.name.trim().toLowerCase() === trimmedNewName.toLowerCase(),
   );
@@ -241,7 +248,7 @@ export default function SearchableDropdown({
 
         {filteredItems.length === 0 && (
           <div className="px-3 py-3 text-sm text-muted">
-            {emptyLabel}
+            {resolvedEmptyLabel}
           </div>
         )}
 
@@ -277,7 +284,7 @@ export default function SearchableDropdown({
                   value={newName}
                   onChange={(event) => setNewName(event.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={createPlaceholder}
+                  placeholder={resolvedCreatePlaceholder}
                   className="flex-1 h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-md focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
                   autoFocus
                 />
@@ -317,7 +324,7 @@ export default function SearchableDropdown({
               onClick={() => setIsCreatingMode(true)}
               className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-md font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
             >
-              <FiPlus className="text-sm" /> {createAddLabel}
+              <FiPlus className="text-sm" /> {resolvedCreateAddLabel}
             </button>
           )}
         </div>

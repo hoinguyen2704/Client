@@ -3,15 +3,16 @@ import {
   FiHeart,
   FiTrash2,
   FiShoppingCart,
-  FiInfo,
   FiArrowRight,
 } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { formatPrice } from "@/utils/format";
 import { motion, AnimatePresence } from "motion/react";
 import useWishlistStore from "@/stores/useWishlistStore";
 
 export default function Wishlist() {
+  const { t } = useTranslation("catalog");
   const items = useWishlistStore((s) => s.items);
   const loading = useWishlistStore((s) => s.loading);
   const syncFromServer = useWishlistStore((s) => s.syncFromServer);
@@ -35,12 +36,14 @@ export default function Wishlist() {
       <div className="flex flex-col items-center justify-center text-center gap-2 sm:gap-3">
         <div className="mb-1 inline-flex items-center gap-2 rounded-2xl border border-blue-100 bg-blue-50 px-3 py-1.5 text-md font-bold text-blue-700 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/30 dark:text-blue-300 sm:mb-2 sm:px-4 sm:py-2 sm:text-base">
           <FiHeart className="text-xl" />
-          <span>{items.length} sản phẩm</span>
+          <span>{t("wishlistPage.summary", { count: items.length })}</span>
         </div>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
-          Danh sách Yêu thích
+          {t("wishlistPage.title")}
         </h1>
-        <p className="text-md sm:text-base text-muted">Lưu trữ những thiết bị công nghệ bạn đang để mắt tới</p>
+        <p className="text-md sm:text-base text-muted">
+          {t("wishlistPage.description")}
+        </p>
       </div>
 
       {loading ? (
@@ -70,18 +73,17 @@ export default function Wishlist() {
               </div>
             </div>
             <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-body">
-              Trái tim bạn đang trống trải!
+              {t("wishlistPage.empty.title")}
             </h3>
             <p className="text-md sm:text-base text-muted max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">
-              Bạn chưa thêm sản phẩm nào vào danh sách yêu thích. Hãy tiếp tục
-              khám phá và lưu lại những món đồ công nghệ ưa thích để mua sau
-              nhé.
+              {t("wishlistPage.empty.description")}
             </p>
             <Link
               to="/products"
               className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-md font-bold text-white shadow-sm transition-all hover:-translate-y-1 hover:bg-blue-700 sm:px-8 sm:py-4 sm:text-base"
             >
-              <FiShoppingCart className="text-xl" /> Khám phá ngay
+              <FiShoppingCart className="text-xl" />{" "}
+              {t("wishlistPage.empty.action")}
             </Link>
           </div>
         </motion.div>
@@ -163,7 +165,7 @@ export default function Wishlist() {
                           to={`/product/${item.productSlug}`}
                           className="group/link flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl bg-slate-100 text-sm font-bold text-body transition-all hover:bg-blue-600 hover:text-white dark:bg-slate-800 sm:h-12 sm:rounded-2xl sm:gap-2 sm:text-base"
                         >
-                          Tùy chọn mua{" "}
+                          {t("wishlistPage.actions.buyOptions")}{" "}
                           <FiArrowRight className="group-hover/link:translate-x-1 transition-transform" />
                         </Link>
                       </div>

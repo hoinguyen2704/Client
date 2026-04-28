@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { FiClock, FiTrash2 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components';
 import { formatDateShort as formatDate, formatPrice } from '@/utils/format';
 import { clearRecentlyViewed, getRecentlyViewed, type RecentlyViewedItem } from '@/utils/recentlyViewed';
 
 export default function RecentlyViewed() {
+  const { t } = useTranslation('account');
   const [viewedProducts, setViewedProducts] = useState<RecentlyViewedItem[]>([]);
 
   useEffect(() => { setViewedProducts(getRecentlyViewed()); }, []);
@@ -19,11 +21,11 @@ export default function RecentlyViewed() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-        <h1 className="text-xl sm:text-2xl font-bold">Sản phẩm đã xem</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{t('recentlyViewedPage.title')}</h1>
         {viewedProducts.length > 0 && (
           <button onClick={clearHistory}
             className="flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-md sm:text-md">
-            <FiTrash2 /> Xóa lịch sử
+            <FiTrash2 /> {t('recentlyViewedPage.clearHistory')}
           </button>
         )}
       </div>
@@ -58,8 +60,8 @@ export default function RecentlyViewed() {
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-100 dark:border-slate-800">
           <EmptyState
             icon={<FiClock />}
-            title="Chưa có sản phẩm nào"
-            description="Bạn chưa xem sản phẩm nào gần đây."
+            title={t('recentlyViewedPage.empty.title')}
+            description={t('recentlyViewedPage.empty.description')}
           />
         </div>
       )}

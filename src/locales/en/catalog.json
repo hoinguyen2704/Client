@@ -222,5 +222,22 @@
       "addedToCart": "Added {{name}} to your cart!",
       "addToCartFailed": "Unable to add this item to your cart."
     }
+  },
+  "variantSelector": {
+    "label": "Variant",
+    "attributeFallback": "Attribute {{index}}"
+  },
+  "wishlistPage": {
+    "summary": "{{count}} products",
+    "title": "Wishlist",
+    "description": "Save the tech products you are keeping an eye on",
+    "empty": {
+      "title": "Your wishlist is feeling empty!",
+      "description": "You have not added any products to your wishlist yet. Keep exploring and save your favorite tech picks for later.",
+      "action": "Explore now"
+    },
+    "actions": {
+      "buyOptions": "Purchase options"
+    }
   }
 }

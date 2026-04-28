@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import type { ProductGalleryProps } from './types';
 
 export default function ProductGallery({ images, activeImage, onImageChange, productName, discount }: ProductGalleryProps) {
+  const { t } = useTranslation('catalog');
   return (
     <div className="w-full max-w-[420px] lg:max-w-none">
       <div className="relative aspect-square max-h-[480px] rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800 mb-3 group border border-slate-100 dark:border-slate-800">
@@ -12,7 +14,7 @@ export default function ProductGallery({ images, activeImage, onImageChange, pro
         />
         {discount > 0 && (
           <div className="absolute top-3 left-3 rounded-xl bg-rose-600 px-3 py-1 text-sm font-bold text-white shadow-sm">
-            Giảm {discount}%
+            {t('productDetail.meta.discount', { percent: discount })}
           </div>
         )}
       </div>

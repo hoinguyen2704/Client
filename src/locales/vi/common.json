@@ -26,7 +26,16 @@
   "confirmDialog": {
     "title": "Xác nhận",
     "confirm": "Xác nhận",
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "iconKeywords": {
+      "delete": "xóa,delete,remove",
+      "download": "xuất,tải,export,download"
+    }
+  },
+  "searchableDropdown": {
+    "createPlaceholder": "Tên mới",
+    "createAddLabel": "Thêm mới",
+    "emptyLabel": "Không có dữ liệu phù hợp"
   },
   "modal": {
     "cancel": "Hủy",
@@ -72,11 +81,20 @@
     "refreshFailed": "Gia hạn đăng nhập thất bại. Vui lòng đăng nhập lại.",
     "contactSubmitFailed": "Gửi tin nhắn thất bại. Vui lòng thử lại.",
     "addToCartFailed": "Thêm giỏ hàng thất bại!",
+    "googleBackendUrlMissing": "Thiếu cấu hình VITE_BACKEND_URL cho đăng nhập Google.",
     "reviewReturnFailed": "Thao tác duyệt trả hàng thất bại",
     "updateStatusFailed": "Cập nhật trạng thái thất bại",
     "processRefundFailed": "Xử lý hoàn tiền thất bại",
     "updatePhoneFailed": "Cập nhật số điện thoại thất bại.",
     "saveFlashSaleFailed": "Lưu Flash Sale thất bại!"
+  },
+  "wishlist": {
+    "toasts": {
+      "loginRequired": "Vui lòng đăng nhập để thêm vào mục yêu thích",
+      "removed": "Đã xoá khỏi danh sách yêu thích",
+      "added": "Đã thêm vào danh sách yêu thích",
+      "failed": "Thao tác thất bại, vui lòng thử lại"
+    }
   },
   "roles": {
     "admin": "Quản trị viên",

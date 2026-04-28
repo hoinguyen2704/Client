@@ -368,6 +368,8 @@
     "collapse": "Collapse",
     "reset": "Reset",
     "remove": "Delete",
+    "visibilityTitle": "Show variant",
+    "visibilityDescription": "Enable visibility so customers can add this variant to their cart.",
     "skuPlaceholder": "E.g. IP15P-BLK-256",
     "regenTitle": "Regenerate SKU from selected attributes",
     "skuModeManual": "Manual",

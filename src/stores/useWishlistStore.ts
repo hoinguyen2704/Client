@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import wishlistService from '@/apis/services/wishlistService';
+import i18n from '@/i18n';
 import type { WishlistResponse } from '@/types';
 import { toast } from 'sonner';
 
@@ -9,6 +10,10 @@ let wishlistSyncPromise: Promise<void> | null = null;
 function getPersistedAuthToken() {
   const raw = localStorage.getItem('auth') || sessionStorage.getItem('auth');
   return raw ? JSON.parse(raw)?.state?.token : null;
+}
+
+function translateWishlistToast(key: string, defaultValue: string) {
+  return i18n.t(key, { ns: 'common', defaultValue });
 }
 
 interface WishlistStore {
@@ -63,7 +68,12 @@ const useWishlistStore = create<WishlistStore>()(
         
         // Optimistic UI update
         if (!getPersistedAuthToken()) {
-          toast.error('Vui lòng đăng nhập để thêm vào mục yêu thích');
+          toast.error(
+            translateWishlistToast(
+              'wishlist.toasts.loginRequired',
+              'Please log in to add this item to your wishlist.',
+            ),
+          );
           return false;
         }
 
@@ -75,18 +85,33 @@ const useWishlistStore = create<WishlistStore>()(
               totalItems: Math.max(state.totalItems - 1, 0),
             }));
             await wishlistService.remove(productId);
-            toast.success('Đã xoá khỏi danh sách yêu thích');
+            toast.success(
+              translateWishlistToast(
+                'wishlist.toasts.removed',
+                'Removed from wishlist.',
+              ),
+            );
             return false;
           } else {
             // Add - optimistically incrementing items requires reloading server state
             // to get the correct WishlistResponse object properties (slug, image, etc)
             await wishlistService.add(productId);
             await get().syncFromServer(); // Fetch latest from server to populate full data
-            toast.success('Đã thêm vào danh sách yêu thích');
+            toast.success(
+              translateWishlistToast(
+                'wishlist.toasts.added',
+                'Added to wishlist.',
+              ),
+            );
             return true;
           }
         } catch {
-          toast.error('Thao tác thất bại, vui lòng thử lại');
+          toast.error(
+            translateWishlistToast(
+              'wishlist.toasts.failed',
+              'Action failed. Please try again.',
+            ),
+          );
           // Rollback by doing a sync
           await get().syncFromServer();
           return !!exists;

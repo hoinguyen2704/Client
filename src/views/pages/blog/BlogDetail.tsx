@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiCalendar, FiUser, FiBook } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import cmsService from '@/apis/services/cmsService';
 import { formatDateLong as formatDate } from '@/utils/format';
 import type { ArticleResponse } from '@/types';
 import { BackButton } from '@/components';
 
 export default function BlogDetail() {
+  const { t } = useTranslation('layout');
   const { slug } = useParams();
   const [article, setArticle] = useState<ArticleResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,14 +29,14 @@ export default function BlogDetail() {
   if (!article) return (
     <div className="max-w-4xl mx-auto px-4 py-12 text-center">
       <FiBook className="text-6xl text-subtle mx-auto mb-4" />
-      <h2 className="text-xl font-bold mb-2">Không tìm thấy bài viết</h2>
-      <Link to="/blog" className="text-blue-600 hover:underline">← Quay lại Blog</Link>
+      <h2 className="text-xl font-bold mb-2">{t('blogPage.notFound.title')}</h2>
+      <Link to="/blog" className="text-blue-600 hover:underline">← {t('blogPage.back')}</Link>
     </div>
   );
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <BackButton to="/blog" label="Quay lại Blog" className="mb-6" />
+      <BackButton to="/blog" label={t('blogPage.back')} className="mb-6" />
 
       <article className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
         {article.thumbnailUrl && (

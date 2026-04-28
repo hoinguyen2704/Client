@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { VariantSelectorProps } from '@/types';
 
 interface AttributeGroup {
@@ -14,9 +15,11 @@ function VariantSelector({
   onSelect,
   selectedOptions,
   onSelectOption,
-  label = 'Phiên bản',
+  label,
   className = '',
 }: VariantSelectorProps) {
+  const { t } = useTranslation('catalog');
+  const resolvedLabel = label || t('variantSelector.label');
   if (variants.length <= 1) return null;
   const activeVariant = variants[selectedIndex];
   if (!activeVariant) return null;
@@ -49,7 +52,9 @@ function VariantSelector({
       (variant.selections || variant.attributes || []).forEach((attr, index) => {
         const group = ensureGroup(
           attr.variantAttributeId,
-          attr.attributeName || attr.variantAttributeName || `Thuộc tính ${index + 1}`,
+          attr.attributeName
+            || attr.variantAttributeName
+            || t('variantSelector.attributeFallback', { index: index + 1 }),
           index,
         );
 
@@ -68,7 +73,7 @@ function VariantSelector({
     (variantSchema || []).forEach((attribute, index) => {
       const group = ensureGroup(
         attribute.id,
-        attribute.name || `Thuộc tính ${index + 1}`,
+        attribute.name || t('variantSelector.attributeFallback', { index: index + 1 }),
         attribute.sortOrder ?? index,
       );
 
@@ -118,7 +123,7 @@ function VariantSelector({
           .map(({ id, label }) => ({ id, label })),
       }))
       .filter((group) => group.options.length > 0);
-  }, [variantSchema, variants]);
+  }, [t, variantSchema, variants]);
 
   const variantOptionMap = useMemo(() => {
     const map = new Map<string, Map<string, string>>();
@@ -160,7 +165,7 @@ function VariantSelector({
   if (groups.length === 0) {
     return (
       <div className={className}>
-        <h3 className="mb-3 text-base font-extrabold">{label}</h3>
+        <h3 className="mb-3 text-base font-extrabold">{resolvedLabel}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {variants.map((variant, idx) => {
             const isActive = idx === selectedIndex;

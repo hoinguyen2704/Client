@@ -20,7 +20,10 @@
     },
     "clearConfirm": "Xác nhận xóa toàn bộ giỏ hàng?",
     "clearAction": "Xóa tất cả",
+    "removeSelectedConfirm": "Xác nhận xóa các sản phẩm được đánh dấu?",
+    "removeSelectedAction": "Xóa đã chọn",
     "selectAll": "Chọn tất cả ({{count}})",
+    "selectedInfo": "Đã chọn ({{selected}}/{{total}})",
     "changeConfigTitle": "Nhấn để đổi cấu hình khác",
     "changeConfig": "Thay đổi",
     "summary": {

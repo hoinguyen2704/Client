@@ -20,7 +20,10 @@
     },
     "clearConfirm": "Confirm clearing the entire cart?",
     "clearAction": "Clear all",
+    "removeSelectedConfirm": "Confirm removing selected products?",
+    "removeSelectedAction": "Remove selected",
     "selectAll": "Select all ({{count}})",
+    "selectedInfo": "Selected ({{selected}}/{{total}})",
     "changeConfigTitle": "Click to switch to another configuration",
     "changeConfig": "Change",
     "summary": {

@@ -95,7 +95,7 @@ export default function ProductDetail() {
           setRelated((relRes.data?.data || []).filter((p: ProductResponse) => p.slug !== slug));
         }
       } catch (err) {
-        console.error('Lỗi load sản phẩm:', err);
+        console.error('Failed to load product details:', err);
         toast.error(t('productDetail.toasts.loadFailed', { ns: 'catalog' }));
         setActiveFlashSales([]);
       } finally {

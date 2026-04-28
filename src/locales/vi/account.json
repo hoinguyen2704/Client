@@ -15,6 +15,14 @@
     },
     "markReadTitle": "Đánh dấu đã đọc"
   },
+  "recentlyViewedPage": {
+    "title": "Sản phẩm đã xem",
+    "clearHistory": "Xóa lịch sử",
+    "empty": {
+      "title": "Chưa có sản phẩm nào",
+      "description": "Bạn chưa xem sản phẩm nào gần đây."
+    }
+  },
   "orders": {
     "title": "Quản lý đơn hàng",
     "searchPlaceholder": "Tìm kiếm theo mã đơn hàng...",

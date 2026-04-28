@@ -502,7 +502,7 @@ export default function CustomerDetail() {
                       />
                     </div>
 
-                    <div>
+                    <div className="sm:col-span-1">
                       <label className="mb-2 block text-md text-muted">{t('detail.gender')}</label>
                       <CustomSelect
                         value={form.gender}
@@ -518,7 +518,7 @@ export default function CustomerDetail() {
                     </div>
 
                     {isCreateMode && (
-                      <div>
+                      <div className="sm:col-span-1">
                         <label className="mb-2 block text-md text-muted">{t('customers.createModal.fields.role')}</label>
                         <CustomSelect
                           value={form.role}

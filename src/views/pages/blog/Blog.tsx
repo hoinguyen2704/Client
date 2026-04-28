@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiBook, FiCalendar, FiUser } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import cmsService from '@/apis/services/cmsService';
 import { formatDateLong as formatDate } from '@/utils/format';
 import { Pagination } from '@/components';
 import type { ArticleResponse } from '@/types';
 
 export default function Blog() {
+  const { t } = useTranslation('layout');
   const [articles, setArticles] = useState<ArticleResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -26,8 +28,8 @@ export default function Blog() {
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-8 sm:py-10 md:py-12 space-y-8">
       <div className="text-center">
-        <h1 className="text-3xl font-black mb-2">Blog & Tin tức</h1>
-        <p className="text-muted">Cập nhật tin tức công nghệ mới nhất</p>
+        <h1 className="text-3xl font-black mb-2">{t('blogPage.title')}</h1>
+        <p className="text-muted">{t('blogPage.description')}</p>
       </div>
 
       {loading ? (
@@ -37,8 +39,8 @@ export default function Blog() {
       ) : articles.length === 0 ? (
         <div className="text-center py-12">
           <FiBook className="text-5xl text-subtle mx-auto mb-4" />
-          <h3 className="text-xl font-bold mb-2">Chưa có bài viết</h3>
-          <p className="text-muted">Hãy quay lại sau để đọc các bài viết mới.</p>
+          <h3 className="text-xl font-bold mb-2">{t('blogPage.empty.title')}</h3>
+          <p className="text-muted">{t('blogPage.empty.description')}</p>
         </div>
       ) : (
         <>

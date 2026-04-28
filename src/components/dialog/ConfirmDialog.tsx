@@ -6,17 +6,23 @@ import Button from '@/components/button/Button';
 import type { ConfirmDialogProps } from '@/components/ui/types';
 import { CONFIRM_VARIANT_CONFIG } from '@/components/ui/constants';
 
-function resolveConfirmIcon(label: string) {
+function parseKeywords(value: string) {
+  return value
+    .split(',')
+    .map((keyword) => keyword.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function resolveConfirmIcon(
+  label: string,
+  deleteKeywords: string[],
+  downloadKeywords: string[],
+) {
   const normalized = label.toLowerCase();
-  if (normalized.includes('xóa') || normalized.includes('delete') || normalized.includes('remove')) {
+  if (deleteKeywords.some((keyword) => normalized.includes(keyword))) {
     return <FiTrash2 />;
   }
-  if (
-    normalized.includes('xuất') ||
-    normalized.includes('tải') ||
-    normalized.includes('export') ||
-    normalized.includes('download')
-  ) {
+  if (downloadKeywords.some((keyword) => normalized.includes(keyword))) {
     return <FiDownload />;
   }
   return null;
@@ -38,6 +44,8 @@ export default function ConfirmDialog({
   const resolvedTitle = title || t('confirmDialog.title');
   const resolvedConfirmLabel = confirmLabel || t('confirmDialog.confirm');
   const resolvedCancelLabel = cancelLabel || t('confirmDialog.cancel');
+  const deleteKeywords = parseKeywords(t('confirmDialog.iconKeywords.delete'));
+  const downloadKeywords = parseKeywords(t('confirmDialog.iconKeywords.download'));
 
   // Auto-focus confirm button when dialog opens
   useEffect(() => {
@@ -65,7 +73,13 @@ export default function ConfirmDialog({
             ref={confirmBtnRef}
             onClick={onConfirm}
             icon={
-              !cfg.icon ? null : resolveConfirmIcon(resolvedConfirmLabel)
+              !cfg.icon
+                ? null
+                : resolveConfirmIcon(
+                    resolvedConfirmLabel,
+                    deleteKeywords,
+                    downloadKeywords,
+                  )
             }
             className={`flex-1 h-11 focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${cfg.btnClass}`}
           >

@@ -222,5 +222,22 @@
       "addedToCart": "Đã thêm {{name}} vào giỏ hàng!",
       "addToCartFailed": "Thêm giỏ hàng thất bại! Vui lòng đăng nhập."
     }
+  },
+  "variantSelector": {
+    "label": "Phiên bản",
+    "attributeFallback": "Thuộc tính {{index}}"
+  },
+  "wishlistPage": {
+    "summary": "{{count}} sản phẩm",
+    "title": "Danh sách yêu thích",
+    "description": "Lưu trữ những thiết bị công nghệ bạn đang để mắt tới",
+    "empty": {
+      "title": "Trái tim bạn đang trống trải!",
+      "description": "Bạn chưa thêm sản phẩm nào vào danh sách yêu thích. Hãy tiếp tục khám phá và lưu lại những món đồ công nghệ ưa thích để mua sau nhé.",
+      "action": "Khám phá ngay"
+    },
+    "actions": {
+      "buyOptions": "Tùy chọn mua"
+    }
   }
 }

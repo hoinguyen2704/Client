@@ -15,6 +15,14 @@
     },
     "markReadTitle": "Mark as read"
   },
+  "recentlyViewedPage": {
+    "title": "Recently viewed products",
+    "clearHistory": "Clear history",
+    "empty": {
+      "title": "No products yet",
+      "description": "You have not viewed any products recently."
+    }
+  },
   "orders": {
     "title": "Order management",
     "searchPlaceholder": "Search by order number...",

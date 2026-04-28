@@ -115,13 +115,13 @@ export default function ProductInfo({
       });
     });
     return map;
-  }, [product.variantSchema, variants]);
+  }, [product.variantSchema, t, variants]);
   const missingAttributeNames = useMemo(
     () =>
       requiredAttributeIds
         .filter((attributeId) => !selectedOptions[attributeId])
-        .map((attributeId) => attributeNameById[attributeId] || 'Phân loại'),
-    [attributeNameById, requiredAttributeIds, selectedOptions],
+        .map((attributeId) => attributeNameById[attributeId] || t('productDetail.variantFallback', { ns: 'catalog' })),
+    [attributeNameById, requiredAttributeIds, selectedOptions, t],
   );
   const isStructuredSelectionMode = isSelectionRequired;
 
@@ -366,7 +366,10 @@ export default function ProductInfo({
         description: `${product.name} ${selectedDisplayName ? `(${selectedDisplayName})` : ''}`,
       });
     } catch (error) {
-      console.error('Lỗi thêm giỏ hàng API, có thể do chưa đăng nhập:', error);
+      console.error(
+        'Failed to add item to cart via API. The user may not be authenticated:',
+        error,
+      );
       toast.error(getApiErrorMessage(error, translate, 'common:errors.addToCartFailed'));
     }
   };
@@ -451,7 +454,10 @@ export default function ProductInfo({
                 <span className="mb-0.5 whitespace-nowrap text-lg text-subtle line-through md:text-xl">{formatPrice(comparePrice)}</span>
                 {discountPercent > 0 ? (
                   <span className="mb-0.5 inline-flex whitespace-nowrap rounded-xl bg-rose-600 px-2.5 py-1 text-sm font-black uppercase tracking-[0.08em] text-white shadow-sm md:text-sm">
-                    {discountPercent}% giảm
+                    {t('productDetail.pricing.discountOff', {
+                      ns: 'catalog',
+                      percent: discountPercent,
+                    })}
                   </span>
                 ) : null}
               </>

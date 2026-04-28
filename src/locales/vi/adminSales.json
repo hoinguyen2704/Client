@@ -306,6 +306,7 @@
   },
   "feedbacks": {
     "title": "Quản lý đánh giá",
+    "export": "Xuất Excel",
     "empty": "Không có đánh giá nào",
     "productLabel": "SP",
     "adminLabel": "Admin",
@@ -316,7 +317,9 @@
     "toasts": {
       "loadFailed": "Tải danh sách đánh giá thất bại!",
       "statusFailed": "Cập nhật trạng thái đánh giá thất bại!",
-      "replyFailed": "Phản hồi đánh giá thất bại!"
+      "replyFailed": "Phản hồi đánh giá thất bại!",
+      "exportSuccess": "Xuất danh sách đánh giá thành công!",
+      "exportFailed": "Xuất danh sách đánh giá thất bại!"
     }
   },
   "reportExport": {

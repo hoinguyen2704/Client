@@ -76,43 +76,62 @@ export default function Cart() {
     } catch { toast.error(t('cart.toasts.removeFailed')); }
   };
 
+  const selectableItems = items.filter((i) => i.available !== false);
+  const allSelectableSelected = selectableItems.length > 0 && selectableItems.every((i) => i.selected);
+  const selectedItems = items.filter((i) => i.selected && i.available !== false);
+  const total = selectedItems.reduce((s, i) => s + i.price * i.quantity, 0);
+  const hasSelectedItems = selectedItems.length > 0;
+  const shippingFee = hasSelectedItems
+    ? total >= shippingConfig.freeShippingThreshold
+      ? 0
+      : shippingConfig.defaultShippingFee
+    : 0;
+  const grandTotal = total + shippingFee;
+
   const handleClearCart = async () => {
-    toast(t('cart.clearConfirm'), {
-      icon: <FiInfo className="text-blue-500" />,
-      action: {
-        label: t('cart.clearAction'),
-        onClick: async () => {
-          try { 
-            await cartService.clearCart(); 
-            setItems([]); 
-            syncFromServer();
-            toast.success(t('cart.toasts.clearSuccess'));
-          } catch { toast.error(t('cart.toasts.actionFailed')); }
-        }
-      },
-    });
+    if (hasSelectedItems) {
+      toast(t('cart.removeSelectedConfirm'), {
+        icon: <FiInfo className="text-blue-500" />,
+        action: {
+          label: t('cart.removeSelectedAction'),
+          onClick: async () => {
+            try {
+              await Promise.all(selectedItems.map((item) => cartService.removeItem(item.id)));
+              setItems((prev) => prev.filter((i) => !selectedItems.some((s) => s.id === i.id)));
+              syncFromServer();
+              toast.success(t('cart.toasts.removeSuccess'));
+            } catch { toast.error(t('cart.toasts.actionFailed')); }
+          }
+        },
+      });
+    } else {
+      toast(t('cart.clearConfirm'), {
+        icon: <FiInfo className="text-blue-500" />,
+        action: {
+          label: t('cart.clearAction'),
+          onClick: async () => {
+            try { 
+              await cartService.clearCart(); 
+              setItems([]); 
+              syncFromServer();
+              toast.success(t('cart.toasts.clearSuccess'));
+            } catch { toast.error(t('cart.toasts.actionFailed')); }
+          }
+        },
+      });
+    }
   };
 
-  const toggleSelect = (id: string) => setItems(prev => prev.map(i => {
+  const toggleSelect = (id: string) => setItems((prev) => prev.map((i) => {
     if (i.id !== id) return i;
     if (i.available === false) return i;
     return { ...i, selected: !i.selected };
   }));
+
   const toggleAll = () => {
-    const selectable = items.filter(i => i.available !== false);
-    const all = selectable.length > 0 && selectable.every(i => i.selected);
-    setItems(prev => prev.map(i => (i.available === false ? i : { ...i, selected: !all })));
+    setItems((prev) => prev.map((i) => (i.available === false ? i : { ...i, selected: !allSelectableSelected })));
   };
 
-  const selectableItems = items.filter(i => i.available !== false);
-  const allSelectableSelected = selectableItems.length > 0 && selectableItems.every(i => i.selected);
-  const selectedItems = items.filter(i => i.selected && i.available !== false);
-  const total = selectedItems.reduce((s, i) => s + i.price * i.quantity, 0);
-  const hasSelectedItems = selectedItems.length > 0;
-  const shippingFee = hasSelectedItems
-    ? (total >= shippingConfig.freeShippingThreshold ? 0 : shippingConfig.defaultShippingFee)
-    : 0;
-  const grandTotal = total + shippingFee;
   const getProductLink = (slug?: string) => (slug ? `/product/${slug}` : '/search');
 
   return (
@@ -142,9 +161,15 @@ export default function Cart() {
                 <div className="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800"  >
               <label className="flex items-center gap-3 cursor-pointer">
                 <Checkbox checked={allSelectableSelected} onCheckedChange={() => toggleAll()} className="w-4 h-4" />
-                <span className="font-medium text-lg">{t('cart.selectAll', { count: items.length })}</span>
+                <span className="font-medium text-lg">
+                  {hasSelectedItems 
+                    ? t('cart.selectedInfo', { selected: selectedItems.length, total: items.length, defaultValue: `Đã chọn (${selectedItems.length}/${items.length})` })
+                    : t('cart.selectAll', { count: items.length })}
+                </span>
               </label>
-                  <Button onClick={handleClearCart} variant="ghost" size="lg" icon={<FiTrash2 className="text-[2rem]" />} className="text-red-500 shrink-0">{t('cart.clearAction')}</Button>
+                  <Button onClick={handleClearCart} variant="ghost" size="lg" icon={<FiTrash2 className="text-[2rem]" />} className="text-red-500 shrink-0">
+                    {hasSelectedItems ? t('cart.removeSelectedAction') : t('cart.clearAction')}
+                  </Button>
             </div>
 
             {items.map(item => (
@@ -167,7 +192,7 @@ export default function Cart() {
                     )}
                   </Link>
                         <div className="min-w-0 flex-1 flex flex-col items-start">
-                    <Link to={`/product/${item.productSlug}`} className="hover:text-blue-600 transition-colors w-full">
+                    <Link to={`/product/${item.productSlug}`} className="hover:text-blue-600 transition-colors w-fit inline-block">
                       <h3 className="font-bold line-clamp-2 text-md sm:text-base">{item.productName}</h3>
                     </Link>
                     <Link to={`/product/${item.productSlug}`} className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-0.5 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group cursor-pointer" title={t('cart.changeConfigTitle')}>

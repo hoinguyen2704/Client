@@ -108,6 +108,18 @@
     "markRead": "Đánh dấu đã đọc",
     "viewAll": "Xem tất cả thông báo"
   },
+  "blogPage": {
+    "title": "Blog & Tin tức",
+    "description": "Cập nhật tin tức công nghệ mới nhất",
+    "empty": {
+      "title": "Chưa có bài viết",
+      "description": "Hãy quay lại sau để đọc các bài viết mới."
+    },
+    "notFound": {
+      "title": "Không tìm thấy bài viết"
+    },
+    "back": "Quay lại Blog"
+  },
   "supportChat": {
     "openAria": "Mở hỗ trợ trực tiếp",
     "adminAvatarAlt": "Admin hỗ trợ",

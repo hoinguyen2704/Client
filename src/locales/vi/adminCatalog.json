@@ -368,6 +368,8 @@
     "collapse": "Thu gọn",
     "reset": "Khôi phục",
     "remove": "Xóa",
+    "visibilityTitle": "Hiển thị cấu hình",
+    "visibilityDescription": "Bật hiển thị để khách hàng có thể cho cấu hình này vào giỏ hàng.",
     "skuPlaceholder": "VD: IP15P-BLK-256",
     "regenTitle": "Sinh lại SKU theo tổ hợp thuộc tính",
     "skuModeManual": "Thủ công",

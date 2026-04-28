@@ -1,7 +1,14 @@
+import i18n from '@/i18n';
+
 function getBackendApiBaseUrl(): string {
   const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim();
   if (!backendUrl) {
-    throw new Error('Thiếu cấu hình VITE_BACKEND_URL cho đăng nhập Google.');
+    throw new Error(
+      i18n.t('errors.googleBackendUrlMissing', {
+        ns: 'common',
+        defaultValue: 'Missing VITE_BACKEND_URL configuration for Google sign-in.',
+      }),
+    );
   }
   return backendUrl.replace(/\/+$/, '');
 }

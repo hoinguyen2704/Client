@@ -407,7 +407,7 @@ export default function Profile() {
                     />
                   </div>
 
-                  <div className="md:col-span-2">
+                  <div>
                     <label className="mb-2 block font-medium text-body">{t('profile.fields.gender')}</label>
                     <CustomSelect
                       value={gender}
