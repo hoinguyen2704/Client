@@ -57,25 +57,7 @@ export default function ProductForm() {
               : t("productForm.createTitle")}
           </h1>
         </div>
-        <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
-          {form.isEditMode && (
-            <Button
-              href={`/admin/products/${form.id}/variants`}
-              variant="secondary"
-              size="md"
-              className="flex-1 sm:flex-none"
-            >
-              {t("productForm.manageVariants")}
-            </Button>
-          )}
-          <Button
-            onClick={() => form.navigate("/admin/products")}
-            variant="outline"
-            size="md"
-            className="flex-1 sm:flex-none"
-          >
-            {t("productForm.cancel")}
-          </Button>
+        <div className="flex flex-wrap w-full sm:w-auto gap-2 sm:gap-3">
           <PrimaryButton
             onClick={form.handleSubmit}
             disabled={form.saving}
@@ -84,6 +66,24 @@ export default function ProductForm() {
           >
             {form.isEditMode ? t("productForm.update") : t("productForm.save")}
           </PrimaryButton>
+          <Button
+            onClick={() => form.navigate("/admin/products")}
+            variant="secondary"
+            size="md"
+            className="flex-1 sm:flex-none"
+          >
+            {form.isEditMode ? t("productForm.cancel") : t("productForm.cancel").replace(" thay đổi", "")}
+          </Button>
+          {form.isEditMode && (
+            <Button
+              href={`/admin/products/${form.id}/variants`}
+              variant="outline"
+              size="md"
+              className="w-full sm:w-auto sm:flex-none"
+            >
+              {t("productForm.manageVariants")}
+            </Button>
+          )}
         </div>
       </div>
 

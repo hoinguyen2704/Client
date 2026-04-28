@@ -77,7 +77,7 @@ export default function CheckoutAppliedCouponCard({
               disabled={isSaving}
               size="sm"
               icon={<FiBookmark className="text-md" />}
-              className={`h-8 rounded-lg px-3 ${config.saveButtonClassName}`}
+              className={`h-8 whitespace-nowrap rounded-lg px-3 ${config.saveButtonClassName}`}
             >
               {t("appliedVoucher.saveToWallet")}
             </Button>

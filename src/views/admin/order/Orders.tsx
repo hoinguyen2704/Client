@@ -20,6 +20,8 @@ import { formatDate, formatPrice } from '@/utils/format';
 import { getPaginatedRowNumber } from '@/utils/helpers';
 import { buildReportFilename } from '@/utils/reportExport';
 
+const ORDER_TABLE_GRID_COLUMNS = 'grid-cols-[84px_minmax(240px,1.25fr)_minmax(220px,1fr)_160px_100px_minmax(150px,1fr)_160px_220px_100px]';
+
 export default function AdminOrders() {
   const { t } = useTranslation(['adminSales', 'common']);
   const queryClient = useQueryClient();
@@ -160,7 +162,7 @@ export default function AdminOrders() {
       </div>
 
       <AdminTableCard>
-        <div className={`${ADMIN_GRID_TABLE_HEADER_BASE_CLASS} grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px]`}>
+        <div className={`${ADMIN_GRID_TABLE_HEADER_BASE_CLASS} ${ORDER_TABLE_GRID_COLUMNS}`}>
           <div className="px-4 py-4">{t('orders.table.index')}</div>
           <div className="px-4 py-4 text-left">
             <SortableHeaderLabel
@@ -170,6 +172,7 @@ export default function AdminOrders() {
               onClick={() => handleSort('orderNumber')}
             />
           </div>
+          <div className="px-4 py-4 text-left">{t('orders.table.customer')}</div>
           <div className="px-4 py-4">
             <SortableHeaderLabel
               label={t('orders.table.orderDate')}
@@ -221,9 +224,10 @@ export default function AdminOrders() {
         <div className="flex flex-col">
           {loading ? (
             Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className={`${ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS} grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px]`}>
+              <div key={index} className={`${ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS} ${ORDER_TABLE_GRID_COLUMNS}`}>
                 <div className="hidden lg:flex px-4 py-4 w-full justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></div>
+                <div className="px-4 py-4 w-full hidden lg:flex"><div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
                 <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></div>
@@ -241,9 +245,10 @@ export default function AdminOrders() {
             orders.map((order, index) => {
               const rowNumber = getPaginatedRowNumber(page, PAGE_SIZE.LARGE, index);
               const statusOptions = getAdminOrderStatusOptions(order.orderStatus, t);
+              const customerEmail = order.customerEmail?.trim() || '-';
 
               return (
-                <div key={order.id} className={`${ADMIN_GRID_TABLE_ROW_BASE_CLASS} grid-cols-[84px_350px_180px_100px_minmax(150px,1fr)_200px_220px_100px]`}>
+                <div key={order.id} className={`${ADMIN_GRID_TABLE_ROW_BASE_CLASS} ${ORDER_TABLE_GRID_COLUMNS}`}>
                   <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-subtle">
                     {rowNumber}
                   </div>
@@ -257,6 +262,15 @@ export default function AdminOrders() {
                       {order.orderNumber}
                     </div>
                     <div className="lg:hidden text-muted text-md ">{formatDate(order.createdAt)}</div>
+                  </div>
+
+                  <div className="w-full lg:w-auto min-w-0 flex justify-between lg:block items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
+                    <span className="lg:hidden text-muted text-md">{t('orders.table.customerMobile')}</span>
+                    <div className="min-w-0 w-full max-w-[220px] lg:max-w-full text-right lg:text-left">
+                      <p className="truncate font-medium text-body" title={order.customerEmail?.trim() || undefined}>
+                        {customerEmail}
+                      </p>
+                    </div>
                   </div>
 
                   <div className="hidden lg:flex justify-center items-center px-4 py-4 text-body font-medium h-full text-center">{formatDate(order.createdAt)}</div>

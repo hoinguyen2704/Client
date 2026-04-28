@@ -260,11 +260,9 @@ export default function Products() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">{t('adminCatalog:products.title')}</h1>
-          {selectedItems.length > 0 ? (
-            <p className="text-md text-muted mt-1">
-              {t('adminCatalog:products.selectedCount', { count: selectedItems.length })}
-            </p>
-          ) : null}
+          <p className={`text-md text-muted mt-1 transition-all ${selectedItems.length > 0 ? 'visible opacity-100' : 'invisible opacity-0'}`}>
+            {t('adminCatalog:products.selectedCount', { count: selectedItems.length > 0 ? selectedItems.length : 1 })}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {selectedItems.length > 0 ? (
