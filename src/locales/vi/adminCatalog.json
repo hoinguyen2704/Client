@@ -386,7 +386,7 @@
     "addValue": "Thêm giá trị mới",
     "addAttribute": "Thêm thuộc tính",
     "attributesTitle": "Thuộc tính danh mục",
-    "attributesDescription": "Các dropdown dưới đây bám theo schema danh mục hiện tại. Có thể thêm nhanh thuộc tính mới ngay tại đây.",
+    "attributesDescription": "Có thể thêm nhanh thuộc tính mới ngay tại đây.",
     "attributesEmptyDescription": "Danh mục này chưa có thuộc tính cấu hình nào. Thêm thuộc tính đầu tiên để bắt đầu.",
     "attributesEmptyState": "Chưa có thuộc tính danh mục để chọn giá trị. Hãy thêm thuộc tính mới rồi chọn giá trị cho cấu hình này.",
     "newValuePlaceholder": "Nhập giá trị mới cho {{attribute}}",

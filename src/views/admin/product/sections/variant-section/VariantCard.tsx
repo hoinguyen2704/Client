@@ -86,7 +86,9 @@ export default memo(function VariantCard(props: VariantCardProps) {
           : "border-slate-200 shadow-sm dark:border-slate-700"
       }`}
     >
-      <div className="bg-gradient-to-r from-white via-slate-50 to-blue-50/70 px-4 py-3.5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 sm:px-5">
+      <div
+        onClick={onToggleExpanded}
+        className="bg-gradient-to-r from-white via-slate-50 to-blue-50/70 px-4 py-3.5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 sm:px-5 cursor-pointer select-none">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3 flex-1 min-w-0 pr-0 xl:pr-4">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
@@ -175,7 +177,9 @@ export default memo(function VariantCard(props: VariantCardProps) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+          <div
+            className="flex flex-wrap items-center gap-2 lg:justify-end"
+            onClick={(e) => e.stopPropagation()}>
             {isDirty && (
               <button
                 type="button"
@@ -191,7 +195,7 @@ export default memo(function VariantCard(props: VariantCardProps) {
               onToggle={onToggleExpanded}
               expandLabel={t("variantCard.expand")}
               collapseLabel={t("variantCard.collapse")}
-              className="!rounded-xl border-slate-200 bg-white/90 dark:border-slate-700 dark:bg-slate-900/80 text-lg"
+              className="!rounded-xl border-slate-200 bg-white/90 dark:border-slate-700 dark:bg-slate-900/80 text-md"
             />
             {canRemove && (
               <TrashButton
