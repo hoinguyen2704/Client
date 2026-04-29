@@ -69,7 +69,7 @@ export default function ReturnDetail() {
     if (!data) return;
     setCancelDialogOpen(false);
     try {
-      await returnService.cancel(data.id);
+      await returnService.cancel(data.returnNumber);
       toast.success(t('returnDetail.toasts.cancelSuccess'));
       fetchDetail();
     } catch (err) {
@@ -246,7 +246,7 @@ export default function ReturnDetail() {
             <h3 className="text-lg font-bold">{t('returnDetail.itemsTitle')}</h3>
             <div className="space-y-3">
               {data.items.map(line => {
-                const imageUrl = line.imageUrl || (line.orderItemId ? orderItemImageMap[line.orderItemId] : undefined);
+                const imageUrl = line.orderItemId ? orderItemImageMap[line.orderItemId] : undefined;
 
                 return (
                   <div key={line.id} className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5 transition-colors">

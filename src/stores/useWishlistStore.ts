@@ -21,7 +21,7 @@ interface WishlistStore {
   loading: boolean;
   totalItems: number;
   syncFromServer: () => Promise<void>;
-  toggleItem: (productId: string) => Promise<boolean>;
+  toggleItem: (productSlug: string) => Promise<boolean>;
   clearWishlist: () => void;
 }
 
@@ -62,9 +62,9 @@ const useWishlistStore = create<WishlistStore>()(
         return wishlistSyncPromise;
       },
 
-      toggleItem: async (productId: string) => {
+      toggleItem: async (productSlug: string) => {
         const { items } = get();
-        const exists = items.find(i => i.productId === productId);
+        const exists = items.find(i => i.productSlug === productSlug);
         
         // Optimistic UI update
         if (!getPersistedAuthToken()) {
@@ -81,10 +81,10 @@ const useWishlistStore = create<WishlistStore>()(
           if (exists) {
             // Remove
             set((state) => ({
-              items: state.items.filter(i => i.productId !== productId),
+              items: state.items.filter(i => i.productSlug !== productSlug),
               totalItems: Math.max(state.totalItems - 1, 0),
             }));
-            await wishlistService.remove(productId);
+            await wishlistService.remove(productSlug);
             toast.success(
               translateWishlistToast(
                 'wishlist.toasts.removed',
@@ -95,7 +95,7 @@ const useWishlistStore = create<WishlistStore>()(
           } else {
             // Add - optimistically incrementing items requires reloading server state
             // to get the correct WishlistResponse object properties (slug, image, etc)
-            await wishlistService.add(productId);
+            await wishlistService.add(productSlug);
             await get().syncFromServer(); // Fetch latest from server to populate full data
             toast.success(
               translateWishlistToast(

@@ -284,8 +284,8 @@ export default function ProductInfo({
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
   const liked = useWishlistStore(
     useCallback(
-      (state) => state.items.some((item) => item.productId === product.id),
-      [product.id],
+      (state) => state.items.some((item) => item.productSlug === product.slug),
+      [product.slug],
     ),
   );
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -354,7 +354,7 @@ export default function ProductInfo({
 
     try {
       await cartService.addToCart({
-        variantId: activeVariant.id,
+        variantSku: activeVariant.sku,
         quantity,
       });
 
@@ -580,7 +580,7 @@ export default function ProductInfo({
               navigate('/login');
               return;
             }
-            if (product.id) await toggleWishlist(product.id);
+            if (product.slug) await toggleWishlist(product.slug);
           }}
           title={t('productDetail.actions.wishlist', { ns: 'catalog' })}
           className={`h-12 w-12 shrink-0 rounded-xl border-2 flex items-center justify-center transition-all ${liked

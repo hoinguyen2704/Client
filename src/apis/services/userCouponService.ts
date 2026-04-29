@@ -13,12 +13,12 @@ const userCouponService = {
     axios.get(URL),
 
   /** Lưu voucher vào ví */
-  saveCoupon: (couponId: string): Promise<ApiResponse<void>> =>
-    axios.post(`${URL}/${couponId}`),
+  saveCoupon: (code: string): Promise<ApiResponse<void>> =>
+    axios.post(`${URL}/${code}`),
 
   /** Bỏ lưu voucher */
-  unsaveCoupon: (couponId: string): Promise<ApiResponse<void>> =>
-    axios.delete(`${URL}/${couponId}`),
+  unsaveCoupon: (code: string): Promise<ApiResponse<void>> =>
+    axios.delete(`${URL}/${code}`),
 };
 
 export default userCouponService;

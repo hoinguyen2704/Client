@@ -50,10 +50,10 @@ function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
 function ProductCardComponent({ product }: { product: ProductResponse }) {
   const { t } = useTranslation(['catalog', 'common']);
   const navigate = useNavigate();
-  const productId: string = product.id || '';
+  const productSlug: string = product.slug || '';
   const toggleWishlist = useWishlistStore((s) => s.toggleItem);
   const liked = useWishlistStore(
-    useCallback((s) => s.items.some((item) => item.productId === productId), [productId]),
+    useCallback((s) => s.items.some((item) => item.productSlug === productSlug), [productSlug]),
   );
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const name: string = product.name || '';
@@ -203,8 +203,8 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
                   navigate('/login');
                   return;
                 }
-                if (!productId) return;
-                await toggleWishlist(productId);
+                if (!productSlug) return;
+                await toggleWishlist(productSlug);
               }}
               className={`h-9 w-9 shrink-0 border rounded-lg flex justify-center items-center transition-all shadow-sm group/heart sm:h-10 sm:w-10 sm:rounded-xl ${liked
                   ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'

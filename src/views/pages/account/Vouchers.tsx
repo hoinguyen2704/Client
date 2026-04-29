@@ -63,7 +63,7 @@ export default function Vouchers() {
     if (!user) { toast.error(t('account:vouchers.toasts.loginToSave')); return; }
     setSavingId(couponId);
     try {
-      await userCouponService.saveCoupon(couponId);
+      await userCouponService.saveCoupon(coupon.code);
       setPublicVouchers(prev => prev.map(v => v.id === couponId ? { ...v, saved: true } : v));
       setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: true } : prev);
       setSavedVouchers(prev => {
@@ -81,14 +81,18 @@ export default function Vouchers() {
     if (!user) { toast.error(t('account:vouchers.toasts.loginToManage')); return; }
     setSavingId(couponId);
     try {
-      await userCouponService.unsaveCoupon(couponId);
+      const voucher = [...publicVouchers, ...savedVouchers].find((item) => item.id === couponId);
+      if (!voucher) {
+        throw new Error('Voucher not found');
+      }
+      await userCouponService.unsaveCoupon(voucher.code);
       setPublicVouchers(prev => prev.map(v => v.id === couponId ? { ...v, saved: false } : v));
       setSearchResult(prev => prev?.id === couponId ? { ...prev, saved: false } : prev);
       setSavedVouchers(prev => prev.filter(v => v.id !== couponId));
       toast.success(t('account:vouchers.toasts.unsaveSuccess'));
     } catch (err: unknown) { toast.error(getApiErrorMessage(err, t, 'account:vouchers.toasts.actionFailed')); }
     finally { setSavingId(null); }
-  }, [user, t]);
+  }, [publicVouchers, savedVouchers, user, t]);
 
   const copyCode = useCallback((code: string) => {
     navigator.clipboard.writeText(code);

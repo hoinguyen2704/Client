@@ -246,7 +246,7 @@ export default function Checkout() {
     }
     setSavingVoucherId(voucher.id);
     try {
-      await userCouponService.saveCoupon(voucher.id);
+      await userCouponService.saveCoupon(voucher.code);
       setSavedCouponIds(prev => prev.includes(voucher.id) ? prev : [...prev, voucher.id]);
       setPublicVouchers(prev => prev.map(v => v.id === voucher.id ? { ...v, saved: true } : v));
       setSavedVouchers(prev => prev.some(v => v.id === voucher.id) ? prev : [{ ...voucher, saved: true }, ...prev]);
@@ -265,7 +265,12 @@ export default function Checkout() {
     }
     setSavingVoucherId(voucherId);
     try {
-      await userCouponService.unsaveCoupon(voucherId);
+      const voucher = [...publicVouchers, ...savedVouchers].find((item) => item.id === voucherId);
+      if (!voucher) {
+        toast.error(t('checkout:toasts.voucherUnsaveFailed'));
+        return;
+      }
+      await userCouponService.unsaveCoupon(voucher.code);
       setSavedCouponIds(prev => prev.filter(id => id !== voucherId));
       setSavedVouchers(prev => prev.filter(v => v.id !== voucherId));
       setPublicVouchers(prev => prev.map(v => v.id === voucherId ? { ...v, saved: false } : v));

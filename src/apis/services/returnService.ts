@@ -60,9 +60,9 @@ const returnService = {
     axios.get(`${RETURN_URL}/${returnNumber}`),
 
   cancel: (
-    returnRequestId: string,
+    returnNumber: string,
   ): Promise<ApiResponse<ReturnRequestResponse>> =>
-    axios.patch(`${RETURN_URL}/${returnRequestId}/cancel`),
+    axios.patch(`${RETURN_URL}/${returnNumber}/cancel`),
 
   // Admin endpoints (admin/api/v1/returns)
   adminGetAll: (

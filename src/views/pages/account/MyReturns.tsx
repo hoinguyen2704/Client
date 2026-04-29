@@ -60,7 +60,7 @@ export default function MyReturns() {
 
   const handleCancelReturn = async (target: ReturnRequestResponse) => {
     try {
-      await returnService.cancel(target.id);
+      await returnService.cancel(target.returnNumber);
       toast.success(t('returns.toasts.cancelSuccess'));
       fetchReturns();
     } catch (err) {

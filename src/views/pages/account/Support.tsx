@@ -18,6 +18,8 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
   REALTIME_EVENT_TYPES.SUPPORT_MESSAGE_CREATED,
   REALTIME_EVENT_TYPES.SUPPORT_STATUS_UPDATED,
 ]);
+const getTicketKey = (ticket?: TicketResponse | null) => ticket?.ticketNumber || ticket?.id || null;
+const getPayloadTicketKey = (payload?: SupportRealtimePayload | null) => payload?.ticketNumber || payload?.ticketId || null;
 
 export default function Support() {
   const { t } = useTranslation('account');
@@ -33,15 +35,17 @@ export default function Support() {
   const [replyText, setReplyText] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
   const selectedTicketIdRef = useRef(selectedTicketId);
-  const requestedTicketId = searchParams.get('ticketId');
+  const requestedTicketId = searchParams.get('ticketNumber') || searchParams.get('ticketId');
   selectedTicketIdRef.current = selectedTicketId;
 
   const syncSelectedTicketId = useCallback((ticketId: string | null) => {
     setSelectedTicketId(ticketId);
     const nextSearchParams = new URLSearchParams(searchParams);
     if (ticketId) {
-      nextSearchParams.set('ticketId', ticketId);
+      nextSearchParams.set('ticketNumber', ticketId);
+      nextSearchParams.delete('ticketId');
     } else {
+      nextSearchParams.delete('ticketNumber');
       nextSearchParams.delete('ticketId');
     }
     setSearchParams(nextSearchParams, { replace: true });
@@ -53,12 +57,12 @@ export default function Support() {
       const res = await ticketService.getMyTickets(1, 30);
       const nextTickets = res.data?.data || [];
       const currentId = selectedTicketIdRef.current;
-      const stillExists = currentId ? nextTickets.some((t) => t.id === currentId) : false;
+      const stillExists = currentId ? nextTickets.some((t) => getTicketKey(t) === currentId) : false;
 
       if (requestedTicketId && requestedTicketId !== currentId) {
         setSelectedTicketId(requestedTicketId);
       } else if (!stillExists) {
-        setSelectedTicketId(nextTickets[0]?.id || null);
+        setSelectedTicketId(getTicketKey(nextTickets[0]));
       }
       setTickets(nextTickets);
     } catch {
@@ -77,7 +81,7 @@ export default function Support() {
       setSelectedTicket(null);
 
       if (requestedTicketId && requestedTicketId === ticketId) {
-        const fallbackTicketId = tickets[0]?.id || null;
+        const fallbackTicketId = getTicketKey(tickets[0]);
         if (fallbackTicketId && fallbackTicketId !== ticketId) {
           syncSelectedTicketId(fallbackTicketId);
         } else if (!fallbackTicketId) {
@@ -110,7 +114,7 @@ export default function Support() {
       }
 
       const payload = (event.data || {}) as SupportRealtimePayload;
-      const eventTicketId = payload.ticketId || null;
+      const eventTicketId = getPayloadTicketKey(payload);
 
       fetchTickets({ silent: true });
 
@@ -151,8 +155,9 @@ export default function Support() {
       setNewContent('');
       toast.success(t('support.toasts.createSuccess'));
       await fetchTickets({ silent: true });
-      if (created?.id) {
-        syncSelectedTicketId(created.id);
+      const createdTicketKey = getTicketKey(created);
+      if (createdTicketKey) {
+        syncSelectedTicketId(createdTicketKey);
         setSelectedTicket(created);
       }
     } catch (e: unknown) {
@@ -229,8 +234,8 @@ export default function Support() {
                 <TicketListItem
                   key={ticket.id}
                   ticket={ticket}
-                  isSelected={selectedTicketId === ticket.id}
-                  onClick={(ticketResponse) => syncSelectedTicketId(ticketResponse.id)}
+                  isSelected={selectedTicketId === getTicketKey(ticket)}
+                  onClick={(ticketResponse) => syncSelectedTicketId(getTicketKey(ticketResponse))}
                 />
               ))
             )}

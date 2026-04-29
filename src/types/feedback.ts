@@ -6,14 +6,17 @@ export interface FeedbackResponse {
   imagesJson?: string;
   status: string;
   createdAt: string;
-  productId: string;
+  productId?: string;
+  productSlug?: string;
   productName?: string;
   variantId?: string;
+  variantSku?: string;
   variantName?: string;
   userId: string;
   userName: string;
   userAvatar?: string;
   orderId?: string;
+  orderNumber?: string;
   adminReply?: string;
   repliedAt?: string;
   editCount?: number;
@@ -37,9 +40,9 @@ export interface ProductFeedbackPageResponse {
 export type ProductReviewFilter = 'all' | 'with-comment' | 1 | 2 | 3 | 4 | 5;
 
 export interface FeedbackRequest {
-  productId: string;
-  variantId?: string;
-  orderId?: string;
+  productSlug: string;
+  variantSku?: string;
+  orderNumber?: string;
   rating: number;
   content: string;
   imagesJson?: string;
@@ -70,10 +73,9 @@ export type ReviewTab = 'to-review' | 'reviewed';
 
 export interface ReviewableItem {
   itemKey: string;
-  orderId: string;
   orderNumber: string;
-  productId: string;
-  variantId: string;
+  productSlug: string;
+  variantSku?: string;
   productName: string;
   variantName: string;
   productImage?: string;
@@ -84,10 +86,9 @@ export interface ReviewableItem {
 export interface ReviewedEntry {
   key: string;
   itemKey: string;
-  orderId: string;
   orderNumber: string;
-  productId: string;
-  variantId: string;
+  productSlug: string;
+  variantSku?: string;
   productName: string;
   variantName: string;
   productImage?: string;

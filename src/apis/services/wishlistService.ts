@@ -7,14 +7,14 @@ const wishlistService = {
   getMyWishlist: (page = 1, size = 10): Promise<ApiResponse<PageResponse<WishlistResponse>>> =>
     axios.get(WISHLIST_URL, { params: { page, size } }),
 
-  add: (productId: string): Promise<ApiResponse<void>> =>
-    axios.post(`${WISHLIST_URL}/${productId}`),
+  add: (productSlug: string): Promise<ApiResponse<void>> =>
+    axios.post(`${WISHLIST_URL}/${productSlug}`),
 
-  remove: (productId: string): Promise<ApiResponse<void>> =>
-    axios.delete(`${WISHLIST_URL}/${productId}`),
+  remove: (productSlug: string): Promise<ApiResponse<void>> =>
+    axios.delete(`${WISHLIST_URL}/${productSlug}`),
 
-  checkProduct: (productId: string): Promise<ApiResponse<boolean>> =>
-    axios.get(`${WISHLIST_URL}/check/${productId}`),
+  checkProduct: (productSlug: string): Promise<ApiResponse<boolean>> =>
+    axios.get(`${WISHLIST_URL}/check/${productSlug}`),
 
   getCount: (): Promise<ApiResponse<number>> =>
     axios.get(`${WISHLIST_URL}/count`),

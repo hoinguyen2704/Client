@@ -22,8 +22,8 @@ export default function Wishlist() {
     syncFromServer();
   }, [syncFromServer]);
 
-  const handleRemove = async (productId: string) => {
-    await toggleItem(productId);
+  const handleRemove = async (productSlug: string) => {
+    await toggleItem(productSlug);
   };
 
   const calculateDiscount = (price: number, comparePrice?: number) => {
@@ -154,7 +154,7 @@ export default function Wishlist() {
 
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handleRemove(item.productId)}
+                          onClick={() => handleRemove(item.productSlug)}
                           className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 border-red-100 dark:border-red-900/40 text-red-500 hover:bg-red-50 hover:border-red-500 dark:hover:bg-red-900/20 dark:hover:border-red-500 transition-all flex items-center justify-center shrink-0 group/btn"
                           aria-label="Remove from wishlist"
                         >

@@ -24,6 +24,8 @@ const SUPPORT_REALTIME_EVENTS = new Set<string>([
   REALTIME_EVENT_TYPES.SUPPORT_STATUS_UPDATED,
 ]);
 const NEW_TICKET_OPTION_VALUE = '__new__';
+const getTicketKey = (ticket?: TicketResponse | null) => ticket?.ticketNumber || ticket?.id || null;
+const getPayloadTicketKey = (payload?: SupportRealtimePayload | null) => payload?.ticketNumber || payload?.ticketId || null;
 
 interface SupportChatWidgetProps {
   isOpen: boolean;
@@ -74,9 +76,9 @@ export default function SupportChatWidget({
         if (isComposingNewConversationRef.current) {
           return null;
         }
-        return prevTicketId && nextTickets.some((ticket) => ticket.id === prevTicketId)
+        return prevTicketId && nextTickets.some((ticket) => getTicketKey(ticket) === prevTicketId)
           ? prevTicketId
-          : (nextTickets.find((ticket) => !CLOSED_STATUSES.has(ticket.status))?.id || nextTickets[0]?.id || null);
+          : (getTicketKey(nextTickets.find((ticket) => !CLOSED_STATUSES.has(ticket.status))) || getTicketKey(nextTickets[0]));
       });
       setTickets(nextTickets);
     } catch {
@@ -139,7 +141,7 @@ export default function SupportChatWidget({
       }
 
       const payload = (event.data || {}) as SupportRealtimePayload;
-      const eventTicketId = payload.ticketId || null;
+      const eventTicketId = getPayloadTicketKey(payload);
       const currentSelectedTicketId = selectedTicketIdRef.current;
 
       if (
@@ -214,7 +216,7 @@ export default function SupportChatWidget({
         const created = res.data;
         setIsComposingNewConversation(false);
         setSelectedTicket(created);
-        setSelectedTicketId(created.id);
+        setSelectedTicketId(getTicketKey(created));
         toast.success(t('supportChat.createdToast', { ns: 'layout' }));
       }
       setDraft('');
@@ -231,7 +233,7 @@ export default function SupportChatWidget({
   const ticketSelectOptions = [
     { value: NEW_TICKET_OPTION_VALUE, label: t('supportChat.newConversationButton', { ns: 'layout' }) },
     ...tickets.map((ticket) => ({
-      value: ticket.id,
+      value: getTicketKey(ticket) || '',
       label: `${ticket.subject} – ${resolveStatusLabel(ticket.status)}`,
     })),
   ];

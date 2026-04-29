@@ -3,7 +3,7 @@ export interface WishlistResponse {
   id: string;
   productId: string;
   productName: string;
-  productSlug?: string;
+  productSlug: string;
   productPrice: number;
   productCompareAtPrice?: number;
   productThumbnailUrl?: string;

@@ -51,7 +51,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
     : 0;
   const savedAmount = Math.max(0, item.originalPrice - item.flashPrice);
   const soldOut = safeRemainingStock <= 0;
-  const productUrl = `/product/${item.productSlug || item.productId}`;
+  const productUrl = item.productSlug ? `/product/${item.productSlug}` : '/products';
 
   return (
     <Link

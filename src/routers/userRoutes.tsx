@@ -26,7 +26,7 @@ export const userRoutes = (
     <Route path="orders" element={<Orders />} />
     <Route path="returns" element={<MyReturns />} />
     <Route path="returns/:returnNumber" element={<ReturnDetail />} />
-    <Route path="orders/:id" element={<OrderTracking />} />
+    <Route path="orders/:orderNumber" element={<OrderTracking />} />
     <Route path="tracking" element={<OrderTracking />} />
     <Route path="vouchers" element={<Vouchers />} />
     <Route path="reviews" element={<MyReviews />} />

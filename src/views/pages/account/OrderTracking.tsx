@@ -20,7 +20,7 @@ type ReturnEvidenceFile = {
 };
 export default function OrderTracking() {
   const { t, i18n } = useTranslation(['account', 'common']);
-  const { id } = useParams<{ id: string }>();
+  const { orderNumber } = useParams<{ orderNumber: string }>();
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeReturn, setActiveReturn] = useState<ReturnRequestResponse | null>(null);
@@ -64,15 +64,15 @@ export default function OrderTracking() {
   }, []);
 
   useEffect(() => {
-    if (!id) return;
+    if (!orderNumber) return;
     setLoading(true);
-    orderService.getByNumber(id).then(res => {
+    orderService.getByNumber(orderNumber).then(res => {
       setOrder(res.data);
       if (res.data.orderStatus === 'SHIPPED') {
         fetchReturnStatus(res.data.orderNumber);
       }
     }).catch(() => setOrder(null)).finally(() => setLoading(false));
-  }, [id]);
+  }, [orderNumber]);
 
   const clearReturnEvidenceFiles = () => {
     setReturnEvidenceFiles((prev) => {
@@ -165,10 +165,26 @@ export default function OrderTracking() {
       return;
     }
 
-    const itemsPayload = order.items
-      .filter(item => selectedReturnItems[item.id])
-      .map(item => ({ orderItemId: item.id, quantity: returnItemQuantities[item.id] || 0 }))
-      .filter(item => item.quantity > 0);
+    const itemsPayload: Array<{ sku: string; quantity: number }> = [];
+
+    for (const item of order.items) {
+      if (!selectedReturnItems[item.id]) {
+        continue;
+      }
+
+      const quantity = returnItemQuantities[item.id] || 0;
+      if (quantity <= 0) {
+        continue;
+      }
+
+      const sku = item.sku?.trim();
+      if (!sku) {
+        toast.error(t('orderTracking.toasts.createFailed'));
+        return;
+      }
+
+      itemsPayload.push({ sku, quantity });
+    }
 
     if (itemsPayload.length === 0) {
       toast.error(t('orderTracking.toasts.selectItemsRequired'));
@@ -179,7 +195,7 @@ export default function OrderTracking() {
     try {
       const idempotencyKey = typeof window !== 'undefined' && window.crypto?.randomUUID ? window.crypto.randomUUID() : `ret-${Date.now()}`;
       await returnService.create({
-        orderId: order.id,
+        orderNumber: order.orderNumber,
         reason: returnReason.trim(),
         evidenceNote: returnNote.trim() || undefined,
         items: itemsPayload,

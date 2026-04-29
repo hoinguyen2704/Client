@@ -11,10 +11,10 @@ const FEEDBACK_URL = '/feedbacks';
 
 const feedbackService = {
   getByProduct: (
-    productId: string,
+    productSlug: string,
     params?: ProductFeedbackQueryParams,
   ): Promise<ApiResponse<ProductFeedbackPageResponse>> =>
-    axios.get(`${FEEDBACK_URL}/product/${productId}`, {
+    axios.get(`${FEEDBACK_URL}/product/${productSlug}`, {
       params: {
         page: params?.page ?? 1,
         size: params?.size ?? 10,
@@ -26,11 +26,15 @@ const feedbackService = {
   submit: (data: FeedbackRequest): Promise<ApiResponse<FeedbackResponse>> =>
     axios.post(FEEDBACK_URL, data),
 
-  checkProduct: (productId: string): Promise<ApiResponse<boolean>> =>
-    axios.get(`${FEEDBACK_URL}/check/${productId}`),
+  checkProduct: (productSlug: string): Promise<ApiResponse<boolean>> =>
+    axios.get(`${FEEDBACK_URL}/check/${productSlug}`),
 
-  getMyFeedback: (productId: string, variantId: string, orderId: string): Promise<ApiResponse<FeedbackResponse[]>> =>
-    axios.get(`${FEEDBACK_URL}/my-feedback`, { params: { productId, variantId, orderId } }),
+  getMyFeedback: (
+    productSlug: string,
+    variantSku?: string,
+    orderNumber?: string,
+  ): Promise<ApiResponse<FeedbackResponse[]>> =>
+    axios.get(`${FEEDBACK_URL}/my-feedback`, { params: { productSlug, variantSku, orderNumber } }),
 
   delete: (feedbackId: string): Promise<ApiResponse<void>> =>
     axios.delete(`${FEEDBACK_URL}/${feedbackId}`),

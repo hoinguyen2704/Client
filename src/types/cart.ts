@@ -2,6 +2,7 @@
 export interface CartResponse {
   id: string;
   variantId: string;
+  variantSku: string;
   productName: string;
   productSlug: string;
   variantName: string;
@@ -25,7 +26,7 @@ export interface CartItem {
 }
 
 export interface AddToCartRequest {
-  variantId: string;
+  variantSku: string;
   quantity: number;
 }
 

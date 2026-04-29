@@ -15,13 +15,13 @@ const cartService = {
   addToCart: (data: AddToCartRequest): Promise<ApiResponse<CartResponse>> =>
     axios.post(CART_URL, data),
 
-  updateQuantity: (itemId: string, quantity: number): Promise<ApiResponse<CartResponse>> => {
+  updateQuantity: (variantSku: string, quantity: number): Promise<ApiResponse<CartResponse>> => {
     const data: UpdateCartItemQuantityRequest = { quantity };
-    return axios.put(`${CART_URL}/${itemId}`, data);
+    return axios.put(`${CART_URL}/items/${variantSku}`, data);
   },
 
-  removeItem: (itemId: string): Promise<ApiResponse<void>> =>
-    axios.delete(`${CART_URL}/${itemId}`),
+  removeItem: (variantSku: string): Promise<ApiResponse<void>> =>
+    axios.delete(`${CART_URL}/items/${variantSku}`),
 
   clearCart: (): Promise<ApiResponse<void>> =>
     axios.delete(CART_URL),

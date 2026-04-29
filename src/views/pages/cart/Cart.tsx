@@ -49,16 +49,15 @@ export default function Cart() {
     finally { setLoading(false); }
   };
 
-  const handleUpdateQty = async (itemId: string, qty: number) => {
+  const handleUpdateQty = async (item: CartResponse & { selected: boolean }, qty: number) => {
     if (qty < 1) return;
-    const target = items.find(i => i.id === itemId);
-    if (target?.available === false) {
-      toast.warning(target.issueMessage || t('cart.toasts.itemUnavailable'));
+    if (item.available === false) {
+      toast.warning(item.issueMessage || t('cart.toasts.itemUnavailable'));
       return;
     }
     try {
-      const res = await cartService.updateQuantity(itemId, qty);
-      setItems(prev => sortCartItems(prev.map(i => i.id === itemId ? {
+      const res = await cartService.updateQuantity(item.variantSku, qty);
+      setItems(prev => sortCartItems(prev.map(i => i.id === item.id ? {
         ...i,
         ...res.data,
         selected: res.data.available === false ? false : i.selected,
@@ -67,10 +66,10 @@ export default function Cart() {
     } catch { toast.error(t('cart.toasts.updateQtyFailed')); }
   };
 
-  const handleRemove = async (itemId: string) => {
+  const handleRemove = async (item: CartResponse & { selected: boolean }) => {
     try { 
-      await cartService.removeItem(itemId); 
-      setItems(prev => prev.filter(i => i.id !== itemId)); 
+      await cartService.removeItem(item.variantSku); 
+      setItems(prev => prev.filter(i => i.id !== item.id)); 
       syncFromServer();
       toast.success(t('cart.toasts.removeSuccess'));
     } catch { toast.error(t('cart.toasts.removeFailed')); }
@@ -96,7 +95,7 @@ export default function Cart() {
           label: t('cart.removeSelectedAction'),
           onClick: async () => {
             try {
-              await Promise.all(selectedItems.map((item) => cartService.removeItem(item.id)));
+              await Promise.all(selectedItems.map((item) => cartService.removeItem(item.variantSku)));
               setItems((prev) => prev.filter((i) => !selectedItems.some((s) => s.id === i.id)));
               syncFromServer();
               toast.success(t('cart.toasts.removeSuccess'));
@@ -209,7 +208,7 @@ export default function Cart() {
                   <div className="flex items-center gap-1.5 sm:gap-2">
                         <QuantitySelector
                           value={item.quantity}
-                          onChange={(val) => handleUpdateQty(item.id, val)}
+                          onChange={(val) => handleUpdateQty(item, val)}
                           min={1}
                           max={Math.max(1, item.stockQuantity || 1)}
                           size="md"
@@ -217,7 +216,7 @@ export default function Cart() {
                           overMaxWarning={t('cart.toasts.maxQuantityReached', { count: item.stockQuantity })}
                         />
                     </div>
-                  <IconButton onClick={() => handleRemove(item.id)} variant="ghost" size="lg" icon={<FiTrash2 className="text-[2rem]" />} className="text-red-500 shrink-0" />
+                  <IconButton onClick={() => handleRemove(item)} variant="ghost" size="lg" icon={<FiTrash2 className="text-[2rem]" />} className="text-red-500 shrink-0" />
                 </div>
               </div>
             ))}

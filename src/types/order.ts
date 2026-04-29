@@ -58,6 +58,7 @@ export interface OrderItemResponse {
   id: string;
   variantId: string;
   productId?: string;
+  productSlug?: string;
   productName: string;
   variantName: string;
   imageUrl?: string;
@@ -144,9 +145,10 @@ export interface ReturnStatusHistory {
 export interface ReturnItemData {
   id: string;
   orderItemId: string;
+  productSlug?: string;
+  sku?: string;
   productName: string;
   variantName?: string;
-  imageUrl?: string;
   unitPrice: number;
   requestedQuantity: number;
   approvedQuantity?: number;
@@ -166,11 +168,11 @@ export interface RefundTransactionData {
 }
 
 export interface CreateReturnRequestPayload {
-  orderId: string;
+  orderNumber: string;
   reason: string;
   evidenceNote?: string;
   items: Array<{
-    orderItemId: string;
+    sku: string;
     quantity: number;
   }>;
 }

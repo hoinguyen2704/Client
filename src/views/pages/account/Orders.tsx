@@ -22,7 +22,7 @@ export default function Orders() {
   
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<OrderResponse | null>(null);
-  const [selectedItem, setSelectedItem] = useState<{ productId: string, variantId: string, productName: string, variantName: string } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<{ productSlug: string, variantSku?: string, productName: string, variantName: string } | null>(null);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
   const [oldFeedbacks, setOldFeedbacks] = useState<FeedbackResponse[]>([]);
@@ -53,15 +53,15 @@ export default function Orders() {
     fetchOrders();
   };
 
-  const handleCancelOrder = async (orderId: string) => {
+  const handleCancelOrder = async (orderNumber: string) => {
     setCancelTarget(null);
-    const targetOrder = orders.find((order) => order.id === orderId);
+    const targetOrder = orders.find((order) => order.orderNumber === orderNumber);
     if (!targetOrder || targetOrder.orderStatus !== 'PENDING') {
       toast.error(t('orders.toasts.cancelPendingOnly'));
       return;
     }
     try {
-      await orderService.cancel(orderId);
+      await orderService.cancel(orderNumber);
       fetchOrders();
     } catch {
       toast.error(t('orders.toasts.cancelFailed'));
@@ -69,15 +69,19 @@ export default function Orders() {
   };
 
   const handleOpenReview = async (order: OrderResponse, item: OrderItemResponse) => {
+    if (!item.productSlug) {
+      toast.error(t('orders.toasts.reviewFailed'));
+      return;
+    }
     setSelectedOrder(order);
-    setSelectedItem({ productId: item.productId, variantId: item.variantId, productName: item.productName, variantName: item.variantName });
+    setSelectedItem({ productSlug: item.productSlug, variantSku: item.sku, productName: item.productName, variantName: item.variantName });
     setRating(5);
     setReviewText('');
     setOldFeedbacks([]);
     setReviewModalOpen(true);
 
     try {
-      const res = await feedbackService.getMyFeedback(item.productId, item.variantId, order.id);
+      const res = await feedbackService.getMyFeedback(item.productSlug, item.sku, order.orderNumber);
       if (res.data) {
         setOldFeedbacks(res.data);
       }
@@ -89,7 +93,7 @@ export default function Orders() {
   const handleSubmitReview = async () => {
     if (!selectedOrder || !selectedItem) return;
     try {
-      await feedbackService.submit({ productId: selectedItem.productId, variantId: selectedItem.variantId, orderId: selectedOrder.id, rating, content: reviewText });
+      await feedbackService.submit({ productSlug: selectedItem.productSlug, variantSku: selectedItem.variantSku, orderNumber: selectedOrder.orderNumber, rating, content: reviewText });
       toast.success(t('orders.toasts.reviewSuccess'));
       setReviewModalOpen(false);
     } catch (e: unknown) { 
@@ -173,7 +177,7 @@ export default function Orders() {
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
                   {order.orderStatus === 'PENDING' && (
-                    <button onClick={() => setCancelTarget(order.id)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full sm:w-auto">
+                    <button onClick={() => setCancelTarget(order.orderNumber)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full sm:w-auto">
                       {t('orders.cancelOrder')}
                     </button>
                   )}

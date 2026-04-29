@@ -18,8 +18,10 @@ const groupFeedbacksByOrderRound = (feedbacks: FeedbackResponse[]): FeedbackResp
   const groups: Record<string, FeedbackResponse[]> = {};
 
   feedbacks.forEach((feedback) => {
-    const key = (feedback.userId && feedback.orderId)
-      ? `${feedback.userId}-${feedback.orderId}-${feedback.variantId || 'null'}`
+    const groupingOrderKey = feedback.orderNumber || feedback.orderId;
+    const groupingVariantKey = feedback.variantSku || feedback.variantId || 'null';
+    const key = (feedback.userId && groupingOrderKey)
+      ? `${feedback.userId}-${groupingOrderKey}-${groupingVariantKey}`
       : feedback.id;
     if (!groups[key]) groups[key] = [];
     groups[key].push(feedback);
@@ -72,7 +74,7 @@ export default function ProductTabs({
           ? { page: 1, size: 10, rating: reviewFilter }
           : { page: 1, size: 10 };
 
-    feedbackService.getByProduct(product.id, requestParams)
+    feedbackService.getByProduct(product.slug, requestParams)
       .then((res) => {
         if (cancelled || !res.data) return;
         setFeedbacks(res.data.data || []);
@@ -91,7 +93,7 @@ export default function ProductTabs({
     return () => {
       cancelled = true;
     };
-  }, [activeTab, product.id, reviewFilter]);
+  }, [activeTab, product.slug, reviewFilter]);
 
   const groupedFeedbacks = useMemo(
     () => groupFeedbacksByOrderRound(feedbacks),

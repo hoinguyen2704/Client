@@ -31,8 +31,8 @@ const orderService = {
   ): Promise<ApiResponse<PageResponse<OrderResponse>>> =>
     axios.get(ORDER_URL, { params }),
 
-  cancel: (orderId: string): Promise<ApiResponse<OrderResponse>> =>
-    axios.patch(`${ORDER_URL}/${orderId}/cancel`),
+  cancel: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
+    axios.patch(`${ORDER_URL}/${orderNumber}/cancel`),
 
   //  Admin endpoints (admin/api/v1/orders)
   updateStatus: (

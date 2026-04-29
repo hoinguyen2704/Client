@@ -23,16 +23,15 @@ const toTimestamp = (value?: string) => {
   return Number.isNaN(time) ? 0 : time;
 };
 
-const buildItemKey = (orderId: string, productId: string, variantId: string) =>
-  `${orderId}:${productId}:${variantId}`;
+const buildItemKey = (orderNumber: string, productSlug: string, variantSku?: string) =>
+  `${orderNumber}:${productSlug}:${variantSku || 'null'}`;
 
 function toReviewableItem(candidate: ReviewCandidate, feedbacks: FeedbackResponse[]): ReviewableItem {
   return {
     itemKey: candidate.itemKey,
-    orderId: candidate.order.id,
     orderNumber: candidate.order.orderNumber,
-    productId: candidate.item.productId as string,
-    variantId: candidate.item.variantId,
+    productSlug: candidate.item.productSlug as string,
+    variantSku: candidate.item.sku,
     productName: candidate.item.productName,
     variantName: candidate.item.variantName,
     productImage: candidate.item.imageUrl,
@@ -78,11 +77,11 @@ export default function MyReviews() {
 
       const candidates: ReviewCandidate[] = shippedOrders.flatMap((order) =>
         (order.items || [])
-          .filter((item) => Boolean(item.productId) && Boolean(item.variantId))
+          .filter((item) => Boolean(item.productSlug))
           .map((item) => ({
             order,
             item,
-            itemKey: buildItemKey(order.id, item.productId as string, item.variantId),
+            itemKey: buildItemKey(order.orderNumber, item.productSlug as string, item.sku),
           })),
       );
 
@@ -94,9 +93,9 @@ export default function MyReviews() {
           batch.map(async (candidate) => {
             try {
               const res = await feedbackService.getMyFeedback(
-                candidate.item.productId as string,
-                candidate.item.variantId,
-                candidate.order.id,
+                candidate.item.productSlug as string,
+                candidate.item.sku,
+                candidate.order.orderNumber,
               );
               const feedbacks = [...(res.data || [])].sort((a, b) => toTimestamp(a.createdAt) - toTimestamp(b.createdAt));
               return { candidate, feedbacks };
@@ -124,10 +123,9 @@ export default function MyReviews() {
           return feedbacks.map((review, index) => ({
             key: review.id,
             itemKey: candidate.itemKey,
-            orderId: candidate.order.id,
             orderNumber: candidate.order.orderNumber,
-            productId: candidate.item.productId as string,
-            variantId: candidate.item.variantId,
+            productSlug: candidate.item.productSlug as string,
+            variantSku: candidate.item.sku,
             productName: candidate.item.productName,
             variantName: candidate.item.variantName,
             productImage: candidate.item.imageUrl,
@@ -182,9 +180,9 @@ export default function MyReviews() {
     setSubmitting(true);
     try {
       await feedbackService.submit({
-        productId: selectedItem.productId,
-        variantId: selectedItem.variantId,
-        orderId: selectedItem.orderId,
+        productSlug: selectedItem.productSlug,
+        variantSku: selectedItem.variantSku,
+        orderNumber: selectedItem.orderNumber,
         rating,
         content: reviewContent.trim(),
       });
@@ -330,10 +328,9 @@ export default function MyReviews() {
                             onClick={() =>
                               openReviewModal({
                                 itemKey: entry.itemKey,
-                                orderId: entry.orderId,
                                 orderNumber: entry.orderNumber,
-                                productId: entry.productId,
-                                variantId: entry.variantId,
+                                productSlug: entry.productSlug,
+                                variantSku: entry.variantSku,
                                 productName: entry.productName,
                                 variantName: entry.variantName,
                                 productImage: entry.productImage,
