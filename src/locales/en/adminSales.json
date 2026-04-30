@@ -61,9 +61,13 @@
     "shippingTitle": "Shipping",
     "shippingAddressFallback": "Store pickup",
     "paymentTitle": "Payment",
+    "orderInfoTitle": "Order information",
+    "placedAt": "Placed on",
+    "updatedAt": "Last updated",
     "paymentMethod": "Method",
     "paymentStatus": "Status",
     "couponCode": "Coupon code",
+    "shippingCouponCode": "Shipping voucher",
     "summaryTitle": "Payment summary",
     "summary": {
       "subtotal": "Subtotal",

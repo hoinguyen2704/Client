@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { FiDownload, FiUser, FiMapPin, FiCreditCard, FiPackage, FiCheck } from 'react-icons/fi';
+import { FiDownload, FiUser, FiMapPin, FiPackage } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
-import { Button, StatusBadge, CustomSelect, BackButton, SortableHeaderLabel } from '@/components';
+import { Button, StatusBadge, CustomSelect, BackButton, SortableHeaderLabel, OrderStatusTimeline, OrderAddressCard, OrderInfoCard, OrderSummaryCard } from '@/components';
 import {
   AdminTable,
   AdminTableBodyRow,
@@ -160,50 +160,11 @@ export default function OrderDetail() {
         <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Vertical Timeline */}
           {order.statusHistories && order.statusHistories.length > 0 && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="relative">
-                {order.statusHistories.map((history, idx) => {
-                  const time = new Date(history.createdAt);
-                  const isFirst = idx === 0;
-                  const isLast = idx === order.statusHistories!.length - 1;
-
-                  return (
-                    <div key={history.id} className="flex gap-4">
-                      {/* Left: Time */}
-                      <div className="w-20 sm:w-24 flex-shrink-0 text-right pt-1">
-                        <div className="text-md font-medium text-body">
-                          {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </div>
-                        <div className="text-sm text-muted mt-1">
-                          {time.toLocaleDateString()}
-                        </div>
-                      </div>
-
-                      {/* Middle: Line & Dot */}
-                      <div className="relative flex flex-col items-center">
-                        {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
-                        
-                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
-                        
-                        {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
-                      </div>
-
-                      {/* Right: Content */}
-                      <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted'}`}>
-                          {history.status === 'SHIPPED' ? t('orderDetail.timelineDelivered') : history.description}
-                        </h4>
-                        {isFirst && history.status === 'SHIPPED' && (
-                          <div className="inline-flex items-center gap-1 text-md text-blue-600 mt-1">
-                            <FiCheck /> {t('orderDetail.timelineDeliveredDescription')}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <OrderStatusTimeline
+              histories={order.statusHistories}
+              deliveredTitle={t('orderDetail.timelineDelivered')}
+              deliveredDescription={t('orderDetail.timelineDeliveredDescription')}
+            />
           )}
 
           {/* Items */}
@@ -281,83 +242,131 @@ export default function OrderDetail() {
         {/* Right Column */}
         <div className="space-y-4 sm:space-y-6">
           {/* Customer Info */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiUser className="text-blue-600" /> {t('orderDetail.customerTitle')}</h2>
-            <div className="space-y-3 text-md">
-              {order.customerName && (
-                <div className="flex items-start justify-between gap-3">
-                  <span className="text-muted">{t('orderDetail.fullName')}:</span>
-                  <span className="font-medium">{order.customerName}</span>
-                </div>
-              )}
-              {order.customerEmail && (
-                <div className="flex items-start justify-between gap-3">
-                  <span className="text-muted">{t('orderDetail.email')}:</span>
-                  <span className="font-medium text-blue-600">{order.customerEmail}</span>
-                </div>
-              )}
-              {order.customerPhone && (
-                <div className="flex items-start justify-between gap-3">
-                  <span className="text-muted">{t('orderDetail.phone')}:</span>
-                  <span className="font-medium">{order.customerPhone}</span>
-                </div>
-              )}
-            </div>
-          </div>
+          <OrderInfoCard
+            title={t('orderDetail.customerTitle')}
+            icon={<FiUser className="text-blue-600" />}
+            items={[
+              ...(order.customerName
+                ? [
+                    {
+                      label: `${t('orderDetail.fullName')}:`,
+                      value: order.customerName,
+                    },
+                  ]
+                : []),
+              ...(order.customerEmail
+                ? [
+                    {
+                      label: `${t('orderDetail.email')}:`,
+                      value: order.customerEmail,
+                      valueClassName: 'text-blue-600',
+                    },
+                  ]
+                : []),
+              ...(order.customerPhone
+                ? [
+                    {
+                      label: `${t('orderDetail.phone')}:`,
+                      value: order.customerPhone,
+                    },
+                  ]
+                : []),
+            ]}
+          />
 
           {/* Shipping */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold flex items-center gap-2 mb-4"><FiMapPin className="text-orange-600" /> {t('orderDetail.shippingTitle')}</h2>
-            <p className="text-md text-body leading-relaxed">{order.shippingAddress || t('orderDetail.shippingAddressFallback')}</p>
-          </div>
+          <OrderAddressCard
+            title={t('orderDetail.shippingTitle')}
+            address={order.shippingAddress}
+            fallbackText={t('orderDetail.shippingAddressFallback')}
+            icon={<FiMapPin className="text-orange-600" />}
+          />
 
-          {/* Payment */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><FiCreditCard className="text-green-600" /> {t('orderDetail.paymentTitle')}</h2>
-            <div className="space-y-3 text-md">
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-muted">{t('orderDetail.paymentMethod')}:</span>
-                <span className="font-medium">{order.paymentMethod}</span>
-              </div>
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-muted">{t('orderDetail.paymentStatus')}:</span>
-                <StatusBadge status={order.paymentStatus} />
-              </div>
-              {order.couponCode && (
-                <div className="flex items-start justify-between gap-3">
-                  <span className="text-muted">{t('orderDetail.couponCode')}:</span>
-                  <span className="font-mono font-bold text-blue-600">{order.couponCode}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Summary / Total */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">{t('orderDetail.summaryTitle')}</h2>
-            <div className="space-y-3 text-md">
-              <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.subtotal')}</span><span className="font-medium text-ink">{formatPrice(order.subtotal)}</span></div>
-              <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.shippingFee')}</span><span className="font-medium text-ink">{formatPrice(order.shippingFee)}</span></div>
-              {(order.discountAmount || 0) > 0 && <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.productDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.discountAmount)}</span></div>}
-              {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between text-muted"><span>{t('orderDetail.summary.shippingDiscount')}</span><span className="font-medium text-red-500">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
-              {(order.taxAmount || 0) > 0 && (
-                <div className="flex justify-between text-muted">
-                  <span>
-                    {t('orderDetail.summary.vat', {
-                      percent: order.taxPercent ?? 0,
-                      suffix: order.taxMode === 'INCLUDED' ? t('orderDetail.summary.vatIncluded') : '',
-                    })}
-                  </span>
-                  <span className={`font-medium ${order.taxMode === 'EXCLUDED' ? 'text-ink' : 'text-muted'}`}>
-                    {order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}
-                  </span>
-                </div>
-              )}
-              <div className="flex justify-between font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-800 text-blue-600">
-                <span>{t('orderDetail.summary.total')}</span><span>{formatPrice(order.totalAmount)}</span>
-              </div>
-            </div>
-          </div>
+          {/* Order Info / Total */}
+          <OrderSummaryCard
+            title={t('orderDetail.orderInfoTitle')}
+            metaRows={[
+              {
+                label: t('orderDetail.placedAt'),
+                value: formatDate(order.createdAt),
+              },
+              {
+                label: t('orderDetail.updatedAt'),
+                value: formatDate(order.updatedAt || order.createdAt),
+              },
+              {
+                label: t('orderDetail.paymentTitle'),
+                value: order.paymentMethod,
+              },
+              {
+                label: t('orderDetail.paymentStatus'),
+                value: <StatusBadge status={order.paymentStatus} />,
+                valueClassName: 'font-normal',
+              },
+              ...(order.couponCode
+                ? [
+                    {
+                      label: t('orderDetail.couponCode'),
+                      value: order.couponCode,
+                      valueClassName: 'font-mono font-bold text-blue-600',
+                    },
+                  ]
+                : []),
+              ...(order.shippingCouponCode
+                ? [
+                    {
+                      label: t('orderDetail.shippingCouponCode'),
+                      value: order.shippingCouponCode,
+                      valueClassName: 'font-mono font-bold text-blue-600',
+                    },
+                  ]
+                : []),
+            ]}
+            amountRows={[
+              {
+                label: t('orderDetail.summary.subtotal'),
+                value: formatPrice(order.subtotal),
+              },
+              {
+                label: t('orderDetail.summary.shippingFee'),
+                value: formatPrice(order.shippingFee),
+              },
+              ...((order.discountAmount || 0) > 0
+                ? [
+                    {
+                      label: t('orderDetail.summary.productDiscount'),
+                      value: `-${formatPrice(order.discountAmount)}`,
+                      valueClassName: 'text-red-500',
+                    },
+                  ]
+                : []),
+              ...((order.shippingDiscountAmount || 0) > 0
+                ? [
+                    {
+                      label: t('orderDetail.summary.shippingDiscount'),
+                      value: `-${formatPrice(order.shippingDiscountAmount!)}`,
+                      valueClassName: 'text-red-500',
+                    },
+                  ]
+                : []),
+              ...((order.taxAmount || 0) > 0
+                ? [
+                    {
+                      label: t('orderDetail.summary.vat', {
+                        percent: order.taxPercent ?? 0,
+                        suffix: order.taxMode === 'INCLUDED' ? t('orderDetail.summary.vatIncluded') : '',
+                      }),
+                      value: `${order.taxMode === 'EXCLUDED' ? '+' : ''}${formatPrice(order.taxAmount!)}`,
+                      valueClassName: order.taxMode === 'EXCLUDED' ? 'text-ink' : 'text-muted',
+                    },
+                  ]
+                : []),
+            ]}
+            totalRow={{
+              label: t('orderDetail.summary.total'),
+              value: formatPrice(order.totalAmount),
+            }}
+          />
         </div>
       </div>
     </div>

@@ -61,9 +61,13 @@
     "shippingTitle": "Giao hàng",
     "shippingAddressFallback": "Nhận tại cửa hàng",
     "paymentTitle": "Thanh toán",
+    "orderInfoTitle": "Thông tin đơn hàng",
+    "placedAt": "Ngày đặt",
+    "updatedAt": "Cập nhật lần cuối",
     "paymentMethod": "Phương thức",
     "paymentStatus": "Trạng thái",
     "couponCode": "Mã giảm giá",
+    "shippingCouponCode": "Mã giảm ship",
     "summaryTitle": "Tổng thanh toán",
     "summary": {
       "subtotal": "Tạm tính",

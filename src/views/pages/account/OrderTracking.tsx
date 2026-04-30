@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiPackage, FiXCircle, FiCheck, FiTruck, FiTrash2, FiUploadCloud } from 'react-icons/fi';
+import { FiPackage, FiXCircle, FiTruck, FiTrash2, FiUploadCloud, FiMapPin } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateFull as formatDate } from '@/utils/format';
 import orderService from '@/apis/services/orderService';
@@ -8,7 +8,7 @@ import returnService from '@/apis/services/returnService';
 import type { OrderResponse, ReturnRequestResponse } from '@/types';
 
 import { getOrderTrackingSteps, ORDER_STATUS_INDEX } from '@/constants/orderConstants';
-import { BackButton, Button, Checkbox, PrimaryButton, QuantitySelector } from '@/components';
+import { BackButton, Button, Checkbox, PrimaryButton, QuantitySelector, OrderStatusTimeline, OrderAddressCard, OrderSummaryCard } from '@/components';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 
@@ -200,7 +200,7 @@ export default function OrderTracking() {
         evidenceNote: returnNote.trim() || undefined,
         items: itemsPayload,
       }, returnEvidenceFiles.map(({ file }) => file), idempotencyKey);
-      
+
       toast.success(t('orderTracking.toasts.createSuccess'));
       resetReturnForm();
       fetchReturnStatus(order.orderNumber);
@@ -224,7 +224,7 @@ export default function OrderTracking() {
   if (!order) return (
     <div className="text-center py-12">
       <FiXCircle className="text-6xl text-subtle mx-auto mb-4" />
-      <h2 className="text-xl font-bold mb-2">{t('orderTracking.notFound.title')}</h2>
+      <h2 className="text-lg font-bold mb-2">{t('orderTracking.notFound.title')}</h2>
       <Link to="/user/orders" className="text-blue-600 hover:underline">← {t('orderTracking.notFound.back')}</Link>
     </div>
   );
@@ -240,7 +240,7 @@ export default function OrderTracking() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <BackButton to="/user/orders" />
-          <h1 className="text-xl sm:text-2xl font-bold">{t('orderTracking.title', { orderNumber: order.orderNumber })}</h1>
+          <h1 className="text-lg sm:text-2xl font-bold">{t('orderTracking.title', { orderNumber: order.orderNumber })}</h1>
         </div>
         {allowReturnBtn && (
           <Button onClick={handleStartReturn} variant="outline" className="text-blue-600 border-blue-600 whitespace-nowrap">
@@ -254,14 +254,14 @@ export default function OrderTracking() {
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 sm:p-6 shadow-sm border border-blue-100 dark:border-blue-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-300 flex-shrink-0">
-              <FiPackage className="text-xl" />
+              <FiPackage className="text-lg" />
             </div>
             <div>
               <h3 className="font-bold text-blue-800 dark:text-blue-200">{t('orderTracking.returnBanner.title')}</h3>
-              <p className="text-md text-blue-600 dark:text-blue-300 mt-0.5">{t('orderTracking.returnBanner.description')}</p>
+              <p className="text-lg text-blue-600 dark:text-blue-300 mt-0.5">{t('orderTracking.returnBanner.description')}</p>
             </div>
           </div>
-          <Link to={`/user/returns`} className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg text-md font-semibold text-blue-600 shadow-sm border border-blue-100 dark:border-slate-700 whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700">
+          <Link to={`/user/returns`} className="px-4 py-2 bg-white dark:bg-slate-800 rounded-lg text-lg font-semibold text-blue-600 shadow-sm border border-blue-100 dark:border-slate-700 whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700">
             {t('orderTracking.returnBanner.button')}
           </Link>
         </div>
@@ -271,7 +271,7 @@ export default function OrderTracking() {
       {isReturning && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-blue-500/30 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h2 className="text-xl font-bold text-blue-600">{t('orderTracking.returnForm.title')}</h2>
+            <h2 className="text-lg font-bold text-blue-600">{t('orderTracking.returnForm.title')}</h2>
             <Button variant="secondary" className="text-muted" onClick={resetReturnForm}>{t('orderTracking.returnForm.cancel')}</Button>
           </div>
 
@@ -288,17 +288,17 @@ export default function OrderTracking() {
                       aria-label={line.productName}
                     />
                     <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center">
-                      {line.imageUrl ? <img src={line.imageUrl} alt={line.productName} className="w-full h-full object-cover" /> : <FiPackage className="text-subtle text-xl" />}
+                      {line.imageUrl ? <img src={line.imageUrl} alt={line.productName} className="w-full h-full object-cover" /> : <FiPackage className="text-subtle text-lg" />}
                     </div>
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold line-clamp-1">{line.productName}</p>
-                    <p className="text-sm text-muted mt-1">
+                    <p className="text-lg text-muted mt-1">
                       {line.variantName} | {t('orderTracking.returnForm.purchased')}: {line.quantity} | {formatPrice(Number(line.unitPrice || 0))}
                     </p>
                   </div>
                   <div className={`flex items-center gap-3 transition-opacity ${selectedReturnItems[line.id] ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-                    <span className="text-md font-medium text-muted">{t('orderTracking.returnForm.quantity')}:</span>
+                    <span className="text-lg font-medium text-muted">{t('orderTracking.returnForm.quantity')}:</span>
                     <QuantitySelector
                       value={returnItemQuantities[line.id] ?? line.quantity}
                       onChange={(val) => handleQuantityChange(line.id, val)}
@@ -314,14 +314,14 @@ export default function OrderTracking() {
           </div>
 
           <div>
-            <label className="block text-md font-semibold mb-2">{t('orderTracking.returnForm.reasonLabel')} <span className="text-red-500">*</span></label>
+            <label className="block text-lg font-semibold mb-2">{t('orderTracking.returnForm.reasonLabel')} <span className="text-red-500">*</span></label>
             <div className="flex flex-wrap gap-2 mb-3">
               {QUICK_REASONS.map(reason => (
                 <button
                   key={reason}
                   type="button"
                   onClick={() => setReturnReason(reason)}
-                  className={`px-3 py-1.5 rounded-full text-md font-medium transition-colors ${returnReason === reason ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50' : 'bg-slate-100 text-muted hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-transparent'}`}
+                  className={`px-3 py-1.5 rounded-full text-lg font-medium transition-colors ${returnReason === reason ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50' : 'bg-slate-100 text-muted hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-transparent'}`}
                 >
                   {reason}
                 </button>
@@ -331,24 +331,24 @@ export default function OrderTracking() {
               value={returnReason}
               onChange={(e) => setReturnReason(e.target.value)}
               placeholder={t('orderTracking.returnForm.reasonPlaceholder')}
-              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
+              className="w-full h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-lg outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-md font-semibold mb-2">{t('orderTracking.returnForm.noteLabel')}</label>
+            <label className="block text-lg font-semibold mb-2">{t('orderTracking.returnForm.noteLabel')}</label>
             <textarea
               value={returnNote}
               onChange={(e) => setReturnNote(e.target.value)}
               placeholder={t('orderTracking.returnForm.notePlaceholder')}
-              className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
+              className="w-full h-20 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-lg outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
             />
           </div>
 
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <label className="block text-md font-semibold">{t('orderTracking.returnForm.imagesLabel')}</label>
-              <span className="text-sm text-muted">
+              <label className="block text-lg font-semibold">{t('orderTracking.returnForm.imagesLabel')}</label>
+              <span className="text-lg text-muted">
                 {t('orderTracking.returnForm.imagesCount', {
                   count: returnEvidenceFiles.length,
                   max: MAX_RETURN_EVIDENCE_IMAGES,
@@ -372,7 +372,7 @@ export default function OrderTracking() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
                   <p className="font-medium text-body">{t('orderTracking.returnForm.imagesHelper')}</p>
-                  <p className="text-sm text-muted">
+                  <p className="text-lg text-muted">
                     {t('orderTracking.returnForm.imagesHint', { max: MAX_RETURN_EVIDENCE_IMAGES })}
                   </p>
                 </div>
@@ -406,7 +406,7 @@ export default function OrderTracking() {
                         className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/90 text-white shadow-sm transition hover:bg-red-600"
                         aria-label={t('orderTracking.returnForm.removeImageAria', { index: index + 1 })}
                       >
-                        <FiTrash2 className="text-sm" />
+                        <FiTrash2 className="text-lg" />
                       </button>
                     </div>
                   ))}
@@ -427,7 +427,7 @@ export default function OrderTracking() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* Tracking Header */}
-          {!isCancelled && order.trackingCode &&(
+          {!isCancelled && order.trackingCode && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex justify-between items-center">
                 <div>
@@ -441,50 +441,15 @@ export default function OrderTracking() {
 
           {/* Vertical Timeline */}
           {!isCancelled && order.statusHistories && order.statusHistories.length > 0 && (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="relative">
-                {order.statusHistories.map((history, idx) => {
-                  const time = new Date(history.createdAt);
-                  const isFirst = idx === 0;
-                  const isLast = idx === order.statusHistories!.length - 1;
-
-                  return (
-                    <div key={history.id} className="flex gap-4">
-                      {/* Left: Time */}
-                      <div className="w-20 flex-shrink-0 text-right pt-1">
-                        <div className="text-md font-medium text-body">
-                          {time.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
-                        </div>
-                        <div className="text-sm text-muted mt-1">
-                          {time.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                        </div>
-                      </div>
-
-                      {/* Middle: Line & Dot */}
-                      <div className="relative flex flex-col items-center">
-                        {!isFirst && <div className="absolute top-0 -mt-6 w-px h-6 bg-slate-200 dark:bg-slate-700" />}
-                        
-                        <div className={`w-3 h-3 rounded-full z-10 mt-2 ${isFirst ? 'bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30' : 'bg-slate-300 dark:bg-slate-600'}`} />
-                        
-                        {!isLast && <div className="w-px h-full bg-slate-200 dark:bg-slate-700 mt-2" />}
-                      </div>
-
-                      {/* Right: Content */}
-                      <div className="pb-8 pt-1 flex-1">
-                        <h4 className={`text-base font-medium ${isFirst ? 'text-blue-600' : 'text-muted'}`}>
-                          {history.status === 'SHIPPED' ? t('orderTracking.timeline.deliveredTitle') : history.description}
-                        </h4>
-                        {isFirst && history.status === 'SHIPPED' && (
-                          <div className="inline-flex items-center gap-1 text-md text-blue-600 mt-1 cursor-pointer hover:underline">
-                            <FiCheck /> {t('orderTracking.timeline.deliveredDescription')}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <OrderStatusTimeline
+              histories={order.statusHistories}
+              locale={locale}
+              dateOptions={{ day: '2-digit', month: '2-digit', year: 'numeric' }}
+              deliveredTitle={t('orderTracking.timeline.deliveredTitle')}
+              deliveredDescription={t('orderTracking.timeline.deliveredDescription')}
+              className="p-6"
+              deliveredDescriptionClassName="text-lg cursor-pointer hover:underline"
+            />
           )}
 
           {/* Fallback progress bar for legacy orders without histories */}
@@ -500,7 +465,7 @@ export default function OrderTracking() {
                       <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-subtle'}`}>
                         <Icon />
                       </div>
-                      <span className={`text-sm mt-2 font-medium ${isActive ? 'text-blue-600' : 'text-subtle'}`}>{step.label}</span>
+                      <span className={`text-lg mt-2 font-medium ${isActive ? 'text-blue-600' : 'text-subtle'}`}>{step.label}</span>
                     </div>
                   );
                 })}
@@ -517,74 +482,187 @@ export default function OrderTracking() {
           {/* Items */}
           <div className="space-y-4">
             <h2 className="text-lg font-bold">{t('orderTracking.items.title')}</h2>
-            <div className="space-y-3">
-              {order.items.map(item => (
-                <div key={item.id} className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5 transition-colors">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                    {item.imageUrl ? (
-                      <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
-                    ) : (
-                      <FiPackage className="text-subtle text-3xl" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-base sm:text-lg text-ink truncate" title={item.productName}>
-                      {item.productName}
-                    </h4>
-                    <p className="text-md text-muted mt-0.5">
-                      {item.variantName ? `${item.variantName} | ` : ''}{t('orderTracking.items.quantity')}: x{item.quantity}
-                    </p>
-                  </div>
-                  <div className="text-right flex-shrink-0 space-y-0.5">
-                    <div className="text-md text-muted mb-1">{formatPrice(Number(item.unitPrice || 0))}</div>
-                    <div className="font-bold text-blue-600 text-lg">{formatPrice(item.subtotal)}</div>
-                  </div>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="hidden md:grid grid-cols-[minmax(0,2.45fr)_0.72fr_0.48fr_0.85fr] border-b border-slate-200 dark:border-slate-700">
+                <div className="px-6 py-5 text-base font-semibold text-muted">{t('orderTracking.items.title')}</div>
+                <div className="border-l border-slate-200 px-6 py-5 text-right text-base font-semibold text-muted dark:border-slate-700">
+                  {t('orderTracking.items.unitPrice')}
                 </div>
-              ))}
+                <div className="border-l border-slate-200 px-6 py-5 text-center text-base font-semibold text-muted dark:border-slate-700">
+                  {t('orderTracking.items.quantity')}
+                </div>
+                <div className="border-l border-slate-200 px-6 py-5 text-right text-base font-semibold text-muted dark:border-slate-700">
+                  {t('orderTracking.items.lineTotal')}
+                </div>
+              </div>
+
+              <div className="divide-y divide-slate-200 dark:divide-slate-700">
+                {order.items.map(item => (
+                  <div key={item.id}>
+                    <div className="hidden md:grid md:grid-cols-[minmax(0,2.45fr)_0.72fr_0.48fr_0.85fr]">
+                      <div className="flex min-w-0 items-start gap-4 px-6 py-5">
+                        <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                          ) : (
+                            <FiPackage className="text-subtle text-3xl" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="font-bold text-base sm:text-lg leading-snug text-ink" title={item.productName}>
+                            {item.productName}
+                          </h4>
+                          {item.variantName && (
+                            <p className="text-lg sm:text-base text-muted mt-2">
+                              {t('orderTracking.items.variant')}: {item.variantName}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-end border-l border-slate-200 px-6 py-5 text-right text-base text-body tabular-nums dark:border-slate-700">
+                        {formatPrice(Number(item.unitPrice || 0))}
+                      </div>
+                      <div className="flex items-center justify-center border-l border-slate-200 px-6 py-5 text-center text-base text-body tabular-nums dark:border-slate-700">
+                        {item.quantity}
+                      </div>
+                      <div className="flex items-center justify-end border-l border-slate-200 px-6 py-5 text-right text-lg font-semibold text-blue-600 tabular-nums dark:border-slate-700">
+                        {formatPrice(item.subtotal)}
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 px-4 py-4 sm:px-6 md:hidden">
+                      <div className="flex items-start gap-4 min-w-0">
+                        <div className="w-18 h-18 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                          ) : (
+                            <FiPackage className="text-subtle text-3xl" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="font-bold text-base text-ink line-clamp-2" title={item.productName}>
+                            {item.productName}
+                          </h4>
+                          {item.variantName && (
+                            <p className="text-lg text-muted mt-2">
+                              {t('orderTracking.items.variant')}: {item.variantName}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="rounded-xl bg-slate-50 dark:bg-slate-800/70 px-3 py-2">
+                          <div className="text-sm font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            {t('orderTracking.items.unitPrice')}
+                          </div>
+                          <div className="mt-1 text-lg font-semibold text-body tabular-nums">
+                            {formatPrice(Number(item.unitPrice || 0))}
+                          </div>
+                        </div>
+                        <div className="rounded-xl bg-slate-50 dark:bg-slate-800/70 px-3 py-2 text-center">
+                          <div className="text-lg font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            {t('orderTracking.items.quantity')}
+                          </div>
+                          <div className="mt-1 text-lg font-semibold text-body tabular-nums">
+                            {item.quantity}
+                          </div>
+                        </div>
+                        <div className="rounded-xl bg-slate-50 dark:bg-slate-800/70 px-3 py-2 text-right">
+                          <div className="text-lg font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            {t('orderTracking.items.lineTotal')}
+                          </div>
+                          <div className="mt-1 text-lg font-semibold text-blue-600 tabular-nums">
+                            {formatPrice(item.subtotal)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Summary */}
         <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-4">{t('orderTracking.summary.title')}</h2>
-            <div className="space-y-3 text-md">
-              <div className="flex justify-between"><span className="text-muted">{t('orderTracking.summary.placedAt')}</span><span className="font-medium">{formatDate(order.createdAt)}</span></div>
-              <div className="flex justify-between"><span className="text-muted">{t('orderTracking.summary.updatedAt')}</span><span className="font-medium">{formatDate(order.updatedAt || order.createdAt)}</span></div>
-              <div className="flex justify-between"><span className="text-muted">{t('orderTracking.summary.payment')}</span><span className="font-medium">{order.paymentMethod}</span></div>
-              <hr className="border-slate-100 dark:border-slate-800" />
-              <div className="flex justify-between"><span className="text-muted">{t('orderTracking.summary.subtotal')}</span><span>{formatPrice(order.subtotal)}</span></div>
-              <div className="flex justify-between"><span className="text-muted">{t('orderTracking.summary.shippingFee')}</span><span>{formatPrice(order.shippingFee)}</span></div>
-              {order.discountAmount > 0 && <div className="flex justify-between"><span className="text-muted">{t('orderTracking.summary.productDiscount')}</span><span className="text-green-600">-{formatPrice(order.discountAmount)}</span></div>}
-              {(order.shippingDiscountAmount || 0) > 0 && <div className="flex justify-between"><span className="text-muted">{t('orderTracking.summary.shippingDiscount')}</span><span className="text-green-600">-{formatPrice(order.shippingDiscountAmount!)}</span></div>}
-              {(order.taxAmount || 0) > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted">
-                    {t('orderTracking.summary.vat', {
+          <OrderSummaryCard
+            title={t('orderTracking.summary.title')}
+            className="p-6"
+            contentClassName="text-lg"
+            metaRows={[
+              {
+                label: t('orderTracking.summary.placedAt'),
+                value: formatDate(order.createdAt),
+              },
+              {
+                label: t('orderTracking.summary.updatedAt'),
+                value: formatDate(order.updatedAt || order.createdAt),
+              },
+              {
+                label: t('orderTracking.summary.payment'),
+                value: order.paymentMethod,
+              },
+            ]}
+            amountRows={[
+              {
+                label: t('orderTracking.summary.subtotal'),
+                value: formatPrice(order.subtotal),
+              },
+              {
+                label: t('orderTracking.summary.shippingFee'),
+                value: formatPrice(order.shippingFee),
+              },
+              ...(order.discountAmount > 0
+                ? [
+                  {
+                    label: t('orderTracking.summary.productDiscount'),
+                    value: `-${formatPrice(order.discountAmount)}`,
+                    valueClassName: 'text-green-600',
+                  },
+                ]
+                : []),
+              ...((order.shippingDiscountAmount || 0) > 0
+                ? [
+                  {
+                    label: t('orderTracking.summary.shippingDiscount'),
+                    value: `-${formatPrice(order.shippingDiscountAmount!)}`,
+                    valueClassName: 'text-green-600',
+                  },
+                ]
+                : []),
+              ...((order.taxAmount || 0) > 0
+                ? [
+                  {
+                    label: t('orderTracking.summary.vat', {
                       percent: order.taxPercent ?? 0,
                       suffix: order.taxMode === 'INCLUDED' ? t('orderTracking.summary.vatIncluded') : '',
-                    })}
-                  </span>
-                  <span className={order.taxMode === 'EXCLUDED' ? '' : 'text-muted'}>
-                    {order.taxMode === 'EXCLUDED' ? '+' : ''}{formatPrice(order.taxAmount!)}
-                  </span>
-                </div>
-              )}
-              <hr className="border-slate-100 dark:border-slate-800" />
-              <div className="flex justify-between text-lg"><span className="font-bold">{t('orderTracking.summary.total')}</span><span className="font-bold text-blue-600">{formatPrice(order.totalAmount)}</span></div>
-            </div>
-          </div>
+                    }),
+                    value: `${order.taxMode === 'EXCLUDED' ? '+' : ''}${formatPrice(order.taxAmount!)}`,
+                    valueClassName: order.taxMode === 'EXCLUDED' ? 'text-ink' : 'text-muted',
+                  },
+                ]
+                : []),
+            ]}
+            totalRow={{
+              label: t('orderTracking.summary.total'),
+              value: formatPrice(order.totalAmount),
+            }}
+          />
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h2 className="text-lg font-bold mb-3">{t('orderTracking.address.title')}</h2>
-            <p className="text-md text-muted">{order.shippingAddress}</p>
-          </div>
+          <OrderAddressCard
+            title={t('orderTracking.address.title')}
+            address={order.shippingAddress}
+            className="p-6"
+            icon={<FiMapPin className="text-orange-600" />}
+          />
 
           {order.note && (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-lg font-bold mb-3">{t('orderTracking.note.title')}</h2>
-              <p className="text-md text-muted">{order.note}</p>
+              <p className="text-lg text-muted">{order.note}</p>
             </div>
           )}
         </div>
