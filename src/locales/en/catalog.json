@@ -184,6 +184,7 @@
       "verifiedOnly": "Only customers who purchased and successfully received this item can review it.",
       "round": "Round {{count}}",
       "variant": "Variant: {{value}}",
+      "reviewImageAlt": "Review image",
       "shopReply": "Reply from shop",
       "updatedReview": "Updated review ({{afterText}})",
       "new": "New",
@@ -237,7 +238,8 @@
       "action": "Explore now"
     },
     "actions": {
-      "buyOptions": "Purchase options"
+      "buyOptions": "Purchase options",
+      "remove": "Remove from wishlist"
     }
   }
 }

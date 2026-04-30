@@ -62,7 +62,8 @@
   "labels": {
     "messagesCount": "{{count}} messages",
     "unknown": "Unknown",
-    "notAvailable": "-"
+    "notAvailable": "-",
+    "noImage": "No image"
   },
   "starRating": {
     "labels": {

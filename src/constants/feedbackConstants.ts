@@ -19,6 +19,9 @@ export const FEEDBACK_STATUS_OPTIONS: FeedbackStatusOption[] = [
   { value: 'SPAM', label: 'Spam', labelKey: 'common:status.cms.spam', colorClass: 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400' },
 ];
 
+export const MAX_FEEDBACK_IMAGES = 5;
+export const FEEDBACK_IMAGE_ACCEPT = 'image/png,image/jpeg,image/webp,image/jpg';
+
 export function getFeedbackStatusOptions(t?: TFunction) {
   return FEEDBACK_STATUS_OPTIONS.map((option) => ({
     ...option,

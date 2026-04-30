@@ -184,6 +184,7 @@
       "verifiedOnly": "Chỉ khách hàng đã mua và nhận hàng thành công mới có thể đánh giá.",
       "round": "Lần {{count}}",
       "variant": "Cấu hình: {{value}}",
+      "reviewImageAlt": "Ảnh đánh giá",
       "shopReply": "Phản hồi từ shop",
       "updatedReview": "Đánh giá lại ({{afterText}})",
       "new": "Mới",
@@ -237,7 +238,8 @@
       "action": "Khám phá ngay"
     },
     "actions": {
-      "buyOptions": "Tùy chọn mua"
+      "buyOptions": "Tùy chọn mua",
+      "remove": "Xóa khỏi danh sách yêu thích"
     }
   }
 }

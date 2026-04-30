@@ -72,7 +72,9 @@ export default function ProductForm() {
             size="md"
             className="flex-1 sm:flex-none"
           >
-            {form.isEditMode ? t("productForm.cancel") : t("productForm.cancel").replace(" thay đổi", "")}
+            {form.isEditMode
+              ? t("productForm.cancel")
+              : t("productForm.cancelCreate")}
           </Button>
           {form.isEditMode && (
             <Button

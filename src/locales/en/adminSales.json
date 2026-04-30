@@ -312,6 +312,7 @@
     "empty": "No reviews found",
     "productLabel": "Product",
     "adminLabel": "Admin",
+    "reviewImageAlt": "Review image",
     "reply": "Reply",
     "replyPlaceholder": "Enter your reply...",
     "send": "Send",

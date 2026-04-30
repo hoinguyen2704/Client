@@ -43,6 +43,8 @@ export { StatusTimeline } from "./ui/StatusTimeline";
 export { default as SlidingTabs } from "./ui/SlidingTabs";
 export { default as SearchableDropdown } from "./input/SearchableDropdown";
 export { default as SortableHeaderLabel } from "./ui/SortableHeaderLabel";
+export { default as FeedbackImageGrid } from "./feedback/FeedbackImageGrid";
+export { default as ReviewComposerModal } from "./feedback/ReviewComposerModal";
 
 //  Types (re-export for convenience)
 export * from "./ui/types";

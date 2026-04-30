@@ -408,6 +408,33 @@
       "deleteFailed": "Xóa nhận xét thất bại"
     }
   },
+  "reviewComposer": {
+    "reviewTitle": "Viết đánh giá",
+    "extraReviewTitle": "Đánh giá bổ sung",
+    "previousReviews": "Đánh giá trước đó",
+    "roundLabel": "Lần {{count}}",
+    "ratingLabel": "Chất lượng sản phẩm",
+    "contentLabel": "Nội dung đánh giá",
+    "contentPlaceholder": "Hãy chia sẻ cảm nhận của bạn về sản phẩm này nhé...",
+    "imagesLabel": "Hình ảnh đánh giá (không bắt buộc)",
+    "imagesCount": "{{count}} / {{max}} ảnh",
+    "imagesHelper": "Thêm ảnh thực tế để đánh giá của bạn hữu ích và đáng tin cậy hơn.",
+    "imagesHint": "Hỗ trợ PNG, JPG, JPEG, WEBP. Tối đa {{max}} ảnh.",
+    "chooseImages": "Chọn ảnh",
+    "removeImageAria": "Xóa ảnh đánh giá {{index}}",
+    "selectedImageAlt": "Ảnh đã chọn {{index}}",
+    "reviewImageAlt": "Ảnh đánh giá",
+    "back": "Trở lại",
+    "submit": "Hoàn thành",
+    "maxReviewed": "Đã đánh giá tối đa",
+    "variant": "Phân loại",
+    "order": "Đơn hàng",
+    "defaultVariant": "Mặc định",
+    "toasts": {
+      "invalidImageType": "Chỉ hỗ trợ tải lên tệp hình ảnh",
+      "imageLimitExceeded": "Bạn chỉ có thể tải tối đa {{max}} ảnh"
+    }
+  },
   "vouchers": {
     "title": "Ví voucher",
     "searchTitle": "Nhập mã giảm giá",

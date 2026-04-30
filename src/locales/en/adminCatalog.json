@@ -248,6 +248,7 @@
     "editTitle": "Edit product",
     "manageVariants": "Manage variants",
     "cancel": "Cancel",
+    "cancelCreate": "Cancel",
     "save": "Save product",
     "update": "Update",
     "variantNoticeWithCount": "This product currently has {{count}} variants.",

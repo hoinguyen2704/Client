@@ -12,8 +12,8 @@ function getPersistedAuthToken() {
   return raw ? JSON.parse(raw)?.state?.token : null;
 }
 
-function translateWishlistToast(key: string, defaultValue: string) {
-  return i18n.t(key, { ns: 'common', defaultValue });
+function translateWishlistToast(key: string) {
+  return i18n.t(key, { ns: 'common' });
 }
 
 interface WishlistStore {
@@ -69,10 +69,7 @@ const useWishlistStore = create<WishlistStore>()(
         // Optimistic UI update
         if (!getPersistedAuthToken()) {
           toast.error(
-            translateWishlistToast(
-              'wishlist.toasts.loginRequired',
-              'Please log in to add this item to your wishlist.',
-            ),
+            translateWishlistToast('wishlist.toasts.loginRequired'),
           );
           return false;
         }
@@ -85,33 +82,18 @@ const useWishlistStore = create<WishlistStore>()(
               totalItems: Math.max(state.totalItems - 1, 0),
             }));
             await wishlistService.remove(productSlug);
-            toast.success(
-              translateWishlistToast(
-                'wishlist.toasts.removed',
-                'Removed from wishlist.',
-              ),
-            );
+            toast.success(translateWishlistToast('wishlist.toasts.removed'));
             return false;
           } else {
             // Add - optimistically incrementing items requires reloading server state
             // to get the correct WishlistResponse object properties (slug, image, etc)
             await wishlistService.add(productSlug);
             await get().syncFromServer(); // Fetch latest from server to populate full data
-            toast.success(
-              translateWishlistToast(
-                'wishlist.toasts.added',
-                'Added to wishlist.',
-              ),
-            );
+            toast.success(translateWishlistToast('wishlist.toasts.added'));
             return true;
           }
         } catch {
-          toast.error(
-            translateWishlistToast(
-              'wishlist.toasts.failed',
-              'Action failed. Please try again.',
-            ),
-          );
+          toast.error(translateWishlistToast('wishlist.toasts.failed'));
           // Rollback by doing a sync
           await get().syncFromServer();
           return !!exists;

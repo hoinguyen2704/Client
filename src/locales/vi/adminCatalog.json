@@ -248,6 +248,7 @@
     "editTitle": "Sửa sản phẩm",
     "manageVariants": "Quản lý cấu hình",
     "cancel": "Hủy thay đổi",
+    "cancelCreate": "Hủy",
     "save": "Lưu sản phẩm",
     "update": "Lưu thay đổi",
     "variantNoticeWithCount": "Sản phẩm đang có {{count}} cấu hình.",

@@ -408,6 +408,33 @@
       "deleteFailed": "Failed to delete review"
     }
   },
+  "reviewComposer": {
+    "reviewTitle": "Write review",
+    "extraReviewTitle": "Additional review",
+    "previousReviews": "Previous reviews",
+    "roundLabel": "Round {{count}}",
+    "ratingLabel": "Product quality",
+    "contentLabel": "Review content",
+    "contentPlaceholder": "Share your thoughts about this product...",
+    "imagesLabel": "Review images (optional)",
+    "imagesCount": "{{count}} / {{max}} images",
+    "imagesHelper": "Add real photos to make your review more helpful and trustworthy.",
+    "imagesHint": "Supports PNG, JPG, JPEG, WEBP. Up to {{max}} images.",
+    "chooseImages": "Choose images",
+    "removeImageAria": "Remove review image {{index}}",
+    "selectedImageAlt": "Selected image {{index}}",
+    "reviewImageAlt": "Review image",
+    "back": "Back",
+    "submit": "Complete",
+    "maxReviewed": "Maximum reviews reached",
+    "variant": "Variant",
+    "order": "Order",
+    "defaultVariant": "Default",
+    "toasts": {
+      "invalidImageType": "Only image files are supported",
+      "imageLimitExceeded": "You can upload up to {{max}} images"
+    }
+  },
   "vouchers": {
     "title": "Voucher wallet",
     "searchTitle": "Enter coupon code",

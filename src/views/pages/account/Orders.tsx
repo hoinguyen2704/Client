@@ -5,11 +5,11 @@ import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/uti
 import { Link } from 'react-router-dom';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import { Button, ConfirmDialog, Modal, ModalCancelButton, Pagination, PrimaryButton, StarRating, SlidingTabs } from '@/components';
+import { Button, ConfirmDialog, Pagination, ReviewComposerModal, SlidingTabs } from '@/components';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { getClientOrderTabs, getClientStatusBadge } from '@/constants/orderConstants';
-import type { OrderResponse, OrderItemResponse, FeedbackResponse } from '@/types';
+import type { FeedbackResponse, OrderItemResponse, OrderResponse, ReviewComposerSubmitData } from '@/types';
 
 export default function Orders() {
   const { t } = useTranslation(['account', 'common']);
@@ -22,10 +22,16 @@ export default function Orders() {
   
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<OrderResponse | null>(null);
-  const [selectedItem, setSelectedItem] = useState<{ productSlug: string, variantSku?: string, productName: string, variantName: string } | null>(null);
-  const [rating, setRating] = useState(5);
-  const [reviewText, setReviewText] = useState('');
+  const [selectedItem, setSelectedItem] = useState<{
+    productSlug: string;
+    variantSku?: string;
+    productName: string;
+    variantName?: string;
+    orderNumber: string;
+    productImage?: string;
+  } | null>(null);
   const [oldFeedbacks, setOldFeedbacks] = useState<FeedbackResponse[]>([]);
+  const [submittingReview, setSubmittingReview] = useState(false);
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,15 +74,28 @@ export default function Orders() {
     }
   };
 
+  const handleCloseReviewModal = () => {
+    setReviewModalOpen(false);
+    setSelectedOrder(null);
+    setSelectedItem(null);
+    setOldFeedbacks([]);
+    setSubmittingReview(false);
+  };
+
   const handleOpenReview = async (order: OrderResponse, item: OrderItemResponse) => {
     if (!item.productSlug) {
       toast.error(t('orders.toasts.reviewFailed'));
       return;
     }
     setSelectedOrder(order);
-    setSelectedItem({ productSlug: item.productSlug, variantSku: item.sku, productName: item.productName, variantName: item.variantName });
-    setRating(5);
-    setReviewText('');
+    setSelectedItem({
+      productSlug: item.productSlug,
+      variantSku: item.sku,
+      productName: item.productName,
+      variantName: item.variantName,
+      orderNumber: order.orderNumber,
+      productImage: item.imageUrl,
+    });
     setOldFeedbacks([]);
     setReviewModalOpen(true);
 
@@ -90,14 +109,23 @@ export default function Orders() {
     }
   };
 
-  const handleSubmitReview = async () => {
+  const handleSubmitReview = async ({ rating, content, imageFiles }: ReviewComposerSubmitData) => {
     if (!selectedOrder || !selectedItem) return;
+    setSubmittingReview(true);
     try {
-      await feedbackService.submit({ productSlug: selectedItem.productSlug, variantSku: selectedItem.variantSku, orderNumber: selectedOrder.orderNumber, rating, content: reviewText });
+      await feedbackService.submit({
+        productSlug: selectedItem.productSlug,
+        variantSku: selectedItem.variantSku,
+        orderNumber: selectedOrder.orderNumber,
+        rating,
+        content,
+      }, imageFiles);
       toast.success(t('orders.toasts.reviewSuccess'));
-      setReviewModalOpen(false);
+      handleCloseReviewModal();
     } catch (e: unknown) { 
       toast.error(getApiErrorMessage(e, t, 'account:orders.toasts.reviewFailed')); 
+    } finally {
+      setSubmittingReview(false);
     }
   };
   return (
@@ -200,56 +228,14 @@ export default function Orders() {
         <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
 
-      <Modal
+      <ReviewComposerModal
         open={reviewModalOpen && !!selectedOrder}
-        onClose={() => setReviewModalOpen(false)}
-        title={t('orders.reviewModal.title')}
-        footer={
-          <>
-            <ModalCancelButton onClick={() => setReviewModalOpen(false)}>{t('orders.reviewModal.back')}</ModalCancelButton>
-            {oldFeedbacks.length < 2 ? (
-               <PrimaryButton onClick={handleSubmitReview}>{t('orders.reviewModal.submit')}</PrimaryButton>
-            ) : (
-               <PrimaryButton disabled>{t('orders.reviewModal.maxReviewed')}</PrimaryButton>
-            )}
-          </>
-        }
-      >
-        {selectedOrder && selectedItem && (
-          <div className="space-y-6">
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700">
-              <h4 className="font-bold">{selectedItem.productName}</h4>
-              <p className="text-md text-muted mt-1">{t('orders.reviewModal.variant')}: {selectedItem.variantName}</p>
-            </div>
-            
-            {oldFeedbacks.map((fb, idx) => (
-              <div key={fb.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 opacity-80">
-                 <div className="flex items-center justify-between mb-2">
-                    <p className="font-bold text-md text-body">
-                      {t('orders.reviewModal.reviewNumber', { count: idx + 1 })}
-                    </p>
-                    <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
-                 </div>
-                 <p className="text-md text-muted">{fb.content}</p>
-              </div>
-            ))}
-
-            {oldFeedbacks.length < 2 && (
-              <div className="space-y-4 pt-2">
-                <div className="flex flex-col items-center gap-2">
-                  <p className="font-medium text-body">
-                    {oldFeedbacks.length === 1 ? t('orders.reviewModal.additionalReview') : t('orders.reviewModal.quality')}
-                  </p>
-                  <StarRating value={rating} onChange={setRating} size="lg" />
-                </div>
-                <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                  placeholder={t('orders.reviewModal.placeholder')}
-                  className="w-full h-32 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 resize-none" />
-              </div>
-            )}
-          </div>
-        )}
-      </Modal>
+        onClose={handleCloseReviewModal}
+        item={selectedItem}
+        previousFeedbacks={oldFeedbacks}
+        submitting={submittingReview}
+        onSubmit={handleSubmitReview}
+      />
 
       <ConfirmDialog
         open={!!cancelTarget}

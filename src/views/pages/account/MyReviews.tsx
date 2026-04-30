@@ -2,12 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { FiMessageSquare, FiStar, FiTrash2 } from 'react-icons/fi';
 import orderService from '@/apis/services/orderService';
 import feedbackService from '@/apis/services/feedbackService';
-import type { FeedbackResponse, OrderResponse, ReviewTab, ReviewableItem, ReviewedEntry, ReviewCandidate } from '@/types';
-import { Button, EmptyState, Modal, ModalCancelButton, StarRating, ConfirmDialog, SlidingTabs } from '@/components';
+import type { FeedbackResponse, OrderResponse, ReviewCandidate, ReviewedEntry, ReviewComposerSubmitData, ReviewTab, ReviewableItem } from '@/types';
+import { Button, ConfirmDialog, EmptyState, FeedbackImageGrid, ReviewComposerModal, SlidingTabs, StarRating } from '@/components';
 import { formatDateShort as formatDate } from '@/utils/format';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 import { useTranslation } from 'react-i18next';
+import { parseFeedbackImageUrls } from '@/utils/feedback';
 
 const SHIPPED_ORDER_STATUS = 'SHIPPED';
 const MAX_REVIEW_ATTEMPTS = 2;
@@ -50,8 +51,6 @@ export default function MyReviews() {
 
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ReviewableItem | null>(null);
-  const [rating, setRating] = useState(5);
-  const [reviewContent, setReviewContent] = useState('');
 
   const [deleteTarget, setDeleteTarget] = useState<FeedbackResponse | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -156,21 +155,16 @@ export default function MyReviews() {
 
   const openReviewModal = (item: ReviewableItem) => {
     setSelectedItem(item);
-    setRating(5);
-    setReviewContent('');
     setIsReviewModalOpen(true);
   };
 
   const closeReviewModal = () => {
     setIsReviewModalOpen(false);
     setSelectedItem(null);
-    setRating(5);
-    setReviewContent('');
   };
 
-  const handleSubmitReview = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedItem || !reviewContent.trim()) return;
+  const handleSubmitReview = async ({ rating, content, imageFiles }: ReviewComposerSubmitData) => {
+    if (!selectedItem) return;
 
     if (selectedItem.feedbacks.length >= MAX_REVIEW_ATTEMPTS) {
       toast.warning(t('myReviews.toasts.limitReached'));
@@ -184,8 +178,8 @@ export default function MyReviews() {
         variantSku: selectedItem.variantSku,
         orderNumber: selectedItem.orderNumber,
         rating,
-        content: reviewContent.trim(),
-      });
+        content,
+      }, imageFiles);
       toast.success(t('myReviews.toasts.submitSuccess'));
       closeReviewModal();
       setActiveTab('reviewed');
@@ -279,6 +273,7 @@ export default function MyReviews() {
                 reviewedEntries.map((entry) => {
                   const canReviewMore = entry.round === entry.totalRounds && entry.totalRounds < MAX_REVIEW_ATTEMPTS;
                   const feedbacks = itemFeedbackMap[entry.itemKey] || [];
+                  const reviewImages = parseFeedbackImageUrls(entry.review.imagesJson);
                   return (
                     <div
                       key={entry.key}
@@ -309,6 +304,10 @@ export default function MyReviews() {
                       <div className="mt-4 space-y-3">
                         <StarRating value={entry.review.rating} onChange={() => {}} readOnly size="sm" />
                         <p className="text-body leading-relaxed">{entry.review.content}</p>
+                        <FeedbackImageGrid
+                          imageUrls={reviewImages}
+                          altPrefix={t('reviewComposer.reviewImageAlt')}
+                        />
 
                         {entry.review.adminReply && (
                           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
@@ -366,70 +365,14 @@ export default function MyReviews() {
         </div>
       )}
 
-      <Modal
+      <ReviewComposerModal
         open={isReviewModalOpen && !!selectedItem}
         onClose={closeReviewModal}
-        title={selectedItem?.feedbacks.length ? t('myReviews.modal.extraReviewTitle') : t('myReviews.modal.reviewTitle')}
-        scrollable
-        footer={
-          <>
-            <ModalCancelButton onClick={closeReviewModal}>{t('myReviews.actions.back')}</ModalCancelButton>
-            <Button type="submit" form="review-form" size="md" loading={submitting} disabled={!reviewContent.trim() || !selectedItem}>
-              {t('myReviews.actions.complete')}
-            </Button>
-          </>
-        }
-      >
-        {selectedItem && (
-          <>
-            <div className="flex items-center gap-4 mb-6">
-              <img
-                src={selectedItem.productImage || 'https://placehold.co/120x120/f1f5f9/94a3b8?text=No+Image'}
-                alt={selectedItem.productName}
-                className="w-16 h-16 object-cover rounded-xl bg-slate-100 dark:bg-slate-800"
-              />
-              <div>
-                <h4 className="font-bold text-ink line-clamp-2">{selectedItem.productName}</h4>
-                <p className="text-md text-muted">{t('myReviews.item.variant')}: {selectedItem.variantName || t('myReviews.item.defaultVariant')}</p>
-                <p className="text-md text-muted">{t('myReviews.item.order')}: {selectedItem.orderNumber}</p>
-              </div>
-            </div>
-
-            <form id="review-form" onSubmit={handleSubmitReview} className="space-y-6">
-              {selectedItem.feedbacks.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-md font-semibold text-body">{t('myReviews.modal.previousReviews')}</p>
-                  {selectedItem.feedbacks.map((fb, idx) => (
-                    <div key={fb.id} className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-md font-semibold">{t('myReviews.modal.roundLabel', { count: idx + 1 })}</p>
-                        <StarRating value={fb.rating} onChange={() => {}} readOnly size="sm" />
-                      </div>
-                      <p className="text-md text-muted">{fb.content}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div>
-                <label className="block text-md font-medium text-body mb-2">{t('myReviews.modal.ratingLabel')}</label>
-                <StarRating value={rating} onChange={setRating} />
-              </div>
-
-              <div>
-                <label className="block text-md font-medium text-body mb-2">{t('myReviews.modal.contentLabel')}</label>
-                <textarea
-                  required
-                  value={reviewContent}
-                  onChange={(e) => setReviewContent(e.target.value)}
-                  placeholder={t('myReviews.modal.contentPlaceholder')}
-                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 resize-none h-32"
-                />
-              </div>
-            </form>
-          </>
-        )}
-      </Modal>
+        item={selectedItem}
+        previousFeedbacks={selectedItem?.feedbacks || []}
+        submitting={submitting}
+        onSubmit={handleSubmitReview}
+      />
 
       <ConfirmDialog
         open={!!deleteTarget}

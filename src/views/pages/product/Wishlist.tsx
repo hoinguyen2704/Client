@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "motion/react";
 import useWishlistStore from "@/stores/useWishlistStore";
 
 export default function Wishlist() {
-  const { t } = useTranslation("catalog");
+  const { t } = useTranslation(["catalog", "common"]);
   const items = useWishlistStore((s) => s.items);
   const loading = useWishlistStore((s) => s.loading);
   const syncFromServer = useWishlistStore((s) => s.syncFromServer);
@@ -124,7 +124,7 @@ export default function Wishlist() {
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-subtle gap-3">
                         <FiShoppingCart className="text-5xl opacity-50" />
-                        <span className="text-md font-medium">No Image</span>
+                        <span className="text-md font-medium">{t("common:labels.noImage")}</span>
                       </div>
                     )}
 
@@ -156,7 +156,7 @@ export default function Wishlist() {
                         <button
                           onClick={() => handleRemove(item.productSlug)}
                           className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 border-red-100 dark:border-red-900/40 text-red-500 hover:bg-red-50 hover:border-red-500 dark:hover:bg-red-900/20 dark:hover:border-red-500 transition-all flex items-center justify-center shrink-0 group/btn"
-                          aria-label="Remove from wishlist"
+                          aria-label={t("wishlistPage.actions.remove")}
                         >
                           <FiTrash2 className="text-base sm:text-lg group-hover/btn:scale-110 transition-transform" />
                         </button>

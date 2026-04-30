@@ -62,7 +62,8 @@
   "labels": {
     "messagesCount": "{{count}} tin nhắn",
     "unknown": "Không rõ",
-    "notAvailable": "-"
+    "notAvailable": "-",
+    "noImage": "Không có ảnh"
   },
   "starRating": {
     "labels": {

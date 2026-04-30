@@ -3,12 +3,13 @@ import { FiDownload, FiMessageCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import adminFeedbackService from '@/apis/services/adminFeedbackService';
-import { Button, CustomSelect, Pagination, StarRating, UserAvatar } from '@/components';
+import { Button, CustomSelect, FeedbackImageGrid, Pagination, StarRating, UserAvatar } from '@/components';
 import { getFeedbackFilterOptions, getFeedbackStatusOptions } from '@/constants/feedbackConstants';
 import type { FeedbackResponse, PageResponse } from '@/types';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { downloadBlob } from '@/utils/download';
 import { getApiErrorMessage } from '@/utils/error';
+import { parseFeedbackImageUrls } from '@/utils/feedback';
 import { formatDate } from '@/utils/format';
 
 export default function Feedbacks() {
@@ -116,6 +117,11 @@ export default function Feedbacks() {
                     {t('feedbacks.productLabel')}: <span className="font-medium text-body">{review.productName}</span>
                   </p>
                   <p className="text-body">{review.content}</p>
+                  <FeedbackImageGrid
+                    imageUrls={parseFeedbackImageUrls(review.imagesJson)}
+                    altPrefix={t('feedbacks.reviewImageAlt')}
+                    className="mt-3"
+                  />
 
                   {review.adminReply && (
                     <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-md">

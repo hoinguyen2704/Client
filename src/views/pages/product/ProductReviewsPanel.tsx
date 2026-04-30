@@ -1,7 +1,8 @@
 import { FiCheckCircle, FiMessageSquare, FiStar, FiUser } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import { StarRating } from '@/components';
+import { FeedbackImageGrid, StarRating } from '@/components';
 import type { FeedbackFilterSummaryResponse, FeedbackResponse, ProductReviewFilter } from '@/types';
+import { parseFeedbackImageUrls } from '@/utils/feedback';
 
 interface ProductReviewsPanelProps {
   rating: number;
@@ -161,6 +162,8 @@ export default function ProductReviewsPanel({
           {groupedFeedbacks.map((group) => {
             const mainFeedback = group[0];
             const updatedFeedback = group[1];
+            const mainFeedbackImages = parseFeedbackImageUrls(mainFeedback.imagesJson);
+            const updatedFeedbackImages = parseFeedbackImageUrls(updatedFeedback?.imagesJson);
 
             let afterText = '';
             if (updatedFeedback) {
@@ -224,6 +227,12 @@ export default function ProductReviewsPanel({
                   </p>
                 )}
 
+                <FeedbackImageGrid
+                  imageUrls={mainFeedbackImages}
+                  altPrefix={t('productDetail.tabs.reviewImageAlt')}
+                  className="mt-4"
+                />
+
                 {mainFeedback.adminReply && (
                   <ReviewReply
                     content={mainFeedback.adminReply}
@@ -258,6 +267,12 @@ export default function ProductReviewsPanel({
                         {updatedFeedback.content}
                       </p>
                     )}
+
+                    <FeedbackImageGrid
+                      imageUrls={updatedFeedbackImages}
+                      altPrefix={t('productDetail.tabs.reviewImageAlt')}
+                      className="mt-4"
+                    />
 
                     {updatedFeedback.adminReply && (
                       <ReviewReply

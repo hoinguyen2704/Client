@@ -48,6 +48,19 @@ export interface FeedbackRequest {
   imagesJson?: string;
 }
 
+export interface ReviewComposerItem {
+  productName: string;
+  variantName?: string;
+  orderNumber?: string;
+  productImage?: string;
+}
+
+export interface ReviewComposerSubmitData {
+  rating: number;
+  content: string;
+  imageFiles: File[];
+}
+
 export interface FeedbackStatusUpdateRequest {
   status: string;
 }

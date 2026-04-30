@@ -9,6 +9,20 @@ import type {
 
 const FEEDBACK_URL = '/feedbacks';
 
+const buildFeedbackFormData = (data: FeedbackRequest, imageFiles?: File[]) => {
+  const formData = new FormData();
+  formData.append(
+    'payload',
+    new Blob([JSON.stringify(data)], { type: 'application/json' }),
+  );
+
+  imageFiles?.forEach((file) => {
+    formData.append('files', file);
+  });
+
+  return formData;
+};
+
 const feedbackService = {
   getByProduct: (
     productSlug: string,
@@ -23,8 +37,10 @@ const feedbackService = {
       },
     }),
 
-  submit: (data: FeedbackRequest): Promise<ApiResponse<FeedbackResponse>> =>
-    axios.post(FEEDBACK_URL, data),
+  submit: (data: FeedbackRequest, imageFiles?: File[]): Promise<ApiResponse<FeedbackResponse>> =>
+    axios.post(FEEDBACK_URL, buildFeedbackFormData(data, imageFiles), {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 
   checkProduct: (productSlug: string): Promise<ApiResponse<boolean>> =>
     axios.get(`${FEEDBACK_URL}/check/${productSlug}`),

@@ -162,7 +162,7 @@ export default function Cart() {
                 <Checkbox checked={allSelectableSelected} onCheckedChange={() => toggleAll()} className="w-4 h-4" />
                 <span className="font-medium text-lg">
                   {hasSelectedItems 
-                    ? t('cart.selectedInfo', { selected: selectedItems.length, total: items.length, defaultValue: `Đã chọn (${selectedItems.length}/${items.length})` })
+                    ? t('cart.selectedInfo', { selected: selectedItems.length, total: items.length })
                     : t('cart.selectAll', { count: items.length })}
                 </span>
               </label>
