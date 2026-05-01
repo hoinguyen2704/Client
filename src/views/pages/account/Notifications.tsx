@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiBell, FiCheck, FiCheckCircle } from 'react-icons/fi';
+import { Pagination } from '@/components';
 import notificationService from '@/apis/services/notificationService';
 import useNotificationStore from '@/stores/useNotificationStore';
 import {
@@ -13,32 +14,64 @@ import type { NotificationResponse, UserNotificationRealtimePayload } from '@/ty
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
+const PAGE_SIZE = 20;
+
 export default function Notifications() {
   const { t } = useTranslation('account');
   const navigate = useNavigate();
+  const unreadCount = useNotificationStore((s) => s.unreadCount);
+  const syncUnreadCount = useNotificationStore((s) => s.syncFromServer);
   const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
-  useEffect(() => { fetchNotifications(); }, []);
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(totalItems / PAGE_SIZE)),
+    [totalItems],
+  );
+
+  const fetchNotifications = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await notificationService.getMyNotifications(page, PAGE_SIZE);
+      setNotifications(res.data?.data || []);
+      setTotalItems(res.data?.total || 0);
+    } catch {
+      setNotifications([]);
+      setTotalItems(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    void fetchNotifications();
+  }, [fetchNotifications]);
+
+  useEffect(() => {
+    void syncUnreadCount();
+  }, [syncUnreadCount]);
 
   useEffect(() => {
     const unsubscribe = onRealtimeEvent((event) => {
       if (event.type !== REALTIME_EVENT_TYPES.USER_NOTIFICATION_CREATED) return;
       const payload = event.data as UserNotificationRealtimePayload | undefined;
       if (!payload?.id) return;
-      setNotifications((prev) => (prev.some((n) => n.id === payload.id) ? prev : [payload, ...prev]));
+      let inserted = false;
+      setNotifications((prev) => {
+        if (prev.some((notification) => notification.id === payload.id)) {
+          return prev;
+        }
+        inserted = true;
+        return page === 1 ? [payload, ...prev].slice(0, PAGE_SIZE) : prev;
+      });
+      if (inserted) {
+        setTotalItems((prev) => prev + 1);
+      }
     });
     return unsubscribe;
-  }, []);
-
-  const fetchNotifications = async () => {
-    setLoading(true);
-    try {
-      const res = await notificationService.getMyNotifications(1, 50);
-      setNotifications(res.data?.data || []);
-    } catch { setNotifications([]); }
-    finally { setLoading(false); }
-  };
+  }, [page]);
 
   const handleMarkRead = async (id: string) => {
     try {
@@ -68,7 +101,6 @@ export default function Notifications() {
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -122,6 +154,15 @@ export default function Notifications() {
           ))}
         </div>
       )}
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        perPage={PAGE_SIZE}
+        label={t('notificationsPage.pagination')}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

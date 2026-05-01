@@ -48,6 +48,7 @@ export { default as ReviewComposerModal } from "./feedback/ReviewComposerModal";
 export { default as OrderStatusTimeline } from "./order/OrderStatusTimeline";
 export { default as OrderAddressCard } from "./order/OrderAddressCard";
 export { default as OrderInfoCard } from "./order/OrderInfoCard";
+export { default as OrderItemsTable } from "./order/OrderItemsTable";
 export { default as OrderSummaryCard } from "./order/OrderSummaryCard";
 
 //  Types (re-export for convenience)

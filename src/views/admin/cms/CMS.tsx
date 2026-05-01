@@ -297,9 +297,9 @@ export default function CMS() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t('adminContent:cms.title')}</h1>
-        <PrimaryButton onClick={openCreateModal} icon={<FiPlus className="text-base" />} className="w-full sm:w-auto">
+        <PrimaryButton onClick={openCreateModal} icon={<FiPlus className="text-base" />} className="shrink-0">
           {tab === 'banners' ? t('adminContent:cms.actions.addBanner') : t('adminContent:cms.actions.addArticle')}
         </PrimaryButton>
       </div>

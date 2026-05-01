@@ -48,6 +48,7 @@
     "itemsTitle": "Sản phẩm ({{count}})",
     "table": {
       "product": "Sản phẩm",
+      "variant": "Phân loại",
       "unitPrice": "Đơn giá",
       "quantity": "SL",
       "subtotal": "Thành tiền"

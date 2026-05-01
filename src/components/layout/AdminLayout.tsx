@@ -53,8 +53,10 @@ export default function AdminLayout() {
           <RealtimeBridge />
           <AdminHeader onLogout={logout} />
 
-          <main className="flex-1 min-w-0 p-3 sm:p-4 md:p-6 lg:p-8 overflow-x-clip">
-            <Outlet />
+          <main className="flex-1 min-w-0 overflow-x-auto p-3 sm:p-4 md:p-6 lg:p-8">
+            <div className="mx-auto w-[1520px] min-w-[1520px] max-w-[1520px]">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

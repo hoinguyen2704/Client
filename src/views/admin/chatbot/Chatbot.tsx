@@ -25,12 +25,16 @@ import ChatbotOverviewStatCard from "./components/ChatbotOverviewStatCard";
 type EditableSection = "shopInfo" | "bot" | "ai";
 
 const MODEL_OPTIONS = [
+  { value: "gpt-5.4-mini", label: "gpt-5.4-mini" },
   { value: "gemini-3-flash-preview", label: "gemini-3-flash-preview" },
   { value: "gemini-3-pro-preview", label: "gemini-3-pro-preview" },
   { value: "gemini-2-flash-preview", label: "gemini-2-flash-preview" },
   { value: "gemini-2.5-flash", label: "gemini-2.5-flash" },
   { value: "gemini-2.0-flash", label: "gemini-2.0-flash" },
 ];
+
+const inferProviderFromModel = (model: string) =>
+  /^(gpt-|o\d|o-|chatgpt-)/i.test(model) ? "openai" : "gemini";
 
 export default function Chatbot() {
   const { t } = useTranslation("adminSupport");
@@ -89,6 +93,19 @@ export default function Chatbot() {
   const updateTopLevel = (key: keyof ChatbotConfig, value: unknown) => {
     if (!config) return;
     setConfig({ ...config, [key]: value });
+    setDirty(true);
+  };
+
+  const updateModel = (model: string) => {
+    if (!config) return;
+    setConfig({
+      ...config,
+      ai: {
+        ...config.ai,
+        model,
+        provider: inferProviderFromModel(model),
+      },
+    });
     setDirty(true);
   };
 
@@ -295,7 +312,7 @@ export default function Chatbot() {
                   </label>
                   <CustomSelect
                     value={config.ai?.model || ""}
-                    onChange={(val) => updateField("ai", "model", val)}
+                    onChange={updateModel}
                     options={MODEL_OPTIONS}
                     className="w-full h-11"
                   />

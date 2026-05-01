@@ -9,6 +9,10 @@ import useWishlistStore from '@/stores/useWishlistStore';
 import useAuthStore from '@/stores/useAuthStore';
 import type { TimeLeft, ProductResponse } from '@/types';
 import { TYPOGRAPHY_TEXT_SIZE } from '@/constants/typographyConstants';
+import {
+  getProductPublicStatusState,
+  isProductStatusPurchasable,
+} from '@/utils/productAvailability';
 
 const INITIAL_FLASH_TIME: TimeLeft = { hours: 2, minutes: 45, seconds: 12 };
 
@@ -78,19 +82,21 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   const soldLabel = totalSold > 999 ? `${(totalSold / 1000).toFixed(1)}k` : totalSold;
 
   // --- Tính trạng thái kho hàng ---
-  const isOutOfStock = product.outOfStock === true || product.status === 'OUT_OF_STOCK';
-  const isInactive = product.status === 'INACTIVE';
-  const isComingSoon = product.status === 'COMING_SOON';
+  const productStatusState = getProductPublicStatusState(product.status);
+  const isOutOfStock = product.outOfStock === true || productStatusState === 'outOfStock';
 
   const stock: number = isOutOfStock ? 0 : (product.stockQuantity ?? (product.variants?.reduce((acc: number, v) => acc + (v.stockQuantity || 0), 0)) ?? 10);
 
   let statusText = t('productCard.status.available', { ns: 'catalog' }).toUpperCase();
-  let isPurchasable = stock > 0 && salePrice > 0;
+  let isPurchasable = isProductStatusPurchasable(product.status) && stock > 0 && salePrice > 0;
 
-  if (isInactive) {
+  if (productStatusState === 'inactive') {
     statusText = t('productCard.status.inactive', { ns: 'catalog' }).toUpperCase();
     isPurchasable = false;
-  } else if (isComingSoon) {
+  } else if (productStatusState === 'draft') {
+    statusText = t('productCard.status.draft', { ns: 'catalog' }).toUpperCase();
+    isPurchasable = false;
+  } else if (productStatusState === 'comingSoon') {
     statusText = t('productCard.status.comingSoon', { ns: 'catalog' }).toUpperCase();
     isPurchasable = false;
   } else if (salePrice <= 0) {

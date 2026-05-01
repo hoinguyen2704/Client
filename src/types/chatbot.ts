@@ -34,6 +34,7 @@ export interface BotConfig {
 
 export interface AIConfig {
   model: string;
+  provider?: 'gemini' | 'openai';
   temperature: number;
   systemRules: string;
   maxProducts?: number;

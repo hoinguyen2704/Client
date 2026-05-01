@@ -12,6 +12,10 @@ import useAuthStore from '@/stores/useAuthStore';
 import { cartService } from '@/apis';
 import { Button, PrimaryButton, QuantitySelector, VariantSelector } from '@/components';
 import { resolveVariantPricing } from '@/utils/pricing';
+import {
+  getProductPublicStatusState,
+  isProductStatusPurchasable,
+} from '@/utils/productAvailability';
 import { getApiErrorMessage } from '@/utils/error';
 
 interface ProductInfoProps {
@@ -260,7 +264,21 @@ export default function ProductInfo({
     ? variantPricingMap[activeVariant.id]
     : (!isSelectionRequired ? fallbackPricing : null);
   const canShowVariantPrice = pricing !== null && (!isSelectionRequired || isSelectionComplete);
-  const canPurchase = Boolean(activeVariant) && (!isSelectionRequired || isSelectionComplete);
+  const productStatusState = getProductPublicStatusState(product.status);
+  const isProductPurchasable = isProductStatusPurchasable(product.status);
+  const productUnavailableMessage =
+    productStatusState === 'inactive'
+      ? t('productDetail.availability.inactive', { ns: 'catalog' })
+      : productStatusState === 'draft'
+        ? t('productDetail.availability.draft', { ns: 'catalog' })
+        : productStatusState === 'comingSoon'
+          ? t('productDetail.availability.comingSoon', { ns: 'catalog' })
+          : productStatusState === 'outOfStock'
+            ? t('productDetail.quantity.outOfStock', { ns: 'catalog' })
+            : null;
+  const canPurchase = isProductPurchasable
+    && Boolean(activeVariant)
+    && (!isSelectionRequired || isSelectionComplete);
 
   const price = pricing?.salePrice ?? 0;
   const comparePrice = pricing?.originPrice ?? 0;
@@ -341,6 +359,11 @@ export default function ProductInfo({
   ]);
 
   const handleAddToCart = async () => {
+    if (!isProductPurchasable) {
+      toast.error(productUnavailableMessage ?? t('productDetail.availability.unavailable', { ns: 'catalog' }));
+      return;
+    }
+
     if (!isAuthenticated) {
       toast.error(t('productDetail.toasts.loginAddToCart', { ns: 'catalog' }));
       navigate('/login');
@@ -375,6 +398,11 @@ export default function ProductInfo({
   };
 
   const handleBuyNow = () => {
+    if (!isProductPurchasable) {
+      toast.error(productUnavailableMessage ?? t('productDetail.availability.unavailable', { ns: 'catalog' }));
+      return;
+    }
+
     if (!isAuthenticated) {
       toast.error(t('productDetail.toasts.loginBuyNow', { ns: 'catalog' }));
       navigate('/login');
@@ -487,6 +515,11 @@ export default function ProductInfo({
           ))}
         </div>
       )}
+      {productUnavailableMessage && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300 lg:max-w-[52%]">
+          {productUnavailableMessage}
+        </div>
+      )}
       <div className="min-h-11 lg:max-w-[52%]">
         <div
           className={`inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-opacity ${
@@ -548,12 +581,14 @@ export default function ProductInfo({
               overMaxWarning={t('productDetail.quantity.overMaxWarning', { ns: 'catalog', count: stock })}
             />
             <span className="text-sm md:text-md text-body font-semibold">
-                {!isSelectionComplete && isSelectionRequired
+              {!isProductPurchasable
+                ? (productUnavailableMessage ?? t('productDetail.availability.unavailable', { ns: 'catalog' }))
+                : !isSelectionComplete && isSelectionRequired
                   ? t('productDetail.quantity.chooseMore', { ns: 'catalog', attributes: missingAttributeNames.join(', ') })
                   : stock > 0
                     ? t('productDetail.quantity.availableCount', { ns: 'catalog', count: stock })
                     : t('productDetail.quantity.outOfStock', { ns: 'catalog' })}
-              </span>
+            </span>
             <Button
               variant="danger"
               size="sm"

@@ -12,6 +12,11 @@ interface RefreshSubscriber {
 
 let refreshSubscribers: RefreshSubscriber[] = [];
 
+function getApiLanguageHeader(): string {
+  const language = (i18n.resolvedLanguage || i18n.language || "vi").toLowerCase();
+  return language.startsWith("en") ? "en-US" : "vi-VN";
+}
+
 const AUTH_ENDPOINT_BYPASS = [
   "/auth/login",
   "/auth/register",
@@ -52,6 +57,7 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
   // Request: tự gắn Bearer token từ Zustand store
   instance.interceptors.request.use((config) => {
     const token = useAuthStore.getState().token;
+    config.headers["Accept-Language"] = getApiLanguageHeader();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -114,6 +120,12 @@ function attachAuthInterceptors(instance: ReturnType<typeof axios.create>) {
             const refreshRes = await axios.post(
               `${import.meta.env.VITE_BACKEND_URL}/auth/refresh-token`,
               { refreshToken },
+              {
+                headers: {
+                  "Accept-Language": getApiLanguageHeader(),
+                  "Content-Type": "application/json",
+                },
+              },
             );
 
             // refreshRes.data từ axios default vẫn bọc trong { data: ... } của Axios

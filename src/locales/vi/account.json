@@ -9,6 +9,7 @@
   "notificationsPage": {
     "title": "Thông báo",
     "markAllRead": "Đọc tất cả ({{count}})",
+    "pagination": "thông báo",
     "empty": {
       "title": "Không có thông báo",
       "description": "Bạn sẽ nhận thông báo khi có cập nhật mới."

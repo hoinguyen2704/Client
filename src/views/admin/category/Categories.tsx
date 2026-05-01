@@ -105,19 +105,19 @@ export default function Categories() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t("categories.title")}</h1>
         <PrimaryButton
           href="/admin/categories/new"
           icon={<FiPlus className="text-base" />}
-          className="w-full sm:w-auto"
+          className="shrink-0"
         >
           {t("categories.addCategory")}
         </PrimaryButton>
       </div>
 
       {/* Search + Filter */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border-2 border-slate-200 dark:border-slate-700 flex flex-col md:flex-row gap-3 sm:gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 p-3 shadow-sm dark:border-slate-700 sm:p-4 flex items-center gap-4">
         <div className="flex-1">
           <AdminSearch
             boxed={false}
@@ -133,7 +133,7 @@ export default function Categories() {
             setPage(1);
           }}
           options={brandOptions}
-          className="w-full md:w-56"
+          className="w-56 shrink-0"
         />
       </div>
 

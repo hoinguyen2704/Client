@@ -145,6 +145,12 @@
       "flashSale": "Flash Sale",
       "flashSaleRemaining": "{{count}} deal slots left"
     },
+    "availability": {
+      "inactive": "This product is hidden and cannot be purchased right now.",
+      "draft": "This product is in draft status and cannot be purchased right now.",
+      "comingSoon": "This product is not on sale yet.",
+      "unavailable": "This product is not available for purchase."
+    },
     "quantity": {
       "title": "Quantity",
       "clearSelection": "Clear selection",
@@ -208,6 +214,7 @@
     "status": {
       "available": "In stock",
       "inactive": "Inactive",
+      "draft": "Draft",
       "comingSoon": "Coming soon",
       "contact": "Contact us",
       "outOfStock": "Out of stock"

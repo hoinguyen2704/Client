@@ -48,6 +48,7 @@
     "itemsTitle": "Items ({{count}})",
     "table": {
       "product": "Product",
+      "variant": "Variant",
       "unitPrice": "Unit price",
       "quantity": "Qty",
       "subtotal": "Line total"

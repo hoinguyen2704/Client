@@ -46,7 +46,7 @@
   },
   "chatbot": {
     "title": "Quản lý AI Chatbot",
-    "subtitle": "Powered by Gemini AI - Model: {{model}}",
+    "subtitle": "Powered by AI - Model: {{model}}",
     "actions": {
       "reset": "Khôi phục mặc định",
       "retry": "Thử lại",

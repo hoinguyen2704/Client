@@ -24,6 +24,7 @@ export default function Cart() {
     freeShippingThreshold: 500000,
   });
   const syncFromServer = useCartStore((s) => s.syncFromServer);
+  const setTotalItems = useCartStore((s) => s.setTotalItems);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,10 +41,12 @@ export default function Cart() {
     setLoading(true);
     try {
       const res = await cartService.getMyCart();
-      setItems(sortCartItems((res.data || []).map(i => ({
+      const cartItems = res.data || [];
+      setItems(sortCartItems(cartItems.map(i => ({
         ...i,
         selected: i.available !== false,
       }))));
+      setTotalItems(cartItems.length);
     }
     catch { setItems([]); }
     finally { setLoading(false); }

@@ -145,6 +145,12 @@
       "flashSale": "Flash Sale",
       "flashSaleRemaining": "Còn {{count}} suất giá sốc"
     },
+    "availability": {
+      "inactive": "Sản phẩm này đang bị ẩn và hiện không thể mua.",
+      "draft": "Sản phẩm này đang ở trạng thái bản nháp và hiện không thể mua.",
+      "comingSoon": "Sản phẩm này chưa mở bán.",
+      "unavailable": "Sản phẩm này hiện không thể mua."
+    },
     "quantity": {
       "title": "Số lượng",
       "clearSelection": "Xóa lựa chọn",
@@ -208,6 +214,7 @@
     "status": {
       "available": "Còn hàng",
       "inactive": "Ngừng bán",
+      "draft": "Bản nháp",
       "comingSoon": "Sắp về",
       "contact": "Liên hệ",
       "outOfStock": "Hết hàng"

@@ -143,7 +143,7 @@ export default function Brands() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t("brands.title")}</h1>
         <PrimaryButton
           onClick={() => {
@@ -151,13 +151,13 @@ export default function Brands() {
             setShowForm(true);
           }}
           icon={<FiPlus className="text-base" />}
-          className="w-full sm:w-auto"
+          className="shrink-0"
         >
           {t("brands.addBrand")}
         </PrimaryButton>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 p-3 shadow-sm dark:border-slate-800 sm:p-4 flex items-center gap-4">
         <div className="flex-1">
           <AdminSearch
             boxed={false}
@@ -176,7 +176,7 @@ export default function Brands() {
             setPage(1);
           }}
           options={categoryOptions}
-          className="w-full md:w-56"
+          className="w-56 shrink-0"
         />
       </div>
 
@@ -257,7 +257,7 @@ export default function Brands() {
 
       <AdminTableCard>
         <AdminTableScroll>
-          <AdminTable className="min-w-[960px]">
+          <AdminTable className="table-fixed min-w-[960px]">
             <thead>
               <AdminTableHeadRow>
                 <AdminTableHeadCell className="w-20 text-center">{t("brands.table.index")}</AdminTableHeadCell>

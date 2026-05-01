@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiTag, FiCheck, FiPlus, FiEdit2, FiBookmark, FiGift, FiChevronDown } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Button, Checkbox, IconButton, Modal, ModalCancelButton, PrimaryButton, Radio, SectionCard } from '@/components';
+import { Button, Checkbox, IconButton, Modal, ModalCancelButton, OrderItemsTable, PrimaryButton, Radio, SectionCard } from '@/components';
 import { formatPrice } from '@/utils/format';
 import cartService from '@/apis/services/cartService';
 import addressService from '@/apis/services/addressService';
@@ -13,9 +13,22 @@ import orderService from '@/apis/services/orderService';
 import settingService from '@/apis/services/settingService';
 import type { CartResponse, AddressResponse, AddressRequest, CouponResponse, PaymentMethodConfig, ShippingConfig, TaxConfig } from '@/types';
 import useAuthStore from '@/stores/useAuthStore';
+import useCartStore from '@/stores/useCartStore';
 import { getApiErrorMessage, getApiErrorCode } from '@/utils/error';
 import CheckoutAppliedCouponCard from './components/CheckoutAppliedCouponCard';
 import CheckoutVoucherCard from './components/CheckoutVoucherCard';
+
+type CheckoutSource = 'buyNow' | 'selectedCart' | 'cart';
+
+interface BuyNowCheckoutStateItem {
+  productId: string;
+  variantId: string;
+  name: string;
+  image?: string;
+  price: number;
+  quantity: number;
+  variantName?: string;
+}
 
 const createCheckoutIdempotencyKey = () => {
   if (typeof window !== 'undefined' && window.crypto && 'randomUUID' in window.crypto) {
@@ -24,13 +37,34 @@ const createCheckoutIdempotencyKey = () => {
   return `checkout-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
 };
 
+const buildBuyNowCartItem = (buyNowItem: BuyNowCheckoutStateItem): CartResponse => ({
+  id: 'buy-now',
+  variantId: buyNowItem.variantId,
+  variantSku: '',
+  productName: buyNowItem.name,
+  imageUrl: buyNowItem.image,
+  price: buyNowItem.price,
+  quantity: buyNowItem.quantity,
+  subtotal: buyNowItem.price * buyNowItem.quantity,
+  variantName: buyNowItem.variantName || '',
+  productSlug: '',
+  stockQuantity: 999,
+  available: true,
+});
+
 export default function Checkout() {
   const { t } = useTranslation(['checkout', 'common']);
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
-  const buyNowItem = location.state?.buyNowItem;
-  const selectedCartItems = location.state?.selectedCartItems;
+  const syncCartCount = useCartStore((s) => s.syncFromServer);
+  const buyNowItem = location.state?.buyNowItem as BuyNowCheckoutStateItem | undefined;
+  const selectedCartItems = location.state?.selectedCartItems as CartResponse[] | undefined;
+  const checkoutSource: CheckoutSource = buyNowItem
+    ? 'buyNow'
+    : selectedCartItems && selectedCartItems.length > 0
+      ? 'selectedCart'
+      : 'cart';
 
   const [cartItems, setCartItems] = useState<CartResponse[]>([]);
   const [addresses, setAddresses] = useState<AddressResponse[]>([]);
@@ -91,27 +125,45 @@ export default function Checkout() {
     setShowForm(true);
   };
 
-  const loadCartData = async (forceServer = false) => {
-    if (buyNowItem && !forceServer) {
-      setCartItems([{
-        id: 'buy-now',
-        productId: buyNowItem.productId,
-        variantId: buyNowItem.variantId,
-        productName: buyNowItem.name,
-        imageUrl: buyNowItem.image,
-        price: buyNowItem.price,
-        quantity: buyNowItem.quantity,
-        subtotal: buyNowItem.price * buyNowItem.quantity,
-        variantName: buyNowItem.variantName,
-        productSlug: '',
-        stockQuantity: 999
-      } as unknown as CartResponse]);
-    } else if (!forceServer && selectedCartItems && selectedCartItems.length > 0) {
-      setCartItems(selectedCartItems);
-    } else {
-      const r = await cartService.getMyCart();
-      setCartItems(r.data || []);
+  const loadCartData = async () => {
+    if (checkoutSource === 'buyNow' && buyNowItem) {
+      setCartItems([buildBuyNowCartItem(buyNowItem)]);
+      return;
     }
+
+    if (checkoutSource === 'selectedCart' && selectedCartItems && selectedCartItems.length > 0) {
+      setCartItems(selectedCartItems);
+      return;
+    }
+
+    const r = await cartService.getMyCart();
+    setCartItems(r.data || []);
+  };
+
+  const syncCheckoutItemsFromServer = async () => {
+    if (checkoutSource === 'buyNow') {
+      return;
+    }
+
+    const r = await cartService.getMyCart();
+    const serverItems = r.data || [];
+
+    if (checkoutSource === 'selectedCart' && selectedCartItems && selectedCartItems.length > 0) {
+      const selectedVariantIds = new Set(selectedCartItems.map((item) => item.variantId));
+      setCartItems(serverItems.filter((item) => selectedVariantIds.has(item.variantId)));
+      return;
+    }
+
+    setCartItems(serverItems);
+  };
+
+  const markCurrentCheckoutItemsUnavailable = (issueMessage: string, issueCode?: string) => {
+    setCartItems((prev) => prev.map((item) => ({
+      ...item,
+      available: false,
+      issueCode: issueCode || item.issueCode,
+      issueMessage,
+    })));
   };
 
   const loadAddressData = async () => {
@@ -310,6 +362,7 @@ export default function Checkout() {
         })),
       }, checkoutIdempotencyKeyRef.current);
       checkoutIdempotencyKeyRef.current = createCheckoutIdempotencyKey();
+      await syncCartCount();
       if (res.data?.paymentUrl) { window.location.href = res.data.paymentUrl; }
       else {
         toast.success(t('toasts.orderSuccess'));
@@ -317,14 +370,19 @@ export default function Checkout() {
       }
     } catch (err: unknown) {
       const errorCode = getApiErrorCode(err);
-      toast.error(getApiErrorMessage(err, t, 'checkout:toasts.orderFailed'));
+      const errorMessage = getApiErrorMessage(err, t, 'checkout:toasts.orderFailed');
+      toast.error(errorMessage);
       if ([
         'PRICE_CHANGED',
         'INSUFFICIENT_STOCK',
         'PRODUCT_NOT_AVAILABLE',
         'VARIANT_NOT_AVAILABLE',
       ].includes(errorCode)) {
-        await loadCartData(true);
+        if (checkoutSource === 'buyNow') {
+          markCurrentCheckoutItemsUnavailable(errorMessage, errorCode);
+        } else {
+          await syncCheckoutItemsFromServer();
+        }
       }
     }
     finally { setSubmitting(false); }
@@ -347,6 +405,18 @@ export default function Checkout() {
     : roundMoney(productBase + shippingBase);
   const isAppliedProductCouponSaved = !!validatedProductCoupon?.id && savedCouponIds.includes(validatedProductCoupon.id);
   const isAppliedShippingCouponSaved = !!validatedShippingCoupon?.id && savedCouponIds.includes(validatedShippingCoupon.id);
+  const checkoutItems = cartItems.map((item) => ({
+    id: item.id,
+    productName: item.productName,
+    variantName: item.variantName,
+    imageUrl: item.imageUrl,
+    unitPrice: Number(item.price || 0),
+    quantity: item.quantity,
+    subtotal: item.subtotal,
+    issueMessage: item.available === false
+      ? item.issueMessage || t('items.unavailable')
+      : undefined,
+  }));
 
   if (loading) return <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 py-8 sm:py-12"><div className="h-80 sm:h-96 bg-slate-200 dark:bg-slate-700 rounded-2xl animate-pulse" /></div>;
 
@@ -354,8 +424,8 @@ export default function Checkout() {
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 md:px-8 py-5 sm:py-8 md:py-12 space-y-5 sm:space-y-8">
       <h1 className="text-2xl sm:text-3xl font-black text-ink mb-1 sm:mb-2">{t('title')}</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
-        <div className="lg:col-span-8 space-y-4 sm:space-y-8">
+      <div className="grid grid-cols-1 gap-4 sm:gap-8 xl:grid-cols-12">
+        <div className="space-y-4 sm:space-y-8 xl:col-span-8">
           {/* Address */}
           <SectionCard
             title={t('address.title')}
@@ -426,24 +496,18 @@ export default function Checkout() {
             )}
           </SectionCard>
 
-          {/* Items */}
-          <SectionCard title={t('items.title', { count: cartItems.length })}>
-            <div className="space-y-3">
-              {cartItems.map(item => (
-                <div key={item.id} className="flex items-start gap-3 sm:gap-4">
-                  {item.imageUrl ? <img src={item.imageUrl} alt={item.productName} className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-slate-50" /> : <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-slate-100 dark:bg-slate-800" />}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-md sm:text-base truncate">{item.productName}</h4>
-                    <p className="text-sm sm:text-md text-muted">{item.variantName} | x{item.quantity}</p>
-                    {item.available === false && (
-                      <p className="text-sm text-red-500 mt-1">{item.issueMessage || t('items.unavailable')}</p>
-                    )}
-                  </div>
-                  <span className="font-bold text-md sm:text-base text-blue-600 shrink-0">{formatPrice(item.subtotal)}</span>
-                </div>
-              ))}
-            </div>
-          </SectionCard>
+          <OrderItemsTable
+            title={t('items.title', { count: cartItems.length })}
+            items={checkoutItems}
+            labels={{
+              product: t('items.product'),
+              variant: t('items.variant'),
+              unitPrice: t('items.unitPrice'),
+              quantity: t('items.quantity'),
+              lineTotal: t('items.lineTotal'),
+            }}
+            showIssueMessage
+          />
 
           {/* Payment */}
           <SectionCard title={t('payment.title')}>
@@ -470,7 +534,7 @@ export default function Checkout() {
         {/* Summary */}
         <SectionCard
           title={t('summary.title')}
-          className="sticky top-24 h-fit lg:col-span-4 sm:top-28 sm:rounded-3xl sm:p-7 xl:p-8"
+          className="h-fit sm:rounded-3xl sm:p-7 xl:sticky xl:top-24 xl:col-span-4 xl:p-8"
           contentClassName="space-y-5 sm:space-y-6"
           titleClassName="text-xl font-black tracking-tight sm:text-[2rem]"
           headerSeparated

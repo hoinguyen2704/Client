@@ -19,6 +19,8 @@ import {
   AdminTableCard,
 } from '@/components/ui/AdminTable';
 
+const RETURN_TABLE_GRID_COLUMNS = 'grid-cols-[84px_260px_260px_minmax(240px,1fr)_minmax(170px,1fr)_minmax(200px,1fr)_100px_200px]';
+
 
 
 export default function AdminReturns() {
@@ -95,12 +97,12 @@ export default function AdminReturns() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">{t('returns.list.title')}</h1>
           <p className="text-md text-muted mt-1">{t('returns.list.description')}</p>
         </div>
-        <div className="flex gap-3 print:hidden">
+        <div className="flex items-center gap-3 print:hidden shrink-0">
           <Button onClick={() => setIsReportExportModalOpen(true)} variant="success" size="md" icon={<FiDownload />}>
             {t('returns.list.reportExport')}
           </Button>
@@ -110,7 +112,7 @@ export default function AdminReturns() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex justify-between items-start">
             <div>
@@ -163,7 +165,7 @@ export default function AdminReturns() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 p-3 shadow-sm dark:border-slate-800 sm:p-4 flex items-center gap-4">
         <div className="flex-1">
           <AdminSearch
             boxed={false}
@@ -182,13 +184,13 @@ export default function AdminReturns() {
             setPage(1);
           }}
           options={getReturnFilterOptions(t)}
-          className="w-full md:w-56"
+          className="w-56 shrink-0"
         />
       </div>
 
       <AdminTableCard>
         {/* Desktop Header */}
-        <div className={`${ADMIN_GRID_TABLE_HEADER_BASE_CLASS} grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px]`}>
+        <div className={`${ADMIN_GRID_TABLE_HEADER_BASE_CLASS} ${RETURN_TABLE_GRID_COLUMNS}`}>
           <div className="px-4 py-4">{t('returns.list.table.index')}</div>
           <div className="px-4 py-4 text-left">{t('returns.list.table.returnNumber')}</div>
           <div className="px-4 py-4 text-left">{t('returns.list.table.orderNumber')}</div>
@@ -204,16 +206,16 @@ export default function AdminReturns() {
             Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className={`${ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS} grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px]`}
+                className={`${ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS} ${RETURN_TABLE_GRID_COLUMNS}`}
               >
-                <div className="hidden lg:flex px-4 py-4 w-full justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full"><div className="h-4 w-28 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-start hidden lg:flex"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-start hidden lg:flex"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-40 bg-slate-200 dark:bg-slate-700 rounded-xl" /></div>
-                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-36 bg-slate-200 dark:bg-slate-700 rounded-xl" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-4 w-8 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="px-4 py-4"><div className="h-4 w-28 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="px-4 py-4"><div className="h-4 w-24 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="px-4 py-4"><div className="h-4 w-32 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-end px-4 py-4"><div className="h-4 w-20 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-8 w-40 rounded-xl bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-4 w-16 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-8 w-36 rounded-xl bg-slate-200 dark:bg-slate-700" /></div>
               </div>
             ))
           ) : returns.length === 0 ? (
@@ -230,54 +232,43 @@ export default function AdminReturns() {
               return (
                 <div
                   key={item.id}
-                  className={`${ADMIN_GRID_TABLE_ROW_BASE_CLASS} grid-cols-[84px_minmax(100px,1fr)_minmax(100px,1fr)_minmax(200px,1fr)_200px_160px_100px_280px]`}
+                  className={`${ADMIN_GRID_TABLE_ROW_BASE_CLASS} ${RETURN_TABLE_GRID_COLUMNS}`}
                 >
-                  <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-subtle">
+                  <div className="flex items-center justify-center px-4 py-4 font-semibold text-subtle">
                     {rowNumber}
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-muted text-md">{t('returns.list.mobile.returnNumber')}</span>
-                    <div className="font-bold text-blue-600 flex items-center gap-2">
-                      <span className="inline-flex lg:hidden items-center justify-center min-w-9 h-8 px-2 rounded-full bg-slate-100 dark:bg-slate-800 text-muted text-sm font-semibold">
-                        {rowNumber}
-                      </span>
-                      {item.returnNumber}
-                    </div>
+                  <div className="flex items-center px-4 py-4">
+                    <div className="font-bold text-blue-600">{item.returnNumber}</div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-muted text-md">{t('returns.list.mobile.orderNumber')}</span>
+                  <div className="flex items-center px-4 py-4">
                     <div className="font-medium text-body">{item.orderNumber}</div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-muted text-md">{t('returns.list.mobile.customer')}</span>
+                  <div className="px-4 py-4">
                     <div className="text-md">
                       <div className="font-medium text-ink">{item.userName || t('returns.list.unknownUser')}</div>
                       <div className="text-muted text-sm">{item.userEmail || '-'}</div>
                     </div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-right text-ink">
-                    <span className="lg:hidden text-muted text-md">{t('returns.list.mobile.requestedAmount')}</span>
+                  <div className="flex items-center justify-end px-4 py-4 text-right text-ink">
                     <div className="font-bold">{formatPrice(Number(item.requestedAmount || 0))}</div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                    <span className="lg:hidden text-muted text-md">{t('returns.list.mobile.status')}</span>
-                    <div className="flex flex-col xl:flex-row xl:flex-wrap gap-1.5 justify-end lg:justify-center w-full">
+                  <div className="flex items-center justify-center px-4 py-4 text-center">
+                    <div className="flex flex-wrap justify-center gap-1.5">
                       <ReturnStatusBadge status={item.status} />
                       <RefundStatusBadge status={item.refundStatus} />
                     </div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                    <span className="lg:hidden text-muted text-md">{t('returns.list.mobile.createdAt')}</span>
+                  <div className="flex items-center justify-center px-4 py-4 text-center">
                     <div className="text-muted text-md font-medium">{formatDate(item.createdAt)}</div>
                   </div>
 
-                  <div className="w-full lg:w-auto mt-3 lg:mt-0 flex justify-end lg:justify-center items-center gap-3 px-4 pb-4 pt-2 lg:px-4 lg:py-4 lg:h-full">
+                  <div className="flex items-center justify-center gap-3 px-4 py-4">
                     {item.status === 'REQUESTED' && (
                       <>
                         <Button
@@ -285,17 +276,19 @@ export default function AdminReturns() {
                           variant="success"
                           onClick={() => handleQuickReview(item, true)}
                           loading={reviewingKey === `${item.id}:approve`}
-                        >
-                          {t('returns.list.quickApprove')}
-                        </Button>
+                          icon={<FiCheckCircle />}
+                          title={t('returns.list.quickApprove')}
+                          aria-label={t('returns.list.quickApprove')}
+                        />
                         <Button
                           size="sm"
                           variant="danger"
                           onClick={() => handleQuickReview(item, false)}
                           loading={reviewingKey === `${item.id}:reject`}
-                        >
-                          {t('returns.list.quickReject')}
-                        </Button>
+                          icon={<FiXCircle />}
+                          title={t('returns.list.quickReject')}
+                          aria-label={t('returns.list.quickReject')}
+                        />
                       </>
                     )}
                     <ActionButtons

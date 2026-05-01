@@ -67,6 +67,11 @@
   },
   "items": {
     "title": "Sản phẩm ({{count}})",
+    "product": "Sản phẩm",
+    "variant": "Phân loại",
+    "unitPrice": "Đơn giá",
+    "quantity": "Số lượng",
+    "lineTotal": "Tạm tính",
     "unavailable": "Sản phẩm không còn khả dụng"
   },
   "payment": {

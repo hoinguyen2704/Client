@@ -9,6 +9,7 @@
   "notificationsPage": {
     "title": "Notifications",
     "markAllRead": "Mark all as read ({{count}})",
+    "pagination": "notifications",
     "empty": {
       "title": "No notifications",
       "description": "You will receive notifications when there are new updates."

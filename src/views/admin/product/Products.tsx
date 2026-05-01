@@ -257,14 +257,14 @@ export default function Products() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold">{t('adminCatalog:products.title')}</h1>
           <p className={`text-md text-muted mt-1 transition-all ${selectedItems.length > 0 ? 'visible opacity-100' : 'invisible opacity-0'}`}>
             {t('adminCatalog:products.selectedCount', { count: selectedItems.length > 0 ? selectedItems.length : 1 })}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {selectedItems.length > 0 ? (
             <Button
               onClick={handleDeleteSelected}
@@ -284,7 +284,7 @@ export default function Products() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 p-3 shadow-sm dark:border-slate-800 sm:p-4 flex items-center gap-4">
         <div className="flex-1">
           <AdminSearch
             boxed={false}
@@ -310,7 +310,7 @@ export default function Products() {
             { value: '', label: t('adminCatalog:products.filters.allCategories') },
             ...categories.map((category) => ({ value: category.id, label: category.name })),
           ]}
-          className="w-full md:w-56"
+          className="w-56 shrink-0"
         />
         <CustomSelect
           value={statusFilter}
@@ -326,23 +326,34 @@ export default function Products() {
             { value: 'DRAFT', label: t('adminCatalog:products.filters.draft') },
             { value: 'INACTIVE', label: t('adminCatalog:products.filters.inactive') },
           ]}
-          className="w-full md:w-48"
+          className="w-48 shrink-0"
         />
       </div>
 
       <AdminTableCard>
         <AdminTableScroll>
-          <AdminTable className="min-w-[1000px]">
+          <AdminTable className="table-fixed min-w-[1280px]">
+            <colgroup>
+              <col style={{ width: '80px' }} />
+              <col style={{ width: '50px' }} />
+              <col style={{ width: '380px' }} />
+              <col style={{ width: '190px' }} />
+              <col style={{ width: '150px' }} />
+              <col style={{ width: '132px' }} />
+              <col style={{ width: '120px' }} />
+              <col style={{ width: '160px' }} />
+              <col style={{ width: '160px' }} />
+            </colgroup>
             <thead>
               <AdminTableHeadRow>
-                <AdminTableHeadCell className="w-20 text-center">{t('adminCatalog:products.table.index')}</AdminTableHeadCell>
-                <AdminTableHeadCell className="w-10 text-center">
+                <AdminTableHeadCell className="w-20 text-center whitespace-nowrap">{t('adminCatalog:products.table.index')}</AdminTableHeadCell>
+                <AdminTableHeadCell className="w-10 text-center whitespace-nowrap">
                   <Checkbox
                     checked={selectedItems.length === products.length && products.length > 0}
                     onCheckedChange={(checked) => handleSelectAll(!!checked)}
                   />
                 </AdminTableHeadCell>
-                <AdminTableHeadCell>
+                <AdminTableHeadCell className="whitespace-nowrap">
                   <SortableHeaderLabel
                     label={t('adminCatalog:products.table.product')}
                     active={sortBy === 'name'}
@@ -350,8 +361,8 @@ export default function Products() {
                     onClick={() => handleSort('name')}
                   />
                 </AdminTableHeadCell>
-                <AdminTableHeadCell>{t('adminCatalog:products.table.category')}</AdminTableHeadCell>
-                <AdminTableHeadCell>
+                <AdminTableHeadCell className="whitespace-nowrap">{t('adminCatalog:products.table.category')}</AdminTableHeadCell>
+                <AdminTableHeadCell className="whitespace-nowrap">
                   <SortableHeaderLabel
                     label={t('adminCatalog:products.table.price')}
                     active={sortBy === 'originPrice'}
@@ -359,7 +370,7 @@ export default function Products() {
                     onClick={() => handleSort('originPrice')}
                   />
                 </AdminTableHeadCell>
-                <AdminTableHeadCell className="text-center">
+                <AdminTableHeadCell className="text-center whitespace-nowrap">
                   <SortableHeaderLabel
                     label={t('adminCatalog:products.table.stock')}
                     active={sortBy === 'totalStock'}
@@ -368,7 +379,7 @@ export default function Products() {
                     align="center"
                   />
                 </AdminTableHeadCell>
-                <AdminTableHeadCell className="text-center">
+                <AdminTableHeadCell className="text-center whitespace-nowrap">
                   <SortableHeaderLabel
                     label={t('adminCatalog:products.table.sold')}
                     active={sortBy === 'totalSold'}
@@ -377,7 +388,7 @@ export default function Products() {
                     align="center"
                   />
                 </AdminTableHeadCell>
-                <AdminTableHeadCell>
+                <AdminTableHeadCell className="whitespace-nowrap">
                   <SortableHeaderLabel
                     label={t('adminCatalog:products.table.status')}
                     active={sortBy === 'status'}
@@ -385,7 +396,7 @@ export default function Products() {
                     onClick={() => handleSort('status')}
                   />
                 </AdminTableHeadCell>
-                <AdminTableHeadCell className="text-center">{t('adminCatalog:products.table.actions')}</AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center whitespace-nowrap">{t('adminCatalog:products.table.actions')}</AdminTableHeadCell>
               </AdminTableHeadRow>
             </thead>
             <tbody>
@@ -409,20 +420,22 @@ export default function Products() {
                         />
                       </AdminTableCell>
                       <AdminTableCell>
-                        <div className="flex items-center gap-3">
+                        <div className="flex min-w-0 items-center gap-3">
                           <img
                             src={product.mainImageUrl || '/placeholder.png'}
                             alt={product.name}
                             className="w-12 h-12 rounded-lg object-cover bg-slate-100 dark:bg-slate-800"
                           />
-                          <div>
-                            <span className="font-bold line-clamp-1 max-w-[380px]">{product.name}</span>
-                            <span className="text-sm text-subtle block">{product.brandName || ''}</span>
+                          <div className="min-w-0">
+                            <span className="block truncate font-bold">{product.name}</span>
+                            <span className="block truncate text-sm text-subtle">{product.brandName || ''}</span>
                           </div>
                         </div>
                       </AdminTableCell>
-                      <AdminTableCell className="text-muted">{product.categoryName || t('common:labels.notAvailable')}</AdminTableCell>
-                      <AdminTableCell className="font-bold text-ink">{formatPrice(product.lowestPrice ?? product.originPrice)}</AdminTableCell>
+                      <AdminTableCell className="text-muted">
+                        <span className="block truncate">{product.categoryName || t('common:labels.notAvailable')}</span>
+                      </AdminTableCell>
+                      <AdminTableCell className="font-bold text-ink whitespace-nowrap">{formatPrice(product.lowestPrice ?? product.originPrice)}</AdminTableCell>
                       <AdminTableCell>
                         <div className="flex items-center gap-2">
                           <span className={`font-medium ${stock === 0 ? 'text-red-500' : stock < 10 ? 'text-orange-500' : ''}`}>{stock}</span>

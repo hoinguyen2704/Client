@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiBell, FiCheck, FiCheckCircle } from 'react-icons/fi';
+import { Pagination } from '@/components';
 import adminNotificationService from '@/apis/services/adminNotificationService';
 import useAuthStore from '@/stores/useAuthStore';
 import useNotificationStore from '@/stores/useNotificationStore';
@@ -14,28 +15,45 @@ import type { AdminNotificationRealtimePayload, NotificationResponse } from '@/t
 import { REALTIME_EVENT_TYPES } from '@/constants/realtimeConstants';
 import { onRealtimeEvent } from '@/realtime/realtimeBus';
 
+const PAGE_SIZE = 20;
+
 export default function AdminNotifications() {
   const { t } = useTranslation('account');
   const navigate = useNavigate();
   const currentUserId = useAuthStore((s) => s.user?.id);
+  const unreadCount = useNotificationStore((s) => s.unreadCount);
+  const syncUnreadCount = useNotificationStore((s) => s.syncFromServer);
   const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(totalItems / PAGE_SIZE)),
+    [totalItems],
+  );
 
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminNotificationService.getMyNotifications(1, 50);
+      const res = await adminNotificationService.getMyNotifications(page, PAGE_SIZE);
       setNotifications(res.data?.data || []);
+      setTotalItems(res.data?.total || 0);
     } catch {
       setNotifications([]);
+      setTotalItems(0);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     void fetchNotifications();
   }, [fetchNotifications]);
+
+  useEffect(() => {
+    void syncUnreadCount();
+  }, [syncUnreadCount]);
 
   useEffect(() => {
     const unsubscribe = onRealtimeEvent((event) => {
@@ -49,15 +67,21 @@ export default function AdminNotifications() {
         ? { ...payload, isRead: true }
         : payload;
 
-      setNotifications((prev) => (
-        prev.some((notification) => notification.id === payload.id)
-          ? prev
-          : [normalizedPayload, ...prev]
-      ));
+      let inserted = false;
+      setNotifications((prev) => {
+        if (prev.some((notification) => notification.id === payload.id)) {
+          return prev;
+        }
+        inserted = true;
+        return page === 1 ? [normalizedPayload, ...prev].slice(0, PAGE_SIZE) : prev;
+      });
+      if (inserted) {
+        setTotalItems((prev) => prev + 1);
+      }
     });
 
     return unsubscribe;
-  }, [currentUserId]);
+  }, [currentUserId, page]);
 
   const handleMarkRead = useCallback(async (id: string) => {
     try {
@@ -92,8 +116,6 @@ export default function AdminNotifications() {
       navigate(targetUrl);
     }
   }, [handleMarkRead, navigate]);
-
-  const unreadCount = notifications.filter((notification) => !notification.isRead).length;
 
   return (
     <div className="space-y-6">
@@ -158,6 +180,16 @@ export default function AdminNotifications() {
           ))}
         </div>
       )}
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        perPage={PAGE_SIZE}
+        label={t('notificationsPage.pagination')}
+        onPageChange={setPage}
+        variant="admin"
+      />
     </div>
   );
 }

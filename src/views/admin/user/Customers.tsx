@@ -126,15 +126,15 @@ export default function Customers() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t('adminCustomers:customers.title')}</h1>
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <Button
             onClick={handleExport}
             variant="success"
             size="md"
             icon={<FiDownload />}
-            className="w-full sm:w-auto">
+            >
             {t('adminCustomers:customers.export')}
           </Button>
           <Button
@@ -142,13 +142,13 @@ export default function Customers() {
             variant="primary"
             size="md"
             icon={<FiPlus />}
-            className="w-full sm:w-auto">
+            >
             {t('adminCustomers:customers.addCustomer')}
           </Button>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 p-3 shadow-sm dark:border-slate-800 sm:p-4 flex items-center gap-4">
         <div className="flex-1">
           <AdminSearch
             boxed={false}
@@ -175,7 +175,7 @@ export default function Customers() {
             { value: 'USER', label: t('adminCustomers:customers.filters.customer') },
             { value: 'ADMIN', label: t('adminCustomers:customers.filters.admin') },
           ]}
-          className="w-full md:w-48 shrink-0" />
+          className="w-48 shrink-0" />
       </div>
 
       <AdminTableCard>

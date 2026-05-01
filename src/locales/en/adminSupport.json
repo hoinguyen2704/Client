@@ -46,7 +46,7 @@
   },
   "chatbot": {
     "title": "AI Chatbot Management",
-    "subtitle": "Powered by Gemini AI - Model: {{model}}",
+    "subtitle": "Powered by AI - Model: {{model}}",
     "actions": {
       "reset": "Restore defaults",
       "retry": "Retry",

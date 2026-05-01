@@ -8,7 +8,7 @@ import returnService from '@/apis/services/returnService';
 import type { OrderResponse, ReturnRequestResponse } from '@/types';
 
 import { getOrderTrackingSteps, ORDER_STATUS_INDEX } from '@/constants/orderConstants';
-import { BackButton, Button, Checkbox, PrimaryButton, QuantitySelector, OrderStatusTimeline, OrderAddressCard, OrderSummaryCard } from '@/components';
+import { BackButton, Button, Checkbox, PrimaryButton, QuantitySelector, OrderStatusTimeline, OrderAddressCard, OrderItemsTable, OrderSummaryCard } from '@/components';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/utils/error';
 
@@ -479,111 +479,25 @@ export default function OrderTracking() {
             </div>
           )}
 
-          {/* Items */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold">{t('orderTracking.items.title')}</h2>
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="hidden md:grid grid-cols-[minmax(0,2.45fr)_0.72fr_0.48fr_0.85fr] border-b border-slate-200 dark:border-slate-700">
-                <div className="px-6 py-5 text-base font-semibold text-muted">{t('orderTracking.items.title')}</div>
-                <div className="border-l border-slate-200 px-6 py-5 text-right text-base font-semibold text-muted dark:border-slate-700">
-                  {t('orderTracking.items.unitPrice')}
-                </div>
-                <div className="border-l border-slate-200 px-6 py-5 text-center text-base font-semibold text-muted dark:border-slate-700">
-                  {t('orderTracking.items.quantity')}
-                </div>
-                <div className="border-l border-slate-200 px-6 py-5 text-right text-base font-semibold text-muted dark:border-slate-700">
-                  {t('orderTracking.items.lineTotal')}
-                </div>
-              </div>
-
-              <div className="divide-y divide-slate-200 dark:divide-slate-700">
-                {order.items.map(item => (
-                  <div key={item.id}>
-                    <div className="hidden md:grid md:grid-cols-[minmax(0,2.45fr)_0.72fr_0.48fr_0.85fr]">
-                      <div className="flex min-w-0 items-start gap-4 px-6 py-5">
-                        <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                          {item.imageUrl ? (
-                            <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
-                          ) : (
-                            <FiPackage className="text-subtle text-3xl" />
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <h4 className="font-bold text-base sm:text-lg leading-snug text-ink" title={item.productName}>
-                            {item.productName}
-                          </h4>
-                          {item.variantName && (
-                            <p className="text-lg sm:text-base text-muted mt-2">
-                              {t('orderTracking.items.variant')}: {item.variantName}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-end border-l border-slate-200 px-6 py-5 text-right text-base text-body tabular-nums dark:border-slate-700">
-                        {formatPrice(Number(item.unitPrice || 0))}
-                      </div>
-                      <div className="flex items-center justify-center border-l border-slate-200 px-6 py-5 text-center text-base text-body tabular-nums dark:border-slate-700">
-                        {item.quantity}
-                      </div>
-                      <div className="flex items-center justify-end border-l border-slate-200 px-6 py-5 text-right text-lg font-semibold text-blue-600 tabular-nums dark:border-slate-700">
-                        {formatPrice(item.subtotal)}
-                      </div>
-                    </div>
-
-                    <div className="grid gap-4 px-4 py-4 sm:px-6 md:hidden">
-                      <div className="flex items-start gap-4 min-w-0">
-                        <div className="w-18 h-18 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                          {item.imageUrl ? (
-                            <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />
-                          ) : (
-                            <FiPackage className="text-subtle text-3xl" />
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <h4 className="font-bold text-base text-ink line-clamp-2" title={item.productName}>
-                            {item.productName}
-                          </h4>
-                          {item.variantName && (
-                            <p className="text-lg text-muted mt-2">
-                              {t('orderTracking.items.variant')}: {item.variantName}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="rounded-xl bg-slate-50 dark:bg-slate-800/70 px-3 py-2">
-                          <div className="text-sm font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                            {t('orderTracking.items.unitPrice')}
-                          </div>
-                          <div className="mt-1 text-lg font-semibold text-body tabular-nums">
-                            {formatPrice(Number(item.unitPrice || 0))}
-                          </div>
-                        </div>
-                        <div className="rounded-xl bg-slate-50 dark:bg-slate-800/70 px-3 py-2 text-center">
-                          <div className="text-lg font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                            {t('orderTracking.items.quantity')}
-                          </div>
-                          <div className="mt-1 text-lg font-semibold text-body tabular-nums">
-                            {item.quantity}
-                          </div>
-                        </div>
-                        <div className="rounded-xl bg-slate-50 dark:bg-slate-800/70 px-3 py-2 text-right">
-                          <div className="text-lg font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                            {t('orderTracking.items.lineTotal')}
-                          </div>
-                          <div className="mt-1 text-lg font-semibold text-blue-600 tabular-nums">
-                            {formatPrice(item.subtotal)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <OrderItemsTable
+            title={t('orderTracking.items.title')}
+            items={order.items.map((item) => ({
+              id: item.id,
+              productName: item.productName,
+              variantName: item.variantName,
+              imageUrl: item.imageUrl,
+              unitPrice: Number(item.unitPrice || 0),
+              quantity: item.quantity,
+              subtotal: item.subtotal,
+            }))}
+            labels={{
+              product: t('orderTracking.items.title'),
+              variant: t('orderTracking.items.variant'),
+              unitPrice: t('orderTracking.items.unitPrice'),
+              quantity: t('orderTracking.items.quantity'),
+              lineTotal: t('orderTracking.items.lineTotal'),
+            }}
+          />
         </div>
 
         {/* Summary */}

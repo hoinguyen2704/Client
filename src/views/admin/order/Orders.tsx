@@ -122,9 +122,9 @@ export default function AdminOrders() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl font-bold">{t('orders.title')}</h1>
-        <div className="flex gap-3 print:hidden">
+        <div className="flex items-center gap-3 print:hidden shrink-0">
           <Button onClick={() => setIsReportExportModalOpen(true)} variant="success" size="md" icon={<FiDownload />}>
             {t('orders.reportExport')}
           </Button>
@@ -134,7 +134,7 @@ export default function AdminOrders() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-3 sm:gap-4 print:hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 p-3 shadow-sm dark:border-slate-800 sm:p-4 print:hidden flex items-center gap-4">
         <div className="flex-1">
           <AdminSearch
             boxed={false}
@@ -157,7 +157,7 @@ export default function AdminOrders() {
             });
           }}
           options={getOrderFilterOptions(t)}
-          className="w-full md:w-56"
+          className="w-56 shrink-0"
         />
       </div>
 
@@ -225,15 +225,15 @@ export default function AdminOrders() {
           {loading ? (
             Array.from({ length: 5 }).map((_, index) => (
               <div key={index} className={`${ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS} ${ORDER_TABLE_GRID_COLUMNS}`}>
-                <div className="hidden lg:flex px-4 py-4 w-full justify-center"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full"><div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full hidden lg:flex"><div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-8 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-end hidden lg:flex"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded" /></div>
-                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-36 bg-slate-200 dark:bg-slate-700 rounded-xl" /></div>
-                <div className="px-4 py-4 w-full flex justify-center hidden lg:flex"><div className="h-8 w-10 bg-slate-200 dark:bg-slate-700 rounded-lg" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-4 w-8 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="px-4 py-4"><div className="h-4 w-32 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="px-4 py-4"><div className="h-4 w-40 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-4 w-20 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-4 w-8 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-end px-4 py-4"><div className="h-4 w-24 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-end px-4 py-4"><div className="h-4 w-16 rounded bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-8 w-36 rounded-xl bg-slate-200 dark:bg-slate-700" /></div>
+                <div className="flex justify-center px-4 py-4"><div className="h-8 w-10 rounded-lg bg-slate-200 dark:bg-slate-700" /></div>
               </div>
             ))
           ) : orders.length === 0 ? (
@@ -249,54 +249,44 @@ export default function AdminOrders() {
 
               return (
                 <div key={order.id} className={`${ADMIN_GRID_TABLE_ROW_BASE_CLASS} ${ORDER_TABLE_GRID_COLUMNS}`}>
-                  <div className="hidden lg:flex items-center justify-center px-4 py-4 h-full font-semibold text-subtle">
+                  <div className="flex items-center justify-center px-4 py-4 font-semibold text-subtle">
                     {rowNumber}
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-start items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                    <div className="font-bold text-blue-600 flex items-center gap-2">
-                      <span className="inline-flex lg:hidden items-center justify-center min-w-9 h-8 px-2 rounded-full bg-slate-100 dark:bg-slate-800 text-muted text-sm font-semibold">
-                        {rowNumber}
-                      </span>
-                      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 lg:hidden"><FiPackage className="text-md" /></div>
-                      {order.orderNumber}
-                    </div>
-                    <div className="lg:hidden text-muted text-md ">{formatDate(order.createdAt)}</div>
+                  <div className="flex items-center px-4 py-4">
+                    <div className="font-bold text-blue-600">{order.orderNumber}</div>
                   </div>
 
-                  <div className="w-full lg:w-auto min-w-0 flex justify-between lg:block items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-muted text-md">{t('orders.table.customerMobile')}</span>
-                    <div className="min-w-0 w-full max-w-[220px] lg:max-w-full text-right lg:text-left">
+                  <div className="min-w-0 px-4 py-4">
+                    <div className="min-w-0 max-w-[220px]">
                       <p className="truncate font-medium text-body" title={order.customerEmail?.trim() || undefined}>
                         {customerEmail}
                       </p>
                     </div>
                   </div>
 
-                  <div className="hidden lg:flex justify-center items-center px-4 py-4 text-body font-medium h-full text-center">{formatDate(order.createdAt)}</div>
+                  <div className="flex items-center justify-center px-4 py-4 text-center font-medium text-body">
+                    {formatDate(order.createdAt)}
+                  </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-center items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-muted text-md">{t('orders.table.quantityMobile')}</span>
-                    <div className="font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1 lg:px-0 lg:py-0 lg:bg-transparent lg:dark:bg-transparent rounded-full text-sm lg:text-md w-max text-body">
+                  <div className="flex items-center justify-center px-4 py-4">
+                    <div className="font-medium text-body">
                       {order.itemCount || 0}
                     </div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-muted text-md">{t('orders.table.totalMobile')}</span>
+                  <div className="flex items-center justify-end px-4 py-4">
                     <div className="font-bold text-ink">{formatPrice(order.totalAmount)}</div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex justify-between lg:justify-end items-center px-4 py-2 lg:px-4 lg:py-4 lg:h-full text-center">
-                    <span className="lg:hidden text-muted text-md">{t('orders.table.paymentMobile')}</span>
-                    <div className="text-body font-medium px-2 py-1 lg:px-0 lg:py-0 bg-slate-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent rounded-md text-sm lg:text-md w-max border lg:border-none border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-end px-4 py-4 text-center">
+                    <div className="font-medium text-body">
                       {order.paymentMethod}
                     </div>
                   </div>
 
-                  <div className="w-full lg:w-auto mt-1 lg:mt-0 flex justify-between lg:justify-center items-center px-4 py-3 lg:px-4 lg:py-4 lg:h-full">
-                    <span className="lg:hidden text-muted text-md">{t('orders.table.statusMobile')}</span>
-                    <div className="w-[170px] sm:w-48 lg:w-[150px]">
+                  <div className="flex items-center justify-center px-4 py-4">
+                    <div className="w-[150px]">
                       <CustomSelect
                         value={order.orderStatus}
                         onChange={(value) => handleStatusChange(order.id, value)}
@@ -307,7 +297,7 @@ export default function AdminOrders() {
                     </div>
                   </div>
 
-                  <div className="w-full lg:w-auto mt-2 lg:mt-0 flex justify-end lg:justify-center items-center print:hidden px-4 pb-4 pt-2 lg:px-4 lg:py-4 lg:h-full">
+                  <div className="flex items-center justify-center px-4 py-4 print:hidden">
                     <ActionButtons
                       actions={[
                         {

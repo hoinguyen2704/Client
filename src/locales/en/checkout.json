@@ -67,6 +67,11 @@
   },
   "items": {
     "title": "Items ({{count}})",
+    "product": "Product",
+    "variant": "Variant",
+    "unitPrice": "Unit price",
+    "quantity": "Quantity",
+    "lineTotal": "Line total",
     "unavailable": "This product is no longer available"
   },
   "payment": {
