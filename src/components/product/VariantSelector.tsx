@@ -201,11 +201,11 @@ function VariantSelector({
               };
               const targetVariantIdx = resolveVariantIndexBySelection(nextSelection);
               const isDisabled = targetVariantIdx === -1;
-              const optionButtonClass = isDisabled
-                ? 'border-slate-200 dark:border-slate-800 text-body cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/30'
-                : isActive
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300'
-                  : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 text-body';
+              const optionButtonClass = isActive
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 shadow-[0_0_0_1px_rgba(59,130,246,0.25)]'
+                : isDisabled
+                  ? 'border-slate-300 bg-slate-100 text-slate-400 cursor-not-allowed opacity-80 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-500'
+                  : 'border-slate-200 bg-white text-body hover:border-blue-300 hover:bg-blue-50/30 dark:border-slate-700 dark:bg-transparent dark:hover:border-blue-500/60 dark:hover:bg-blue-950/20';
 
               return (
                 <button
@@ -219,9 +219,17 @@ function VariantSelector({
                     }
                   }}
                   disabled={isDisabled && !isActive}
-                  className={`px-4 py-2.5 rounded-xl border-2 font-semibold transition-all text-center min-w-[110px] ${optionButtonClass}`}
+                  className={`relative min-w-[110px] overflow-hidden rounded-xl border-2 px-4 py-2.5 text-center font-semibold transition-all ${optionButtonClass}`}
                 >
-                  <span className="block">{option.label}</span>
+                  {isDisabled && !isActive && (
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute left-1/2 top-1/2 h-[2px] w-[140%] -translate-x-1/2 -translate-y-1/2 -rotate-12 bg-slate-300 dark:bg-slate-600"
+                    />
+                  )}
+                  <span className={`relative block ${isDisabled && !isActive ? 'line-through decoration-2' : ''}`}>
+                    {option.label}
+                  </span>
                 </button>
               );
             })}

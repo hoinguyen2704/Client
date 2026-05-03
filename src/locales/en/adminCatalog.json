@@ -46,6 +46,7 @@
       "loadFailed": "Failed to load product list",
       "deleteConfirm": "Confirm deleting this product?",
       "deleteSuccess": "Product deleted successfully!",
+      "hiddenInsteadOfDeleted": "This product already exists in orders, so it was hidden instead of deleted.",
       "deleteFailed": "Unable to delete this product!",
       "toggleSuccess": "Product status updated!",
       "toggleFailed": "Failed to update product status!",
@@ -54,6 +55,7 @@
       "deleteManyConfirm": "Confirm deleting {{count}} products?",
       "deleteManyDescription": "This action cannot be undone.",
       "deleteManySuccess": "Deleted {{count}} products successfully!",
+      "deleteManyHidden": "Moved {{count}} products to hidden because they already exist in orders.",
       "deleteManyPartial": "Deleted {{success}}/{{total}} products. Some products could not be removed."
     }
   },
@@ -319,6 +321,8 @@
       "uploadFailed": "Failed to upload variant images.",
       "deleteImageSuccess": "Variant image deleted successfully!",
       "deleteImageFailed": "Failed to delete variant image.",
+      "hiddenInsteadOfRemoved": "Variant \"{{name}}\" already exists in orders, so it was hidden instead of removed.",
+      "hiddenAfterDeleteAttempt": "{{count}} variants already exist in orders, so they were hidden instead: {{variants}}",
       "updateSuccess": "Product variants updated successfully!"
     },
     "skuChange": {

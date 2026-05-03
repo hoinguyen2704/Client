@@ -94,6 +94,12 @@ export interface AdminProductVariantSummary {
   imageUrl?: string;
 }
 
+export interface AdminProductDeleteResult {
+  id: string;
+  action: "DELETED" | "HIDDEN";
+  status?: string;
+}
+
 export interface ProductSearchParams {
   keyword?: string;
   categorySlug?: string;

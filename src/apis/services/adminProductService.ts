@@ -4,6 +4,7 @@ import type { AxiosRequestConfig } from 'axios';
 import type {
   AdminProductListItem,
   AdminProductListParams,
+  AdminProductDeleteResult,
   AdminProductPickerListParams,
   AdminProductPickerItem,
   AdminProductVariantSummary,
@@ -42,6 +43,10 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
 
   async toggleStatus(id: string): Promise<ApiResponse<ProductResponse>> {
     return this.http.patch(`${this.endpoint}/${id}/status`);
+  }
+
+  async deleteProduct(id: string): Promise<ApiResponse<AdminProductDeleteResult>> {
+    return this.http.delete(`${this.endpoint}/${id}`);
   }
 
   async createBasic(data: ProductBasicRequest): Promise<ApiResponse<ProductResponse>> {

@@ -46,6 +46,7 @@
       "loadFailed": "Lỗi khi tải danh sách sản phẩm",
       "deleteConfirm": "Xác nhận xóa sản phẩm này?",
       "deleteSuccess": "Đã xóa sản phẩm thành công!",
+      "hiddenInsteadOfDeleted": "Sản phẩm đã phát sinh đơn hàng nên được chuyển sang trạng thái ẩn thay vì xóa.",
       "deleteFailed": "Không thể xóa sản phẩm này!",
       "toggleSuccess": "Đã cập nhật trạng thái sản phẩm!",
       "toggleFailed": "Cập nhật trạng thái thất bại!",
@@ -54,6 +55,7 @@
       "deleteManyConfirm": "Xác nhận xóa {{count}} sản phẩm?",
       "deleteManyDescription": "Thao tác này không thể hoàn tác.",
       "deleteManySuccess": "Đã xóa {{count}} sản phẩm thành công!",
+      "deleteManyHidden": "Đã chuyển ẩn {{count}} sản phẩm vì các sản phẩm này đã phát sinh đơn hàng.",
       "deleteManyPartial": "Đã xóa {{success}}/{{total}} sản phẩm. Một số sản phẩm không thể xóa."
     }
   },
@@ -319,6 +321,8 @@
       "uploadFailed": "Upload ảnh cấu hình thất bại.",
       "deleteImageSuccess": "Xóa ảnh cấu hình thành công!",
       "deleteImageFailed": "Xóa ảnh cấu hình thất bại.",
+      "hiddenInsteadOfRemoved": "Cấu hình \"{{name}}\" đã phát sinh đơn hàng nên được chuyển sang trạng thái ẩn thay vì xóa.",
+      "hiddenAfterDeleteAttempt": "Có {{count}} cấu hình đã phát sinh đơn hàng nên được chuyển sang ẩn: {{variants}}",
       "updateSuccess": "Cập nhật cấu hình sản phẩm thành công!"
     },
     "skuChange": {

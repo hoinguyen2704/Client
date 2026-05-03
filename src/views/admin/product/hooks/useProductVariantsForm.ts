@@ -478,6 +478,34 @@ export default function useProductVariantsForm() {
   }, []);
 
   const removeVariant = useCallback((index: number) => {
+    const target = variantsRef.current[index];
+    if (!target) return;
+
+    const hasKnownOrders = Boolean(
+      target.id
+      && (
+        (target.grossSoldQty ?? 0) > 0
+        || (target.returnedQty ?? 0) > 0
+        || (target.netSoldQty ?? 0) > 0
+      ),
+    );
+
+    if (hasKnownOrders) {
+      setVariants((prev) =>
+        prev.map((variant, variantIndex) =>
+          variantIndex === index
+            ? { ...variant, active: false }
+            : variant,
+        ),
+      );
+      toast.warning(
+        t("variantPage.toasts.hiddenInsteadOfRemoved", {
+          name: target.variantName || target.sku || t("variantPage.defaultVariant"),
+        }),
+      );
+      return;
+    }
+
     setVariants((prev) => {
       const target = prev[index];
       if (target) {
@@ -486,7 +514,7 @@ export default function useProductVariantsForm() {
       }
       return prev.filter((_, variantIndex) => variantIndex !== index);
     });
-  }, []);
+  }, [t]);
 
   const updateVariant = useCallback(
     (index: number, field: keyof VariantFormData, value: string | boolean) => {
@@ -981,10 +1009,34 @@ export default function useProductVariantsForm() {
     );
 
     try {
+      const persistedVariantIds = Object.keys(originalSkuByVariantId);
+      const retainedVariantIds = new Set(
+        variantRequests
+          .map((variantRequest) => variantRequest.id)
+          .filter(Boolean),
+      );
       const updated = await adminProductService.updateVariants(id, {
         variants: variantRequests,
       });
       await uploadPendingVariantImages(id, updated.data?.variants);
+      const autoHiddenVariants = (updated.data?.variants || []).filter(
+        (variant) =>
+          Boolean(variant.id)
+          && persistedVariantIds.includes(variant.id)
+          && !retainedVariantIds.has(variant.id)
+          && variant.active === false,
+      );
+      if (autoHiddenVariants.length > 0) {
+        toast.warning(
+          t("variantPage.toasts.hiddenAfterDeleteAttempt", {
+            count: autoHiddenVariants.length,
+            variants: autoHiddenVariants
+              .slice(0, 3)
+              .map((variant) => variant.sku || variant.variantName || t("variantPage.defaultVariant"))
+              .join(", "),
+          }),
+        );
+      }
       toast.success(t("variantPage.toasts.updateSuccess"));
       await fetchProduct();
     } catch (err: unknown) {

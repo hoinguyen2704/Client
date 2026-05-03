@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/AdminTable';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { useDebounce } from '@/hooks';
-import type { AdminProductListItem, CategoryResponse, PageResponse } from '@/types';
+import type { AdminProductDeleteResult, AdminProductListItem, ApiResponse, CategoryResponse, PageResponse } from '@/types';
 import { downloadBlob } from '@/utils/download';
 import { getApiErrorMessage } from '@/utils/error';
 import { formatPrice } from '@/utils/format';
@@ -71,25 +71,8 @@ export default function Products() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => adminProductService.delete(id),
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: productQueryKey });
-      const previous = queryClient.getQueryData<PageResponse<AdminProductListItem>>(productQueryKey);
-      queryClient.setQueryData<PageResponse<AdminProductListItem>>(productQueryKey, (current) => {
-        if (!current) return current;
-        return {
-          ...current,
-          data: current.data.filter((product) => product.id !== id),
-          total: Math.max(0, current.total - 1),
-        };
-      });
-      setSelectedItems((prev) => prev.filter((itemId) => itemId !== id));
-      return { previous };
-    },
-    onError: (error, _id, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(productQueryKey, context.previous);
-      }
+    mutationFn: async (id: string) => adminProductService.deleteProduct(id),
+    onError: (error) => {
       toast.error(getApiErrorMessage(error, t, 'adminCatalog:products.toasts.deleteFailed'));
     },
     onSettled: () => {
@@ -214,25 +197,83 @@ export default function Products() {
     setDeleteDialog(null);
 
     if (currentDialog.mode === 'single') {
-      await deleteMutation.mutateAsync(currentDialog.id);
-      toast.success(t('adminCatalog:products.toasts.deleteSuccess'));
+      const response = await deleteMutation.mutateAsync(currentDialog.id);
+      const result = response.data as AdminProductDeleteResult | undefined;
+
+      queryClient.setQueryData<PageResponse<AdminProductListItem>>(productQueryKey, (current) => {
+        if (!current || !result) return current;
+        if (result.action === 'DELETED') {
+          return {
+            ...current,
+            data: current.data.filter((product) => product.id !== currentDialog.id),
+            total: Math.max(0, current.total - 1),
+          };
+        }
+        return {
+          ...current,
+          data: current.data.map((product) =>
+            product.id === currentDialog.id
+              ? { ...product, status: result.status || 'INACTIVE' }
+              : product,
+          ),
+        };
+      });
+      setSelectedItems((prev) => prev.filter((itemId) => itemId !== currentDialog.id));
+
+      if (result?.action === 'HIDDEN') {
+        toast.warning(response.message || t('adminCatalog:products.toasts.hiddenInsteadOfDeleted'));
+      } else {
+        toast.success(t('adminCatalog:products.toasts.deleteSuccess'));
+      }
       return;
     }
 
     const toDelete = [...currentDialog.ids];
     const results = await Promise.allSettled(toDelete.map((id) => deleteMutation.mutateAsync(id)));
-    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const fulfilledResults = results.filter(
+      (result): result is PromiseFulfilledResult<ApiResponse<AdminProductDeleteResult>> =>
+        result.status === 'fulfilled',
+    );
+    const deletedIds = fulfilledResults
+      .filter((result) => result.value.data?.action === 'DELETED')
+      .map((result) => result.value.data?.id)
+      .filter(Boolean) as string[];
+    const hiddenResults = fulfilledResults.filter((result) => result.value.data?.action === 'HIDDEN');
+    const successCount = fulfilledResults.length;
+
+    queryClient.setQueryData<PageResponse<AdminProductListItem>>(productQueryKey, (current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        data: current.data
+          .filter((product) => !deletedIds.includes(product.id))
+          .map((product) => {
+            const hiddenResult = hiddenResults.find((result) => result.value.data?.id === product.id);
+            if (!hiddenResult) return product;
+            return {
+              ...product,
+              status: hiddenResult.value.data?.status || 'INACTIVE',
+            };
+          }),
+        total: Math.max(0, current.total - deletedIds.length),
+      };
+    });
     setSelectedItems([]);
 
-    if (successCount === toDelete.length) {
-      toast.success(t('adminCatalog:products.toasts.deleteManySuccess', { count: successCount }));
-      return;
+    if (deletedIds.length > 0) {
+      toast.success(t('adminCatalog:products.toasts.deleteManySuccess', { count: deletedIds.length }));
     }
 
-    toast.warning(t('adminCatalog:products.toasts.deleteManyPartial', {
-      success: successCount,
-      total: toDelete.length,
-    }));
+    if (hiddenResults.length > 0) {
+      toast.warning(t('adminCatalog:products.toasts.deleteManyHidden', { count: hiddenResults.length }));
+    }
+
+    if (successCount !== toDelete.length) {
+      toast.warning(t('adminCatalog:products.toasts.deleteManyPartial', {
+        success: successCount,
+        total: toDelete.length,
+      }));
+    }
   };
 
   const getStatusLabel = (status: string) => {

@@ -269,7 +269,7 @@ export default function Chatbot({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed z-[70] bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden right-3 bottom-16 w-[280px] max-w-[82vw] h-[min(70dvh,560px)] sm:right-6 sm:bottom-6 sm:w-[420px] sm:h-[560px] sm:max-w-[90vw] sm:max-h-[90vh] resize-none sm:resize"
+            className="fixed z-[70] bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden right-3 bottom-16 w-[320px] max-w-[85vw] h-[min(75dvh,600px)] sm:right-6 sm:bottom-6 sm:w-[500px] sm:h-[720px] sm:max-w-[90vw] sm:max-h-[90vh] resize-none sm:resize"
           >
             {/* Header */}
             <div

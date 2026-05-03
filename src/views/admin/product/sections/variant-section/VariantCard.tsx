@@ -7,9 +7,6 @@ import { resolveVariantSalesMetrics } from "@/utils/variantSales";
 import type { VariantCardProps } from "./types";
 import { formatVariantSummaryValue, getVariantSelectOptions } from "./utils";
 
-const summaryChipClass =
-  "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-sm font-medium text-muted dark:border-slate-700 dark:bg-slate-900/80";
-
 export default memo(function VariantCard(props: VariantCardProps) {
   const { t, i18n } = useTranslation("adminCatalog");
   const {
@@ -50,6 +47,9 @@ export default memo(function VariantCard(props: VariantCardProps) {
     : variant.createdAt
       ? formatDateTime(variant.createdAt, i18n.language)
       : t("variantCard.timeUnavailable");
+  const summaryChipClass = isExpanded
+    ? "inline-flex items-center rounded-full border border-blue-200 bg-blue-50/90 px-2.5 py-1 text-sm font-semibold text-blue-900 shadow-sm dark:border-blue-800/60 dark:bg-blue-950/30 dark:text-blue-100"
+    : "inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-sm font-medium text-muted dark:border-slate-700 dark:bg-slate-900/80";
 
   useEffect(() => {
     if (!autoFocusSku || !isExpanded) return;
@@ -82,18 +82,32 @@ export default memo(function VariantCard(props: VariantCardProps) {
       ref={rootRef}
       style={{ scrollMarginTop: "11rem" }}
       className={`relative overflow-hidden rounded-2xl border bg-white transition-all dark:bg-slate-900 ${isExpanded
-        ? "border-blue-200 shadow-[0_14px_36px_rgba(15,23,42,0.06)] dark:border-blue-900/40"
+        ? "border-blue-300 ring-2 ring-blue-200/80 shadow-[0_22px_54px_rgba(37,99,235,0.16)] dark:border-blue-700/60 dark:ring-blue-900/50"
         : "border-slate-200 shadow-sm dark:border-slate-700"
         }`}
     >
       <div
         onClick={onToggleExpanded}
-        className="bg-gradient-to-r from-white via-slate-50 to-blue-50/70 px-4 py-3.5 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 sm:px-5 cursor-pointer select-none">
+        className={`relative cursor-pointer select-none px-4 py-3.5 sm:px-5 ${
+          isExpanded
+            ? "bg-gradient-to-r from-blue-50 via-white to-sky-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-slate-800"
+            : "bg-gradient-to-r from-white via-slate-50 to-blue-50/70 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80"
+        }`}>
+        {isExpanded && (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-blue-500 via-sky-500 to-cyan-400"
+          />
+        )}
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3 flex-1 min-w-0 pr-0 xl:pr-4">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap items-center gap-2.5">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm">
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white shadow-sm transition-all ${
+                  isExpanded
+                    ? "bg-gradient-to-br from-blue-600 to-sky-500 ring-4 ring-blue-100 dark:ring-blue-900/50"
+                    : "bg-blue-600"
+                }`}>
                   {variantOrder}
                 </span>
                 <div className="flex flex-wrap items-center gap-2">
@@ -190,7 +204,11 @@ export default memo(function VariantCard(props: VariantCardProps) {
                 {t("variantCard.reset")}
               </button>
             )}
-            <div className={`flex items-center justify-center p-2 text-muted transition-transform duration-300 ${isExpanded ? "-rotate-180" : ""}`}>
+            <div className={`flex items-center justify-center rounded-xl p-2 transition-all duration-300 ${
+              isExpanded
+                ? "-rotate-180 bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                : "text-muted"
+            }`}>
               <FiChevronDown className="text-xl" />
             </div>
             {canRemove && (
