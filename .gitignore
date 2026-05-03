@@ -46,3 +46,6 @@ pnpm-debug.log*
 .stylelintcache
 
 # Gemini / AI agent
+.agent/
+.agents/
+.vite/
