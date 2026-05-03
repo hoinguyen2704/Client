@@ -82,10 +82,23 @@
         "title": "AI configuration",
         "description": "Adjust the model, creativity temperature, and the bot behavior rules.",
         "fields": {
+          "provider": "AI provider",
           "model": "AI model",
           "temperature": "Temperature: {{value}}",
           "systemPrompt": "System prompt (behavior rules)"
         },
+        "providerPlaceholder": "Select a provider",
+        "providerSearchPlaceholder": "Search providers...",
+        "providerEmptyLabel": "No providers found",
+        "modelPlaceholder": "Select a model",
+        "modelSearchPlaceholder": "Search models...",
+        "modelEmptyLabel": "No models found for this provider",
+        "modelCreateAddLabel": "Add new model",
+        "modelCreatePlaceholder": "New model name",
+        "modelDuplicateCreateHint": "This model already exists",
+        "modelCatalogLoading": "Loading the defined model list...",
+        "modelCatalogDefined": "",
+        "modelCatalogFallback": "No model list was found, so the chatbot is using a safe fallback list.",
         "temperatureExact": "0 - Precise",
         "temperatureCreative": "1 - Creative",
         "systemPromptPlaceholder": "Enter chatbot rules...",
@@ -97,13 +110,15 @@
           "maxProducts": "Maximum products per reply",
           "maxRetries": "Retry attempts when AI fails",
           "planTimeoutMs": "AI analysis timeout (ms)",
-          "dbTimeoutMs": "Database query timeout (ms)"
+          "dbTimeoutMs": "Database query timeout (ms)",
+          "enableResponseSynthesis": "AI rewrites replies from retrieved data"
         },
         "hints": {
           "maxProducts": "Default: 3. Higher values make replies longer and consume more tokens; increase only when you really need more results.",
           "maxRetries": "Default: 1. Number of retries when the Gemini API times out or fails.",
           "planTimeoutMs": "Default: 25000ms. Time allowed for AI analysis.",
-          "dbTimeoutMs": "Default: 6000ms. Time allowed for database queries."
+          "dbTimeoutMs": "Default: 6000ms. Time allowed for database queries.",
+          "enableResponseSynthesis": "Applies only to product- and article-oriented answers. Orders, vouchers, flash sales, and support remain deterministic for safety."
         }
       },
       "status": {

@@ -18,23 +18,88 @@ import {
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import chatbotService from "@/apis/services/chatbotService";
-import { ConfirmDialog, CustomSelect, FormInput, FormTextarea, SectionCard } from "@/components";
-import type { ChatbotConfig } from "@/types";
+import {
+  ConfirmDialog,
+  FormInput,
+  FormTextarea,
+  SearchableDropdown,
+  SectionCard,
+} from "@/components";
+import type {
+  ChatbotConfig,
+  ChatbotModelCatalogResponse,
+  ChatbotModelOption,
+} from "@/types";
 import ChatbotOverviewStatCard from "./components/ChatbotOverviewStatCard";
 
 type EditableSection = "shopInfo" | "bot" | "ai";
+type AIProvider = NonNullable<ChatbotConfig["ai"]["provider"]>;
 
-const MODEL_OPTIONS = [
-  { value: "gpt-5.4-mini", label: "gpt-5.4-mini" },
-  { value: "gemini-3-flash-preview", label: "gemini-3-flash-preview" },
-  { value: "gemini-3-pro-preview", label: "gemini-3-pro-preview" },
-  { value: "gemini-2-flash-preview", label: "gemini-2-flash-preview" },
-  { value: "gemini-2.5-flash", label: "gemini-2.5-flash" },
-  { value: "gemini-2.0-flash", label: "gemini-2.0-flash" },
-];
+const PROVIDER_LABELS: Record<AIProvider, string> = {
+  openai: "OpenAI",
+  gemini: "Gemini",
+};
 
-const inferProviderFromModel = (model: string) =>
-  /^(gpt-|o\d|o-|chatgpt-)/i.test(model) ? "openai" : "gemini";
+const buildModelOptions = (
+  catalog: ChatbotModelCatalogResponse | null,
+  currentModel: string,
+  currentProvider?: AIProvider,
+  configModels: ChatbotModelOption[] = [],
+) => {
+  const options: ChatbotModelOption[] = [];
+  const seen = new Set<string>();
+
+  const appendOption = (option?: ChatbotModelOption | null) => {
+    const value = String(option?.value || "").trim();
+    if (!value || seen.has(value)) return;
+
+    seen.add(value);
+    options.push({
+      value,
+      label: option?.label || value,
+      provider: option?.provider,
+      source: option?.source,
+    });
+  };
+
+  appendOption(
+    currentModel
+      ? { value: currentModel, label: currentModel, provider: currentProvider }
+      : null,
+  );
+
+  for (const option of catalog?.models || []) {
+    appendOption(option);
+  }
+
+  for (const option of configModels || []) {
+    appendOption(option);
+  }
+
+  return options;
+};
+
+const buildProviderOptions = (
+  catalog: ChatbotModelCatalogResponse | null,
+  currentProvider?: AIProvider,
+) => {
+  const providers = new Set<AIProvider>();
+
+  if (currentProvider) {
+    providers.add(currentProvider);
+  }
+
+  for (const option of catalog?.models || []) {
+    if (option.provider === "openai" || option.provider === "gemini") {
+      providers.add(option.provider);
+    }
+  }
+
+  return [...providers].map((provider) => ({
+    value: provider,
+    label: PROVIDER_LABELS[provider],
+  }));
+};
 
 export default function Chatbot() {
   const { t } = useTranslation("adminSupport");
@@ -43,8 +108,11 @@ export default function Chatbot() {
   );
   const [config, setConfig] = useState<ChatbotConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingModels, setLoadingModels] = useState(false);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [modelCatalog, setModelCatalog] =
+    useState<ChatbotModelCatalogResponse | null>(null);
   const [newSuggestion, setNewSuggestion] = useState("");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const translate = useCallback(
@@ -72,9 +140,27 @@ export default function Chatbot() {
     }
   }, [translate]);
 
+  const loadModelCatalog = useCallback(async () => {
+    try {
+      setLoadingModels(true);
+      const data = await chatbotService.getModels();
+      setModelCatalog(data);
+    } catch (err) {
+      console.error("[ADMIN] load chatbot models failed:", err);
+      setModelCatalog(null);
+    } finally {
+      setLoadingModels(false);
+    }
+  }, []);
+
+  const refreshPageData = useCallback(() => {
+    void loadConfig();
+    void loadModelCatalog();
+  }, [loadConfig, loadModelCatalog]);
+
   useEffect(() => {
-    loadConfig();
-  }, [loadConfig]);
+    refreshPageData();
+  }, [refreshPageData]);
 
   const updateField = (
     section: EditableSection,
@@ -96,14 +182,77 @@ export default function Chatbot() {
     setDirty(true);
   };
 
+  const updateProvider = (providerValue: string) => {
+    if (!config) return;
+    const provider = providerValue as AIProvider;
+    const nextModelOptions = modelOptions.filter(
+      (option) => option.provider === provider,
+    );
+    const nextModel = nextModelOptions.some(
+      (option) => option.value === config.ai?.model,
+    )
+      ? config.ai.model
+      : (nextModelOptions[0]?.value ?? config.ai?.model ?? "");
+
+    setConfig({
+      ...config,
+      ai: {
+        ...config.ai,
+        provider,
+        model: nextModel,
+      },
+    });
+    setDirty(true);
+  };
+
   const updateModel = (model: string) => {
     if (!config) return;
+    const selectedOption =
+      filteredModelOptions.find((option) => option.value === model) ||
+      modelOptions.find((option) => option.value === model);
+
     setConfig({
       ...config,
       ai: {
         ...config.ai,
         model,
-        provider: inferProviderFromModel(model),
+        provider: selectedOption?.provider || config.ai?.provider,
+      },
+    });
+    setDirty(true);
+  };
+
+  const createModel = (modelName: string) => {
+    if (!config) return;
+
+    const value = String(modelName || "").trim().replace(/^models\//i, "");
+    if (!value) return;
+
+    const provider = (selectedProvider || config.ai?.provider || "openai") as AIProvider;
+    const currentModels = Array.isArray(config.ai?.availableModels)
+      ? config.ai.availableModels
+      : [];
+    const alreadyExists = currentModels.some(
+      (option) => option.value.trim().toLowerCase() === value.toLowerCase(),
+    );
+
+    setConfig({
+      ...config,
+      ai: {
+        ...config.ai,
+        provider,
+        model: value,
+        availableModels: alreadyExists
+          ? currentModels
+          : [
+              ...currentModels,
+              {
+                value,
+                label: value,
+                provider,
+                source: "defined",
+              },
+            ],
       },
     });
     setDirty(true);
@@ -183,7 +332,7 @@ export default function Chatbot() {
         <FiAlertTriangle className="text-4xl" />
         <p>{t("chatbot.states.connectionFailed")}</p>
         <button
-          onClick={loadConfig}
+          onClick={refreshPageData}
           className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-md"
         >
           {t("chatbot.actions.retry")}
@@ -197,6 +346,30 @@ export default function Chatbot() {
   const storeName = config.shopInfo?.name || notAvailable;
   const hotline = config.shopInfo?.hotline || notAvailable;
   const suggestionsCount = config.suggestions?.length ?? 0;
+  const modelOptions = buildModelOptions(
+    modelCatalog,
+    config.ai?.model || "",
+    config.ai?.provider,
+    config.ai?.availableModels || [],
+  );
+  const providerOptions = buildProviderOptions(modelCatalog, config.ai?.provider);
+  const selectedProvider = config.ai?.provider || providerOptions[0]?.value || "";
+  const filteredModelOptions = modelOptions.filter(
+    (option) => !selectedProvider || option.provider === selectedProvider,
+  );
+  const providerDropdownItems = providerOptions.map((option) => ({
+    id: option.value,
+    name: option.label,
+  }));
+  const modelDropdownItems = filteredModelOptions.map((option) => ({
+    id: option.value,
+    name: option.label,
+  }));
+  const modelCatalogHint = loadingModels
+    ? t("chatbot.sections.ai.modelCatalogLoading")
+    : modelCatalog?.source === "defined"
+      ? t("chatbot.sections.ai.modelCatalogDefined")
+      : t("chatbot.sections.ai.modelCatalogFallback");
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -305,16 +478,49 @@ export default function Chatbot() {
               title={`🧠 ${t("chatbot.sections.ai.title")}`}
               description={t("chatbot.sections.ai.description")}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <label className="block text-md font-medium mb-1.5">
-                    {t("chatbot.sections.ai.fields.model")}
-                  </label>
-                  <CustomSelect
+                  <SearchableDropdown
+                    label={t("chatbot.sections.ai.fields.provider")}
+                    value={selectedProvider}
+                    onChange={updateProvider}
+                    items={providerDropdownItems}
+                    disabled={saving || loadingModels || providerDropdownItems.length === 0}
+                    allowClear={false}
+                    required={false}
+                    buttonClassName="h-11"
+                    placeholder={t("chatbot.sections.ai.providerPlaceholder")}
+                    searchPlaceholder={t(
+                      "chatbot.sections.ai.providerSearchPlaceholder",
+                    )}
+                    emptyLabel={t("chatbot.sections.ai.providerEmptyLabel")}
+                  />
+                </div>
+                <div>
+                  <SearchableDropdown
+                    label={t("chatbot.sections.ai.fields.model")}
                     value={config.ai?.model || ""}
                     onChange={updateModel}
-                    options={MODEL_OPTIONS}
-                    className="w-full h-11"
+                    items={modelDropdownItems}
+                    onCreateNew={createModel}
+                    disabled={saving || loadingModels}
+                    allowClear={false}
+                    required={false}
+                    buttonClassName="h-11"
+                    placeholder={t("chatbot.sections.ai.modelPlaceholder")}
+                    searchPlaceholder={t(
+                      "chatbot.sections.ai.modelSearchPlaceholder",
+                    )}
+                    createPlaceholder={t(
+                      "chatbot.sections.ai.modelCreatePlaceholder",
+                    )}
+                    createAddLabel={t(
+                      "chatbot.sections.ai.modelCreateAddLabel",
+                    )}
+                    emptyLabel={t("chatbot.sections.ai.modelEmptyLabel")}
+                    duplicateCreateHint={t(
+                      "chatbot.sections.ai.modelDuplicateCreateHint",
+                    )}
                   />
                 </div>
                 <div>
@@ -344,6 +550,7 @@ export default function Chatbot() {
                   </div>
                 </div>
               </div>
+              <p className="text-sm text-muted mt-1.5 mb-4">{modelCatalogHint}</p>
 
               <div>
                 <FormTextarea
@@ -459,6 +666,43 @@ export default function Chatbot() {
                     <p className="text-sm text-subtle mt-1">
                       {t("chatbot.sections.runtime.hints.dbTimeoutMs")}
                     </p>
+                  </div>
+                  <div className="md:col-span-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/40 px-4 py-3 flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-md font-medium">
+                        {t(
+                          "chatbot.sections.runtime.fields.enableResponseSynthesis",
+                        )}
+                      </p>
+                      <p className="text-sm text-subtle mt-1">
+                        {t(
+                          "chatbot.sections.runtime.hints.enableResponseSynthesis",
+                        )}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateField(
+                          "ai",
+                          "enableResponseSynthesis",
+                          !(config.ai?.enableResponseSynthesis === true),
+                        )
+                      }
+                      className={`shrink-0 text-3xl transition-colors ${config.ai?.enableResponseSynthesis ? "text-blue-600" : "text-subtle"}`}
+                      aria-label={t(
+                        "chatbot.sections.runtime.fields.enableResponseSynthesis",
+                      )}
+                      title={t(
+                        "chatbot.sections.runtime.fields.enableResponseSynthesis",
+                      )}
+                    >
+                      {config.ai?.enableResponseSynthesis ? (
+                        <FiToggleRight />
+                      ) : (
+                        <FiToggleLeft />
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>

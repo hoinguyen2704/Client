@@ -4,6 +4,7 @@ import type {
   ChatbotConfig,
   ChatbotConfigMutationResponse,
   ChatbotMessage,
+  ChatbotModelCatalogResponse,
   ChatbotResponse,
   WidgetConfig,
 } from "@/types";
@@ -69,6 +70,10 @@ const chatbotService = {
   /** Lấy giá trị mặc định */
   getDefaults: (): Promise<ChatbotConfig> =>
     adminAxios.get("/config/defaults").then((r) => r.data),
+
+  /** Lấy danh sách model khả dụng cho admin */
+  getModels: (): Promise<ChatbotModelCatalogResponse> =>
+    adminAxios.get("/models").then((r) => r.data),
 
   //  Widget API (public, no auth)
 

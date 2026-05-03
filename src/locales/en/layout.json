@@ -145,7 +145,7 @@
     "openAria": "Open AI assistant",
     "avatarAlt": "AI assistant avatar",
     "defaultSubtitle": "Product assistant 24/7",
-    "welcomeMessage": "Hello! I am the AI assistant for **{{shopName}}**.\n\nI can help you:\n- Find and recommend tech products\n- Check prices, promotions, and flash sales\n- Compare product reviews\n- Look up order information\n\nHow can I help you today?",
+    "welcomeMessage": "Hello! I am the AI assistant for **{{shopName}}**.\n\nI can help you:\n- Find and recommend tech products\n- Check prices, flash sales, and public vouchers\n- Compare products and configurations\n- Look up your orders after you sign in\n\nHow can I help you today?",
     "suggestions": {
       "featured": "Featured products",
       "phoneBudget": "Phones under 10 million",

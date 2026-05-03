@@ -208,7 +208,7 @@ export default function SearchableDropdown({
       ref={dropdownRef}
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden ${
         renderMode === "inline"
-          ? "absolute left-0 top-full mt-2 w-full rounded-xl z-50"
+          ? "absolute left-0 top-full mt-2 w-full rounded-xl z-40"
           : "rounded-b-xl rounded-t-none border-t-0"
       }`}
       style={renderMode === "portal" ? dropdownStyle : undefined}

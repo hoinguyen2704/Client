@@ -1,15 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import {
-  FiFilter,
-  FiChevronDown,
-  FiX,
-  FiSearch,
-} from "react-icons/fi";
+import { FiFilter, FiChevronDown, FiX, FiSearch } from "react-icons/fi";
 import { AnimatePresence, motion } from "motion/react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Button, Checkbox, Pagination, ProductCard, CustomSelect } from "@/components";
+import {
+  Button,
+  Checkbox,
+  Pagination,
+  ProductCard,
+  SearchableDropdown,
+} from "@/components";
 import { productService, categoryService, brandService } from "@/apis";
 import type {
   ProductResponse,
@@ -97,7 +98,15 @@ export default function Products() {
     } finally {
       setIsLoading(false);
     }
-  }, [debouncedKeyword, selectedCategorySlug, selectedBrand, page, sortBy, sortDir, t]);
+  }, [
+    debouncedKeyword,
+    selectedCategorySlug,
+    selectedBrand,
+    page,
+    sortBy,
+    sortDir,
+    t,
+  ]);
 
   useEffect(() => {
     fetchProducts();
@@ -167,7 +176,9 @@ export default function Products() {
   };
 
   const totalPages = pageInfo?.lastPage || 1;
-  const hasActiveFilters = Boolean(keyword || selectedCategorySlug || selectedBrand);
+  const hasActiveFilters = Boolean(
+    keyword || selectedCategorySlug || selectedBrand,
+  );
 
   //  Render
   return (
@@ -176,7 +187,10 @@ export default function Products() {
       <nav className="flex text-sm sm:text-md text-muted mb-5 sm:mb-8">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link to="/" className="transition-colors hover:text-blue-700 dark:hover:text-blue-300">
+            <Link
+              to="/"
+              className="transition-colors hover:text-blue-700 dark:hover:text-blue-300"
+            >
               {t("layout:navigation.home")}
             </Link>
           </li>
@@ -195,18 +209,22 @@ export default function Products() {
         {/* Mobile Filter Toggle */}
         <button
           className="lg:hidden flex items-center justify-center gap-2 w-full py-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 text-md font-semibold"
-          onClick={() => setIsFilterOpen(true)}>
+          onClick={() => setIsFilterOpen(true)}
+        >
           <FiFilter /> {t("products.mobileFilter")}
         </button>
 
         {/*  Sidebar Filters  */}
-        <aside className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <aside
+          className={`fixed inset-y-0 left-0 z-[80] w-[86vw] max-w-[320px] bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-64 lg:shadow-none lg:bg-transparent lg:z-0 ${isFilterOpen ? "translate-x-0" : "-translate-x-full"}`}
+        >
           <div className="h-full overflow-y-auto p-4 sm:p-6 lg:rounded-[24px] lg:border lg:border-slate-200 dark:lg:border-slate-800 lg:bg-white dark:lg:bg-slate-900 lg:p-5 custom-scrollbar">
             <div className="flex items-center justify-between mb-6 lg:hidden">
               <h2 className="text-lg font-bold">{t("products.filterTitle")}</h2>
               <button
                 onClick={() => setIsFilterOpen(false)}
-                className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full">
+                className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full"
+              >
                 <FiX />
               </button>
             </div>
@@ -214,7 +232,9 @@ export default function Products() {
             <div className="space-y-8 pb-8">
               {/* Search */}
               <div>
-                <h3 className="font-bold mb-4 text-lg">{t("products.searchTitle")}</h3>
+                <h3 className="font-bold mb-4 text-lg">
+                  {t("products.searchTitle")}
+                </h3>
                 <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-subtle" />
                   <input
@@ -225,7 +245,8 @@ export default function Products() {
                       setPage(1);
                     }}
                     placeholder={t("products.searchPlaceholder")}
-                    className="w-full h-10 rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-md shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"/>
+                    className="w-full h-10 rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-md shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"
+                  />
                 </div>
               </div>
 
@@ -233,9 +254,15 @@ export default function Products() {
               <div>
                 <button
                   onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                  className="flex items-center justify-between w-full mb-4">
-                  <h3 className="font-bold text-lg">{t("products.categoriesTitle")}</h3>
-                  <motion.span animate={{ rotate: isCategoryOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
+                  className="flex items-center justify-between w-full mb-4"
+                >
+                  <h3 className="font-bold text-lg">
+                    {t("products.categoriesTitle")}
+                  </h3>
+                  <motion.span
+                    animate={{ rotate: isCategoryOpen ? 0 : -90 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <FiChevronDown className="text-subtle" />
                   </motion.span>
                 </button>
@@ -243,10 +270,11 @@ export default function Products() {
                   {isCategoryOpen && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
+                      animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="overflow-hidden">
+                      className="overflow-hidden"
+                    >
                       <div className="space-y-2">
                         <button
                           onClick={() => {
@@ -257,7 +285,8 @@ export default function Products() {
                             !selectedCategorySlug
                               ? "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 font-medium"
                               : "text-muted hover:bg-slate-50 dark:hover:bg-slate-800"
-                          }`}>
+                          }`}
+                        >
                           {t("products.allCategories")}
                         </button>
                         {categories.map((cat) => (
@@ -268,7 +297,8 @@ export default function Products() {
                               selectedCategorySlug === cat.slug
                                 ? "bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 font-medium"
                                 : "text-muted hover:bg-slate-50 dark:hover:bg-slate-800"
-                            }`}>
+                            }`}
+                          >
                             {cat.name}
                           </button>
                         ))}
@@ -283,9 +313,15 @@ export default function Products() {
                 <div>
                   <button
                     onClick={() => setIsBrandOpen(!isBrandOpen)}
-                    className="flex items-center justify-between w-full mb-4">
-                    <h3 className="font-bold text-lg">{t("products.brandsTitle")}</h3>
-                    <motion.span animate={{ rotate: isBrandOpen ? 0 : -90 }} transition={{ duration: 0.2 }}>
+                    className="flex items-center justify-between w-full mb-4"
+                  >
+                    <h3 className="font-bold text-lg">
+                      {t("products.brandsTitle")}
+                    </h3>
+                    <motion.span
+                      animate={{ rotate: isBrandOpen ? 0 : -90 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <FiChevronDown className="text-subtle" />
                     </motion.span>
                   </button>
@@ -293,10 +329,11 @@ export default function Products() {
                     {isBrandOpen && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
+                        animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.25 }}
-                        className="overflow-hidden">
+                        className="overflow-hidden"
+                      >
                         <div className="space-y-3">
                           {brands.map((brand, i) => (
                             <motion.label
@@ -304,10 +341,13 @@ export default function Products() {
                               initial={{ opacity: 0, x: -16 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: i * 0.03, duration: 0.2 }}
-                              className="flex items-center gap-3 cursor-pointer group">
+                              className="flex items-center gap-3 cursor-pointer group"
+                            >
                               <Checkbox
                                 checked={selectedBrand === brand.slug}
-                                onCheckedChange={() => handleBrandChange(brand.slug)}
+                                onCheckedChange={() =>
+                                  handleBrandChange(brand.slug)
+                                }
                                 className="w-5 h-5 rounded border-slate-300 dark:border-slate-600"
                               />
                               <span className="text-body group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
@@ -336,7 +376,8 @@ export default function Products() {
                     hasActiveFilters
                       ? "border-red-200/80 bg-red-50/70 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 opacity-100"
                       : "border-transparent bg-transparent text-transparent opacity-0 pointer-events-none"
-                  }`}>
+                  }`}
+                >
                   {t("products.clearFilters")}
                 </button>
               </div>
@@ -348,7 +389,8 @@ export default function Products() {
         {isFilterOpen && (
           <div
             className="fixed inset-0 bg-black/50 z-[70] lg:hidden"
-            onClick={() => setIsFilterOpen(false)}/>
+            onClick={() => setIsFilterOpen(false)}
+          />
         )}
 
         {/*  Main Content  */}
@@ -362,19 +404,37 @@ export default function Products() {
             </h1>
 
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-sm sm:text-md text-muted">{t("products.sortBy")}</span>
+              <span className="text-sm sm:text-md text-muted">
+                {t("products.sortBy")}
+              </span>
               <div>
-                <CustomSelect
+                <SearchableDropdown
+                  label="Sort By"
+                  labelClassName="hidden"
+                  required={false}
                   value={currentSortValue()}
                   onChange={(v) => handleSortChange(v)}
-                  dropdownAlign="right"
-                  className="w-44 sm:w-56 h-9 sm:h-10"
-                  options={[
-                    { value: "popular", label: t("products.sortOptions.popular") },
-                    { value: "newest", label: t("products.sortOptions.newest") },
-                    { value: "best-rated", label: t("products.sortOptions.bestRated") },
-                    { value: "price-asc", label: t("products.sortOptions.priceAsc") },
-                    { value: "price-desc", label: t("products.sortOptions.priceDesc") },
+                  buttonClassName="w-44 sm:w-56 h-9 sm:h-10"
+                  placeholder={t("products.sortOptions.popular")}
+                  searchPlaceholder={t("products.searchOptions", {
+                    defaultValue: "Tìm kiếm...",
+                  })}
+                  allowClear={false}
+                  items={[
+                    { id: "popular", name: t("products.sortOptions.popular") },
+                    { id: "newest", name: t("products.sortOptions.newest") },
+                    {
+                      id: "best-rated",
+                      name: t("products.sortOptions.bestRated"),
+                    },
+                    {
+                      id: "price-asc",
+                      name: t("products.sortOptions.priceAsc"),
+                    },
+                    {
+                      id: "price-desc",
+                      name: t("products.sortOptions.priceDesc"),
+                    },
                   ]}
                 />
               </div>
@@ -387,7 +447,8 @@ export default function Products() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-pulse">
+                  className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 animate-pulse"
+                >
                   <div className="aspect-square bg-slate-200 dark:bg-slate-800" />
                   <div className="p-4 space-y-3">
                     <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
@@ -405,13 +466,19 @@ export default function Products() {
                 ))}
               </div>
 
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-8 sm:mt-12" />
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                className="mt-8 sm:mt-12"
+              />
             </>
           ) : (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center py-14 sm:py-20 text-center">
+              className="flex flex-col items-center justify-center py-14 sm:py-20 text-center"
+            >
               <div className="w-28 h-28 sm:w-40 sm:h-40 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 sm:mb-6">
                 <FiSearch className="text-4xl sm:text-6xl text-subtle" />
               </div>

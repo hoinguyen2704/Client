@@ -82,10 +82,23 @@
         "title": "Cấu hình AI",
         "description": "Điều chỉnh model, nhiệt độ sáng tạo và quy tắc hành vi của bot.",
         "fields": {
+          "provider": "AI Provider",
           "model": "Model AI",
           "temperature": "Temperature: {{value}}",
           "systemPrompt": "System Prompt (Quy tắc hành vi)"
         },
+        "providerPlaceholder": "Chọn provider",
+        "providerSearchPlaceholder": "Tìm provider...",
+        "providerEmptyLabel": "Không có provider nào",
+        "modelPlaceholder": "Chọn model",
+        "modelSearchPlaceholder": "Tìm model...",
+        "modelEmptyLabel": "Không có model nào cho provider này",
+        "modelCreateAddLabel": "Thêm model mới",
+        "modelCreatePlaceholder": "Tên model mới",
+        "modelDuplicateCreateHint": "Model này đã tồn tại",
+        "modelCatalogLoading": "Đang tải danh sách model đã định nghĩa...",
+        "modelCatalogDefined": "",
+        "modelCatalogFallback": "Không tìm thấy danh sách model, chatbot đang dùng danh sách dự phòng an toàn.",
         "temperatureExact": "0 - Chính xác",
         "temperatureCreative": "1 - Sáng tạo",
         "systemPromptPlaceholder": "Nhập các quy tắc cho chatbot...",
@@ -97,13 +110,15 @@
           "maxProducts": "Số sản phẩm tối đa / lần trả lời",
           "maxRetries": "Số lần retry khi AI lỗi",
           "planTimeoutMs": "Timeout AI phân tích (ms)",
-          "dbTimeoutMs": "Timeout truy vấn DB (ms)"
+          "dbTimeoutMs": "Timeout truy vấn DB (ms)",
+          "enableResponseSynthesis": "AI diễn đạt lại câu trả lời từ dữ liệu đã truy vấn"
         },
         "hints": {
           "maxProducts": "Mặc định: 3. Giá trị càng cao thì câu trả lời càng dài và tốn token hơn; chỉ tăng khi thực sự cần nhiều kết quả.",
           "maxRetries": "Mặc định: 1. Số lần thử lại khi Gemini API timeout hoặc gặp lỗi.",
           "planTimeoutMs": "Mặc định: 25000ms. Thời gian chờ AI phân tích câu hỏi.",
-          "dbTimeoutMs": "Mặc định: 6000ms. Thời gian chờ truy vấn database."
+          "dbTimeoutMs": "Mặc định: 6000ms. Thời gian chờ truy vấn database.",
+          "enableResponseSynthesis": "Chỉ áp dụng cho các câu trả lời về sản phẩm và bài viết. Đơn hàng, voucher, flash sale và hỗ trợ vẫn giữ formatter cứng để đảm bảo an toàn."
         }
       },
       "status": {

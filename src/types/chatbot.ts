@@ -35,8 +35,10 @@ export interface BotConfig {
 export interface AIConfig {
   model: string;
   provider?: 'gemini' | 'openai';
+  availableModels?: ChatbotModelOption[];
   temperature: number;
   systemRules: string;
+  enableResponseSynthesis?: boolean;
   maxProducts?: number;
   planTimeoutMs?: number;
   maxRetries?: number;
@@ -60,4 +62,18 @@ export interface WidgetConfig {
 export interface ChatbotConfigMutationResponse {
   message: string;
   config: ChatbotConfig;
+}
+
+export interface ChatbotModelOption {
+  value: string;
+  label: string;
+  provider?: 'gemini' | 'openai';
+  source?: 'defined' | 'current' | 'fallback';
+}
+
+export interface ChatbotModelCatalogResponse {
+  source: 'defined' | 'fallback';
+  currentModel?: string;
+  fetchedAt?: string;
+  models: ChatbotModelOption[];
 }
