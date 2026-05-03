@@ -1,84 +1,81 @@
 # Hozitech E-Commerce Client
 
-> Frontend cho nền tảng thương mại điện tử Hozitech — xây dựng bằng React, TypeScript và Vite.
+> Frontend của Hozitech: storefront, checkout, account, admin, chatbot và hỗ trợ đa ngôn ngữ.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **React 19** + **TypeScript**
-- **Vite** — build tool nhanh
-- **Tailwind CSS 4** — styling
-- **React Router v7** — routing
-- **Zustand** — state management
-- **Axios** — HTTP client
-- **Recharts** — biểu đồ & dashboard
-- **Framer Motion** — animations
-- **Lucide React** + **React Icons** — icons
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS 4
+- React Router v7
+- Zustand
+- React Query
+- Axios
+- i18next
+- Framer Motion
+- Recharts
 
-## 📁 Cấu trúc dự án
+## Cấu Trúc
 
 ```
 src/
-├── apis/            # API services & Axios config
-├── assets/          # Static assets (images, fonts...)
-├── components/      # Reusable UI components
-├── helpers/         # Utility functions & constants
-├── layouts/         # Page layouts
-├── middlewares/     # Auth guards & route protection
-├── pages/           # Page components (admin, user, public)
-├── plugins/         # Third-party integrations
-├── routers/         # Route definitions
-├── styles/          # Global CSS & variables
-├── types/           # TypeScript type definitions
-├── utils/           # Utility modules
-└── views/           # View components
+├── apis/        # Axios config và service gọi API
+├── components/  # UI dùng lại
+├── constants/   # Hằng số dùng chung
+├── hooks/       # Custom hooks
+├── locales/     # EN/VI i18n
+├── routers/     # Route definitions
+├── stores/      # Zustand stores
+├── styles/      # Global styles
+├── types/       # TypeScript types
+├── utils/       # Helper functions
+├── views/pages/ # Luồng client
+└── views/admin/ # Luồng admin
 ```
 
-## 🚀 Bắt đầu
+## Bắt Đầu
 
 ### Yêu cầu
 
-- **Node.js** >= 18
-- **npm** >= 9
+- Node.js >= 18
+- npm >= 9
 
 ### Cài đặt
 
 ```bash
-# Clone repo
-git clone git@github.com:hoinguyen2704/Client.git
+git clone <repo-url>
 cd Client
-
-# Cài dependencies
 npm install
-
-# Tạo file environment
-cp .env.example .env
 ```
 
-### Chạy development server
+### Chạy local
 
 ```bash
 npm run dev
 ```
 
-Truy cập tại: [http://localhost:3000](http://localhost:3000)
+Mở: `http://localhost:3000`
 
-### Build production
+### Build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## 📜 Scripts
+## Scripts
 
 | Lệnh | Mô tả |
 |---|---|
-| `npm run dev` | Chạy dev server (port 3000) |
+| `npm run dev` | Chạy dev server |
 | `npm run build` | Build production |
 | `npm run preview` | Preview bản build |
-| `npm run clean` | Xoá thư mục dist |
-| `npm run lint` | Kiểm tra TypeScript |
+| `npm run clean` | Xoá `dist` |
+| `npm run lint` | TypeScript check (`tsc --noEmit`) |
+| `npm run audit:react-types` | Audit type React |
+| `npm run audit:slate-text` | Audit nội dung slate text |
+| `npm run audit:i18n-literals` | Audit literal i18n |
 
-## 📄 License
+## License
 
-Private — © 2026 Hozitech
+Private — © 2026 Hoi Nguyen
