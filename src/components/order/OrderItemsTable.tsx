@@ -12,14 +12,15 @@ export interface OrderItemsTableItem {
   quantity: number;
   subtotal: number;
   issueMessage?: string;
+  quantityNote?: ReactNode;
 }
 
 interface OrderItemsTableLabels {
-  product: string;
+  product: ReactNode;
   variant: string;
-  unitPrice: string;
-  quantity: string;
-  lineTotal: string;
+  unitPrice: ReactNode;
+  quantity: ReactNode;
+  lineTotal: ReactNode;
 }
 
 interface OrderItemsTableProps {
@@ -41,7 +42,7 @@ export default function OrderItemsTable({
   showImage = true,
   showVariantLabel = true,
 }: OrderItemsTableProps) {
-  const desktopTableMinWidthClass = showImage ? "min-w-[760px]" : "min-w-[680px]";
+  const desktopColumnWidths = ["54.5%", "16%", "11%", "18.5%"]
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -49,12 +50,12 @@ export default function OrderItemsTable({
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <div className="hidden overflow-x-auto xl:block">
-          <table className={cn("w-full table-fixed", desktopTableMinWidthClass)}>
+          <table className={cn("w-full table-fixed min-w-[760px]")}>
             <colgroup>
-              <col style={{ width: "54.5%" }} />
-              <col style={{ width: "16%" }} />
-              <col style={{ width: "11%" }} />
-              <col style={{ width: "18.5%" }} />
+              <col style={{ width: desktopColumnWidths[0] }} />
+              <col style={{ width: desktopColumnWidths[1] }} />
+              <col style={{ width: desktopColumnWidths[2] }} />
+              <col style={{ width: desktopColumnWidths[3] }} />
             </colgroup>
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-700">
@@ -115,7 +116,14 @@ export default function OrderItemsTable({
                     {formatPrice(Number(item.unitPrice || 0))}
                   </td>
                   <td className="border-l border-slate-200 px-6 py-5 text-center text-lg font-semibold text-body tabular-nums dark:border-slate-700">
-                    {item.quantity}
+                    <div className="flex flex-col items-center gap-2">
+                      <span>{item.quantity}</span>
+                      {item.quantityNote ? (
+                        <div className="flex justify-center text-xs font-medium leading-5 text-muted">
+                          {item.quantityNote}
+                        </div>
+                      ) : null}
+                    </div>
                   </td>
                   <td className="border-l border-slate-200 px-6 py-5 text-right text-lg font-semibold text-blue-600 tabular-nums dark:border-slate-700">
                     {formatPrice(item.subtotal)}
@@ -181,6 +189,11 @@ export default function OrderItemsTable({
                     <div className="mt-1 text-lg font-semibold text-body tabular-nums">
                       {item.quantity}
                     </div>
+                    {item.quantityNote ? (
+                      <div className="mt-2 text-xs font-medium leading-5 text-muted">
+                        {item.quantityNote}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="rounded-xl bg-slate-50 px-3 py-2 text-right dark:bg-slate-800/70">
                     <div className="text-lg font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">

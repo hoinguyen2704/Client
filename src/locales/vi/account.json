@@ -244,7 +244,7 @@
     },
     "fields": {
       "fullName": "Họ và tên",
-      "emailReadonly": "Email (Không thể thay đổi)",
+      "emailReadonly": "Email",
       "phoneNumber": "Số điện thoại",
       "phonePlaceholder": "Nhập số điện thoại để nhận hàng",
       "phoneReadonlyHint": "Số điện thoại đã được thiết lập. Nếu cần thay đổi, hãy liên hệ quản trị viên hoặc CSKH.",

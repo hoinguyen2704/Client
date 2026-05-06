@@ -244,7 +244,7 @@
     },
     "fields": {
       "fullName": "Full name",
-      "emailReadonly": "Email (read-only)",
+      "emailReadonly": "Email",
       "phoneNumber": "Phone number",
       "phonePlaceholder": "Enter a phone number for deliveries",
       "phoneReadonlyHint": "A phone number is already set. If you need to change it, contact support or an administrator.",
