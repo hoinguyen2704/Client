@@ -18,7 +18,11 @@ export interface PaginationProps {
 
 // Shared button styles
 const BTN_BASE =
-  'w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl text-md font-semibold transition-all duration-200 select-none';
+  'h-10 sm:h-11 flex items-center justify-center rounded-xl text-md font-semibold transition-all duration-200 select-none';
+const BTN_ICON =
+  'w-10 sm:w-11';
+const BTN_PAGE =
+  'min-w-10 sm:min-w-11 px-3 sm:px-3.5 tabular-nums';
 const BTN_IDLE =
   'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-muted hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 shadow-[1px_1px_3px_rgba(0,0,0,0.04)]';
 const BTN_ACTIVE =
@@ -91,7 +95,7 @@ export default function Pagination({
       <div className="flex items-center gap-1.5 sm:gap-2">
         {/* Prev */}
         <button
-          className={`${BTN_BASE} ${currentPage === 1 ? BTN_DISABLED : BTN_IDLE}`}
+          className={`${BTN_BASE} ${BTN_ICON} ${currentPage === 1 ? BTN_DISABLED : BTN_IDLE}`}
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
           aria-label={t('actions.previousPage')}
@@ -112,7 +116,7 @@ export default function Pagination({
             <button
               key={p}
               onClick={() => onPageChange(p)}
-              className={`${BTN_BASE} ${p === currentPage ? BTN_ACTIVE : BTN_IDLE}`}
+              className={`${BTN_BASE} ${BTN_PAGE} ${p === currentPage ? BTN_ACTIVE : BTN_IDLE}`}
             >
               {p}
             </button>
@@ -121,7 +125,7 @@ export default function Pagination({
 
         {/* Next */}
         <button
-          className={`${BTN_BASE} ${currentPage === totalPages ? BTN_DISABLED : BTN_IDLE}`}
+          className={`${BTN_BASE} ${BTN_ICON} ${currentPage === totalPages ? BTN_DISABLED : BTN_IDLE}`}
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
           aria-label={t('actions.nextPage')}

@@ -253,13 +253,18 @@ export default function AdminOrders() {
                     {rowNumber}
                   </div>
 
-                  <div className="flex items-center px-4 py-4">
-                    <div className="font-bold text-blue-600">{order.orderNumber}</div>
+                  <div className="flex min-w-0 items-center px-4 py-4">
+                    <div className="min-w-0 break-words font-bold text-blue-600 [overflow-wrap:anywhere]">
+                      {order.orderNumber}
+                    </div>
                   </div>
 
                   <div className="min-w-0 px-4 py-4">
-                    <div className="min-w-0 max-w-[220px]">
-                      <p className="truncate font-medium text-body" title={order.customerEmail?.trim() || undefined}>
+                    <div className="min-w-0 leading-snug">
+                      <p
+                        className="break-words font-medium text-body [overflow-wrap:anywhere]"
+                        title={order.customerEmail?.trim() || undefined}
+                      >
                         {customerEmail}
                       </p>
                     </div>

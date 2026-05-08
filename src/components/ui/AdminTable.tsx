@@ -21,13 +21,13 @@ export const ADMIN_TABLE_EMPTY_CELL_CLASS =
   "p-10 text-center text-subtle sm:p-12";
 
 export const ADMIN_GRID_TABLE_HEADER_BASE_CLASS =
-  "grid gap-0 border-b border-slate-200 bg-slate-50/90 text-center text-body text-md font-semibold dark:border-slate-700 dark:bg-slate-800/60 divide-x divide-slate-200 dark:divide-slate-700";
+  "grid gap-0 border-b border-slate-200 bg-slate-50/90 text-center text-body text-md font-semibold dark:border-slate-700 dark:bg-slate-800/60 divide-x divide-slate-200 dark:divide-slate-700 [&>*]:min-w-0";
 
 export const ADMIN_GRID_TABLE_ROW_BASE_CLASS =
-  "group relative grid border-b border-slate-200 transition-all duration-300 last:border-b-0 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800/30 divide-x divide-slate-200 dark:divide-slate-700";
+  "group relative grid border-b border-slate-200 transition-all duration-300 last:border-b-0 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800/30 divide-x divide-slate-200 dark:divide-slate-700 [&>*]:min-w-0";
 
 export const ADMIN_GRID_TABLE_SKELETON_ROW_BASE_CLASS =
-  "grid items-center border-b border-slate-200 animate-pulse last:border-b-0 dark:border-slate-700 divide-x divide-slate-200 dark:divide-slate-700";
+  "grid items-center border-b border-slate-200 animate-pulse last:border-b-0 dark:border-slate-700 divide-x divide-slate-200 dark:divide-slate-700 [&>*]:min-w-0";
 
 export function AdminTableCard({
   children,

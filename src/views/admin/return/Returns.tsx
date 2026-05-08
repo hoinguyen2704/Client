@@ -238,18 +238,26 @@ export default function AdminReturns() {
                     {rowNumber}
                   </div>
 
-                  <div className="flex items-center px-4 py-4">
-                    <div className="font-bold text-blue-600">{item.returnNumber}</div>
+                  <div className="flex min-w-0 items-center px-4 py-4">
+                    <div className="min-w-0 break-words font-bold text-blue-600 [overflow-wrap:anywhere]">
+                      {item.returnNumber}
+                    </div>
                   </div>
 
-                  <div className="flex items-center px-4 py-4">
-                    <div className="font-medium text-body">{item.orderNumber}</div>
+                  <div className="flex min-w-0 items-center px-4 py-4">
+                    <div className="min-w-0 break-words font-medium text-body [overflow-wrap:anywhere]">
+                      {item.orderNumber}
+                    </div>
                   </div>
 
-                  <div className="px-4 py-4">
-                    <div className="text-md">
-                      <div className="font-medium text-ink">{item.userName || t('returns.list.unknownUser')}</div>
-                      <div className="text-muted text-sm">{item.userEmail || '-'}</div>
+                  <div className="min-w-0 px-4 py-4">
+                    <div className="min-w-0 text-md leading-snug">
+                      <div className="break-words font-medium text-ink [overflow-wrap:anywhere]">
+                        {item.userName || t('returns.list.unknownUser')}
+                      </div>
+                      <div className="break-words text-sm text-muted [overflow-wrap:anywhere]">
+                        {item.userEmail || '-'}
+                      </div>
                     </div>
                   </div>
 
