@@ -30,6 +30,7 @@ import {
   AdminTableScroll,
 } from '@/components/ui/AdminTable';
 import { formatDate } from '@/utils/format';
+import { sanitizeOptionalIntegerInputString } from '@/utils/numericInput';
 
 
 
@@ -483,10 +484,16 @@ export default function CMS() {
           />
           <FormInput
             label={t('adminContent:cms.banners.sortOrder')}
-            type="number"
-            min={0}
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
             value={bannerForm.sortOrder}
-            onChange={(e) => setBannerForm((prev) => ({ ...prev, sortOrder: e.target.value }))}
+            onChange={(e) =>
+              setBannerForm((prev) => ({
+                ...prev,
+                sortOrder: sanitizeOptionalIntegerInputString(e.target.value),
+              }))
+            }
           />
           <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-800/50">
             <div>

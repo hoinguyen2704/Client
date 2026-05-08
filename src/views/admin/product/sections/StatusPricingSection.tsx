@@ -2,6 +2,7 @@ import { FiChevronDown, FiCheck, FiStar } from "react-icons/fi";
 import type { StatusPricingSectionProps as Props } from "./types";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
+import { parseOptionalIntegerInputValue } from "@/utils/numericInput";
 
 export default memo(function StatusPricingSection(props: Props) {
   const { t } = useTranslation("adminCatalog");
@@ -106,12 +107,12 @@ export default memo(function StatusPricingSection(props: Props) {
       <div>
         <label className="block font-medium mb-2">{t("statusPricing.originPrice")}</label>
         <input
-          type="number"
+          type="text"
+          inputMode="numeric"
+          autoComplete="off"
           value={originPrice}
           onChange={(e) =>
-            setOriginPrice(
-              e.target.value === "" ? "" : Number(e.target.value),
-            )
+            setOriginPrice(parseOptionalIntegerInputValue(e.target.value))
           }
           placeholder="0"
           className="w-full h-12 rounded-xl border border-slate-200 bg-white px-4 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900"

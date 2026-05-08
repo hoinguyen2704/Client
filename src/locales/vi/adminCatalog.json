@@ -546,7 +546,7 @@
       "validationValid": "Dữ liệu hiện tại hợp lệ để lưu sự kiện.",
       "validationTime": "Thời gian kết thúc phải sau thời gian bắt đầu.",
       "validationPrice": "Có {{count}} sản phẩm có giá Flash Sale không hợp lệ (phải lớn hơn 0 và nhỏ hơn giá gốc).",
-      "validationStock": "Có {{count}} sản phẩm có số lượng bán không hợp lệ (phải lớn hơn 0).",
+      "validationStock": "Có {{count}} sản phẩm có số lượng bán không hợp lệ (phải lớn hơn 0 và không vượt quá tồn kho hiện tại).",
       "startAt": "Bắt đầu: {{date}}",
       "endAt": "Kết thúc: {{date}}",
       "schedule": {

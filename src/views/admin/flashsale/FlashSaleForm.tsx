@@ -11,6 +11,10 @@ import { PrimaryButton, Button, TrashButton, FormInput, FormTextarea, Pagination
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import type { SelectedVariant } from '@/components';
 import { formatDateTime, formatPrice } from '@/utils/format';
+import {
+  clampNonNegativeInteger,
+  parseRequiredIntegerInputValue,
+} from '@/utils/numericInput';
 import { resolveVariantSalesMetrics } from '@/utils/variantSales';
 import {
   AdminTable,
@@ -26,6 +30,15 @@ import { PICKER_RESULT_KEY } from './ProductPicker';
 
 const ITEMS_PER_PAGE = PAGE_SIZE.LARGE;
 const getFlashSaleItemKey = (item: FlashSaleItemForm) => item.id ?? item.variantId;
+const resolveMaxFlashStock = (item: Pick<FlashSaleItemForm, 'stockQuantity'>) => {
+  const stock = Number(item.stockQuantity);
+  if (!Number.isFinite(stock) || stock < 0) return undefined;
+  return Math.trunc(stock);
+};
+const clampFlashStock = (value: number, item: Pick<FlashSaleItemForm, 'stockQuantity'>) => {
+  const maxStock = resolveMaxFlashStock(item);
+  return clampNonNegativeInteger(value, maxStock);
+};
 
 export default function FlashSaleForm() {
   const { t } = useTranslation(['adminCatalog', 'common']);
@@ -82,7 +95,7 @@ export default function FlashSaleForm() {
               originalPrice: i.originalPrice,
               imageUrl: i.imageUrl || '',
               flashPrice: i.flashPrice,
-              flashStock: i.flashStock,
+              flashStock: clampFlashStock(i.flashStock, i),
               grossSoldQty: i.grossSoldQty,
               returnedQty: i.returnedQty,
               netSoldQty: i.netSoldQty,
@@ -154,10 +167,25 @@ export default function FlashSaleForm() {
   const handleChangeItem = (itemKey: string, field: 'flashPrice' | 'flashStock', value: number) => {
     setForm(prev => {
       const items = prev.items.map((item) => (
-        getFlashSaleItemKey(item) === itemKey ? { ...item, [field]: value } : item
+        getFlashSaleItemKey(item) === itemKey
+          ? {
+            ...item,
+            [field]: field === 'flashStock' ? clampFlashStock(value, item) : value,
+          }
+          : item
       ));
       return { ...prev, items };
     });
+  };
+
+  const handleChangeFlashStock = (itemKey: string, rawValue: string) => {
+    const parsedValue = parseRequiredIntegerInputValue(rawValue);
+    handleChangeItem(itemKey, 'flashStock', parsedValue);
+  };
+
+  const handleChangeFlashPrice = (itemKey: string, rawValue: string) => {
+    const parsedValue = parseRequiredIntegerInputValue(rawValue);
+    handleChangeItem(itemKey, 'flashPrice', parsedValue);
   };
 
   const handleSubmit = async () => {
@@ -232,7 +260,11 @@ export default function FlashSaleForm() {
   const invalidPriceCount = form.items.filter(
     (item) => Number(item.flashPrice) <= 0 || Number(item.flashPrice) >= Number(item.originalPrice),
   ).length;
-  const invalidStockCount = form.items.filter((item) => Number(item.flashStock) <= 0).length;
+  const invalidStockCount = form.items.filter((item) => {
+    const flashStock = Number(item.flashStock);
+    const maxStock = resolveMaxFlashStock(item);
+    return flashStock <= 0 || (maxStock != null && flashStock > maxStock);
+  }).length;
   const hasWarnings = invalidTimeRange || invalidPriceCount > 0 || invalidStockCount > 0;
   const {
     sortedItems,
@@ -351,74 +383,74 @@ export default function FlashSaleForm() {
             </div>
           </div>
 
-        <aside className="space-y-4 xl:self-start">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
-            <h3 className="font-semibold text-ink mb-3 flex items-center gap-2">
-              <FiClock className="text-muted" />
-              {t('flashSales.form.summaryTitle')}
-            </h3>
-            <div className="space-y-2.5 text-md">
-              <div className="flex items-center justify-between">
-                <span className="text-muted">{t('flashSales.form.scheduleStatus')}</span>
-                <span className="font-semibold text-body">{scheduleStatus}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted">{t('flashSales.form.participatingVariants')}</span>
-                <span className="font-semibold text-body">{form.items.length}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted">{t('flashSales.form.totalStock')}</span>
-                <span className="font-semibold text-body">{totalStock.toLocaleString()}</span>
-              </div>
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <aside className="space-y-4 xl:self-start">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
+              <h3 className="font-semibold text-ink mb-3 flex items-center gap-2">
+                <FiClock className="text-muted" />
+                {t('flashSales.form.summaryTitle')}
+              </h3>
+              <div className="space-y-2.5 text-md">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted">{t('flashSales.form.originalValue')}</span>
-                  <span className="font-medium text-body">{formatPrice(totalOriginalValue)}</span>
+                  <span className="text-muted">{t('flashSales.form.scheduleStatus')}</span>
+                  <span className="font-semibold text-body">{scheduleStatus}</span>
                 </div>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-muted">{t('flashSales.form.flashValue')}</span>
-                  <span className="font-medium text-body">{formatPrice(totalFlashValue)}</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted">{t('flashSales.form.participatingVariants')}</span>
+                  <span className="font-semibold text-body">{form.items.length}</span>
                 </div>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-muted flex items-center gap-1">
-                    <FiTrendingDown className="text-emerald-500" />
-                    {t('flashSales.form.estimatedSavings')}
-                  </span>
-                  <span className="font-semibold text-emerald-600">{formatPrice(totalDiscountValue)} ({discountRate}%)</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted">{t('flashSales.form.totalStock')}</span>
+                  <span className="font-semibold text-body">{totalStock.toLocaleString()}</span>
+                </div>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted">{t('flashSales.form.originalValue')}</span>
+                    <span className="font-medium text-body">{formatPrice(totalOriginalValue)}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-muted">{t('flashSales.form.flashValue')}</span>
+                    <span className="font-medium text-body">{formatPrice(totalFlashValue)}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-muted flex items-center gap-1">
+                      <FiTrendingDown className="text-emerald-500" />
+                      {t('flashSales.form.estimatedSavings')}
+                    </span>
+                    <span className="font-semibold text-emerald-600">{formatPrice(totalDiscountValue)} ({discountRate}%)</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
-            <h3 className="font-semibold text-ink mb-3 flex items-center gap-2">
-              <FiAlertTriangle className={hasWarnings ? 'text-amber-500' : 'text-emerald-500'} />
-              {t('flashSales.form.validationTitle')}
-            </h3>
-            {hasWarnings ? (
-              <ul className="space-y-2 text-md text-muted">
-                {invalidTimeRange && (
-                  <li>{t('flashSales.form.validationTime')}</li>
-                )}
-                {invalidPriceCount > 0 && (
-                  <li>{t('flashSales.form.validationPrice', { count: invalidPriceCount })}</li>
-                )}
-                {invalidStockCount > 0 && (
-                  <li>{t('flashSales.form.validationStock', { count: invalidStockCount })}</li>
-                )}
-              </ul>
-            ) : (
-              <p className="text-md text-emerald-600">{t('flashSales.form.validationValid')}</p>
-            )}
-            {(startDate || endDate) && (
-              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-sm text-muted space-y-1">
-                {startDate && <p>{t('flashSales.form.startAt', { date: formatDateTime(startDate) })}</p>}
-                {endDate && <p>{t('flashSales.form.endAt', { date: formatDateTime(endDate) })}</p>}
-              </div>
-            )}
-          </div>
-        </aside>
-      </div>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
+              <h3 className="font-semibold text-ink mb-3 flex items-center gap-2">
+                <FiAlertTriangle className={hasWarnings ? 'text-amber-500' : 'text-emerald-500'} />
+                {t('flashSales.form.validationTitle')}
+              </h3>
+              {hasWarnings ? (
+                <ul className="space-y-2 text-md text-muted">
+                  {invalidTimeRange && (
+                    <li>{t('flashSales.form.validationTime')}</li>
+                  )}
+                  {invalidPriceCount > 0 && (
+                    <li>{t('flashSales.form.validationPrice', { count: invalidPriceCount })}</li>
+                  )}
+                  {invalidStockCount > 0 && (
+                    <li>{t('flashSales.form.validationStock', { count: invalidStockCount })}</li>
+                  )}
+                </ul>
+              ) : (
+                <p className="text-md text-emerald-600">{t('flashSales.form.validationValid')}</p>
+              )}
+              {(startDate || endDate) && (
+                <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-sm text-muted space-y-1">
+                  {startDate && <p>{t('flashSales.form.startAt', { date: formatDateTime(startDate) })}</p>}
+                  {endDate && <p>{t('flashSales.form.endAt', { date: formatDateTime(endDate) })}</p>}
+                </div>
+              )}
+            </div>
+          </aside>
+        </div>
 
         {/* ── Products Section ── */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6">
@@ -449,7 +481,7 @@ export default function FlashSaleForm() {
                         onClick={() => toggleSort('productName')}
                       />
                     </AdminTableHeadCell>
-                    <AdminTableHeadCell className="w-32">
+                    <AdminTableHeadCell className="w-52">
                       <SortableHeaderLabel
                         label={t('flashSales.form.table.originalPrice')}
                         active={sortBy === 'originalPrice'}
@@ -457,7 +489,7 @@ export default function FlashSaleForm() {
                         onClick={() => toggleSort('originalPrice')}
                       />
                     </AdminTableHeadCell>
-                    <AdminTableHeadCell className="w-36">
+                    <AdminTableHeadCell className="w-52">
                       <SortableHeaderLabel
                         label={t('flashSales.form.table.flashPrice')}
                         active={sortBy === 'flashPrice'}
@@ -465,7 +497,7 @@ export default function FlashSaleForm() {
                         onClick={() => toggleSort('flashPrice')}
                       />
                     </AdminTableHeadCell>
-                    <AdminTableHeadCell className="w-40">
+                    <AdminTableHeadCell className="w-70">
                       <SortableHeaderLabel
                         label={t('flashSales.form.table.flashStock')}
                         active={sortBy === 'flashStock'}
@@ -516,21 +548,23 @@ export default function FlashSaleForm() {
                           <AdminTableCell className="text-muted">{formatPrice(item.originalPrice)}</AdminTableCell>
                           <AdminTableCell>
                             <input
-                              type="number"
-                              min="0"
+                              type="text"
+                              inputMode="numeric"
+                              autoComplete="off"
                               className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
-                              value={item.flashPrice}
-                              onChange={(e) => handleChangeItem(itemKey, 'flashPrice', Number(e.target.value))}
+                              value={String(item.flashPrice)}
+                              onChange={(e) => handleChangeFlashPrice(itemKey, e.target.value)}
                             />
                           </AdminTableCell>
                           <AdminTableCell>
                             <div className="space-y-1.5">
                               <input
-                                type="number"
-                                min="0"
+                                type="text"
+                                inputMode="numeric"
+                                autoComplete="off"
                                 className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
-                                value={item.flashStock}
-                                onChange={(e) => handleChangeItem(itemKey, 'flashStock', Number(e.target.value))}
+                                value={String(item.flashStock)}
+                                onChange={(e) => handleChangeFlashStock(itemKey, e.target.value)}
                               />
                               <div className="text-sm text-muted leading-tight">
                                 {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (

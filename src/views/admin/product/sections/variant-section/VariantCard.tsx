@@ -289,7 +289,9 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     {t("variantCard.priceLabel")}
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
                     value={variant.price}
                     onChange={(e) => updateVariant(index, "price", e.target.value)}
                     placeholder="0"
@@ -303,7 +305,9 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     {t("variantCard.compareAtPriceLabel")}
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
                     value={variant.compareAtPrice}
                     onChange={(e) => updateVariant(index, "compareAtPrice", e.target.value)}
                     placeholder={t("variantCard.compareAtPricePlaceholder")}
@@ -317,7 +321,9 @@ export default memo(function VariantCard(props: VariantCardProps) {
                     {t("variantCard.stockLabel")}
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
                     value={variant.stock}
                     onChange={(e) => updateVariant(index, "stock", e.target.value)}
                     placeholder="0"

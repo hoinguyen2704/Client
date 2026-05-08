@@ -19,6 +19,10 @@ import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
 import chatbotService from "@/apis/services/chatbotService";
 import {
+  clampIntegerRange,
+  parseRequiredIntegerInputValue,
+} from "@/utils/numericInput";
+import {
   ConfirmDialog,
   FormInput,
   FormTextarea,
@@ -576,17 +580,18 @@ export default function Chatbot() {
                   <div>
                     <FormInput
                       label={t("chatbot.sections.runtime.fields.maxProducts")}
-                      type="number"
-                      min={1}
-                      max={20}
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
                       value={config.ai?.maxProducts ?? 3}
                       onChange={(e) =>
                         updateField(
                           "ai",
                           "maxProducts",
-                          Math.max(
+                          clampIntegerRange(
+                            parseRequiredIntegerInputValue(e.target.value, 3),
                             1,
-                            Math.min(20, parseInt(e.target.value) || 3),
+                            20,
                           ),
                         )
                       }
@@ -599,17 +604,18 @@ export default function Chatbot() {
                   <div>
                     <FormInput
                       label={t("chatbot.sections.runtime.fields.maxRetries")}
-                      type="number"
-                      min={0}
-                      max={5}
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
                       value={config.ai?.maxRetries ?? 1}
                       onChange={(e) =>
                         updateField(
                           "ai",
                           "maxRetries",
-                          Math.max(
+                          clampIntegerRange(
+                            parseRequiredIntegerInputValue(e.target.value, 1),
                             0,
-                            Math.min(5, parseInt(e.target.value) || 1),
+                            5,
                           ),
                         )
                       }
@@ -622,18 +628,18 @@ export default function Chatbot() {
                   <div>
                     <FormInput
                       label={t("chatbot.sections.runtime.fields.planTimeoutMs")}
-                      type="number"
-                      min={5000}
-                      max={60000}
-                      step={1000}
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
                       value={config.ai?.planTimeoutMs ?? 25000}
                       onChange={(e) =>
                         updateField(
                           "ai",
                           "planTimeoutMs",
-                          Math.max(
+                          clampIntegerRange(
+                            parseRequiredIntegerInputValue(e.target.value, 25000),
                             5000,
-                            Math.min(60000, parseInt(e.target.value) || 25000),
+                            60000,
                           ),
                         )
                       }
@@ -646,18 +652,18 @@ export default function Chatbot() {
                   <div>
                     <FormInput
                       label={t("chatbot.sections.runtime.fields.dbTimeoutMs")}
-                      type="number"
-                      min={1000}
-                      max={30000}
-                      step={1000}
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
                       value={config.ai?.dbTimeoutMs ?? 6000}
                       onChange={(e) =>
                         updateField(
                           "ai",
                           "dbTimeoutMs",
-                          Math.max(
+                          clampIntegerRange(
+                            parseRequiredIntegerInputValue(e.target.value, 6000),
                             1000,
-                            Math.min(30000, parseInt(e.target.value) || 6000),
+                            30000,
                           ),
                         )
                       }

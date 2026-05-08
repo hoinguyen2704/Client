@@ -546,7 +546,7 @@
       "validationValid": "Current data is valid and ready to save.",
       "validationTime": "End time must be after start time.",
       "validationPrice": "{{count}} products have invalid Flash Sale prices (must be greater than 0 and less than the original price).",
-      "validationStock": "{{count}} products have invalid Flash Sale stock (must be greater than 0).",
+      "validationStock": "{{count}} products have invalid Flash Sale stock (must be greater than 0 and must not exceed the current stock).",
       "startAt": "Start: {{date}}",
       "endAt": "End: {{date}}",
       "schedule": {

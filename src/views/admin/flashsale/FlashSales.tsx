@@ -140,7 +140,7 @@ export default function FlashSales() {
                     </AdminTableCell>
                     <AdminTableCell className="text-md font-medium">
                       {t("flashSales.list.productsCount", {
-                        count: sale.items?.length || 0,
+                        count: sale.itemCount ?? sale.items?.length ?? 0,
                       })}
                     </AdminTableCell>
                     <AdminTableCell>

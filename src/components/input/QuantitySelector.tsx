@@ -1,5 +1,10 @@
+import { useEffect, useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { toast } from 'sonner';
+import {
+  parseOptionalIntegerInputValue,
+  sanitizeOptionalIntegerInputString,
+} from '@/utils/numericInput';
 import type { QuantitySelectorProps } from '../ui/types';
 
 const sizeConfig = {
@@ -26,6 +31,22 @@ export default function QuantitySelector({
   className = '',
 }: QuantitySelectorProps) {
   const s = sizeConfig[size];
+  const clampValue = (nextValue: number) => {
+    const normalizedValue = Number.isFinite(nextValue)
+      ? Math.trunc(nextValue)
+      : min;
+
+    if (max !== Infinity) {
+      return Math.min(Math.max(normalizedValue, min), max);
+    }
+
+    return Math.max(normalizedValue, min);
+  };
+  const [draftValue, setDraftValue] = useState(() => String(clampValue(value)));
+
+  useEffect(() => {
+    setDraftValue(String(clampValue(value)));
+  }, [value, min, max]);
 
   const handleDecrement = () => {
     if (value > min) onChange(value - 1);
@@ -40,18 +61,39 @@ export default function QuantitySelector({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    if (raw === '') {
-      onChange(min);
+    const sanitizedValue = sanitizeOptionalIntegerInputString(e.target.value);
+    setDraftValue(sanitizedValue);
+
+    if (sanitizedValue === '') {
       return;
     }
-    const num = parseInt(raw, 10);
-    if (isNaN(num) || num < min) return;
-    if (max !== Infinity && num > max) {
+
+    const parsedValue = parseOptionalIntegerInputValue(sanitizedValue);
+    if (parsedValue === '' || parsedValue < min) return;
+
+    if (max !== Infinity && parsedValue > max) {
       if (overMaxWarning) toast.warning(overMaxWarning);
+      setDraftValue(String(max));
       onChange(max);
-    } else {
-      onChange(num);
+      return;
+    }
+
+    if (parsedValue !== value) {
+      onChange(parsedValue);
+    }
+  };
+
+  const handleInputBlur = () => {
+    const parsedValue = parseOptionalIntegerInputValue(draftValue);
+    if (parsedValue === '' || parsedValue < min) {
+      setDraftValue(String(clampValue(value)));
+      return;
+    }
+
+    const clampedValue = clampValue(parsedValue);
+    setDraftValue(String(clampedValue));
+    if (clampedValue !== value) {
+      onChange(clampedValue);
     }
   };
 
@@ -67,8 +109,11 @@ export default function QuantitySelector({
       </button>
       <input
         type="text"
-        value={value}
+        inputMode="numeric"
+        autoComplete="off"
+        value={draftValue}
         onChange={handleInputChange}
+        onBlur={handleInputBlur}
         disabled={disabled}
         className={`text-body text-center border-none bg-transparent font-extrabold focus:ring-0 p-0 disabled:opacity-60 ${s.input}`}
       />

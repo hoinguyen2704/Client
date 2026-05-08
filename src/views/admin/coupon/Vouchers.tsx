@@ -42,6 +42,7 @@ import {
 import useAdminList from "@/hooks/useAdminList";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 import { downloadBlob } from "@/utils/download";
+import { parseRequiredIntegerInputValue } from "@/utils/numericInput";
 import { buildReportFilename } from "@/utils/reportExport";
 import { useTranslation } from "react-i18next";
 
@@ -485,7 +486,9 @@ export default function AdminVouchers() {
                   ? t("vouchers.form.shippingCapLabel")
                   : t("vouchers.form.discountValueLabel")
               }
-              type="number"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
               placeholder={
                 form.couponCategory === "SHIPPING" &&
                   form.discountType !== "PERCENTAGE"
@@ -494,16 +497,24 @@ export default function AdminVouchers() {
               }
               value={form.discountValue || ""}
               onChange={(e) =>
-                setForm({ ...form, discountValue: +e.target.value })
+                setForm({
+                  ...form,
+                  discountValue: parseRequiredIntegerInputValue(e.target.value),
+                })
               }
             />
             <FormInput
               label={t("vouchers.form.minOrderValueLabel")}
-              type="number"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
               placeholder="500000"
               value={form.minOrderValue || ""}
               onChange={(e) =>
-                setForm({ ...form, minOrderValue: +e.target.value })
+                setForm({
+                  ...form,
+                  minOrderValue: parseRequiredIntegerInputValue(e.target.value),
+                })
               }
             />
           </div>
@@ -512,11 +523,16 @@ export default function AdminVouchers() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInput
               label={t("vouchers.form.usageLimitLabel")}
-              type="number"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
               placeholder="100"
               value={form.usageLimit || ""}
               onChange={(e) =>
-                setForm({ ...form, usageLimit: +e.target.value })
+                setForm({
+                  ...form,
+                  usageLimit: parseRequiredIntegerInputValue(e.target.value),
+                })
               }
             />
             <div
@@ -528,11 +544,16 @@ export default function AdminVouchers() {
             >
               <FormInput
                 label={t("vouchers.form.maxDiscountAmountLabel")}
-                type="number"
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
                 placeholder={t("vouchers.form.maxDiscountAmountPlaceholder")}
                 value={form.maxDiscountAmount || ""}
                 onChange={(e) =>
-                  setForm({ ...form, maxDiscountAmount: +e.target.value })
+                  setForm({
+                    ...form,
+                    maxDiscountAmount: parseRequiredIntegerInputValue(e.target.value),
+                  })
                 }
                 disabled={form.discountType !== "PERCENTAGE"}
               />

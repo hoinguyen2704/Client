@@ -5,6 +5,7 @@ import { Button, CustomSelect, FormInput, Modal, ModalCancelButton, SectionCard,
 import { toast } from 'sonner';
 import adminSettingService from '@/apis/services/adminSettingService';
 import type { SettingResponse, SettingUpdateRequest } from '@/types';
+import { sanitizeOptionalIntegerInputString } from '@/utils/numericInput';
 
 export default function Settings() {
   const { t } = useTranslation('adminSettings');
@@ -150,7 +151,14 @@ export default function Settings() {
                     className="w-full"
                   />
                 </div>
-                <FormInput label={t('general.defaultTax')} type="number" value={val('DEFAULT_TAX_PERCENT', '10')} onChange={(e) => set('DEFAULT_TAX_PERCENT', e.target.value)} />
+                <FormInput
+                  label={t('general.defaultTax')}
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  value={val('DEFAULT_TAX_PERCENT', '10')}
+                  onChange={(e) => set('DEFAULT_TAX_PERCENT', sanitizeOptionalIntegerInputString(e.target.value))}
+                />
               </div>
               <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/40 space-y-4">
                 <div className="flex items-start sm:items-center justify-between gap-3">
@@ -223,16 +231,20 @@ export default function Settings() {
             <div className="space-y-4">
               <FormInput
                 label={`${t('shipping.defaultFee')} ${t('units.vnd')}`}
-                type="number"
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
                 value={val('DEFAULT_SHIPPING_FEE', '30000')}
-                onChange={(e) => set('DEFAULT_SHIPPING_FEE', e.target.value)}
+                onChange={(e) => set('DEFAULT_SHIPPING_FEE', sanitizeOptionalIntegerInputString(e.target.value))}
               />
               <div className="space-y-2">
                 <FormInput
                   label={`${t('shipping.freeshipThreshold')} ${t('units.vnd')}`}
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
                   value={val('FREE_SHIPPING_THRESHOLD', '500000')}
-                  onChange={(e) => set('FREE_SHIPPING_THRESHOLD', e.target.value)}
+                  onChange={(e) => set('FREE_SHIPPING_THRESHOLD', sanitizeOptionalIntegerInputString(e.target.value))}
                 />
                 <p className="text-sm text-muted">{t('shipping.freeshipDesc')}</p>
               </div>

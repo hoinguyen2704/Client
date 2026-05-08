@@ -25,6 +25,7 @@ import {
 } from '@/constants/returnConstants';
 import { formatDateFull as formatDateTime, formatPrice } from '@/utils/format';
 import { getApiErrorMessage } from '@/utils/error';
+import { sanitizeOptionalIntegerInputString } from '@/utils/numericInput';
 import type { OrderResponse, ProcessRefundRequestPayload, ReturnRequestResponse, ReviewReturnRequestPayload } from '@/types';
 import { useClientTableSort } from '@/hooks';
 
@@ -624,11 +625,15 @@ export default function ReturnDetail() {
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
               <h2 className="text-lg font-bold">{t('returns.detail.reviewTitle')}</h2>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
                 min={0}
                 step="1000"
                 value={approvedAmount}
-                onChange={(e) => setApprovedAmount(e.target.value)}
+                onChange={(e) =>
+                  setApprovedAmount(sanitizeOptionalIntegerInputString(e.target.value))
+                }
                 placeholder={t('returns.detail.approvedAmountPlaceholder')}
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40"
               />
@@ -692,11 +697,15 @@ export default function ReturnDetail() {
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 space-y-3">
               <h2 className="text-lg font-bold">{t('returns.detail.refundTitle')}</h2>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
                 min={0}
                 step="1000"
                 value={refundAmount}
-                onChange={(e) => setRefundAmount(e.target.value)}
+                onChange={(e) =>
+                  setRefundAmount(sanitizeOptionalIntegerInputString(e.target.value))
+                }
                 placeholder={t('returns.detail.refundAmountPlaceholder')}
                 className="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-md outline-none focus:ring-2 focus:ring-blue-500/40"
               />
