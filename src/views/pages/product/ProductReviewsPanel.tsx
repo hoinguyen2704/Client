@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
 import { FiCheckCircle, FiMessageSquare, FiStar, FiUser } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import { FeedbackImageGrid, StarRating } from '@/components';
+import { FeedbackImageGrid, LoadMoreAction, StarRating } from '@/components';
 import type { FeedbackFilterSummaryResponse, FeedbackResponse, ProductReviewFilter } from '@/types';
 import { parseFeedbackImageUrls } from '@/utils/feedback';
 import { formatRating } from '@/utils/format';
@@ -60,8 +59,6 @@ export default function ProductReviewsPanel({
   formatDate,
 }: ProductReviewsPanelProps) {
   const { t } = useTranslation('catalog');
-  const reviewsScrollRef = useRef<HTMLDivElement | null>(null);
-  const loadMoreTriggerRef = useRef<HTMLDivElement | null>(null);
   const filterChips: Array<{
     key: ProductReviewFilter;
     label: string;
@@ -79,28 +76,6 @@ export default function ProductReviewsPanel({
       label: t('productDetail.tabs.reviewFilters.withComment', { count: summary.withContent || 0 }),
     },
   ];
-
-  useEffect(() => {
-    if (!hasMore || loading || loadingMore || loadFailed || loadMoreFailed) return;
-
-    const scrollElement = reviewsScrollRef.current;
-    const triggerElement = loadMoreTriggerRef.current;
-    if (!scrollElement || !triggerElement) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) onLoadMore();
-      },
-      { root: scrollElement, rootMargin: '180px 0px' },
-    );
-
-    observer.observe(triggerElement);
-    return () => observer.disconnect();
-  }, [hasMore, loadFailed, loadMoreFailed, loading, loadingMore, onLoadMore]);
-
-  useEffect(() => {
-    reviewsScrollRef.current?.scrollTo({ top: 0 });
-  }, [activeFilter]);
 
   return (
     <div className="space-y-5">
@@ -183,10 +158,7 @@ export default function ProductReviewsPanel({
         </div>
       </div>
 
-      <div
-        ref={reviewsScrollRef}
-        className="custom-scrollbar max-h-[560px] min-h-[260px] overflow-y-auto pr-1 sm:max-h-[640px] lg:max-h-[720px]"
-      >
+      <div className="custom-scrollbar max-h-[560px] min-h-[260px] overflow-y-auto pr-1 sm:max-h-[640px] lg:max-h-[720px]">
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((item) => (
@@ -342,26 +314,18 @@ export default function ProductReviewsPanel({
               </div>
             )}
 
-            {loadMoreFailed && (
-              <div className="flex items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50/70 px-5 py-5 text-center dark:border-red-900/50 dark:bg-red-950/20">
-                <div>
-                  <p className="text-sm font-semibold text-red-700 dark:text-red-300">
-                    {t('productDetail.tabs.reviewsLoadMoreFailed')}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={onLoadMore}
-                    className="mt-3 rounded-2xl border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700 transition-colors hover:border-red-300 hover:bg-red-50 dark:border-red-900/50 dark:bg-slate-900 dark:text-red-300 dark:hover:bg-red-950/30"
-                  >
-                    {t('productDetail.tabs.retryLoadMore')}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {hasMore && !loadMoreFailed && (
-              <div ref={loadMoreTriggerRef} className="h-6" aria-hidden="true" />
-            )}
+            {hasMore || loadMoreFailed ? (
+              <LoadMoreAction
+                className="pt-1"
+                onClick={onLoadMore}
+                loading={loadingMore}
+                failed={loadMoreFailed}
+                loadLabel={t('productDetail.tabs.loadMoreReviews')}
+                loadingLabel={t('productDetail.tabs.loadingMoreReviews')}
+                retryLabel={t('productDetail.tabs.retryLoadMore')}
+                errorMessage={t('productDetail.tabs.reviewsLoadMoreFailed')}
+              />
+            ) : null}
           </div>
         ) : (
           <div className="flex min-h-[260px] items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-800/40">

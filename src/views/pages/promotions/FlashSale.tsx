@@ -1,8 +1,9 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import type { TFunction } from 'i18next';
-import { FiArrowRight, FiChevronDown, FiClock, FiTrendingUp, FiZap } from 'react-icons/fi';
+import { FiArrowRight, FiClock, FiTrendingUp, FiZap } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { LoadMoreAction } from '@/components';
 import { formatPrice } from '@/utils/format';
 import flashSaleService from '@/apis/services/flashSaleService';
 import type { FlashSaleItemResponse, FlashSaleResponse, TimeLeft } from '@/types';
@@ -358,28 +359,17 @@ const FlashSaleSection = memo(function FlashSaleSection({ sale }: { sale: FlashS
             </div>
 
             {hasMoreItems || itemLoadFailed ? (
-              <div className="mt-5 flex flex-col items-center gap-2">
-                <button
-                  type="button"
-                  onClick={loadMoreItems}
-                  disabled={loadingMoreItems}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-muted shadow-sm transition-colors hover:border-red-200 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-red-900/40 dark:hover:text-red-300"
-                >
-                  <span>
-                    {loadingMoreItems
-                      ? t('flashSale.loadingMoreItems')
-                      : itemLoadFailed
-                        ? t('flashSale.retryLoadItems')
-                        : t('flashSale.loadMoreItems')}
-                  </span>
-                  <FiChevronDown className={`shrink-0 ${loadingMoreItems ? 'animate-bounce' : ''}`} />
-                </button>
-                {itemLoadFailed ? (
-                  <p className="text-sm font-medium text-red-500">
-                    {t('flashSale.loadMoreItemsFailed')}
-                  </p>
-                ) : null}
-              </div>
+              <LoadMoreAction
+                className="mt-5"
+                buttonClassName="hover:border-red-200 hover:text-red-600 dark:hover:border-red-900/40 dark:hover:text-red-300"
+                onClick={loadMoreItems}
+                loading={loadingMoreItems}
+                failed={itemLoadFailed}
+                loadLabel={t('flashSale.loadMoreItems')}
+                loadingLabel={t('flashSale.loadingMoreItems')}
+                retryLabel={t('flashSale.retryLoadItems')}
+                errorMessage={t('flashSale.loadMoreItemsFailed')}
+              />
             ) : null}
           </>
         ) : (

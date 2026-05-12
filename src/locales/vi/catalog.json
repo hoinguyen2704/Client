@@ -205,6 +205,8 @@
       "emptyReviews": "Chưa có đánh giá nào cho sản phẩm này.",
       "emptyReviewsFiltered": "Không có đánh giá nào phù hợp với bộ lọc này.",
       "reviewsLoadFailed": "Không thể tải đánh giá. Vui lòng thử lại sau.",
+      "loadMoreReviews": "Tải thêm 10 đánh giá",
+      "loadingMoreReviews": "Đang tải thêm...",
       "reviewsLoadMoreFailed": "Không thể tải thêm đánh giá.",
       "retryLoadMore": "Thử lại",
       "reviewFilters": {

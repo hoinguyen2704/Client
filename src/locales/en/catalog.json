@@ -205,6 +205,8 @@
       "emptyReviews": "There are no reviews for this product yet.",
       "emptyReviewsFiltered": "No reviews match the current filter.",
       "reviewsLoadFailed": "Unable to load reviews. Please try again later.",
+      "loadMoreReviews": "Load 10 more reviews",
+      "loadingMoreReviews": "Loading more...",
       "reviewsLoadMoreFailed": "Unable to load more reviews.",
       "retryLoadMore": "Try again",
       "reviewFilters": {
