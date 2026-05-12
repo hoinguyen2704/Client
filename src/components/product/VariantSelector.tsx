@@ -20,9 +20,9 @@ function VariantSelector({
 }: VariantSelectorProps) {
   const { t } = useTranslation('catalog');
   const resolvedLabel = label || t('variantSelector.label');
-  if (variants.length <= 1) return null;
-  const activeVariant = variants[selectedIndex];
-  if (!activeVariant) return null;
+  const resolvedSelectedIndex =
+    selectedIndex >= 0 && selectedIndex < variants.length ? selectedIndex : 0;
+  const activeVariant = variants[resolvedSelectedIndex];
 
   const groups = useMemo<AttributeGroup[]>(() => {
     interface MutableGroup {
@@ -141,6 +141,23 @@ function VariantSelector({
     return map;
   }, [variants]);
 
+  const singleVariantLabel = useMemo(() => {
+    if (!activeVariant) return '';
+
+    const selectedLabels = (activeVariant.selections || activeVariant.attributes || [])
+      .map((attr) => attr.optionLabel || attr.optionCode)
+      .filter(Boolean)
+      .join(' / ');
+
+    return (
+      activeVariant.displayName
+      || activeVariant.variantName
+      || activeVariant.variantSignature
+      || selectedLabels
+      || activeVariant.sku
+    );
+  }, [activeVariant]);
+
   const resolveVariantIndexBySelection = (
     nextSelection: Record<string, string>,
   ): number => {
@@ -160,6 +177,53 @@ function VariantSelector({
       );
     });
   };
+
+  if (variants.length === 0 || !activeVariant) return null;
+
+  if (variants.length === 1) {
+    if (groups.length > 0) {
+      return (
+        <div className={`flex flex-wrap gap-4 ${className}`}>
+          {groups.map((group) => {
+            const activeOptionId = variantOptionMap.get(activeVariant.id)?.get(group.id);
+            const activeOption =
+              group.options.find((option) => option.id === activeOptionId)
+              || (group.options.length === 1 ? group.options[0] : undefined);
+
+            if (!activeOption) return null;
+
+            return (
+              <div key={group.id} className="min-w-[132px] max-w-full">
+                <h3 className="mb-3 text-base font-extrabold">{group.name}</h3>
+                <button
+                  type="button"
+                  disabled
+                  className="w-full max-w-full cursor-default overflow-hidden rounded-xl border-2 border-slate-200 bg-white px-4 py-2.5 text-center font-semibold text-body disabled:opacity-100 dark:border-slate-700 dark:bg-transparent"
+                >
+                  <span className="block truncate">{activeOption.label}</span>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    return (
+      <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+        <h3 className="text-base font-extrabold">{resolvedLabel}</h3>
+        <button
+          type="button"
+          disabled
+          className="max-w-full cursor-default overflow-hidden rounded-xl border-2 border-blue-500 bg-blue-50 px-4 py-2.5 text-center font-semibold text-blue-700 shadow-[0_0_0_1px_rgba(59,130,246,0.25)] disabled:opacity-100 dark:bg-blue-950/30 dark:text-blue-300"
+        >
+          <span className="block max-w-[min(28rem,calc(100vw-3rem))] truncate">
+            {singleVariantLabel}
+          </span>
+        </button>
+      </div>
+    );
+  }
 
   // Fallback to flat list when schema is not present
   if (groups.length === 0) {

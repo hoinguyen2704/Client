@@ -24,7 +24,7 @@
     "removeSelectedAction": "Remove selected",
     "selectAll": "Select all ({{count}})",
     "selectedInfo": "Selected ({{selected}}/{{total}})",
-    "changeConfigTitle": "Click to switch to another configuration",
+    "changeConfigTitle": "Click to switch to another variant",
     "changeConfig": "Change",
     "summary": {
       "title": "Order summary",

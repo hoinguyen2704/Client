@@ -36,7 +36,7 @@ export default function CustomSelect({ value, options, onChange, className = '',
     const style: React.CSSProperties = {
       position: 'fixed',
       top: rect.bottom + 8,
-      zIndex: 9999,
+      zIndex: 40,
       width: Math.max(rect.width, 160),
     };
     if (dropdownAlign === 'right') {

@@ -17,9 +17,8 @@ import {
   AdminTableScroll,
 } from '@/components/ui/AdminTable';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { useDebounce } from '@/hooks';
+import { useAsyncExportJob, useDebounce, usePageQueryParam } from '@/hooks';
 import type { AdminProductDeleteResult, AdminProductListItem, ApiResponse, CategoryResponse, PageResponse } from '@/types';
-import { downloadBlob } from '@/utils/download';
 import { getApiErrorMessage } from '@/utils/error';
 import { formatPrice } from '@/utils/format';
 import { getPaginatedRowNumber } from '@/utils/helpers';
@@ -35,11 +34,13 @@ export default function Products() {
   const [searchInput, setSearchInput] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
-  const [page, setPage] = useState(1);
+  const { initialPage, returnTo, syncPage } = usePageQueryParam();
+  const [page, setPage] = useState(initialPage);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('DESC');
   const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>(null);
+  const { isExporting, startExport } = useAsyncExportJob();
 
   const deferredSearchInput = useDeferredValue(searchInput);
   const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
@@ -68,6 +69,7 @@ export default function Products() {
         sortDir,
       }, { signal }).then((res) => res.data),
     placeholderData: (previousData) => previousData,
+    refetchOnMount: 'always',
   });
 
   const deleteMutation = useMutation({
@@ -134,6 +136,10 @@ export default function Products() {
   const loading = productsQuery.isPending && !productsQuery.data;
 
   useEffect(() => {
+    syncPage(page);
+  }, [page, syncPage]);
+
+  useEffect(() => {
     const visibleIds = new Set(products.map((product) => product.id));
     setSelectedItems((prev) => prev.filter((id) => visibleIds.has(id)));
   }, [products]);
@@ -159,17 +165,17 @@ export default function Products() {
   };
 
   const handleExport = async () => {
-    try {
-      const blob = await adminProductService.export({
+    await startExport({
+      type: 'PRODUCTS',
+      params: {
         keyword: debouncedSearchQuery || undefined,
         categoryId: categoryFilter || undefined,
         status: statusFilter || undefined,
-      });
-      downloadBlob(blob, `products_${new Date().toISOString().slice(0, 10)}.xlsx`);
-      toast.success(t('adminCatalog:products.toasts.exportSuccess'));
-    } catch (err) {
-      toast.error(getApiErrorMessage(err, t, 'adminCatalog:products.toasts.exportFailed'));
-    }
+      },
+      fallbackFilename: `products_${new Date().toISOString().slice(0, 10)}.xlsx`,
+      successMessage: t('adminCatalog:products.toasts.exportSuccess'),
+      failureMessage: t('adminCatalog:products.toasts.exportFailed'),
+    });
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -316,10 +322,10 @@ export default function Products() {
               {t('adminCatalog:products.actions.deleteSelected', { count: selectedItems.length })}
             </Button>
           ) : null}
-          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />} loading={isExporting}>
             {t('adminCatalog:products.actions.exportExcel')}
           </Button>
-          <PrimaryButton href="/admin/products/new" icon={<FiPlus className="text-base" />}>
+          <PrimaryButton href="/admin/products/new" state={{ returnTo }} icon={<FiPlus className="text-base" />}>
             {t('adminCatalog:products.actions.addProduct')}
           </PrimaryButton>
         </div>
@@ -509,6 +515,7 @@ export default function Products() {
                             {
                               type: 'edit',
                               href: `/admin/products/${product.id}`,
+                              state: { returnTo },
                             },
                             {
                               type: 'delete',

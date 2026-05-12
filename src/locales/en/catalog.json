@@ -51,8 +51,13 @@
     "activeCampaigns": "{{count}} active campaigns",
     "summaryFallback": "Hunt limited deals with the best prices of the day and stock that changes in realtime.",
     "campaignProducts": "{{count}} products in this sale",
+    "campaignLoadedProducts": "Loaded {{loaded}}/{{total}} products",
     "campaignRemaining": "{{count}} deal slots left",
     "emptyProducts": "There are no products in this campaign yet.",
+    "loadMoreItems": "Load 10 more products",
+    "loadingMoreItems": "Loading more...",
+    "retryLoadItems": "Try loading again",
+    "loadMoreItemsFailed": "Could not load more products. Please try again.",
     "actions": {
       "viewDetails": "View details",
       "grabDeal": "Grab this deal"
@@ -116,7 +121,7 @@
     }
   },
   "productDetail": {
-    "variantFallback": "Option",
+    "variantFallback": "Variant",
     "toasts": {
       "loadFailed": "Unable to load product details.",
       "loginAddToCart": "Please log in to add this item to your cart.",
@@ -140,7 +145,7 @@
       "discount": "Save {{percent}}%"
     },
     "pricing": {
-      "chooseVariantToSeePrice": "Please select all required options to view the price.",
+      "chooseVariantToSeePrice": "Please select all variant options to view the price.",
       "discountOff": "{{percent}}% off",
       "flashSale": "Flash Sale",
       "flashSaleRemaining": "{{count}} deal slots left"
@@ -169,7 +174,7 @@
       "specs": "Technical specifications",
       "specsMeta": "{{count}} spec items",
       "specHighlights": "Highlights",
-      "specsIntro": "A quick summary of the most important specifications before diving into the full configuration.",
+      "specsIntro": "A quick summary of the most important specifications before diving into the full technical details.",
       "showMoreSpecs": "Show more specs",
       "showLessSpecs": "Collapse specs",
       "description": "Product description",
@@ -198,6 +203,9 @@
       "afterDays": "after {{count}} days",
       "emptyReviews": "There are no reviews for this product yet.",
       "emptyReviewsFiltered": "No reviews match the current filter.",
+      "reviewsLoadFailed": "Unable to load reviews. Please try again later.",
+      "reviewsLoadMoreFailed": "Unable to load more reviews.",
+      "retryLoadMore": "Try again",
       "reviewFilters": {
         "all": "All",
         "star": "{{star}} star ({{count}})",

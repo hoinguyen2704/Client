@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import {
   FiCheckCircle,
   FiClock,
@@ -39,6 +39,8 @@ const createIdempotencyKey = () => {
 export default function ReturnDetail() {
   const { t } = useTranslation(['adminSales', 'common']);
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const returnTo = typeof location.state?.returnTo === 'string' ? location.state.returnTo : '/admin/returns';
   const [returnRequest, setReturnRequest] = useState<ReturnRequestResponse | null>(null);
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -293,7 +295,7 @@ export default function ReturnDetail() {
   if (!returnRequest) {
     return (
       <div className="space-y-4">
-        <BackButton to="/admin/returns" />
+        <BackButton to={returnTo} />
         <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 text-subtle">
           {t('returns.detail.notFound')}
         </div>
@@ -305,7 +307,7 @@ export default function ReturnDetail() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-start gap-4">
-          <BackButton to="/admin/returns" />
+          <BackButton to={returnTo} />
           <div>
             <h1 className="text-xl sm:text-2xl font-bold flex flex-wrap items-center gap-2">
               {returnRequest.returnNumber}

@@ -1,16 +1,17 @@
-import { memo, useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { productService } from '@/apis';
 import flashSaleService from '@/apis/services/flashSaleService';
-import type { ProductResponse, FlashSaleResponse, ProductImageResponse } from '@/types';
+import type { FlashSaleItemResponse, ProductResponse, ProductImageResponse } from '@/types';
 import { Button, ProductCard } from '@/components';
+import HorizontalInfiniteScroller from '@/components/ui/HorizontalInfiniteScroller';
 import ProductGallery from './ProductGallery';
 import ProductInfo from './ProductInfo';
 import ProductTabs from './ProductTabs';
-import { buildFlashSaleItemMap, resolveVariantPricing } from '@/utils/pricing';
+import { buildFlashSaleItemMapFromItems, resolveVariantPricing } from '@/utils/pricing';
 import { addRecentlyViewed } from '@/utils/recentlyViewed';
 
 // Pure helpers — defined outside component to avoid recreation
@@ -38,72 +39,130 @@ const keepActiveVariants = (product: ProductResponse | null): ProductResponse | 
   };
 };
 
-const RelatedProductsSection = memo(function RelatedProductsSection({
-  related,
-  title,
-}: {
-  related: ProductResponse[];
-  title: string;
-}) {
-  if (related.length === 0) return null;
-
-  return (
-    <div>
-      <h2 className="mb-8 text-2xl font-bold">{title}</h2>
-      <div className="custom-scrollbar flex snap-x gap-3 overflow-x-auto pb-4 md:gap-5">
-        {related.map((product) => (
-          <div key={product.id} className="w-[220px] shrink-0 snap-start flex-none md:w-[240px] xl:w-[248px]">
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-});
+const RELATED_PAGE_SIZE = 8;
 
 export default function ProductDetail() {
   const { t } = useTranslation(['catalog', 'layout']);
   const { slug } = useParams();
   const [product, setProduct] = useState<ProductResponse | null>(null);
   const [related, setRelated] = useState<ProductResponse[]>([]);
-  const [activeFlashSales, setActiveFlashSales] = useState<FlashSaleResponse[]>([]);
+  const [relatedPage, setRelatedPage] = useState(1);
+  const [relatedHasMore, setRelatedHasMore] = useState(false);
+  const [relatedLoading, setRelatedLoading] = useState(false);
+  const [relatedLoadingMore, setRelatedLoadingMore] = useState(false);
+  const [flashItemsByVariantId, setFlashItemsByVariantId] = useState<Record<string, FlashSaleItemResponse>>({});
   const [activeImage, setActiveImage] = useState(0);
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
   const [loading, setLoading] = useState(true);
-  const flashItemsByVariantId = useMemo(
-    () => buildFlashSaleItemMap(activeFlashSales),
-    [activeFlashSales],
-  );
 
   useEffect(() => {
     if (!slug) return;
+    let cancelled = false;
+
     const load = async () => {
       setLoading(true);
+      setRelated([]);
+      setRelatedPage(1);
+      setRelatedHasMore(false);
+      setRelatedLoading(false);
+      setRelatedLoadingMore(false);
+      setFlashItemsByVariantId({});
       try {
-        const [productRes, flashSaleRes] = await Promise.all([
-          productService.getBySlug(slug),
-          flashSaleService.getActiveList().catch(() => null),
-        ]);
+        const productRes = await productService.getBySlug(slug);
+        if (cancelled) return;
 
         const loadedProduct = keepActiveVariants(productRes.data);
         setProduct(loadedProduct);
-        setActiveFlashSales(flashSaleRes?.data || []);
+        setLoading(false);
 
-        // Fetch related products from same category
+        const variantIds = (loadedProduct?.variants || [])
+          .map((variant) => variant.id)
+          .filter((variantId): variantId is string => Boolean(variantId));
+        if (variantIds.length > 0) {
+          flashSaleService.getActiveItemsForVariants(variantIds)
+            .then((flashSaleRes) => {
+              if (cancelled) return;
+              setFlashItemsByVariantId(buildFlashSaleItemMapFromItems(flashSaleRes?.data || []));
+            })
+            .catch(() => {
+              if (cancelled) return;
+              setFlashItemsByVariantId({});
+            });
+        }
+
         if (loadedProduct?.category?.slug) {
-          const relRes = await productService.search({ categorySlug: loadedProduct.category.slug, size: 6 });
-          setRelated((relRes.data?.data || []).filter((p: ProductResponse) => p.slug !== slug));
+          setRelatedLoading(true);
+          productService.search({
+            categorySlug: loadedProduct.category.slug,
+            page: 1,
+            size: RELATED_PAGE_SIZE,
+            sortBy: 'createdAt',
+            sortDir: 'DESC',
+          })
+          .then((relRes) => {
+            if (cancelled) return;
+            setRelated((relRes.data?.data || []).filter((p: ProductResponse) => p.slug !== slug));
+            setRelatedPage(relRes.data?.page || 1);
+            setRelatedHasMore((relRes.data?.page || 1) < (relRes.data?.lastPage || 1));
+          })
+          .catch(() => {
+            if (cancelled) return;
+            setRelated([]);
+            setRelatedPage(1);
+            setRelatedHasMore(false);
+          })
+          .finally(() => {
+            if (cancelled) return;
+            setRelatedLoading(false);
+          });
         }
       } catch (err) {
+        if (cancelled) return;
         console.error('Failed to load product details:', err);
         toast.error(t('productDetail.toasts.loadFailed', { ns: 'catalog' }));
-        setActiveFlashSales([]);
-      } finally {
+        setProduct(null);
+        setRelated([]);
+        setRelatedLoading(false);
+        setFlashItemsByVariantId({});
         setLoading(false);
       }
     };
     load();
+    return () => {
+      cancelled = true;
+    };
   }, [slug, t]);
+
+  const loadMoreRelatedProducts = useCallback(async () => {
+    if (!product?.category?.slug || !slug || !relatedHasMore || relatedLoadingMore) {
+      return;
+    }
+
+    const nextPage = relatedPage + 1;
+    setRelatedLoadingMore(true);
+    try {
+      const relRes = await productService.search({
+        categorySlug: product.category.slug,
+        page: nextPage,
+        size: RELATED_PAGE_SIZE,
+        sortBy: 'createdAt',
+        sortDir: 'DESC',
+      });
+      const pageData = relRes.data;
+      const nextItems = (pageData?.data || []).filter((item: ProductResponse) => item.slug !== slug);
+      setRelated((prev) => {
+        const existingIds = new Set(prev.map((item) => item.id));
+        const uniqueNextItems = nextItems.filter((item) => !existingIds.has(item.id));
+        return [...prev, ...uniqueNextItems];
+      });
+      setRelatedPage(pageData?.page || nextPage);
+      setRelatedHasMore((pageData?.page || nextPage) < (pageData?.lastPage || nextPage));
+    } catch {
+      setRelatedHasMore(false);
+    } finally {
+      setRelatedLoadingMore(false);
+    }
+  }, [product?.category?.slug, relatedHasMore, relatedLoadingMore, relatedPage, slug]);
 
   useEffect(() => {
     setActiveImage(0);
@@ -132,7 +191,11 @@ export default function ProductDetail() {
     if (!product) return ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
     const productImgs = toImageUrls(sortImages(product.images || []));
     const variantImgs = activeVariant?.images ? toImageUrls(sortImages(activeVariant.images)) : [];
-    const gallery = variantImgs.length > 0 ? variantImgs : productImgs;
+    
+    // Gộp cả ảnh phân loại và ảnh chung, dùng Set để loại bỏ các ảnh trùng lặp
+    const allImgs = [...variantImgs, ...productImgs];
+    const gallery = Array.from(new Set(allImgs));
+    
     return gallery.length > 0 ? gallery : ['https://placehold.co/600x600/f1f5f9/94a3b8?text=No+Image'];
   }, [product, activeVariant?.images]);
 
@@ -201,12 +264,17 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      <ProductTabs product={product} images={finalGalleryImages} />
+      <ProductTabs key={product.id} product={product} images={finalGalleryImages} />
 
-      {/* Related Products */}
-      <RelatedProductsSection
-        related={related}
+      <HorizontalInfiniteScroller
         title={t('productDetail.relatedTitle', { ns: 'catalog' })}
+        items={related}
+        getItemKey={(item) => item.id}
+        renderItem={(item) => <ProductCard product={item} />}
+        hasMore={relatedHasMore}
+        loading={relatedLoading}
+        loadingMore={relatedLoadingMore}
+        onLoadMore={loadMoreRelatedProducts}
       />
     </div>
   );

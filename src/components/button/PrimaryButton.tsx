@@ -6,6 +6,7 @@ export default function PrimaryButton({
   icon, 
   onClick, 
   href, 
+  state,
   className = '', 
   type = 'button', 
   disabled = false,
@@ -17,6 +18,7 @@ export default function PrimaryButton({
       icon={icon}
       onClick={onClick}
       href={href}
+      state={state}
       className={className}
       type={type}
       disabled={disabled}

@@ -51,8 +51,13 @@
     "activeCampaigns": "{{count}} chiến dịch đang hoạt động",
     "summaryFallback": "Săn deal giới hạn với mức giá tốt nhất trong ngày và số lượng thay đổi theo thời gian thực.",
     "campaignProducts": "{{count}} sản phẩm trong đợt sale",
+    "campaignLoadedProducts": "Đã tải {{loaded}}/{{total}} sản phẩm",
     "campaignRemaining": "Còn {{count}} suất ưu đãi",
     "emptyProducts": "Chưa có sản phẩm nào trong chương trình này.",
+    "loadMoreItems": "Tải thêm 10 sản phẩm",
+    "loadingMoreItems": "Đang tải thêm...",
+    "retryLoadItems": "Thử tải lại",
+    "loadMoreItemsFailed": "Không thể tải thêm sản phẩm. Vui lòng thử lại.",
     "actions": {
       "viewDetails": "Xem chi tiết",
       "grabDeal": "Chớp deal ngay"
@@ -116,13 +121,13 @@
     }
   },
   "productDetail": {
-    "variantFallback": "Cấu hình",
+    "variantFallback": "Phân loại",
     "toasts": {
       "loadFailed": "Không thể tải thông tin sản phẩm!",
       "loginAddToCart": "Vui lòng đăng nhập để thêm vào giỏ hàng!",
       "loginBuyNow": "Vui lòng đăng nhập để mua hàng!",
       "loginWishlist": "Vui lòng đăng nhập để thêm vào danh sách yêu thích!",
-      "selectVariant": "Vui lòng chọn phiên bản trước khi tiếp tục.",
+      "selectVariant": "Vui lòng chọn phân loại trước khi tiếp tục.",
       "addedToCart": "Đã thêm {{count}} sản phẩm vào giỏ hàng!"
     },
     "notFound": {
@@ -133,14 +138,14 @@
     "meta": {
       "reviewsCount": "{{count}} đánh giá",
       "sold": "Đã bán {{count}}",
-      "selectedVariantSold": "Cấu hình đã chọn bán {{count}}",
+      "selectedVariantSold": "Phân loại đã chọn bán {{count}}",
       "brand": "Thương hiệu",
       "stockRemaining": "Còn {{count}} sản phẩm",
       "available": "Sẵn hàng",
       "discount": "Giảm {{percent}}%"
     },
     "pricing": {
-      "chooseVariantToSeePrice": "Vui lòng chọn đầy đủ cấu hình để xem giá.",
+      "chooseVariantToSeePrice": "Vui lòng chọn đầy đủ phân loại để xem giá.",
       "discountOff": "{{percent}}% giảm",
       "flashSale": "Flash Sale",
       "flashSaleRemaining": "Còn {{count}} suất giá sốc"
@@ -169,7 +174,7 @@
       "specs": "Thông số kỹ thuật",
       "specsMeta": "{{count}} mục thông số",
       "specHighlights": "Thông số nổi bật",
-      "specsIntro": "Nhóm thông số quan trọng để xem nhanh trước khi đọc toàn bộ cấu hình chi tiết.",
+      "specsIntro": "Nhóm thông số quan trọng để xem nhanh trước khi đọc toàn bộ thông số chi tiết.",
       "showMoreSpecs": "Xem thêm thông số",
       "showLessSpecs": "Thu gọn thông số",
       "description": "Mô tả sản phẩm",
@@ -189,7 +194,7 @@
       "reviewsCount": "{{count}} đánh giá",
       "verifiedOnly": "Chỉ khách hàng đã mua và nhận hàng thành công mới có thể đánh giá.",
       "round": "Lần {{count}}",
-      "variant": "Cấu hình: {{value}}",
+      "variant": "Phân loại: {{value}}",
       "reviewImageAlt": "Ảnh đánh giá",
       "shopReply": "Phản hồi từ shop",
       "updatedReview": "Đánh giá lại ({{afterText}})",
@@ -198,6 +203,9 @@
       "afterDays": "sau {{count}} ngày",
       "emptyReviews": "Chưa có đánh giá nào cho sản phẩm này.",
       "emptyReviewsFiltered": "Không có đánh giá nào phù hợp với bộ lọc này.",
+      "reviewsLoadFailed": "Không thể tải đánh giá. Vui lòng thử lại sau.",
+      "reviewsLoadMoreFailed": "Không thể tải thêm đánh giá.",
+      "retryLoadMore": "Thử lại",
       "reviewFilters": {
         "all": "Tất cả",
         "star": "{{star}} sao ({{count}})",

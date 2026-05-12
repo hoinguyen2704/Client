@@ -9,6 +9,7 @@ interface UseAdminListOptions {
   extraParams?: Record<string, any>;
   queryKey: string;
   staleTime?: number;
+  initialPage?: number;
   initialSortBy?: string;
   initialSortDir?: "ASC" | "DESC";
   /** Whether to fetch on mount (default: true) */
@@ -46,12 +47,15 @@ export default function useAdminList<T>(
     fetchOnMount = true,
     queryKey,
     staleTime = 30_000,
+    initialPage = 1,
     initialSortBy = "createdAt",
     initialSortDir = "DESC",
   } = options;
 
   const [searchInput, setSearchInput] = useState('');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => (
+    Number.isFinite(initialPage) ? Math.max(1, Math.trunc(initialPage)) : 1
+  ));
   const [sortBy, setSortBy] = useState(initialSortBy);
   const [sortDir, setSortDir] = useState<"ASC" | "DESC">(initialSortDir);
   const [isPending, startTransition] = useTransition();
@@ -115,6 +119,7 @@ export default function useAdminList<T>(
     },
     enabled: fetchOnMount,
     staleTime,
+    refetchOnMount: 'always',
     placeholderData: (previousData) => previousData,
   });
 

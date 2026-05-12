@@ -12,6 +12,7 @@ import { downloadBlob } from '@/utils/download';
 import { getPaginatedRowNumber } from '@/utils/helpers';
 import { buildReportFilename } from '@/utils/reportExport';
 import type { PageResponse, ReturnRequestResponse } from '@/types';
+import { useAsyncExportJob, usePageQueryParam } from '@/hooks';
 import {
   ADMIN_GRID_TABLE_HEADER_BASE_CLASS,
   ADMIN_GRID_TABLE_ROW_BASE_CLASS,
@@ -30,9 +31,11 @@ export default function AdminReturns() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
-  const [page, setPage] = useState(1);
+  const { initialPage, returnTo, syncPage } = usePageQueryParam();
+  const [page, setPage] = useState(initialPage);
   const [pageData, setPageData] = useState<PageResponse<ReturnRequestResponse> | null>(null);
   const [reviewingKey, setReviewingKey] = useState<string | null>(null);
+  const { isExporting, startExport } = useAsyncExportJob();
   const translate = (key: string, options?: Record<string, unknown>) =>
     String(t(key, options as never));
 
@@ -59,6 +62,10 @@ export default function AdminReturns() {
     fetchReturns();
   }, [fetchReturns]);
 
+  useEffect(() => {
+    syncPage(page);
+  }, [page, syncPage]);
+
   const handleQuickReview = async (target: ReturnRequestResponse, approved: boolean) => {
     const actionKey = `${target.id}:${approved ? 'approve' : 'reject'}`;
     setReviewingKey(actionKey);
@@ -83,16 +90,16 @@ export default function AdminReturns() {
   };
 
   const handleExport = async () => {
-    try {
-      const blob = await returnService.adminExport({
+    await startExport({
+      type: 'RETURNS',
+      params: {
         status: statusFilter || undefined,
         keyword: searchQuery || undefined,
-      });
-      downloadBlob(blob, `returns_${new Date().toISOString().slice(0, 10)}.xlsx`);
-      toast.success(t('returns.list.toasts.exportSuccess'));
-    } catch {
-      toast.error(t('returns.list.toasts.exportFailed'));
-    }
+      },
+      fallbackFilename: `returns_${new Date().toISOString().slice(0, 10)}.xlsx`,
+      successMessage: t('returns.list.toasts.exportSuccess'),
+      failureMessage: t('returns.list.toasts.exportFailed'),
+    });
   };
 
   return (
@@ -106,7 +113,7 @@ export default function AdminReturns() {
           <Button onClick={() => setIsReportExportModalOpen(true)} variant="success" size="md" icon={<FiDownload />}>
             {t('returns.list.reportExport')}
           </Button>
-          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />} loading={isExporting}>
             {t('returns.list.export')}
           </Button>
         </div>
@@ -304,6 +311,7 @@ export default function AdminReturns() {
                         {
                           type: 'view',
                           href: `/admin/returns/${item.returnNumber}`,
+                          state: { returnTo },
                         },
                       ]}
                     />

@@ -232,15 +232,10 @@ export default function Vouchers() {
   // Fetch public vouchers (no auth needed)
   const fetchPublicVouchers = useCallback(async () => {
     try {
-      if (user) {
-        const res = await userCouponService.getPublicCoupons();
-        setPublicVouchers(res.data || []);
-      } else {
-        const res = await couponService.getPublicCoupons();
-        setPublicVouchers(res.data || []);
-      }
+      const res = await couponService.getPublicCoupons();
+      setPublicVouchers(res.data || []);
     } catch { /* ignore */ }
-  }, [user]);
+  }, []);
 
   // Fetch saved vouchers (auth required)
   const fetchSavedVouchers = useCallback(async () => {
@@ -256,6 +251,19 @@ export default function Vouchers() {
     Promise.all([fetchPublicVouchers(), fetchSavedVouchers()])
       .finally(() => setLoading(false));
   }, [fetchPublicVouchers, fetchSavedVouchers]);
+
+  useEffect(() => {
+    if (!savedVouchers.length) {
+      setPublicVouchers(prev => prev.map(v => (v.saved ? { ...v, saved: false } : v)));
+      return;
+    }
+
+    const savedIds = new Set(savedVouchers.map(v => v.id));
+    setPublicVouchers(prev => prev.map(v => ({
+      ...v,
+      saved: savedIds.has(v.id),
+    })));
+  }, [savedVouchers]);
 
   const handleSave = useCallback(async (coupon: CouponResponse) => {
     const couponId = coupon.id;

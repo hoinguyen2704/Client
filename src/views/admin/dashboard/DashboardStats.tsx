@@ -3,22 +3,39 @@ import { useTranslation } from 'react-i18next';
 import { formatPrice } from '@/utils/format';
 import type { DashboardStatsProps } from './types';
 
+const FULL_GROUP_LIMIT = 3; // đơn vị, nghìn, triệu
+const COMPACT_GROUP_LIMIT = 3;
+const GROUP_SUFFIXES = ['', 'K', 'M', 'B', 'T', 'P'] as const;
+
+function formatDashboardMetric(value: number = 0) {
+  if (!Number.isFinite(value)) return '0';
+
+  const sign = value < 0 ? '-' : '';
+  const integerValue = Math.trunc(Math.abs(value));
+  const fullValue = integerValue.toLocaleString('vi-VN');
+  const groups = fullValue.split('.');
+
+  if (groups.length <= FULL_GROUP_LIMIT) {
+    return `${sign}${fullValue}`;
+  }
+
+  const omittedGroups = groups.length - COMPACT_GROUP_LIMIT;
+  const suffix = GROUP_SUFFIXES[omittedGroups] ?? `e${omittedGroups * 3}`;
+  return `${sign}${groups.slice(0, COMPACT_GROUP_LIMIT).join('.')}${suffix}`;
+}
+
 export default function DashboardStats({ stats, onOpenModal }: DashboardStatsProps) {
   const { t } = useTranslation('adminDashboard');
-  const fmt = (n: number = 0) => {
-    if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)}B`;
-    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-    if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
-    return n.toLocaleString();
-  };
+  const fmt = (n: number = 0) => formatDashboardMetric(n);
+  const compactPrice = (n: number = 0) => `${formatDashboardMetric(n)} đ`;
 
   const cards = [
-    { key: 'revenue', label: t('stats.revenue'), value: formatPrice(stats.totalRevenue ?? 0), icon: FiDollarSign, color: 'blue' },
-    { key: 'orders', label: t('stats.orders.label'), value: fmt(stats.totalOrders ?? 0), sub: t('stats.orders.sub', { count: stats.newOrders ?? 0 }), icon: FiShoppingBag, color: 'blue' },
-    { key: 'customers', label: t('stats.customers.label'), value: fmt(stats.totalCustomers ?? 0), sub: t('stats.customers.sub', { count: stats.newCustomers ?? 0 }), icon: FiUsers, color: 'orange' },
-    { key: 'products', label: t('stats.productsSold'), value: fmt(stats.productsSold ?? 0), icon: FiBox, color: 'emerald' },
-    { key: 'returns', label: t('stats.returns.label'), value: `${(stats.cancelledOrders ?? 0) + (stats.returnedOrders ?? 0)}`, sub: t('stats.returns.sub', { cancelled: stats.cancelledOrders ?? 0, returned: stats.returnedOrders ?? 0 }), icon: FiRefreshCcw, color: 'red' },
-    { key: 'reviews', label: t('stats.reviews.label'), value: fmt(stats.totalFeedbacks ?? 0), sub: t('stats.reviews.sub', { count: stats.newFeedbacks ?? 0 }), icon: FiStar, color: 'yellow' },
+    { key: 'revenue', label: t('stats.revenue'), value: compactPrice(stats.totalRevenue ?? 0), title: formatPrice(stats.totalRevenue ?? 0), icon: FiDollarSign, color: 'blue' },
+    { key: 'orders', label: t('stats.orders.label'), value: fmt(stats.totalOrders ?? 0), title: (stats.totalOrders ?? 0).toLocaleString('vi-VN'), sub: t('stats.orders.sub', { count: fmt(stats.newOrders ?? 0) }), icon: FiShoppingBag, color: 'blue' },
+    { key: 'customers', label: t('stats.customers.label'), value: fmt(stats.totalCustomers ?? 0), title: (stats.totalCustomers ?? 0).toLocaleString('vi-VN'), sub: t('stats.customers.sub', { count: fmt(stats.newCustomers ?? 0) }), icon: FiUsers, color: 'orange' },
+    { key: 'products', label: t('stats.productsSold'), value: fmt(stats.productsSold ?? 0), title: (stats.productsSold ?? 0).toLocaleString('vi-VN'), icon: FiBox, color: 'emerald' },
+    { key: 'returns', label: t('stats.returns.label'), value: fmt((stats.cancelledOrders ?? 0) + (stats.returnedOrders ?? 0)), title: ((stats.cancelledOrders ?? 0) + (stats.returnedOrders ?? 0)).toLocaleString('vi-VN'), sub: t('stats.returns.sub', { cancelled: fmt(stats.cancelledOrders ?? 0), returned: fmt(stats.returnedOrders ?? 0) }), icon: FiRefreshCcw, color: 'red' },
+    { key: 'reviews', label: t('stats.reviews.label'), value: fmt(stats.totalFeedbacks ?? 0), title: (stats.totalFeedbacks ?? 0).toLocaleString('vi-VN'), sub: t('stats.reviews.sub', { count: fmt(stats.newFeedbacks ?? 0) }), icon: FiStar, color: 'yellow' },
   ];
 
   const colorMap: Record<string, { bg: string; text: string; border: string }> = {
@@ -44,7 +61,9 @@ export default function DashboardStats({ stats, onOpenModal }: DashboardStatsPro
               </div>
             </div>
             <div>
-              <h3 className="text-lg sm:text-2xl xl:text-[1.75rem] font-bold tracking-tight mb-1 leading-tight break-words">{card.value}</h3>
+              <h3 className="mb-1 truncate whitespace-nowrap text-lg font-bold leading-tight tracking-tight sm:text-2xl xl:text-[1.75rem]" title={card.title}>
+                {card.value}
+              </h3>
               {card.sub && <div className="text-xs sm:text-sm text-muted hidden sm:block">{card.sub}</div>}
             </div>
           </div>

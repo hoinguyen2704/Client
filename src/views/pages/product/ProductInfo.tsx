@@ -3,7 +3,7 @@ import { FiStar, FiHeart, FiShoppingCart, FiZap } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatRating } from '@/utils/format';
 import type { ProductResponse, FlashSaleItemResponse } from '@/types';
 
 import useCartStore from '@/stores/useCartStore';
@@ -444,7 +444,7 @@ export default function ProductInfo({
                 <FiStar key={star} className={star <= Math.round(rating) ? 'fill-current' : ''} />
               ))}
             </div>
-            <span className="font-bold text-body">{rating.toFixed(1)}/5</span>
+            <span className="font-bold text-body">{formatRating(rating)}/5</span>
             <span className="text-subtle">•</span>
             <span className="text-body">{t('productDetail.meta.reviewsCount', { ns: 'catalog', count: reviews })}</span>
             <span className="text-subtle">•</span>

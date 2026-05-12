@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useLocation, useParams } from 'react-router-dom';
 import { FiDownload, FiUser, FiMapPin, FiPackage } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
@@ -15,6 +16,9 @@ import { downloadBlob } from '@/utils/download';
 export default function OrderDetail() {
   const { t } = useTranslation('adminSales');
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const queryClient = useQueryClient();
+  const returnTo = typeof location.state?.returnTo === 'string' ? location.state.returnTo : '/admin/orders';
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
@@ -65,6 +69,7 @@ export default function OrderDetail() {
       } catch (refreshErr) {
         console.warn('Refetch order detail after status update failed:', refreshErr);
       }
+      await queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       toast.success(t('orderDetail.toasts.statusUpdated'));
     } catch (err) {
       console.error(err);
@@ -107,7 +112,7 @@ export default function OrderDetail() {
       <div className="space-y-4 sm:space-y-6 print:hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <BackButton to="/admin/orders" />
+            <BackButton to={returnTo} />
             <div>
               <h1 className="text-xl sm:text-2xl font-bold flex flex-wrap items-center gap-2 sm:gap-3">
                 {t('orderDetail.title', { orderNumber: order.orderNumber })}

@@ -1,8 +1,8 @@
+import { memo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import adminProductService from '@/apis/services/adminProductService';
-import type { SelectedVariant } from '@/components/dialog/SelectedVariant';
 import type { AdminProductPickerItem, AdminProductVariantSummary } from '@/types';
 import ProductPickerVariantRow from './ProductPickerVariantRow';
 import { getInventoryBadgeClass } from './productPickerUtils';
@@ -10,17 +10,25 @@ import { getInventoryBadgeClass } from './productPickerUtils';
 interface ProductPickerProductRowProps {
   product: AdminProductPickerItem;
   initialSelectedIdSet: Set<string>;
-  selectedMap: Record<string, SelectedVariant>;
+  selectedVariantIds: ReadonlySet<string>;
+  hasNewSelection: boolean;
   isExpanded: boolean;
-  onToggleProduct: () => void;
-  onToggleSelectAll: (variants: AdminProductVariantSummary[]) => void;
-  onToggleVariant: (variant: AdminProductVariantSummary) => void;
+  onToggleProduct: (productId: string) => void;
+  onToggleSelectAll: (
+    product: AdminProductPickerItem,
+    variants: AdminProductVariantSummary[],
+  ) => void;
+  onToggleVariant: (
+    product: AdminProductPickerItem,
+    variant: AdminProductVariantSummary,
+  ) => void;
 }
 
-export default function ProductPickerProductRow({
+function ProductPickerProductRow({
   product,
   initialSelectedIdSet,
-  selectedMap,
+  selectedVariantIds,
+  hasNewSelection,
   isExpanded,
   onToggleProduct,
   onToggleSelectAll,
@@ -36,13 +44,12 @@ export default function ProductPickerProductRow({
   });
 
   const variants = variantsQuery.data || [];
-  const hasNewSelections = Object.values(selectedMap).some((variant) => variant.productId === product.id);
   const someSelected = variants.some(
-    (variant) => !!selectedMap[variant.id] || initialSelectedIdSet.has(variant.id),
-  ) || hasNewSelections;
+    (variant) => selectedVariantIds.has(variant.id) || initialSelectedIdSet.has(variant.id),
+  ) || hasNewSelection;
   const allSelected =
     variants.length > 0 &&
-    variants.every((variant) => !!selectedMap[variant.id] || initialSelectedIdSet.has(variant.id));
+    variants.every((variant) => selectedVariantIds.has(variant.id) || initialSelectedIdSet.has(variant.id));
   const totalSold = product.totalSold || 0;
   const totalStock = product.totalStock || 0;
   const canSelectAll = variants.length > 0 && !variantsQuery.isPending;
@@ -61,7 +68,7 @@ export default function ProductPickerProductRow({
         <div className="grid grid-cols-1 items-stretch gap-0 md:grid-cols-[minmax(0,1fr)_170px_140px_170px]">
           <button
             type="button"
-            onClick={onToggleProduct}
+            onClick={() => onToggleProduct(product.id)}
             className="flex w-full items-center gap-3 px-4 py-4 text-left"
           >
             <div className="text-subtle transition-transform duration-200">
@@ -104,7 +111,7 @@ export default function ProductPickerProductRow({
                 if (!canSelectAll) {
                   return;
                 }
-                onToggleSelectAll(variants);
+                onToggleSelectAll(product, variants);
               }}
               disabled={!canSelectAll}
               className={`flex-shrink-0 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all ${allSelected
@@ -159,8 +166,8 @@ export default function ProductPickerProductRow({
             <div className="divide-y divide-slate-100 dark:divide-slate-800/50">
               {variants.map((variant) => {
                 const isAlreadyInSale = initialSelectedIdSet.has(variant.id);
-                const isChecked = !!selectedMap[variant.id] || isAlreadyInSale;
-                const isNewlySelected = !!selectedMap[variant.id];
+                const isChecked = selectedVariantIds.has(variant.id) || isAlreadyInSale;
+                const isNewlySelected = selectedVariantIds.has(variant.id);
 
                 return (
                   <ProductPickerVariantRow
@@ -169,7 +176,7 @@ export default function ProductPickerProductRow({
                     isAlreadyInSale={isAlreadyInSale}
                     isChecked={isChecked}
                     isNewlySelected={isNewlySelected}
-                    onToggle={() => onToggleVariant(variant)}
+                    onToggle={() => onToggleVariant(product, variant)}
                   />
                 );
               })}
@@ -180,3 +187,16 @@ export default function ProductPickerProductRow({
     </div>
   );
 }
+
+export default memo(ProductPickerProductRow, (prev, next) => {
+  if (prev.product !== next.product) return false;
+  if (prev.initialSelectedIdSet !== next.initialSelectedIdSet) return false;
+  if (prev.isExpanded !== next.isExpanded) return false;
+  if (prev.hasNewSelection !== next.hasNewSelection) return false;
+
+  if (prev.isExpanded || next.isExpanded) {
+    return prev.selectedVariantIds === next.selectedVariantIds;
+  }
+
+  return true;
+});

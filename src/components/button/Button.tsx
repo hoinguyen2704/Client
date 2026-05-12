@@ -32,6 +32,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
   iconRight,
   onClick,
   href,
+  state,
   form,
   className = '',
   type = 'button',
@@ -55,7 +56,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
 
   if (href && !loading && !disabled) {
     return (
-      <Link to={href} className={classNames} title={title} aria-label={ariaLabel} onClick={onClick} ref={ref as React.ForwardedRef<HTMLAnchorElement>}>
+      <Link to={href} state={state} className={classNames} title={title} aria-label={ariaLabel} onClick={onClick} ref={ref as React.ForwardedRef<HTMLAnchorElement>}>
         {leftIcon}
         {children}
         {iconRight}

@@ -42,6 +42,15 @@ export function formatPrice(value: number, locale?: string): string {
 /** Alias for formatPrice */
 export const formatMoney = formatPrice;
 
+/** Format điểm đánh giá đến 1 chữ số thập phân — ví dụ: 4.0 */
+export function formatRating(value?: number | null): string {
+  const rating = Number(value);
+  if (!Number.isFinite(rating)) {
+    return "0.0";
+  }
+  return rating.toFixed(1);
+}
+
 /**
  *  Date / Time Formatting
  */

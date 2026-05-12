@@ -145,7 +145,7 @@
     "openAria": "Mở trợ lý AI",
     "avatarAlt": "Avatar trợ lý AI",
     "defaultSubtitle": "Trợ lý tư vấn sản phẩm 24/7",
-    "welcomeMessage": "Xin chào! Tôi là trợ lý AI của **{{shopName}}**.\n\nTôi có thể giúp bạn:\n- Tìm kiếm và tư vấn sản phẩm công nghệ\n- Xem giá, flash sale và voucher public\n- So sánh sản phẩm và cấu hình\n- Tra cứu đơn hàng sau khi bạn đăng nhập\n\nBạn cần hỗ trợ gì ạ?",
+    "welcomeMessage": "Xin chào! Tôi là trợ lý AI của **{{shopName}}**.\n\nTôi có thể giúp bạn:\n- Tìm kiếm và tư vấn sản phẩm công nghệ\n- Xem giá, flash sale và voucher public\n- So sánh sản phẩm và thông số kỹ thuật\n- Tra cứu đơn hàng sau khi bạn đăng nhập\n\nBạn cần hỗ trợ gì ạ?",
     "suggestions": {
       "featured": "Sản phẩm nổi bật",
       "phoneBudget": "Điện thoại giá dưới 10 triệu",

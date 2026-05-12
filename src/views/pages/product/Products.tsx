@@ -35,7 +35,9 @@ export default function Products() {
   const [selectedBrand, setSelectedBrand] = useState(
     searchParams.get("brand") || "",
   );
-  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "popular");
+  const [sortBy, setSortBy] = useState(
+    searchParams.get("sortBy") || "createdAt",
+  );
   const [sortDir, setSortDir] = useState(searchParams.get("sortDir") || "DESC");
   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
@@ -118,7 +120,7 @@ export default function Products() {
     if (debouncedKeyword) params.keyword = debouncedKeyword;
     if (selectedCategorySlug) params.categorySlug = selectedCategorySlug;
     if (selectedBrand) params.brand = selectedBrand;
-    if (sortBy !== "popular") params.sortBy = sortBy;
+    if (sortBy !== "createdAt") params.sortBy = sortBy;
     if (sortDir !== "DESC") params.sortDir = sortDir;
     if (page > 1) params.page = String(page);
 
@@ -152,7 +154,7 @@ export default function Products() {
       "price-desc": { sortBy: "originPrice", sortDir: "DESC" },
       "best-rated": { sortBy: "averageRating", sortDir: "DESC" },
     };
-    const s = map[value] || map.popular;
+    const s = map[value] || map.newest;
     setSortBy(s.sortBy);
     setSortDir(s.sortDir);
     setPage(1);
@@ -163,14 +165,14 @@ export default function Products() {
     if (sortBy === "originPrice" && sortDir === "DESC") return "price-desc";
     if (sortBy === "averageRating") return "best-rated";
     if (sortBy === "createdAt") return "newest";
-    return "popular";
+    return "newest";
   };
 
   const handleClearFilters = () => {
     setKeyword("");
     setSelectedCategorySlug("");
     setSelectedBrand("");
-    setSortBy("popular");
+    setSortBy("createdAt");
     setSortDir("DESC");
     setPage(1);
   };

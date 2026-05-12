@@ -24,7 +24,7 @@
     "removeSelectedAction": "Xóa đã chọn",
     "selectAll": "Chọn tất cả ({{count}})",
     "selectedInfo": "Đã chọn ({{selected}}/{{total}})",
-    "changeConfigTitle": "Nhấn để đổi cấu hình khác",
+    "changeConfigTitle": "Nhấn để đổi phân loại khác",
     "changeConfig": "Thay đổi",
     "summary": {
       "title": "Tóm tắt đơn hàng",

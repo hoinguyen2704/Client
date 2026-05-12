@@ -2,7 +2,7 @@ import { memo, useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiHeart, FiStar, FiClock } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatRating } from '@/utils/format';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import useWishlistStore from '@/stores/useWishlistStore';
@@ -160,7 +160,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
               <div className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-11 font-semibold text-amber-700 shadow-sm shadow-amber-500/10 dark:border-amber-800/40 dark:bg-amber-950/20 dark:text-amber-300 sm:text-xs">
                 <FiStar className="shrink-0 text-11 text-amber-500 fill-amber-500 sm:text-sm" />
                 <span className="text-[13px] font-black leading-none tracking-tight text-ink sm:text-sm">
-                  {rating.toFixed(1)}
+                  {formatRating(rating)}
                 </span>
                 {reviews > 0 && (
                   <span className="text-10 font-bold text-amber-700/80 dark:text-amber-300/80 sm:text-xs">

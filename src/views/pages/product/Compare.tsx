@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
+  FiLoader,
   FiPlus,
   FiX,
   FiCheck,
@@ -10,15 +11,15 @@ import {
   FiShoppingCart,
   FiTrash2,
 } from "react-icons/fi";
-import { formatPrice } from "@/utils/format";
+import { formatPrice, formatRating } from "@/utils/format";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import productService from "@/apis/services/productService";
 import { Modal } from "@/components";
-import type { CompareProduct } from "@/types";
+import type { CompareProduct, ProductResponse } from "@/types";
 
 const toCompareSpecs = (
-  specs: Array<{ name: string; value: string }> | undefined,
+  specs: ProductResponse["specs"] | undefined,
 ): Record<string, string> => {
   if (!specs || specs.length === 0) return {};
   return Object.fromEntries(
@@ -27,6 +28,21 @@ const toCompareSpecs = (
       .map((spec) => [spec.name, spec.value ?? ""]),
   );
 };
+
+const toCompareProduct = (product: ProductResponse): CompareProduct => ({
+  id: product.id,
+  name: product.name,
+  slug: product.slug,
+  image: product.mainImageUrl || product.images?.[0]?.imageUrl,
+  price: product.lowestPrice || product.variants?.[0]?.price || product.originPrice || 0,
+  brand: product.brandName,
+  rating: product.averageRating,
+  specs: toCompareSpecs(product.specs),
+  specSchema: product.specSchema || [],
+  categoryId: product.category?.id,
+  categoryName: product.category?.name,
+  categorySlug: product.category?.slug,
+});
 
 
 
@@ -37,6 +53,7 @@ export default function Compare() {
   const [searchResults, setSearchResults] = useState<CompareProduct[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searching, setSearching] = useState(false);
+  const [addingProductId, setAddingProductId] = useState<string | null>(null);
 
   const lockedCategoryId =
     compareItems.length > 0 ? compareItems[0].categoryId : null;
@@ -47,13 +64,26 @@ export default function Compare() {
     setCompareItems((prev) => prev.filter((item) => item.id !== id));
   const clearAll = () => setCompareItems([]);
 
-  const addItem = (product: CompareProduct) => {
+  const addItem = async (product: CompareProduct) => {
     if (compareItems.length >= 4) return;
     if (compareItems.find((p) => p.id === product.id)) return;
     if (lockedCategoryId && product.categoryId !== lockedCategoryId) return;
-    setCompareItems((prev) => [...prev, product]);
-    setIsModalOpen(false);
-    setSearchQuery("");
+
+    setAddingProductId(product.id);
+    try {
+      const detailRes = await productService.getBySlug(product.slug);
+      const detailedProduct = detailRes.data ? toCompareProduct(detailRes.data) : product;
+      if (lockedCategoryId && detailedProduct.categoryId !== lockedCategoryId) return;
+      setCompareItems((prev) => [...prev, detailedProduct]);
+      setIsModalOpen(false);
+      setSearchQuery("");
+    } catch {
+      setCompareItems((prev) => [...prev, product]);
+      setIsModalOpen(false);
+      setSearchQuery("");
+    } finally {
+      setAddingProductId(null);
+    }
   };
 
   const handleSearch = useCallback(async (query: string) => {
@@ -65,19 +95,7 @@ export default function Compare() {
       }
       const res = await productService.search(params);
       setSearchResults(
-        (res.data?.data || []).map((p) => ({
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          image: p.mainImageUrl,
-          price: p.variants?.[0]?.price || p.originPrice || 0,
-          brand: p.brandName,
-          rating: p.averageRating,
-          specs: toCompareSpecs(p.specs),
-          categoryId: p.category?.id,
-          categoryName: p.category?.name,
-          categorySlug: p.category?.slug,
-        })),
+        (res.data?.data || []).map(toCompareProduct),
       );
     } catch {
       setSearchResults([]);
@@ -101,13 +119,33 @@ export default function Compare() {
     return false;
   };
 
-  // Memoize allSpecKeys — avoid Set creation + iteration on every render
-  const allSpecKeys = useMemo(() => {
-    const keys = new Set<string>();
+  const allSpecRows = useMemo(() => {
+    const rowsByName = new Map<string, { name: string; sortOrder: number }>();
+
     compareItems.forEach((item) => {
-      if (item.specs) Object.keys(item.specs).forEach((k) => keys.add(k));
+      item.specSchema?.forEach((spec, index) => {
+        const specName = spec.name?.trim();
+        if (!specName || rowsByName.has(specName)) return;
+        rowsByName.set(specName, {
+          name: specName,
+          sortOrder: spec.sortOrder ?? index,
+        });
+      });
     });
-    return keys;
+
+    if (rowsByName.size > 0) {
+      return Array.from(rowsByName.values()).sort(
+        (left, right) => left.sortOrder - right.sortOrder || left.name.localeCompare(right.name),
+      );
+    }
+
+    const fallbackKeys = new Set<string>();
+    compareItems.forEach((item) => {
+      if (item.specs) Object.keys(item.specs).forEach((key) => fallbackKeys.add(key));
+    });
+    return Array.from(fallbackKeys)
+      .sort((left, right) => left.localeCompare(right))
+      .map((name, index) => ({ name, sortOrder: index }));
   }, [compareItems]);
 
   return (
@@ -237,7 +275,7 @@ export default function Compare() {
                             {item.rating && (
                               <div className="flex items-center gap-1 mt-1 text-sm text-amber-500">
                                 <FiStar className="fill-amber-400 text-amber-400" />{" "}
-                                {item.rating}
+                                {formatRating(item.rating)}
                               </div>
                             )}
                           </div>
@@ -344,9 +382,9 @@ export default function Compare() {
                             <>
                               <div className="flex items-center justify-center gap-1">
                                 <span
-                                  className={`font-bold ${best ? "text-amber-600" : ""}`}
+                                 className={`font-bold ${best ? "text-amber-600" : ""}`}
                                 >
-                                  {item.rating}
+                                  {formatRating(item.rating)}
                                 </span>
                                 <FiStar className="text-amber-400 fill-amber-400 text-md" />
                               </div>
@@ -368,7 +406,7 @@ export default function Compare() {
                   </tr>
 
                   {/* Spec Section Header */}
-                  {allSpecKeys.size > 0 && (
+                  {allSpecRows.length > 0 && (
                     <tr>
                       <td
                         colSpan={
@@ -385,18 +423,18 @@ export default function Compare() {
                   )}
 
                   {/* Dynamic Specs */}
-                  {Array.from(allSpecKeys).map((specKey, idx) => (
+                  {allSpecRows.map((specRow, idx) => (
                     <tr
-                      key={specKey}
+                      key={specRow.name}
                       className={`${idx % 2 === 0 ? "bg-slate-50/50 dark:bg-slate-800/10" : ""} hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors`}
                     >
                       <td className="px-3 sm:px-5 py-3 text-sm sm:text-md font-semibold text-muted border-b border-r border-slate-200 dark:border-slate-700 align-middle">
-                        {specKey}
+                        {specRow.name}
                       </td>
                       {compareItems.map((item) => {
-                        const val = item.specs?.[specKey];
+                        const val = item.specs?.[specRow.name];
                         const allVals = compareItems
-                          .map((i) => i.specs?.[specKey])
+                          .map((i) => i.specs?.[specRow.name])
                           .filter(Boolean);
                         const allSame =
                           allVals.length > 1 && new Set(allVals).size === 1;
@@ -489,6 +527,7 @@ export default function Compare() {
               const isDiffCat =
                 lockedCategoryId != null &&
                 product.categoryId !== lockedCategoryId;
+              const isAdding = addingProductId === product.id;
               return (
                 <motion.div
                   key={product.id}
@@ -499,9 +538,14 @@ export default function Compare() {
                       ? "border-blue-300 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900/40"
                       : isDiffCat
                         ? "border-transparent opacity-30 cursor-not-allowed"
+                        : isAdding
+                          ? "border-blue-100 bg-blue-50/40 opacity-70 cursor-wait dark:border-blue-900/30 dark:bg-blue-950/20"
                         : "border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer"
                   }`}
-                  onClick={() => !isSelected && !isDiffCat && addItem(product)}
+                  onClick={() => {
+                    if (isSelected || isDiffCat || isAdding) return;
+                    void addItem(product);
+                  }}
                 >
                   {product.image ? (
                     <img
@@ -534,7 +578,11 @@ export default function Compare() {
                       </span>
                     )}
                   </div>
-                  {isSelected ? (
+                  {isAdding ? (
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-300">
+                      <FiLoader className="animate-spin text-md" />
+                    </div>
+                  ) : isSelected ? (
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
                       <FiCheck className="text-md" />
                     </div>

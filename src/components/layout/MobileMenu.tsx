@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type FormEvent } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiSearch, FiUser, FiSettings, FiBox, FiRotateCcw, FiLogOut } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
@@ -25,16 +25,18 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
     };
   }, [isOpen]);
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const query = e.currentTarget.value.trim();
-      if (query) {
-        navigate(`/search?q=${encodeURIComponent(query)}`);
-      } else {
-        navigate(`/search`);
-      }
-      onClose();
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const query = String(formData.get('search') ?? '').trim();
+
+    if (query) {
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+    } else {
+      navigate(`/search`);
     }
+    onClose();
   };
 
   return (
@@ -60,15 +62,21 @@ export default function MobileMenu({ isOpen, user, onClose, onLogout }: MobileMe
           >
             <div className="px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-4">
             {/* Mobile Search */}
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative">
               <input
+                name="search"
                 type="text"
                 placeholder={t('mobileMenu.searchPlaceholder', { ns: 'layout' })}
-                onKeyDown={handleSearch}
                 className="w-full h-10 pl-4 pr-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500"
               />
-              <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-subtle" />
-            </div>
+              <button
+                type="submit"
+                aria-label={t('actions.search', { ns: 'common' })}
+                className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-subtle hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800 dark:hover:text-blue-300 transition-colors"
+              >
+                <FiSearch />
+              </button>
+            </form>
 
             {/* Mobile Nav Items */}
             <nav className="flex flex-col space-y-2">

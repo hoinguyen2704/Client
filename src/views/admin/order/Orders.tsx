@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState, startTransition } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState, startTransition } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FiDownload, FiPackage } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import adminOrderService from '@/apis/services/adminOrderService';
 import { ActionButtons, AdminSearch, Button, CustomSelect, Pagination, ReportExportModal, SortableHeaderLabel } from '@/components';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
 import { getAdminOrderStatusOptions, getOrderFilterOptions } from '@/constants/orderConstants';
-import { useDebounce } from '@/hooks';
+import { useAsyncExportJob, useDebounce, usePageQueryParam } from '@/hooks';
 import type { AdminOrderListItem, PageResponse } from '@/types';
 import {
   ADMIN_GRID_TABLE_HEADER_BASE_CLASS,
@@ -28,9 +28,11 @@ export default function AdminOrders() {
   const [searchInput, setSearchInput] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
-  const [page, setPage] = useState(1);
+  const { initialPage, returnTo, syncPage } = usePageQueryParam();
+  const [page, setPage] = useState(initialPage);
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('DESC');
+  const { isExporting, startExport } = useAsyncExportJob();
 
   const deferredSearchInput = useDeferredValue(searchInput);
   const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
@@ -51,6 +53,7 @@ export default function AdminOrders() {
         sortDir,
       }, { signal }).then((res) => res.data),
     placeholderData: (previousData) => previousData,
+    refetchOnMount: 'always',
   });
 
   const updateStatusMutation = useMutation({
@@ -91,6 +94,10 @@ export default function AdminOrders() {
   const orders = pageData?.data || [];
   const loading = ordersQuery.isPending && !ordersQuery.data;
 
+  useEffect(() => {
+    syncPage(page);
+  }, [page, syncPage]);
+
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     if (!newStatus) return;
     await updateStatusMutation.mutateAsync({ orderId, newStatus });
@@ -109,15 +116,16 @@ export default function AdminOrders() {
   };
 
   const handleExport = async () => {
-    try {
-      const blob = await adminOrderService.export({
+    await startExport({
+      type: 'ORDERS',
+      params: {
         status: statusFilter || undefined,
         keyword: debouncedSearchQuery || undefined,
-      });
-      downloadBlob(blob, `orders_${new Date().toISOString().slice(0, 10)}.xlsx`);
-    } catch (err) {
-      console.error('Export failed:', err);
-    }
+      },
+      fallbackFilename: `orders_${new Date().toISOString().slice(0, 10)}.xlsx`,
+      successMessage: t('orders.toasts.exportSuccess'),
+      failureMessage: t('orders.toasts.exportFailed'),
+    });
   };
 
   return (
@@ -128,7 +136,7 @@ export default function AdminOrders() {
           <Button onClick={() => setIsReportExportModalOpen(true)} variant="success" size="md" icon={<FiDownload />}>
             {t('orders.reportExport')}
           </Button>
-          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />}>
+          <Button onClick={handleExport} variant="success" size="md" icon={<FiDownload />} loading={isExporting}>
             {t('orders.export')}
           </Button>
         </div>
@@ -308,6 +316,7 @@ export default function AdminOrders() {
                         {
                           type: 'view',
                           href: `/admin/orders/${order.orderNumber}`,
+                          state: { returnTo },
                         },
                       ]}
                     />

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { FiCheck } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import type { AdminProductVariantSummary } from '@/types';
@@ -12,7 +13,7 @@ interface ProductPickerVariantRowProps {
   onToggle: () => void;
 }
 
-export default function ProductPickerVariantRow({
+function ProductPickerVariantRow({
   variant,
   isAlreadyInSale,
   isChecked,
@@ -124,3 +125,5 @@ export default function ProductPickerVariantRow({
     </div>
   );
 }
+
+export default memo(ProductPickerVariantRow);

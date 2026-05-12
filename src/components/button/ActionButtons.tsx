@@ -17,7 +17,7 @@ export default function ActionButtons({ actions }: ActionButtonsProps) {
 
           if (action.href) {
             return (
-              <Link key={i} to={action.href} className={cls} title={title}>
+              <Link key={i} to={action.href} state={action.state} className={cls} title={title}>
                 {icon}
               </Link>
             );

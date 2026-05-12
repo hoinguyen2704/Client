@@ -30,16 +30,15 @@ export type BasicInfoSectionProps = Pick<
 
 /** Props for VariantSection — variant cards with SKU, price, stock, images */
 export interface VariantSectionProps {
+  productName: string;
   variants: VariantFormData[];
   variantSchema: VariantAttributeSchemaResponse[];
+  saving: boolean;
   uploadingVariantKeys: Record<string, boolean>;
   creatingOptionByFieldKey: Record<string, boolean>;
   creatingAttribute: boolean;
   variantFileInputRefs: { current: Record<string, HTMLInputElement | null> };
   addVariant: () => string | undefined;
-  generateVariantCombinations: (
-    selectedOptionsByAttribute: Record<string, string[]>,
-  ) => void;
   sortVariantsByLatestUpdated: () => void;
   removeVariant: (index: number) => void;
   updateVariant: (
@@ -69,6 +68,7 @@ export interface VariantSectionProps {
   handleVariantFilesSelected: (index: number, files: File[]) => Promise<void>;
   removeVariantPendingFile: (variantIndex: number, fileIndex: number) => void;
   deleteVariantImage: (variantIndex: number, imageId: string) => Promise<void>;
+  handleSubmit: () => void;
 }
 
 /** Props for ImageUploadSection — drag-drop area, pending/existing images */

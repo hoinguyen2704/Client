@@ -41,6 +41,10 @@ class AdminProductService extends BaseService<ProductResponse, ProductRequest> {
     return this.http.get(`${this.endpoint}/${productId}/variants/summary`, config);
   }
 
+  async getVariantEditor(productId: string, config?: AxiosRequestConfig): Promise<ApiResponse<ProductResponse>> {
+    return this.http.get(`${this.endpoint}/${productId}/variants`, config);
+  }
+
   async toggleStatus(id: string): Promise<ApiResponse<ProductResponse>> {
     return this.http.patch(`${this.endpoint}/${id}/status`);
   }

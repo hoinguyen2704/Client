@@ -44,6 +44,13 @@
   "loading": {
     "default": "Loading..."
   },
+  "export": {
+    "preparing": "Preparing export file...",
+    "running": "Generating export file",
+    "ready": "Export file is ready",
+    "download": "Download file",
+    "downloading": "Downloading file..."
+  },
   "errorBoundary": {
     "title": "Something went wrong",
     "description": "The application encountered an unexpected issue. Please try reloading the page.",

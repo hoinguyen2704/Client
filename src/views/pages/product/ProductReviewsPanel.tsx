@@ -1,18 +1,25 @@
+import { useEffect, useRef } from 'react';
 import { FiCheckCircle, FiMessageSquare, FiStar, FiUser } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { FeedbackImageGrid, StarRating } from '@/components';
 import type { FeedbackFilterSummaryResponse, FeedbackResponse, ProductReviewFilter } from '@/types';
 import { parseFeedbackImageUrls } from '@/utils/feedback';
+import { formatRating } from '@/utils/format';
 
 interface ProductReviewsPanelProps {
   rating: number;
   reviews: number;
   loading: boolean;
+  loadingMore: boolean;
+  loadFailed: boolean;
+  loadMoreFailed: boolean;
+  hasMore: boolean;
   groupedFeedbacks: FeedbackResponse[][];
   starDistribution: Record<number, number>;
   summary: FeedbackFilterSummaryResponse;
   activeFilter: ProductReviewFilter;
   onFilterChange: (filter: ProductReviewFilter) => void;
+  onLoadMore: () => void;
   formatDate: (dateStr: string) => string;
 }
 
@@ -40,14 +47,21 @@ export default function ProductReviewsPanel({
   rating,
   reviews,
   loading,
+  loadingMore,
+  loadFailed,
+  loadMoreFailed,
+  hasMore,
   groupedFeedbacks,
   starDistribution,
   summary,
   activeFilter,
   onFilterChange,
+  onLoadMore,
   formatDate,
 }: ProductReviewsPanelProps) {
   const { t } = useTranslation('catalog');
+  const reviewsScrollRef = useRef<HTMLDivElement | null>(null);
+  const loadMoreTriggerRef = useRef<HTMLDivElement | null>(null);
   const filterChips: Array<{
     key: ProductReviewFilter;
     label: string;
@@ -66,6 +80,28 @@ export default function ProductReviewsPanel({
     },
   ];
 
+  useEffect(() => {
+    if (!hasMore || loading || loadingMore || loadFailed || loadMoreFailed) return;
+
+    const scrollElement = reviewsScrollRef.current;
+    const triggerElement = loadMoreTriggerRef.current;
+    if (!scrollElement || !triggerElement) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) onLoadMore();
+      },
+      { root: scrollElement, rootMargin: '180px 0px' },
+    );
+
+    observer.observe(triggerElement);
+    return () => observer.disconnect();
+  }, [hasMore, loadFailed, loadMoreFailed, loading, loadingMore, onLoadMore]);
+
+  useEffect(() => {
+    reviewsScrollRef.current?.scrollTo({ top: 0 });
+  }, [activeFilter]);
+
   return (
     <div className="space-y-5">
       <div className="grid gap-4 xl:grid-cols-[220px_minmax(0,1fr)_260px]">
@@ -74,7 +110,7 @@ export default function ProductReviewsPanel({
             {t('productDetail.tabs.reviewOverviewTitle')}
           </p>
           <div className="mt-3 text-5xl font-black text-ink sm:text-6xl">
-            {rating.toFixed(1)}
+            {formatRating(rating)}
           </div>
           <div className="mt-3 flex justify-center">
             <StarRating value={Math.round(rating)} onChange={() => {}} readOnly size="sm" />
@@ -147,38 +183,47 @@ export default function ProductReviewsPanel({
         </div>
       </div>
 
-      <div className="min-h-[260px]">
+      <div
+        ref={reviewsScrollRef}
+        className="custom-scrollbar max-h-[560px] min-h-[260px] overflow-y-auto pr-1 sm:max-h-[640px] lg:max-h-[720px]"
+      >
         {loading ? (
           <div className="space-y-4">
-          {[1, 2, 3].map((item) => (
-            <div
-              key={item}
-              className="h-32 animate-pulse rounded-2xl border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50"
-            />
-          ))}
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="h-32 animate-pulse rounded-2xl border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50"
+              />
+            ))}
+          </div>
+        ) : loadFailed ? (
+          <div className="flex min-h-[260px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50/70 px-6 py-12 text-center dark:border-red-900/50 dark:bg-red-950/20">
+            <p className="text-base font-semibold text-red-700 dark:text-red-300">
+              {t('productDetail.tabs.reviewsLoadFailed')}
+            </p>
           </div>
         ) : groupedFeedbacks.length > 0 ? (
           <div className="space-y-4">
-          {groupedFeedbacks.map((group) => {
-            const mainFeedback = group[0];
-            const updatedFeedback = group[1];
-            const mainFeedbackImages = parseFeedbackImageUrls(mainFeedback.imagesJson);
-            const updatedFeedbackImages = parseFeedbackImageUrls(updatedFeedback?.imagesJson);
+            {groupedFeedbacks.map((group) => {
+              const mainFeedback = group[0];
+              const updatedFeedback = group[1];
+              const mainFeedbackImages = parseFeedbackImageUrls(mainFeedback.imagesJson);
+              const updatedFeedbackImages = parseFeedbackImageUrls(updatedFeedback?.imagesJson);
 
-            let afterText = '';
-            if (updatedFeedback) {
-              const diffTime = new Date(updatedFeedback.createdAt).getTime() - new Date(mainFeedback.createdAt).getTime();
-              const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-              afterText = diffDays === 0
-                ? t('productDetail.tabs.sameDay')
-                : t('productDetail.tabs.afterDays', { count: diffDays });
-            }
+              let afterText = '';
+              if (updatedFeedback) {
+                const diffTime = new Date(updatedFeedback.createdAt).getTime() - new Date(mainFeedback.createdAt).getTime();
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                afterText = diffDays === 0
+                  ? t('productDetail.tabs.sameDay')
+                  : t('productDetail.tabs.afterDays', { count: diffDays });
+              }
 
-            return (
-              <div
-                key={mainFeedback.id}
-                className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-5"
-              >
+              return (
+                <div
+                  key={mainFeedback.id}
+                  className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-5"
+                >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex items-start gap-3">
                     {mainFeedback.userAvatar ? (
@@ -282,9 +327,41 @@ export default function ProductReviewsPanel({
                     )}
                   </div>
                 )}
+                </div>
+              );
+            })}
+
+            {loadingMore && (
+              <div className="space-y-4">
+                {[1, 2].map((item) => (
+                  <div
+                    key={item}
+                    className="h-32 animate-pulse rounded-2xl border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50"
+                  />
+                ))}
               </div>
-            );
-          })}
+            )}
+
+            {loadMoreFailed && (
+              <div className="flex items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50/70 px-5 py-5 text-center dark:border-red-900/50 dark:bg-red-950/20">
+                <div>
+                  <p className="text-sm font-semibold text-red-700 dark:text-red-300">
+                    {t('productDetail.tabs.reviewsLoadMoreFailed')}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={onLoadMore}
+                    className="mt-3 rounded-2xl border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700 transition-colors hover:border-red-300 hover:bg-red-50 dark:border-red-900/50 dark:bg-slate-900 dark:text-red-300 dark:hover:bg-red-950/30"
+                  >
+                    {t('productDetail.tabs.retryLoadMore')}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {hasMore && !loadMoreFailed && (
+              <div ref={loadMoreTriggerRef} className="h-6" aria-hidden="true" />
+            )}
           </div>
         ) : (
           <div className="flex min-h-[260px] items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-800/40">

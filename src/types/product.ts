@@ -86,6 +86,7 @@ export interface AdminProductVariantSummary {
   variantName?: string;
   sku: string;
   price: number;
+  compareAtPrice?: number;
   stockQuantity: number;
   grossSoldQty?: number;
   returnedQty?: number;
@@ -267,6 +268,7 @@ export interface CategoryResponse {
   slug: string;
   active: boolean;
   productCount?: number;
+  specCount?: number;
   createdAt?: string;
 
   // New schema

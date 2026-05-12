@@ -6,7 +6,7 @@ import adminCategoryService from "@/apis/services/adminCategoryService";
 import adminBrandService from "@/apis/services/adminBrandService";
 import type { BrandResponse, CategoryResponse } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
-import useAdminList from "@/hooks/useAdminList";
+import { useAdminList, usePageQueryParam } from "@/hooks";
 import {
   PrimaryButton,
   AdminSearch,
@@ -32,6 +32,7 @@ import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Categories() {
   const { t } = useTranslation("adminCatalog");
+  const { initialPage, returnTo, syncPage } = usePageQueryParam();
   const [brandFilter, setBrandFilter] = useState("");
   const [brands, setBrands] = useState<BrandResponse[]>([]);
   const extraParams = useMemo(
@@ -55,6 +56,7 @@ export default function Categories() {
     queryKey: "admin-categories",
     size: PAGE_SIZE.LARGE,
     extraParams,
+    initialPage,
     initialSortBy: "name",
     initialSortDir: "ASC",
   });
@@ -71,6 +73,10 @@ export default function Categories() {
     };
     fetchBrands();
   }, []);
+
+  useEffect(() => {
+    syncPage(page);
+  }, [page, syncPage]);
 
   const brandOptions = useMemo(
     () => [
@@ -109,6 +115,7 @@ export default function Categories() {
         <h1 className="text-xl sm:text-2xl font-bold">{t("categories.title")}</h1>
         <PrimaryButton
           href="/admin/categories/new"
+          state={{ returnTo }}
           icon={<FiPlus className="text-base" />}
           className="shrink-0"
         >
@@ -212,10 +219,10 @@ export default function Categories() {
                       {cat.slug}
                     </AdminTableCell>
                     <AdminTableCell className="text-center">
-                      {(cat.specAttributes?.length || 0) > 0 ? (
+                      {((cat.specCount ?? cat.specAttributes?.length ?? 0) > 0) ? (
                         <span className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-full text-md font-bold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 mx-auto">
                           <FiList className="text-9" />{" "}
-                          {cat.specAttributes!.length}
+                          {cat.specCount ?? cat.specAttributes?.length ?? 0}
                         </span>
                       ) : (
                         <span className="text-sm text-subtle">—</span>
@@ -251,6 +258,7 @@ export default function Categories() {
                           {
                             type: "edit",
                             href: `/admin/categories/${cat.id}/edit`,
+                            state: { returnTo },
                           },
                           {
                             type: "delete",

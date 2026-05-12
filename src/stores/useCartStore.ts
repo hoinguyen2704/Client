@@ -2,6 +2,13 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import cartService from '@/apis/services/cartService';
 
+let cartSyncRequestId = 0;
+
+const getPersistedAuthToken = () => {
+  const raw = localStorage.getItem('auth') || sessionStorage.getItem('auth');
+  return raw ? JSON.parse(raw)?.state?.token : null;
+}
+
 interface CartState {
   totalItems: number;
 
@@ -24,18 +31,17 @@ const useCartStore = create<CartState>()(
       totalItems: 0,
 
       syncFromServer: async () => {
+        const requestId = ++cartSyncRequestId;
         try {
-          // Check auth token directly from persisted storage
-          // — avoids circular import: useCartStore ↔ useAuthStore
-          const raw = localStorage.getItem('auth');
-          const token = raw ? JSON.parse(raw)?.state?.token : null;
-          if (!token) {
+          if (!getPersistedAuthToken()) {
             set({ totalItems: 0 }); // reset if guest
             return;
           }
           const res = await cartService.getCount();
           const count = typeof res.data === 'number' ? res.data : 0;
-          set({ totalItems: count });
+          if (requestId === cartSyncRequestId) {
+            set({ totalItems: count });
+          }
         } catch {
           // fetch failed — leave current count or reset on auth error
         }
@@ -52,4 +58,3 @@ const useCartStore = create<CartState>()(
 );
 
 export default useCartStore;
-

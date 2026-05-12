@@ -1,6 +1,7 @@
 import type {
   ProductResponse,
   ProductImageResponse,
+  ProductSpecSchemaResponse,
   ProductVariantResponse,
   VariantAttributeSchemaResponse,
 } from './product';
@@ -75,6 +76,7 @@ export interface CompareProduct {
   brand?: string;
   rating?: number;
   specs?: Record<string, string>;
+  specSchema?: ProductSpecSchemaResponse[];
   categoryId?: string;
   categoryName?: string;
   categorySlug?: string;

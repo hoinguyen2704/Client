@@ -1,7 +1,7 @@
 import { FiStar } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { StatusBadge, Card } from '@/components';
-import { formatPrice, formatDate } from '@/utils/format';
+import { formatPrice, formatDate, formatRating } from '@/utils/format';
 import type { DashboardChildProps } from './types';
 
 export default function DashboardBottom({ stats }: DashboardChildProps) {
@@ -15,8 +15,8 @@ export default function DashboardBottom({ stats }: DashboardChildProps) {
     percent: Math.round(((ratingDist[stars] || 0) / totalReviews) * 100),
   }));
   const avgRating = totalReviews > 0
-    ? (Object.entries(ratingDist).reduce((s, [k, v]) => s + Number(k) * v, 0) / totalReviews).toFixed(1)
-    : '0.0';
+    ? formatRating(Object.entries(ratingDist).reduce((s, [k, v]) => s + Number(k) * v, 0) / totalReviews)
+    : formatRating(0);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">

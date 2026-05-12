@@ -248,7 +248,7 @@
     "loading": "Loading product...",
     "createTitle": "Create product",
     "editTitle": "Edit product",
-    "manageVariants": "Manage variants",
+    "manageVariants": "Manage product variants",
     "cancel": "Cancel",
     "cancelCreate": "Cancel",
     "save": "Save product",
@@ -267,7 +267,7 @@
     },
     "toasts": {
       "updateSuccess": "Product information updated successfully!",
-      "createDraftSuccess": "Product created as draft. Open \"Manage variants\" to configure SKU, pricing, and stock.",
+      "createDraftSuccess": "Product created as draft. Open \"Manage product variants\" to set up SKU, pricing, and stock.",
       "uploadSuccess": "Uploaded {{count}} images successfully!",
       "uploadFailed": "Upload failed. Please try again.",
       "deleteImageSuccess": "Image deleted successfully!",
@@ -286,9 +286,9 @@
   "statusPricing": {
     "title": "Status & pricing",
     "status": "Status",
-    "draftHint": "New products are initially saved as draft. You can change the status after configuring variants.",
+    "draftHint": "New products are initially saved as draft. You can change the status after setting up product variants.",
     "originPrice": "Base price (VND)",
-    "originPriceHint": "Shared list price for the product. Selling price and compare-at price are configured per variant.",
+    "originPriceHint": "Shared list price for the product. Selling price and compare-at price are managed per variant.",
     "featured": "Featured product",
     "featuredOn": "Visible on homepage",
     "featuredOff": "Not featured",
@@ -301,19 +301,19 @@
   "variantPage": {
     "loading": "Loading product variants...",
     "backToProduct": "Back to product information",
-    "title": "Manage variants",
-    "fallbackDescription": "Configure SKU, stock, pricing, and images per variant.",
+    "title": "Manage product variants",
+    "fallbackDescription": "Manage SKU, stock, pricing, and images by variant.",
     "productInfo": "Product information",
-    "save": "Save variants",
-    "schemaHint": "Variants always follow the category schema. To change the category, go back to the product info screen first.",
+    "save": "Save product variants",
+    "schemaHint": "Product variants always follow the category schema. To change the category, go back to the product info screen first.",
     "defaultVariant": "Default",
     "errors": {
       "notFound": "Product not found",
       "loadFailed": "Failed to load product variants",
-      "missingProduct": "Cannot find the product to update variants.",
-      "invalidVariant": "Each variant must include an SKU and a complete attribute combination.",
+      "missingProduct": "Cannot find the product to update product variants.",
+      "invalidVariant": "Each variant must include an SKU and a complete attribute set.",
       "inactiveSelection": "One or more variants use inactive options. Please switch them to active options before saving.",
-      "duplicateCombination": "Unable to save because duplicate attribute combinations were found.",
+      "duplicateCombination": "Unable to save because duplicate variant attribute sets were found.",
       "saveFailed": "Failed to save product variants"
     },
     "toasts": {
@@ -336,8 +336,8 @@
   "variantSection": {
     "title": "Product variants",
     "count": "{{count}} variants",
-    "generate": "Generate combinations",
-    "generateTitle": "Quickly pick options by attribute to generate variants in bulk",
+    "generate": "Create variants",
+    "generateTitle": "Quickly pick options by attribute to create variants in bulk",
     "sortLatestUpdated": "Latest updates first",
     "sortLatestUpdatedTitle": "Keep variants ordered by most recently updated",
     "add": "Add variant",
@@ -351,14 +351,67 @@
     "creatingAttribute": "Adding attribute...",
     "attributeCreateSuccess": "Added attribute \"{{attribute}}\" to the category.",
     "attributeCreateFailed": "Unable to add a new attribute to this category.",
+    "listProgress": "Showing {{shown}}/{{total}} variants",
+    "loadMore": "Load 10 more variants",
     "emptyTitle": "No variants yet",
     "emptyDescription": "Click \"Add variant\" to start"
   },
   "variantBulkGenerate": {
-    "description": "Select options per attribute to generate combinations automatically (existing combinations are skipped).",
+    "description": "Select options per attribute to create variants automatically (existing variants are skipped).",
     "clearAll": "Clear all",
     "selectAll": "Select all",
-    "generate": "Generate combinations"
+    "generate": "Create variants"
+  },
+  "variantList": {
+    "searchPlaceholder": "Search SKU, variant name...",
+    "dirty": "Edited",
+    "dirtyCount": "{{count}} changes",
+    "emptyFiltered": "No variants match the current filters",
+    "netSold": "Net sold: {{count}}",
+    "stats": {
+      "active": "On sale",
+      "hidden": "Hidden",
+      "stock": "Total stock"
+    },
+    "filters": {
+      "status": "Status",
+      "stock": "Stock",
+      "sort": "Sort",
+      "allStatuses": "All statuses",
+      "allStock": "All",
+      "available": "Available",
+      "low": "Low stock",
+      "out": "Out of stock"
+    },
+    "sort": {
+      "latest": "Newest",
+      "priceAsc": "Price ascending",
+      "priceDesc": "Price descending",
+      "stockAsc": "Stock ascending",
+      "stockDesc": "Stock descending"
+    },
+    "table": {
+      "image": "Image",
+      "variant": "Variant",
+      "sku": "SKU",
+      "compareAtPrice": "Original price",
+      "price": "Sale price",
+      "stock": "Stock",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit variant",
+      "remove": "Delete or hide variant"
+    }
+  },
+  "variantDrawer": {
+    "quickEdit": "Quick edit",
+    "compareAtPriceLabel": "Original price (VND)",
+    "attributes": "Variant attributes",
+    "activity": "Activity history",
+    "saveChanges": "Save changes",
+    "removeImage": "Remove image"
   },
   "variantCard": {
     "title": "Variant {{order}}",
@@ -413,10 +466,10 @@
   "productPicker": {
     "title": "Select products",
     "heroTitle": "Select Flash Sale products",
-    "heroDescription": "Search, filter, and choose the variants to add to the campaign.",
+    "heroDescription": "Search, filter, and choose the products to add to the campaign.",
     "searchPlaceholder": "Search products to add...",
     "selectedLabel": "{{count}} products selected",
-    "selectedVariants": "<strong>{{count}}</strong> variants selected",
+    "selectedVariants": "<strong>{{count}}</strong> products selected",
     "filtersTitle": "Filters",
     "filters": {
       "allCategories": "All categories",
@@ -436,9 +489,9 @@
       "stock": "Stock",
       "actions": "Actions"
     },
-    "paginationLabel": "variants",
-    "footerEmpty": "No variants selected yet.",
-    "footerSelected": "<strong>{{count}}</strong> variants selected for Flash Sale.",
+    "paginationLabel": "products",
+    "footerEmpty": "No products selected yet.",
+    "footerSelected": "<strong>{{count}}</strong> products selected for Flash Sale.",
     "cancel": "Cancel",
     "confirm": "Confirm ({{count}})",
     "variantFallback": "Default",
@@ -537,7 +590,7 @@
       "pagination": "variants",
       "summaryTitle": "Quick summary",
       "scheduleStatus": "Schedule status",
-      "participatingVariants": "Participating variants",
+      "participatingVariants": "Participating products",
       "totalStock": "Total Flash Sale stock",
       "originalValue": "Original value",
       "flashValue": "Flash Sale value",

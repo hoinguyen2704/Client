@@ -172,6 +172,8 @@ export interface ActionConfig {
   type: ActionType;
   /** Link href — makes this a Link instead of button */
   href?: string;
+  /** Optional router state for link navigation */
+  state?: unknown;
   /** Custom title tooltip */
   title?: string;
   /** Translation key for tooltip */
@@ -194,6 +196,7 @@ export interface PrimaryButtonProps {
   icon?: ReactNode;
   onClick?: () => void;
   href?: string;
+  state?: unknown;
   className?: string;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
@@ -217,6 +220,7 @@ export interface ButtonProps {
   iconRight?: ReactNode;
   onClick?: () => void;
   href?: string;
+  state?: unknown;
   form?: string;
   className?: string;
   type?: "button" | "submit" | "reset";
@@ -279,6 +283,8 @@ export interface RadioProps extends Omit<
 export interface BackButtonProps {
   /** Navigation target path */
   to: string;
+  /** Optional router state for link navigation */
+  state?: unknown;
   /** Optional text label — if provided, renders inline text link instead of icon-only */
   label?: string;
   className?: string;

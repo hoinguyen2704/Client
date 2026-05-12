@@ -50,6 +50,7 @@ export const adminRoutes = (
     <Route path="flash-sales" element={<FlashSales />} />
     <Route path="flash-sales/new" element={<FlashSaleForm />} />
     <Route path="flash-sales/:id/edit" element={<FlashSaleForm />} />
+    <Route path="flash-sales/:id/pick-products" element={<ProductPicker />} />
     <Route path="flash-sales/pick-products" element={<ProductPicker />} />
     <Route path="settings" element={<Settings />} />
     <Route path="feedbacks" element={<Feedbacks />} />

@@ -50,6 +50,28 @@ export const buildFlashSaleItemMap = (
   }, {});
 };
 
+export const buildFlashSaleItemMapFromItems = (
+  items?: FlashSaleItemResponse[] | null,
+): Record<string, FlashSaleItemResponse> => (
+  (items || []).reduce<Record<string, FlashSaleItemResponse>>((acc, item) => {
+    if (!item?.variantId) return acc;
+    if (!isFlashItemActive(item)) return acc;
+
+    const existing = acc[item.variantId];
+    if (!existing) {
+      acc[item.variantId] = item;
+      return acc;
+    }
+
+    const existingPrice = toNumber(existing.flashPrice, Number.MAX_SAFE_INTEGER);
+    const nextPrice = toNumber(item.flashPrice, Number.MAX_SAFE_INTEGER);
+    if (nextPrice < existingPrice) {
+      acc[item.variantId] = item;
+    }
+    return acc;
+  }, {})
+);
+
 interface ResolveVariantPricingInput {
   product: Pick<ProductResponse, 'originPrice' | 'lowestPrice'>;
   variant?: ProductVariantResponse | null;

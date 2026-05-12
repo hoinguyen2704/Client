@@ -7,7 +7,7 @@ import adminCategoryService from "@/apis/services/adminCategoryService";
 import { getApiErrorMessage } from "@/utils/error";
 import type { BrandResponse, CategoryResponse } from "@/types";
 import { PAGE_SIZE } from "@/constants/paginationConstants";
-import useAdminList from "@/hooks/useAdminList";
+import { useAdminList, usePageQueryParam } from "@/hooks";
 import {
   ActionButtons,
   AdminSearch,
@@ -32,6 +32,7 @@ import { getPaginatedRowNumber } from "@/utils/helpers";
 
 export default function Brands() {
   const { t } = useTranslation("adminCatalog");
+  const { initialPage, syncPage } = usePageQueryParam();
   const [categoryFilter, setCategoryFilter] = useState("");
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const extraParams = useMemo(
@@ -52,6 +53,7 @@ export default function Brands() {
     queryKey: "admin-brands",
     size: PAGE_SIZE.MEDIUM,
     extraParams,
+    initialPage,
   });
 
   const [showForm, setShowForm] = useState(false);
@@ -74,6 +76,10 @@ export default function Brands() {
     };
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    syncPage(page);
+  }, [page, syncPage]);
 
   const categoryOptions = useMemo(
     () => [
@@ -104,7 +110,8 @@ export default function Brands() {
         logoUrl: editId ? normalizedLogoUrl : normalizedLogoUrl || undefined,
       };
 
-      if (editId) {
+      const isEditing = !!editId;
+      if (isEditing) {
         await adminBrandService.update(editId, payload);
         toast.success(t("brands.toasts.updateSuccess"));
       } else {
@@ -113,7 +120,14 @@ export default function Brands() {
       }
 
       resetForm();
-      fetchBrands({ silent: true });
+      if (isEditing) {
+        fetchBrands({ silent: true });
+      } else {
+        setPage(1);
+        if (page === 1) {
+          fetchBrands({ silent: true });
+        }
+      }
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, t("brands.toasts.saveFailed")));
     } finally {

@@ -8,6 +8,7 @@ export interface FlashSaleResponse {
   startTime: string;
   endTime: string;
   status: FlashSaleStatus;
+  itemCount?: number;
   items: FlashSaleItemResponse[];
   createdAt?: string;
 }

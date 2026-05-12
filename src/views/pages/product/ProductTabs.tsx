@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import feedbackService from '@/apis/services/feedbackService';
@@ -13,6 +13,38 @@ import ProductReviewsPanel from './ProductReviewsPanel';
 import ProductSpecsPanel from './ProductSpecsPanel';
 
 type ProductTabId = 'specs' | 'description' | 'reviews';
+
+const FEEDBACK_PAGE_SIZE = 10;
+const emptyRatingCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+const buildInitialFeedbackSummary = (totalReviews: number): FeedbackFilterSummaryResponse => ({
+  total: totalReviews,
+  withContent: 0,
+  ratingCounts: emptyRatingCounts,
+});
+
+const buildFeedbackRequestParams = (filter: ProductReviewFilter, page: number) => ({
+  page,
+  size: FEEDBACK_PAGE_SIZE,
+  ...(filter === 'with-comment' ? { hasComment: true } : {}),
+  ...(typeof filter === 'number' ? { rating: filter } : {}),
+});
+
+const mergeFeedbacksById = (
+  previousFeedbacks: FeedbackResponse[],
+  nextFeedbacks: FeedbackResponse[],
+) => {
+  const seenIds = new Set(previousFeedbacks.map((feedback) => feedback.id));
+  const mergedFeedbacks = [...previousFeedbacks];
+
+  nextFeedbacks.forEach((feedback) => {
+    if (seenIds.has(feedback.id)) return;
+    seenIds.add(feedback.id);
+    mergedFeedbacks.push(feedback);
+  });
+
+  return mergedFeedbacks;
+};
 
 const groupFeedbacksByOrderRound = (feedbacks: FeedbackResponse[]): FeedbackResponse[][] => {
   const groups: Record<string, FeedbackResponse[]> = {};
@@ -43,12 +75,21 @@ export default function ProductTabs({
   const [feedbacks, setFeedbacks] = useState<FeedbackResponse[]>([]);
   const [totalFeedbacks, setTotalFeedbacks] = useState(product.totalReviews || 0);
   const [loadingFeedbacks, setLoadingFeedbacks] = useState(false);
+  const [feedbackLoadFailed, setFeedbackLoadFailed] = useState(false);
+  const [feedbackLoadMoreFailed, setFeedbackLoadMoreFailed] = useState(false);
+  const [feedbackPage, setFeedbackPage] = useState(0);
+  const [hasMoreFeedbacks, setHasMoreFeedbacks] = useState(false);
+  const [loadedFeedbackQueryKey, setLoadedFeedbackQueryKey] = useState<string | null>(null);
   const [reviewFilter, setReviewFilter] = useState<ProductReviewFilter>('all');
-  const [feedbackSummary, setFeedbackSummary] = useState<FeedbackFilterSummaryResponse>({
-    total: product.totalReviews || 0,
-    withContent: 0,
-    ratingCounts: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-  });
+  const [feedbackSummary, setFeedbackSummary] = useState<FeedbackFilterSummaryResponse>(
+    () => buildInitialFeedbackSummary(product.totalReviews || 0),
+  );
+  const inFlightFeedbackRequestsRef = useRef<Set<string>>(new Set());
+  const feedbackQueryKey = useMemo(
+    () => `${product.id}-${reviewFilter}`,
+    [product.id, reviewFilter],
+  );
+  const activeFeedbackQueryKeyRef = useRef(feedbackQueryKey);
 
   const specEntries = useMemo(
     () =>
@@ -59,41 +100,107 @@ export default function ProductTabs({
   );
 
   useEffect(() => {
+    activeFeedbackQueryKeyRef.current = feedbackQueryKey;
+  }, [feedbackQueryKey]);
+
+  useEffect(() => {
+    inFlightFeedbackRequestsRef.current.clear();
     setReviewFilter('all');
-  }, [product.id]);
+    setFeedbacks([]);
+    setTotalFeedbacks(product.totalReviews || 0);
+    setFeedbackSummary(buildInitialFeedbackSummary(product.totalReviews || 0));
+    setLoadingFeedbacks(false);
+    setFeedbackLoadFailed(false);
+    setFeedbackLoadMoreFailed(false);
+    setFeedbackPage(0);
+    setHasMoreFeedbacks(false);
+    setLoadedFeedbackQueryKey(null);
+  }, [product.id, product.totalReviews]);
+
+  const loadFeedbackPage = useCallback((pageToLoad: number) => {
+    if (pageToLoad > 1 && (!hasMoreFeedbacks || loadingFeedbacks)) return;
+
+    const activeQueryKey = feedbackQueryKey;
+    const requestKey = `${activeQueryKey}-${pageToLoad}`;
+    if (inFlightFeedbackRequestsRef.current.has(requestKey)) return;
+
+    const isFirstPage = pageToLoad === 1;
+    inFlightFeedbackRequestsRef.current.add(requestKey);
+    setLoadingFeedbacks(true);
+    if (isFirstPage) {
+      setFeedbackLoadFailed(false);
+    } else {
+      setFeedbackLoadMoreFailed(false);
+    }
+
+    feedbackService.getByProduct(product.slug, buildFeedbackRequestParams(reviewFilter, pageToLoad))
+      .then((res) => {
+        if (activeFeedbackQueryKeyRef.current !== activeQueryKey || !res.data) return;
+        const nextFeedbacks = res.data.data || [];
+        const loadedPage = res.data.page || pageToLoad;
+        const lastPage = res.data.lastPage || 0;
+
+        setFeedbacks((currentFeedbacks) =>
+          isFirstPage
+            ? nextFeedbacks
+            : mergeFeedbacksById(currentFeedbacks, nextFeedbacks),
+        );
+        setFeedbackPage(loadedPage);
+        setHasMoreFeedbacks(loadedPage < lastPage);
+        setTotalFeedbacks(res.data.summary?.total ?? res.data.total ?? 0);
+        setFeedbackSummary(res.data.summary || {
+          total: res.data.total ?? 0,
+          withContent: 0,
+          ratingCounts: emptyRatingCounts,
+        });
+        setLoadedFeedbackQueryKey(activeQueryKey);
+        setFeedbackLoadFailed(false);
+        setFeedbackLoadMoreFailed(false);
+      })
+      .catch((err) => {
+        if (activeFeedbackQueryKeyRef.current !== activeQueryKey) return;
+        console.error('Failed to load product feedbacks:', err);
+        if (isFirstPage) {
+          setFeedbacks([]);
+          setFeedbackPage(0);
+          setHasMoreFeedbacks(false);
+          setFeedbackLoadFailed(true);
+        } else {
+          setFeedbackLoadMoreFailed(true);
+        }
+      })
+      .finally(() => {
+        inFlightFeedbackRequestsRef.current.delete(requestKey);
+        if (activeFeedbackQueryKeyRef.current === activeQueryKey) {
+          setLoadingFeedbacks(false);
+        }
+      });
+  }, [feedbackQueryKey, hasMoreFeedbacks, loadingFeedbacks, product.slug, reviewFilter]);
 
   useEffect(() => {
     if (activeTab !== 'reviews') return;
+    if (loadedFeedbackQueryKey === feedbackQueryKey && feedbackPage > 0) return;
 
-    let cancelled = false;
-    setLoadingFeedbacks(true);
-    const requestParams =
-      reviewFilter === 'with-comment'
-        ? { page: 1, size: 10, hasComment: true }
-        : typeof reviewFilter === 'number'
-          ? { page: 1, size: 10, rating: reviewFilter }
-          : { page: 1, size: 10 };
+    loadFeedbackPage(1);
+  }, [activeTab, feedbackPage, feedbackQueryKey, loadFeedbackPage, loadedFeedbackQueryKey]);
 
-    feedbackService.getByProduct(product.slug, requestParams)
-      .then((res) => {
-        if (cancelled || !res.data) return;
-        setFeedbacks(res.data.data || []);
-        setTotalFeedbacks(res.data.summary?.total || res.data.total || 0);
-        setFeedbackSummary(res.data.summary || {
-          total: res.data.total || 0,
-          withContent: 0,
-          ratingCounts: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-        });
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setLoadingFeedbacks(false);
-      });
+  const handleReviewFilterChange = useCallback((filter: ProductReviewFilter) => {
+    if (filter === reviewFilter) return;
 
-    return () => {
-      cancelled = true;
-    };
-  }, [activeTab, product.slug, reviewFilter]);
+    setReviewFilter(filter);
+    setFeedbacks([]);
+    setFeedbackPage(0);
+    setHasMoreFeedbacks(false);
+    setLoadingFeedbacks(false);
+    setFeedbackLoadFailed(false);
+    setFeedbackLoadMoreFailed(false);
+    setLoadedFeedbackQueryKey(null);
+  }, [reviewFilter]);
+
+  const handleLoadMoreFeedbacks = useCallback(() => {
+    if (loadingFeedbacks || !hasMoreFeedbacks || feedbackLoadFailed) return;
+    loadFeedbackPage(feedbackPage + 1);
+  }, [feedbackLoadFailed, feedbackPage, hasMoreFeedbacks, loadFeedbackPage, loadingFeedbacks]);
 
   const groupedFeedbacks = useMemo(
     () => groupFeedbacksByOrderRound(feedbacks),
@@ -223,12 +330,17 @@ export default function ProductTabs({
               <ProductReviewsPanel
                 rating={product.averageRating || 0}
                 reviews={totalFeedbacks}
-                loading={loadingFeedbacks}
+                loading={loadingFeedbacks && feedbacks.length === 0}
+                loadingMore={loadingFeedbacks && feedbacks.length > 0}
+                loadFailed={feedbackLoadFailed}
+                loadMoreFailed={feedbackLoadMoreFailed}
+                hasMore={hasMoreFeedbacks}
                 groupedFeedbacks={groupedFeedbacks}
                 starDistribution={starDistribution}
                 summary={feedbackSummary}
                 activeFilter={reviewFilter}
-                onFilterChange={setReviewFilter}
+                onFilterChange={handleReviewFilterChange}
+                onLoadMore={handleLoadMoreFeedbacks}
                 formatDate={formatDate}
               />
             </motion.div>

@@ -14,13 +14,18 @@ import {
   SectionCard,
 } from "@/components";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import CategorySpecTemplatesSection from "./components/CategorySpecTemplatesSection";
 import CategoryVariantAttributesSection from "./components/CategoryVariantAttributesSection";
 import useCategoryForm from "./hooks/useCategoryForm";
 
 export default function CategoryFormPage() {
   const { t } = useTranslation("adminCatalog");
+  const location = useLocation();
   const form = useCategoryForm();
+  const returnTo = typeof location.state?.returnTo === "string"
+    ? location.state.returnTo
+    : "/admin/categories";
 
   if (form.loading) {
     return (
@@ -39,7 +44,7 @@ export default function CategoryFormPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
-          <BackButton to="/admin/categories" label={t("categories.form.backToList")} />
+          <BackButton to={returnTo} label={t("categories.form.backToList")} />
           <h1 className="text-xl font-bold sm:text-2xl">
             {form.isEditMode
               ? t("categories.form.editTitle")
@@ -49,7 +54,7 @@ export default function CategoryFormPage() {
 
         <div className="flex w-full gap-2 sm:w-auto">
           <Button
-            href="/admin/categories"
+            href={returnTo}
             variant="outline"
             size="md"
             className="flex-1 sm:flex-none"
@@ -135,12 +140,14 @@ export default function CategoryFormPage() {
           contentClassName={form.variantExpanded ? "" : "hidden"}
           className="border-2 border-slate-200 dark:border-slate-700"
         >
-          <CategoryVariantAttributesSection
-            rows={form.variantAttributes}
-            onAdd={form.addVariantAttributeRow}
-            onRemove={form.removeVariantAttributeRow}
-            onChange={form.updateVariantAttributeField}
-          />
+          {form.variantExpanded ? (
+            <CategoryVariantAttributesSection
+              rows={form.variantAttributes}
+              onAdd={form.addVariantAttributeRow}
+              onRemove={form.removeVariantAttributeRow}
+              onChange={form.updateVariantAttributeField}
+            />
+          ) : null}
         </SectionCard>
 
         <SectionCard
@@ -179,12 +186,14 @@ export default function CategoryFormPage() {
           contentClassName={form.specExpanded ? "" : "hidden"}
           className="border-2 border-slate-200 dark:border-slate-700"
         >
-          <CategorySpecTemplatesSection
-            rows={form.specTemplates}
-            onAdd={form.addSpecRow}
-            onRemove={form.removeSpecRow}
-            onChange={form.updateSpecRow}
-          />
+          {form.specExpanded ? (
+            <CategorySpecTemplatesSection
+              rows={form.specTemplates}
+              onAdd={form.addSpecRow}
+              onRemove={form.removeSpecRow}
+              onChange={form.updateSpecRow}
+            />
+          ) : null}
         </SectionCard>
       </form>
     </div>

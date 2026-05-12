@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { FiZap, FiPlus } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -31,6 +31,12 @@ import { getPaginatedRowNumber } from "@/utils/helpers";
 export default function FlashSales() {
   const { t } = useTranslation("adminCatalog");
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = useMemo(() => {
+    const pageParam = Number(searchParams.get("page") || "1");
+    return Number.isFinite(pageParam) && pageParam > 0 ? Math.trunc(pageParam) : 1;
+  }, []);
   const {
     items: sales,
     loading,
@@ -41,8 +47,26 @@ export default function FlashSales() {
   } = useAdminList<FlashSaleResponse>(adminFlashSaleService.getAll, {
     queryKey: "admin-flash-sales",
     size: PAGE_SIZE.LARGE,
+    initialPage,
   });
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const returnTo = `${location.pathname}${location.search}`;
+
+  useEffect(() => {
+    const currentPageParam = searchParams.get("page");
+    const expectedPageParam = page > 1 ? String(page) : null;
+    if (currentPageParam === expectedPageParam || (!currentPageParam && page === 1)) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams);
+    if (expectedPageParam) {
+      nextParams.set("page", expectedPageParam);
+    } else {
+      nextParams.delete("page");
+    }
+    setSearchParams(nextParams, { replace: true });
+  }, [page, searchParams, setSearchParams]);
 
   const handleDelete = async (id: string) => {
     setDeleteTarget(null);
@@ -75,7 +99,7 @@ export default function FlashSales() {
           <FiZap className="text-yellow-500" /> {t("flashSales.list.title")}
         </h1>
         <PrimaryButton
-          onClick={() => navigate("/admin/flash-sales/new")}
+          onClick={() => navigate("/admin/flash-sales/new", { state: { returnTo } })}
           icon={<FiPlus className="text-base" />}
           className="shrink-0"
         >
@@ -160,7 +184,7 @@ export default function FlashSales() {
                           {
                             type: "edit",
                             onClick: () =>
-                              navigate(`/admin/flash-sales/${sale.id}/edit`),
+                              navigate(`/admin/flash-sales/${sale.id}/edit`, { state: { returnTo } }),
                           },
                           {
                             type: "delete",

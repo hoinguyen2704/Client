@@ -50,7 +50,7 @@ export default function ProductForm() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3 sm:gap-4">
-          <BackButton to="/admin/products" />
+          <BackButton to={form.returnTo} />
           <h1 className="text-xl sm:text-2xl font-bold">
             {form.isEditMode
               ? t("productForm.editTitle")
@@ -67,7 +67,7 @@ export default function ProductForm() {
             {form.isEditMode ? t("productForm.update") : t("productForm.save")}
           </PrimaryButton>
           <Button
-            onClick={() => form.navigate("/admin/products")}
+            onClick={() => form.navigate(form.returnTo)}
             variant="secondary"
             size="md"
             className="flex-1 sm:flex-none"
@@ -79,6 +79,7 @@ export default function ProductForm() {
           {form.isEditMode && (
             <Button
               href={`/admin/products/${form.id}/variants`}
+              state={{ returnTo: form.returnTo }}
               variant="outline"
               size="md"
               className="w-full sm:w-auto sm:flex-none"
@@ -116,6 +117,7 @@ export default function ProductForm() {
                 </div>
                 <Button
                   href={`/admin/products/${form.id}/variants`}
+                  state={{ returnTo: form.returnTo }}
                   variant="outline"
                   size="md"
                   className="w-full sm:w-auto"

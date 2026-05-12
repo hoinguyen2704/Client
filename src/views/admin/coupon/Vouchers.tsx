@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FiPlus,
   FiTag,
@@ -39,7 +39,7 @@ import {
   AdminTableHeadRow,
   AdminTableScroll,
 } from "@/components/ui/AdminTable";
-import useAdminList from "@/hooks/useAdminList";
+import { useAdminList, usePageQueryParam } from "@/hooks";
 import { getPaginatedRowNumber } from "@/utils/helpers";
 import { downloadBlob } from "@/utils/download";
 import { parseRequiredIntegerInputValue } from "@/utils/numericInput";
@@ -48,6 +48,7 @@ import { useTranslation } from "react-i18next";
 
 export default function AdminVouchers() {
   const { t } = useTranslation("adminSales");
+  const { initialPage, syncPage } = usePageQueryParam();
   const {
     items: vouchers,
     loading,
@@ -60,6 +61,7 @@ export default function AdminVouchers() {
   } = useAdminList<CouponResponse>(adminCouponService.getAll, {
     queryKey: "admin-vouchers",
     size: PAGE_SIZE.MEDIUM,
+    initialPage,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReportExportModalOpen, setIsReportExportModalOpen] = useState(false);
@@ -72,6 +74,10 @@ export default function AdminVouchers() {
     applyType: "ALL",
     applicableProductIds: [],
   });
+
+  useEffect(() => {
+    syncPage(page);
+  }, [page, syncPage]);
 
   const handleToggle = async (id: string) => {
     try {
@@ -133,7 +139,8 @@ export default function AdminVouchers() {
         delete payload.maxDiscountAmount;
       }
 
-      if (editingId) {
+      const isEditing = !!editingId;
+      if (isEditing) {
         await adminCouponService.update(editingId, payload as CouponRequest);
         toast.success(t("vouchers.toasts.updateSuccess"));
       } else {
@@ -142,7 +149,14 @@ export default function AdminVouchers() {
       }
       setIsModalOpen(false);
       resetForm();
-      fetchVouchers({ silent: true });
+      if (isEditing) {
+        fetchVouchers({ silent: true });
+      } else {
+        setPage(1);
+        if (page === 1) {
+          fetchVouchers({ silent: true });
+        }
+      }
     } catch (err: unknown) {
       console.error(err);
       toast.error(getApiErrorMessage(err, t("vouchers.toasts.saveFailed")));

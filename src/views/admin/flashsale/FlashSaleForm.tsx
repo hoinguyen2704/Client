@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { memo, useMemo, useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { FiZap, FiArrowLeft, FiPlus, FiCheck, FiSave, FiClock, FiTrendingDown, FiAlertTriangle } from 'react-icons/fi';
@@ -28,7 +28,7 @@ import {
 import { useClientTableSort } from '@/hooks';
 import { PICKER_RESULT_KEY } from './ProductPicker';
 
-const ITEMS_PER_PAGE = PAGE_SIZE.LARGE;
+const ITEMS_PER_PAGE = PAGE_SIZE.MEDIUM;
 const getFlashSaleItemKey = (item: FlashSaleItemForm) => item.id ?? item.variantId;
 const resolveMaxFlashStock = (item: Pick<FlashSaleItemForm, 'stockQuantity'>) => {
   const stock = Number(item.stockQuantity);
@@ -40,6 +40,132 @@ const clampFlashStock = (value: number, item: Pick<FlashSaleItemForm, 'stockQuan
   return clampNonNegativeInteger(value, maxStock);
 };
 
+interface FlashSaleItemRowProps {
+  item: FlashSaleItemForm;
+  itemKey: string;
+  variantFallback: string;
+  historyEmptyLabel: string;
+  historyLabel: string;
+  stockLabel: string;
+  priceWarningTitle: string;
+  stockWarningTitle: string;
+  onChangeFlashPrice: (itemKey: string, rawValue: string) => void;
+  onChangeFlashStock: (itemKey: string, rawValue: string) => void;
+  onRemove: (itemKey: string) => void;
+}
+
+const FlashSaleItemRow = memo(function FlashSaleItemRow({
+  item,
+  itemKey,
+  variantFallback,
+  historyEmptyLabel,
+  historyLabel,
+  stockLabel,
+  priceWarningTitle,
+  stockWarningTitle,
+  onChangeFlashPrice,
+  onChangeFlashStock,
+  onRemove,
+}: FlashSaleItemRowProps) {
+  const sales = useMemo(() => resolveVariantSalesMetrics(item), [item]);
+  const historyText = historyLabel
+    .replace('{{gross}}', sales.gross.toLocaleString())
+    .replace('{{returned}}', sales.returned.toLocaleString())
+    .replace('{{net}}', sales.net.toLocaleString());
+  const stockText = stockLabel.replace('{{stock}}', (item.stockQuantity ?? 0).toLocaleString());
+  const originalPrice = Number(item.originalPrice) || 0;
+  const flashPrice = Number(item.flashPrice) || 0;
+  const flashStock = Number(item.flashStock);
+  const maxStock = resolveMaxFlashStock(item);
+  const hasPriceWarning = flashPrice <= 0 || flashPrice >= originalPrice;
+  const hasStockWarning = flashStock <= 0 || (maxStock != null && flashStock > maxStock);
+
+  return (
+    <AdminTableBodyRow>
+      <AdminTableCell>
+        <div className="flex items-center gap-3">
+          <img
+            src={item.imageUrl || '/placeholder.png'}
+            alt=""
+            className="w-10 h-10 object-cover rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0"
+            loading="lazy"
+          />
+          <div className="min-w-0">
+            <div className="font-medium text-body truncate" title={item.productName}>
+              {item.productName}
+            </div>
+            <div className="text-sm text-muted">
+              {item.variantName || variantFallback}
+            </div>
+          </div>
+        </div>
+      </AdminTableCell>
+      <AdminTableCell className="text-muted">{formatPrice(item.originalPrice)}</AdminTableCell>
+      <AdminTableCell>
+        <div className="relative">
+          <input
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            className={`w-full rounded-lg border bg-slate-50 px-3 py-1.5 pr-9 transition-all focus:outline-none focus:ring-2 dark:bg-slate-800 ${
+              hasPriceWarning
+                ? 'border-amber-300 focus:ring-amber-500/20 dark:border-amber-500/50'
+                : 'border-slate-200 focus:ring-primary-500/20 dark:border-slate-700'
+            }`}
+            value={String(item.flashPrice)}
+            onChange={(e) => onChangeFlashPrice(itemKey, e.target.value)}
+          />
+          {hasPriceWarning && (
+            <FiAlertTriangle
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-amber-500"
+              title={priceWarningTitle}
+              aria-label={priceWarningTitle}
+            />
+          )}
+        </div>
+      </AdminTableCell>
+      <AdminTableCell>
+        <div className="space-y-1.5">
+          <div className="relative">
+            <input
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              className={`w-full rounded-lg border bg-slate-50 px-3 py-1.5 pr-9 transition-all focus:outline-none focus:ring-2 dark:bg-slate-800 ${
+                hasStockWarning
+                  ? 'border-amber-300 focus:ring-amber-500/20 dark:border-amber-500/50'
+                  : 'border-slate-200 focus:ring-primary-500/20 dark:border-slate-700'
+              }`}
+              value={String(item.flashStock)}
+              onChange={(e) => onChangeFlashStock(itemKey, e.target.value)}
+            />
+            {hasStockWarning && (
+              <FiAlertTriangle
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-amber-500"
+                title={stockWarningTitle}
+                aria-label={stockWarningTitle}
+              />
+            )}
+          </div>
+          <div className="text-sm text-muted leading-tight">
+            {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
+              <div>{historyEmptyLabel}</div>
+            ) : (
+              <>
+                <div>{historyText}</div>
+                <div>{stockText}</div>
+              </>
+            )}
+          </div>
+        </div>
+      </AdminTableCell>
+      <AdminTableCell className="text-center">
+        <TrashButton onClick={() => onRemove(itemKey)} />
+      </AdminTableCell>
+    </AdminTableBodyRow>
+  );
+});
+
 export default function FlashSaleForm() {
   const { t } = useTranslation(['adminCatalog', 'common']);
   const navigate = useNavigate();
@@ -47,6 +173,9 @@ export default function FlashSaleForm() {
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
+  const returnTo = typeof location.state?.returnTo === 'string'
+    ? location.state.returnTo
+    : '/admin/flash-sales';
 
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -106,7 +235,7 @@ export default function FlashSaleForm() {
       } catch (err) {
         console.error(err);
         toast.error(t('flashSales.toasts.loadFailed'));
-        navigate('/admin/flash-sales');
+        navigate(returnTo);
       } finally {
         setLoading(false);
         setIsEditLoaded(true);
@@ -145,26 +274,31 @@ export default function FlashSaleForm() {
       return { ...prev, items: [...prev.items, ...newItems] };
     });
     // Clear state to avoid accidental re-append
-    navigate(location.pathname, { replace: true, state: {} });
-  }, [id, isEditLoaded, location.pathname, location.state, navigate]);
+    navigate(location.pathname, { replace: true, state: { returnTo } });
+  }, [id, isEditLoaded, location.pathname, location.state, navigate, returnTo]);
 
-  const handleOpenPicker = () => {
-    navigate('/admin/flash-sales/pick-products', {
+  const handleOpenPicker = useCallback(() => {
+    const pickerPath = isEditing && id
+      ? `/admin/flash-sales/${id}/pick-products`
+      : '/admin/flash-sales/pick-products';
+
+    navigate(pickerPath, {
       state: {
         initialSelectedIds: form.items.map(i => i.variantId),
         returnTo: isEditing ? `/admin/flash-sales/${id}/edit` : '/admin/flash-sales/new',
+        listReturnTo: returnTo,
       },
     });
-  };
+  }, [form.items, id, isEditing, navigate, returnTo]);
 
-  const handleRemoveItem = (itemKey: string) => {
+  const handleRemoveItem = useCallback((itemKey: string) => {
     setForm(prev => {
       const items = prev.items.filter((item) => getFlashSaleItemKey(item) !== itemKey);
       return { ...prev, items };
     });
-  };
+  }, []);
 
-  const handleChangeItem = (itemKey: string, field: 'flashPrice' | 'flashStock', value: number) => {
+  const handleChangeItem = useCallback((itemKey: string, field: 'flashPrice' | 'flashStock', value: number) => {
     setForm(prev => {
       const items = prev.items.map((item) => (
         getFlashSaleItemKey(item) === itemKey
@@ -176,17 +310,17 @@ export default function FlashSaleForm() {
       ));
       return { ...prev, items };
     });
-  };
+  }, []);
 
-  const handleChangeFlashStock = (itemKey: string, rawValue: string) => {
+  const handleChangeFlashStock = useCallback((itemKey: string, rawValue: string) => {
     const parsedValue = parseRequiredIntegerInputValue(rawValue);
     handleChangeItem(itemKey, 'flashStock', parsedValue);
-  };
+  }, [handleChangeItem]);
 
-  const handleChangeFlashPrice = (itemKey: string, rawValue: string) => {
+  const handleChangeFlashPrice = useCallback((itemKey: string, rawValue: string) => {
     const parsedValue = parseRequiredIntegerInputValue(rawValue);
     handleChangeItem(itemKey, 'flashPrice', parsedValue);
-  };
+  }, [handleChangeItem]);
 
   const handleSubmit = async () => {
     // Basic validation
@@ -218,12 +352,13 @@ export default function FlashSaleForm() {
         await adminFlashSaleService.update(id!, payload);
         await invalidateFlashSaleQueries();
         toast.success(t('flashSales.toasts.updateSuccess'));
+        return;
       } else {
         await adminFlashSaleService.create(payload);
         await invalidateFlashSaleQueries();
         toast.success(t('flashSales.toasts.createSuccess'));
+        navigate('/admin/flash-sales');
       }
-      navigate('/admin/flash-sales');
     } catch (err: unknown) {
       console.error(err);
       toast.error(getApiErrorMessage(err, translate, 'adminCatalog:flashSales.toasts.saveFailed'));
@@ -232,57 +367,93 @@ export default function FlashSaleForm() {
     }
   };
 
-  const startDate = form.startTime ? new Date(form.startTime) : null;
-  const endDate = form.endTime ? new Date(form.endTime) : null;
-  const now = new Date();
+  const startDate = useMemo(() => form.startTime ? new Date(form.startTime) : null, [form.startTime]);
+  const endDate = useMemo(() => form.endTime ? new Date(form.endTime) : null, [form.endTime]);
+  const now = useMemo(() => new Date(), []);
 
-  const scheduleStatus = (() => {
+  const scheduleStatus = useMemo(() => {
     if (!startDate || !endDate) return t('flashSales.form.schedule.incomplete');
     if (endDate <= startDate) return t('flashSales.form.schedule.invalid');
     if (now < startDate) return t('flashSales.form.schedule.scheduled');
     if (now >= startDate && now <= endDate) return t('flashSales.form.schedule.active');
     return t('flashSales.form.schedule.ended');
-  })();
+  }, [endDate, now, startDate, t]);
 
-  const totalStock = form.items.reduce((sum, item) => sum + Math.max(0, Number(item.flashStock) || 0), 0);
-  const totalOriginalValue = form.items.reduce(
-    (sum, item) => sum + (Number(item.originalPrice) || 0) * Math.max(0, Number(item.flashStock) || 0),
-    0,
-  );
-  const totalFlashValue = form.items.reduce(
-    (sum, item) => sum + (Number(item.flashPrice) || 0) * Math.max(0, Number(item.flashStock) || 0),
-    0,
-  );
+  const {
+    totalStock,
+    totalOriginalValue,
+    totalFlashValue,
+    invalidPriceCount,
+    invalidStockCount,
+  } = useMemo(() => form.items.reduce(
+    (summary, item) => {
+      const flashStock = Number(item.flashStock);
+      const normalizedFlashStock = Math.max(0, flashStock || 0);
+      const originalPrice = Number(item.originalPrice) || 0;
+      const flashPrice = Number(item.flashPrice) || 0;
+      const maxStock = resolveMaxFlashStock(item);
+
+      summary.totalStock += normalizedFlashStock;
+      summary.totalOriginalValue += originalPrice * normalizedFlashStock;
+      summary.totalFlashValue += flashPrice * normalizedFlashStock;
+      if (flashPrice <= 0 || flashPrice >= originalPrice) {
+        summary.invalidPriceCount += 1;
+      }
+      if (flashStock <= 0 || (maxStock != null && flashStock > maxStock)) {
+        summary.invalidStockCount += 1;
+      }
+      return summary;
+    },
+    {
+      totalStock: 0,
+      totalOriginalValue: 0,
+      totalFlashValue: 0,
+      invalidPriceCount: 0,
+      invalidStockCount: 0,
+    },
+  ), [form.items]);
   const totalDiscountValue = Math.max(0, totalOriginalValue - totalFlashValue);
   const discountRate = totalOriginalValue > 0 ? Math.round((totalDiscountValue / totalOriginalValue) * 100) : 0;
 
   const invalidTimeRange = !!(startDate && endDate && endDate <= startDate);
-  const invalidPriceCount = form.items.filter(
-    (item) => Number(item.flashPrice) <= 0 || Number(item.flashPrice) >= Number(item.originalPrice),
-  ).length;
-  const invalidStockCount = form.items.filter((item) => {
-    const flashStock = Number(item.flashStock);
-    const maxStock = resolveMaxFlashStock(item);
-    return flashStock <= 0 || (maxStock != null && flashStock > maxStock);
-  }).length;
   const hasWarnings = invalidTimeRange || invalidPriceCount > 0 || invalidStockCount > 0;
+  const sortAccessors = useMemo(() => ({
+    productName: (item: FlashSaleItemForm) => item.productName || '',
+    originalPrice: (item: FlashSaleItemForm) => Number(item.originalPrice ?? 0),
+    flashPrice: (item: FlashSaleItemForm) => Number(item.flashPrice ?? 0),
+    flashStock: (item: FlashSaleItemForm) => Number(item.flashStock ?? 0),
+  }), []);
   const {
     sortedItems,
     sortBy,
     sortDir,
     toggleSort,
   } = useClientTableSort(form.items, {
-    sortAccessors: {
-      productName: (item) => item.productName || '',
-      originalPrice: (item) => Number(item.originalPrice ?? 0),
-      flashPrice: (item) => Number(item.flashPrice ?? 0),
-      flashStock: (item) => Number(item.flashStock ?? 0),
-    },
+    sortAccessors,
   });
 
   const itemsTotalPages = Math.max(1, Math.ceil(sortedItems.length / ITEMS_PER_PAGE));
   const startIndex = (itemsPage - 1) * ITEMS_PER_PAGE;
-  const visibleItems = sortedItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const visibleItems = useMemo(
+    () => sortedItems.slice(startIndex, startIndex + ITEMS_PER_PAGE),
+    [sortedItems, startIndex],
+  );
+  const tableLabels = useMemo(() => ({
+    variantFallback: t('productPicker.variantFallback'),
+    historyEmpty: t('flashSales.form.historyEmpty'),
+    historyLabel: t('flashSales.form.historyLabel', {
+      gross: '{{gross}}',
+      returned: '{{returned}}',
+      net: '{{net}}',
+      interpolation: { escapeValue: false },
+    }),
+    stockLabel: t('flashSales.form.stockLabel', {
+      stock: '{{stock}}',
+      interpolation: { escapeValue: false },
+    }),
+    priceWarningTitle: t('flashSales.form.validationPrice', { count: 1 }),
+    stockWarningTitle: t('flashSales.form.validationStock', { count: 1 }),
+  }), [t]);
 
   useEffect(() => {
     if (itemsPage > itemsTotalPages) {
@@ -307,7 +478,7 @@ export default function FlashSaleForm() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/admin/flash-sales')}
+            onClick={() => navigate(returnTo)}
             className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-muted hover:text-body"
           >
             <FiArrowLeft size={20} />
@@ -326,7 +497,7 @@ export default function FlashSaleForm() {
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
           <Button
-            onClick={() => navigate('/admin/flash-sales')}
+            onClick={() => navigate(returnTo)}
             variant="secondary"
             size="md"
             className="flex-1 sm:flex-none"
@@ -525,73 +696,21 @@ export default function FlashSaleForm() {
                   ) : (
                     visibleItems.map((item) => {
                       const itemKey = getFlashSaleItemKey(item);
-                      const sales = resolveVariantSalesMetrics(item);
                       return (
-                        <AdminTableBodyRow key={itemKey}>
-                          <AdminTableCell>
-                            <div className="flex items-center gap-3">
-                              <img
-                                src={item.imageUrl || '/placeholder.png'}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0"
-                              />
-                              <div className="min-w-0">
-                                <div className="font-medium text-body truncate" title={item.productName}>
-                                  {item.productName}
-                                </div>
-                                <div className="text-sm text-muted">
-                                  {item.variantName || t('productPicker.variantFallback')}
-                                </div>
-                              </div>
-                            </div>
-                          </AdminTableCell>
-                          <AdminTableCell className="text-muted">{formatPrice(item.originalPrice)}</AdminTableCell>
-                          <AdminTableCell>
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              autoComplete="off"
-                              className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
-                              value={String(item.flashPrice)}
-                              onChange={(e) => handleChangeFlashPrice(itemKey, e.target.value)}
-                            />
-                          </AdminTableCell>
-                          <AdminTableCell>
-                            <div className="space-y-1.5">
-                              <input
-                                type="text"
-                                inputMode="numeric"
-                                autoComplete="off"
-                                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
-                                value={String(item.flashStock)}
-                                onChange={(e) => handleChangeFlashStock(itemKey, e.target.value)}
-                              />
-                              <div className="text-sm text-muted leading-tight">
-                                {item.grossSoldQty === undefined && item.stockQuantity === undefined ? (
-                                  <div>{t('flashSales.form.historyEmpty')}</div>
-                                ) : (
-                                  <>
-                                    <div>
-                                      {t('flashSales.form.historyLabel', {
-                                        gross: sales.gross.toLocaleString(),
-                                        returned: sales.returned.toLocaleString(),
-                                        net: sales.net.toLocaleString(),
-                                      })}
-                                    </div>
-                                    <div>
-                                      {t('flashSales.form.stockLabel', {
-                                        stock: (item.stockQuantity ?? 0).toLocaleString(),
-                                      })}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </AdminTableCell>
-                          <AdminTableCell className="text-center">
-                            <TrashButton onClick={() => handleRemoveItem(itemKey)} />
-                          </AdminTableCell>
-                        </AdminTableBodyRow>
+                        <FlashSaleItemRow
+                          key={itemKey}
+                          item={item}
+                          itemKey={itemKey}
+                          variantFallback={tableLabels.variantFallback}
+                          historyEmptyLabel={tableLabels.historyEmpty}
+                          historyLabel={tableLabels.historyLabel}
+                          stockLabel={tableLabels.stockLabel}
+                          priceWarningTitle={tableLabels.priceWarningTitle}
+                          stockWarningTitle={tableLabels.stockWarningTitle}
+                          onChangeFlashPrice={handleChangeFlashPrice}
+                          onChangeFlashStock={handleChangeFlashStock}
+                          onRemove={handleRemoveItem}
+                        />
                       );
                     })
                   )}

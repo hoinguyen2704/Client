@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import adminCategoryService from "@/apis/services/adminCategoryService";
@@ -12,6 +13,7 @@ import type {
 } from "@/types";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
+import { parseOptionalIntegerInputValue } from "@/utils/numericInput";
 import { resolveVariantSalesMetrics } from "@/utils/variantSales";
 import {
   buildSkuSuggestion,
@@ -32,6 +34,7 @@ export default function useProductVariantsForm() {
   const { t } = useTranslation(["adminCatalog", "common"]);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const translate = useCallback(
     (key: string, options?: Record<string, unknown>) =>
       String(t(key, options as never)),
@@ -180,6 +183,22 @@ export default function useProductVariantsForm() {
         ];
       }
 
+      const previousById = new Map(
+        previousVariants
+          .filter((variant) => Boolean(variant.id))
+          .map((variant) => [variant.id, variant]),
+      );
+      const previousBySignature = new Map(
+        previousVariants
+          .filter((variant) => Boolean(variant.variantSignature))
+          .map((variant) => [variant.variantSignature, variant]),
+      );
+      const previousBySku = new Map(
+        previousVariants
+          .filter((variant) => Boolean(variant.sku))
+          .map((variant) => [variant.sku, variant]),
+      );
+
       const mappedVariants: VariantFormData[] = product.variants.map((variant, index): VariantFormData => {
         const selectionRows = getVariantSelectionRows(variant);
         const rawSelections = Object.fromEntries(
@@ -213,15 +232,10 @@ export default function useProductVariantsForm() {
         )
           ? "suggested"
           : "manual";
-        const matchedPreviousVariant = previousVariants.find((candidate) => {
-          if (variant.id && candidate.id === variant.id) {
-            return true;
-          }
-          if (candidate.variantSignature === nextVariantSignature) {
-            return true;
-          }
-          return nextSku.length > 0 && candidate.sku === nextSku;
-        });
+        const matchedPreviousVariant =
+          (variant.id ? previousById.get(variant.id) : undefined)
+          || previousBySignature.get(nextVariantSignature)
+          || (nextSku.length > 0 ? previousBySku.get(nextSku) : undefined);
 
         return {
           id: variant.id,
@@ -307,7 +321,7 @@ export default function useProductVariantsForm() {
     setLoading(true);
     setError("");
     try {
-      const productRes = await adminProductService.getById(id);
+      const productRes = await adminProductService.getVariantEditor(id);
       const product = productRes.data;
       if (!product) {
         setError(t("variantPage.errors.notFound"));
@@ -320,7 +334,7 @@ export default function useProductVariantsForm() {
       setCategoryName(product.category?.name ?? "");
 
       let schema = product.variantSchema || [];
-      if (product.category?.id) {
+      if (!product.variantSchema && product.category?.id) {
         try {
           const schemaRes = await adminCategoryService.getSchema(product.category.id);
           schema = schemaRes.data?.variantAttributes || [];
@@ -529,6 +543,19 @@ export default function useProductVariantsForm() {
               ...variant,
               sku: String(value),
               skuMode: "manual",
+            };
+          }
+          if (
+            field === "price"
+            || field === "compareAtPrice"
+            || field === "stock"
+          ) {
+            return {
+              ...variant,
+              [field]:
+                typeof value === "string"
+                  ? parseOptionalIntegerInputValue(value)
+                  : variant[field],
             };
           }
           return { ...variant, [field]: value };
@@ -1039,6 +1066,7 @@ export default function useProductVariantsForm() {
       }
       toast.success(t("variantPage.toasts.updateSuccess"));
       await fetchProduct();
+      await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
     } catch (err: unknown) {
       setError(getApiErrorMessage(err, translate, "variantPage.errors.saveFailed"));
     } finally {
@@ -1048,6 +1076,7 @@ export default function useProductVariantsForm() {
     fetchProduct,
     id,
     originalSkuByVariantId,
+    queryClient,
     saving,
     t,
     translate,

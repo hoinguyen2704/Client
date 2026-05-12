@@ -41,6 +41,7 @@ export { default as Radio } from "./input/Radio";
 export { default as QuantitySelector } from "./input/QuantitySelector";
 export { StatusTimeline } from "./ui/StatusTimeline";
 export { default as SlidingTabs } from "./ui/SlidingTabs";
+export { default as HorizontalInfiniteScroller } from "./ui/HorizontalInfiniteScroller";
 export { default as SearchableDropdown } from "./input/SearchableDropdown";
 export { default as SortableHeaderLabel } from "./ui/SortableHeaderLabel";
 export { default as FeedbackImageGrid } from "./feedback/FeedbackImageGrid";

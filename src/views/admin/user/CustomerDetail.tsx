@@ -50,6 +50,9 @@ export default function CustomerDetail() {
   const [form, setForm] = useState<CustomerFormState>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const returnTo = typeof location.state?.returnTo === 'string'
+    ? location.state.returnTo
+    : '/admin/customers';
 
   const translate = (key: string, options?: Record<string, unknown>) =>
     String(t(key, options as never));
@@ -213,7 +216,10 @@ export default function CustomerDetail() {
       });
       toast.success(t('customers.toasts.createSuccess'));
       await queryClient.invalidateQueries({ queryKey: ['admin-customers'] });
-      navigate(`/admin/customers/${res.data.id}`, { replace: true });
+      navigate(`/admin/customers/${res.data.id}`, {
+        replace: true,
+        state: { returnTo: '/admin/customers' },
+      });
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, translate, 'adminCustomers:customers.toasts.createFailed'));
     } finally {
@@ -271,7 +277,7 @@ export default function CustomerDetail() {
     return (
       <div className="space-y-4 sm:space-y-6">
         <div className="flex items-center gap-3 sm:gap-4">
-          <BackButton to="/admin/customers" />
+          <BackButton to={returnTo} />
           <div className="h-6 w-48 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
         </div>
         <div className="animate-pulse rounded-2xl bg-white p-4 dark:bg-slate-900 sm:p-6">
@@ -294,7 +300,7 @@ export default function CustomerDetail() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center gap-3 sm:gap-4">
-        <BackButton to="/admin/customers" />
+        <BackButton to={returnTo} />
         <div>
           <h1 className="text-xl font-bold sm:text-2xl">
             {isCreateMode ? t('detail.createPageTitle') : t('detail.title')}

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, type FormEvent } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiHeart, FiUser, FiMenu, FiLogOut, FiSettings, FiBox, FiSun, FiMoon } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'motion/react';
@@ -47,14 +47,16 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
     syncWishlist();
   }, [syncFromServer, syncWishlist]);
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const query = e.currentTarget.value.trim();
-      if (query) {
-        navigate(`/search?q=${encodeURIComponent(query)}`);
-      } else {
-        navigate(`/search`);
-      }
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const query = String(formData.get('search') ?? '').trim();
+
+    if (query) {
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+    } else {
+      navigate(`/search`);
     }
   };
 
@@ -71,15 +73,21 @@ export default function Header({ user, theme, toggleTheme, onMenuToggle, onLogou
           </Link>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-2xl hidden md:flex relative group">
+          <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden md:flex relative group">
             <input
+              name="search"
               type="text"
               placeholder={t('header.searchPlaceholder', { ns: 'layout' })}
-              onKeyDown={handleSearch}
               className="w-full h-12 pl-4 pr-12 rounded-2xl bg-white border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
             />
-            <FiSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle text-xl group-focus-within:text-blue-600 transition-colors" />
-          </div>
+            <button
+              type="submit"
+              aria-label={t('actions.search', { ns: 'common' })}
+              className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl text-subtle hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800 dark:hover:text-blue-300 group-focus-within:text-blue-600 transition-colors"
+            >
+              <FiSearch className="text-xl" />
+            </button>
+          </form>
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-4">

@@ -1,11 +1,68 @@
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import type { TFunction } from 'i18next';
-import { FiArrowRight, FiClock, FiTrendingUp, FiZap } from 'react-icons/fi';
+import { FiArrowRight, FiChevronDown, FiClock, FiTrendingUp, FiZap } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/utils/format';
 import flashSaleService from '@/apis/services/flashSaleService';
 import type { FlashSaleItemResponse, FlashSaleResponse, TimeLeft } from '@/types';
+
+const FLASH_SALE_ITEM_PAGE_SIZE = 10;
+const FLASH_SALE_PAGE_SIZE = 2;
+
+type FlashSaleItemPageInfo = {
+  page: number;
+  lastPage: number;
+  total: number;
+};
+
+const mergeFlashSales = (
+  current: FlashSaleResponse[],
+  incoming: FlashSaleResponse[],
+): FlashSaleResponse[] => {
+  if (current.length === 0) return incoming;
+  const seenIds = new Set(current.map((sale) => sale.id));
+  const next = [...current];
+  incoming.forEach((sale) => {
+    if (!seenIds.has(sale.id)) {
+      seenIds.add(sale.id);
+      next.push(sale);
+    }
+  });
+  return next;
+};
+
+const getFlashSaleItemKey = (item: FlashSaleItemResponse) => (
+  item.id || item.variantId || item.productId
+);
+
+const mergeFlashSaleItems = (
+  current: FlashSaleItemResponse[],
+  incoming: FlashSaleItemResponse[],
+): FlashSaleItemResponse[] => {
+  if (current.length === 0) return incoming;
+  const seenIds = new Set(current.map(getFlashSaleItemKey));
+  const next = [...current];
+  incoming.forEach((item) => {
+    const itemKey = getFlashSaleItemKey(item);
+    if (!seenIds.has(itemKey)) {
+      seenIds.add(itemKey);
+      next.push(item);
+    }
+  });
+  return next;
+};
+
+const getInitialItemPageInfo = (sale: FlashSaleResponse): FlashSaleItemPageInfo => {
+  const loaded = sale.items?.length || 0;
+  const total = sale.itemCount ?? loaded;
+
+  return {
+    page: loaded > 0 ? Math.ceil(loaded / FLASH_SALE_ITEM_PAGE_SIZE) : 0,
+    lastPage: total > 0 ? Math.ceil(total / FLASH_SALE_ITEM_PAGE_SIZE) : 0,
+    total,
+  };
+};
 
 const getTimeLeft = (endTime: string, nowMs: number): TimeLeft => {
   const diff = Math.max(0, new Date(endTime).getTime() - nowMs);
@@ -18,7 +75,7 @@ const getTimeLeft = (endTime: string, nowMs: number): TimeLeft => {
 
 const clampPercent = (value: number) => Math.min(100, Math.max(0, value));
 
-const getSaleStatusMeta = (status: string | undefined, t: TFunction<'catalog'>) => {
+const getSaleStatusMeta = (status: string | undefined, t: TFunction) => {
   switch (status) {
     case 'SCHEDULED':
       return {
@@ -38,7 +95,7 @@ const getSaleStatusMeta = (status: string | undefined, t: TFunction<'catalog'>) 
   }
 };
 
-function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
+const FlashSaleItemCard = memo(function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
   const { t } = useTranslation('catalog');
   const safeFlashStock = Math.max(0, item.flashStock || 0);
   const safeSoldCount = Math.max(0, item.soldCount || 0);
@@ -63,6 +120,8 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
           <img
             src={item.imageUrl}
             alt={item.productName}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
         ) : (
@@ -154,7 +213,7 @@ function FlashSaleItemCard({ item }: { item: FlashSaleItemResponse }) {
       </div>
     </Link>
   );
-}
+});
 
 function SaleCountdown({ endTime }: { endTime: string }) {
   const { t } = useTranslation('catalog');
@@ -190,20 +249,220 @@ function SaleCountdown({ endTime }: { endTime: string }) {
   );
 }
 
+const FlashSaleSection = memo(function FlashSaleSection({ sale }: { sale: FlashSaleResponse }) {
+  const { t } = useTranslation('catalog');
+  const [items, setItems] = useState<FlashSaleItemResponse[]>(() => sale.items || []);
+  const [itemPageInfo, setItemPageInfo] = useState<FlashSaleItemPageInfo>(() => getInitialItemPageInfo(sale));
+  const [loadingMoreItems, setLoadingMoreItems] = useState(false);
+  const [itemLoadFailed, setItemLoadFailed] = useState(false);
+
+  useEffect(() => {
+    setItems(sale.items || []);
+    setItemPageInfo(getInitialItemPageInfo(sale));
+    setLoadingMoreItems(false);
+    setItemLoadFailed(false);
+  }, [sale.id, sale.itemCount, sale.items]);
+
+  const status = getSaleStatusMeta(sale.status, t);
+  const itemCount = itemPageInfo.total || items.length;
+  const loadedItemCount = items.length;
+  const summaryText = sale.description || t('flashSale.summaryFallback');
+  const hasMoreItems = itemPageInfo.page === 0
+    ? itemCount > 0
+    : itemPageInfo.page < itemPageInfo.lastPage;
+
+  const loadMoreItems = useCallback(async () => {
+    if (loadingMoreItems || !hasMoreItems) return;
+
+    const nextPage = itemPageInfo.page > 0 ? itemPageInfo.page + 1 : 1;
+    setLoadingMoreItems(true);
+    setItemLoadFailed(false);
+
+    try {
+      const response = await flashSaleService.getActiveSaleItems(sale.id, {
+        page: nextPage,
+        size: FLASH_SALE_ITEM_PAGE_SIZE,
+      });
+      const nextPageData = response.data;
+      const nextItems = nextPageData?.data || [];
+      setItems((prev) => mergeFlashSaleItems(prev, nextItems));
+      setItemPageInfo((prev) => ({
+        page: nextPageData?.page || nextPage,
+        lastPage: nextPageData?.lastPage ?? prev.lastPage,
+        total: nextPageData?.total ?? prev.total,
+      }));
+    } catch {
+      setItemLoadFailed(true);
+    } finally {
+      setLoadingMoreItems(false);
+    }
+  }, [hasMoreItems, itemPageInfo.page, loadingMoreItems, sale.id]);
+
+  return (
+    <section
+      key={sale.id}
+      className="overflow-hidden rounded-[30px] border border-orange-100/70 bg-white shadow-[0_20px_60px_rgba(249,115,22,0.08)] dark:border-orange-900/30 dark:bg-slate-900"
+    >
+      <div className="relative overflow-hidden border-b border-orange-100/70 bg-gradient-to-br from-[#ff3b30] via-[#ff5e1f] to-[#ff8c1a] text-white dark:border-orange-900/30">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.24),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,213,79,0.28),transparent_32%)]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/12 to-transparent" />
+
+        <div className="relative grid gap-5 px-5 py-5 md:px-8 md:py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-3 py-1.5 text-sm font-black uppercase tracking-[0.18em] text-white/95 backdrop-blur-md">
+              <FiZap className="text-yellow-200" />
+              Flash Sale
+            </div>
+
+            <div className="max-w-3xl space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <h2 className="text-3xl font-black tracking-tight sm:text-[2.6rem]">
+                  {sale.name}
+                </h2>
+                <span className={`rounded-full border px-3 py-1 text-sm font-bold ${status.className}`}>
+                  {status.label}
+                </span>
+              </div>
+              <p className="max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base">
+                {summaryText}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2.5 text-sm font-semibold text-white/85">
+              <span className="inline-flex items-center rounded-full border border-white/16 bg-white/10 px-3 py-1.5 backdrop-blur-md">
+                {t('flashSale.campaignProducts', { count: itemCount })}
+              </span>
+              <span className="inline-flex items-center rounded-full border border-white/16 bg-white/10 px-3 py-1.5 backdrop-blur-md">
+                {t('flashSale.campaignLoadedProducts', { loaded: loadedItemCount, total: itemCount })}
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full max-w-full rounded-[26px] border border-white/15 bg-white/10 p-4 shadow-[0_12px_36px_rgba(17,24,39,0.16)] backdrop-blur-xl sm:max-w-[360px]">
+            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white/80">
+              <FiClock className="text-base" />
+              {t('flashSale.endsIn')}
+            </div>
+            <SaleCountdown endTime={sale.endTime} />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-b from-orange-50/55 via-white to-white px-3 py-3 dark:from-orange-950/10 dark:via-slate-900 dark:to-slate-900 md:px-5 md:py-5">
+        {itemCount > 0 ? (
+          <>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 xl:gap-5">
+              {items.map((item) => (
+                <FlashSaleItemCard key={getFlashSaleItemKey(item)} item={item} />
+              ))}
+            </div>
+
+            {hasMoreItems || itemLoadFailed ? (
+              <div className="mt-5 flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={loadMoreItems}
+                  disabled={loadingMoreItems}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-muted shadow-sm transition-colors hover:border-red-200 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-red-900/40 dark:hover:text-red-300"
+                >
+                  <span>
+                    {loadingMoreItems
+                      ? t('flashSale.loadingMoreItems')
+                      : itemLoadFailed
+                        ? t('flashSale.retryLoadItems')
+                        : t('flashSale.loadMoreItems')}
+                  </span>
+                  <FiChevronDown className={`shrink-0 ${loadingMoreItems ? 'animate-bounce' : ''}`} />
+                </button>
+                {itemLoadFailed ? (
+                  <p className="text-sm font-medium text-red-500">
+                    {t('flashSale.loadMoreItemsFailed')}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <div className="rounded-[24px] border border-dashed border-slate-200 bg-white/80 px-6 py-10 text-center text-muted dark:border-slate-800 dark:bg-slate-900/70">
+            {t('flashSale.emptyProducts')}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+});
+
 export default function FlashSale() {
   const { t } = useTranslation('catalog');
   const [sales, setSales] = useState<FlashSaleResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [pageInfo, setPageInfo] = useState({ page: 0, lastPage: 0, total: 0 });
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const fetchingRef = useRef(false);
 
-  useEffect(() => {
-    flashSaleService
-      .getActiveList()
-      .then((r) => setSales(r.data || []))
-      .catch(() => setSales([]))
-      .finally(() => setLoading(false));
+  const loadSalesPage = useCallback(async (page: number, mode: 'replace' | 'append') => {
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
+
+    if (mode === 'replace') {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+
+    try {
+      const response = await flashSaleService.getActivePage({
+        page,
+        size: FLASH_SALE_PAGE_SIZE,
+      });
+      const nextPage = response.data;
+      const nextSales = nextPage?.data || [];
+      setPageInfo({
+        page: nextPage?.page || page,
+        lastPage: nextPage?.lastPage || 0,
+        total: nextPage?.total || 0,
+      });
+      setSales((prev) => (
+        mode === 'replace'
+          ? nextSales
+          : mergeFlashSales(prev, nextSales)
+      ));
+    } catch {
+      if (mode === 'replace') {
+        setSales([]);
+        setPageInfo({ page: 0, lastPage: 0, total: 0 });
+      }
+    } finally {
+      fetchingRef.current = false;
+      setLoading(false);
+      setLoadingMore(false);
+    }
   }, []);
 
-  const activeSalesCount = sales.length;
+  useEffect(() => {
+    loadSalesPage(1, 'replace');
+  }, [loadSalesPage]);
+
+  const hasMoreSales = pageInfo.page > 0 && pageInfo.page < pageInfo.lastPage;
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !hasMoreSales || loading || loadingMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        void loadSalesPage(pageInfo.page + 1, 'append');
+      },
+      { rootMargin: '520px 0px 520px 0px' },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMoreSales, loadSalesPage, loading, loadingMore, pageInfo.page]);
+
+  const activeSalesCount = pageInfo.total || sales.length;
 
   if (loading) {
     return (
@@ -268,78 +527,15 @@ export default function FlashSale() {
           </div>
         </div>
 
-        {sales.map((sale) => {
-          const status = getSaleStatusMeta(sale.status, t);
-          const itemCount = sale.items?.length || 0;
-          const totalRemaining = (sale.items || []).reduce((sum, item) => sum + Math.max(0, item.remainingStock || 0), 0);
-          const summaryText = sale.description || t('flashSale.summaryFallback');
+        {sales.map((sale) => (
+          <FlashSaleSection key={sale.id} sale={sale} />
+        ))}
 
-          return (
-            <section
-              key={sale.id}
-              className="overflow-hidden rounded-[30px] border border-orange-100/70 bg-white shadow-[0_20px_60px_rgba(249,115,22,0.08)] dark:border-orange-900/30 dark:bg-slate-900"
-            >
-              <div className="relative overflow-hidden border-b border-orange-100/70 bg-gradient-to-br from-[#ff3b30] via-[#ff5e1f] to-[#ff8c1a] text-white dark:border-orange-900/30">
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.24),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,213,79,0.28),transparent_32%)]" />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/12 to-transparent" />
-
-                <div className="relative grid gap-5 px-5 py-5 md:px-8 md:py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-8">
-                  <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-3 py-1.5 text-sm font-black uppercase tracking-[0.18em] text-white/95 backdrop-blur-md">
-                      <FiZap className="text-yellow-200" />
-                      Flash Sale
-                    </div>
-
-                    <div className="max-w-3xl space-y-3">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h2 className="text-3xl font-black tracking-tight sm:text-[2.6rem]">
-                          {sale.name}
-                        </h2>
-                        <span className={`rounded-full border px-3 py-1 text-sm font-bold ${status.className}`}>
-                          {status.label}
-                        </span>
-                      </div>
-                      <p className="max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base">
-                        {summaryText}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2.5 text-sm font-semibold text-white/85">
-                      <span className="inline-flex items-center rounded-full border border-white/16 bg-white/10 px-3 py-1.5 backdrop-blur-md">
-                        {t('flashSale.campaignProducts', { count: itemCount })}
-                      </span>
-                      <span className="inline-flex items-center rounded-full border border-white/16 bg-white/10 px-3 py-1.5 backdrop-blur-md">
-                        {t('flashSale.campaignRemaining', { count: totalRemaining })}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="w-full max-w-full rounded-[26px] border border-white/15 bg-white/10 p-4 shadow-[0_12px_36px_rgba(17,24,39,0.16)] backdrop-blur-xl sm:max-w-[360px]">
-                    <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white/80">
-                      <FiClock className="text-base" />
-                      {t('flashSale.endsIn')}
-                    </div>
-                    <SaleCountdown endTime={sale.endTime} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-b from-orange-50/55 via-white to-white px-3 py-3 dark:from-orange-950/10 dark:via-slate-900 dark:to-slate-900 md:px-5 md:py-5">
-                {itemCount > 0 ? (
-                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5 xl:gap-5">
-                    {(sale.items || []).map((item) => (
-                      <FlashSaleItemCard key={item.id} item={item} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="rounded-[24px] border border-dashed border-slate-200 bg-white/80 px-6 py-10 text-center text-muted dark:border-slate-800 dark:bg-slate-900/70">
-                    {t('flashSale.emptyProducts')}
-                  </div>
-                )}
-              </div>
-            </section>
-          );
-        })}
+        <div ref={sentinelRef} className="flex min-h-12 items-center justify-center">
+          {loadingMore ? (
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-red-200 border-t-red-500" />
+          ) : null}
+        </div>
       </div>
     </div>
   );

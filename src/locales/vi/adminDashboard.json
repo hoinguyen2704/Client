@@ -6,7 +6,7 @@
     "noEmail": "Không có email",
     "defaultVariant": "Mặc định",
     "refreshing": "Đang cập nhật dữ liệu...",
-    "loadingVariants": "Đang tải dữ liệu cấu hình...",
+    "loadingVariants": "Đang tải dữ liệu phân loại...",
     "detailsVisible": "Dữ liệu chi tiết đang được hiển thị...",
     "reviewsSummary": "Từ {{count}} lượt đánh giá tổng hợp",
     "charts": {
@@ -57,7 +57,7 @@
       "revenue": "Đang tải dữ liệu doanh thu...",
       "customers": "Đang tải khách hàng nổi bật...",
       "products": "Đang tải sản phẩm nổi bật...",
-      "variants": "Đang tải top cấu hình...",
+      "variants": "Đang tải top phân loại...",
       "reviews": "Đang tải thống kê đánh giá..."
     },
     "returns": {
@@ -72,7 +72,7 @@
       "year": "Năm"
     },
     "actions": {
-      "topVariants": "Top cấu hình",
+      "topVariants": "Top phân loại",
       "exportReport": "Xuất báo cáo",
       "exportTimedReport": "Xuất báo cáo theo thời gian",
       "downloadPdf": "Tải PDF"
@@ -104,7 +104,7 @@
     "revenue": "Chi tiết doanh thu",
     "customers": "Khách hàng tiềm năng",
     "products": "Sản phẩm bán chạy",
-    "variants": "Cấu hình bán chạy",
+    "variants": "Phân loại bán chạy",
     "returns": "Thống kê Hoàn / Hủy",
     "reviews": "Tổng quan đánh giá"
   },
@@ -135,7 +135,7 @@
       "revenue": "Doanh thu"
     },
     "variants": {
-      "variant": "Cấu hình",
+      "variant": "Phân loại",
       "product": "Sản phẩm",
       "gross": "Gross",
       "returned": "Return",
@@ -155,7 +155,7 @@
     }
   },
   "toasts": {
-    "loadTopVariantsFailed": "Không thể tải danh sách cấu hình bán chạy",
+    "loadTopVariantsFailed": "Không thể tải danh sách phân loại bán chạy",
     "exportSuccess": "Xuất báo cáo thành công!",
     "exportFailed": "Xuất báo cáo thất bại!",
     "creatingPdf": "Đang tạo báo cáo PDF...",

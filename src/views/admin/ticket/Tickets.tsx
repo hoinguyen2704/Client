@@ -126,7 +126,10 @@ export default function Tickets() {
   const [statusFilter, setStatusFilter] = useState('');
   const [groupMode, setGroupMode] = useState<TicketGroupMode>('NONE');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => {
+    const pageParam = Number(searchParams.get('page') || '1');
+    return Number.isFinite(pageParam) && pageParam > 0 ? Math.trunc(pageParam) : 1;
+  });
   const [pageData, setPageData] = useState<PageResponse<TicketResponse> | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse | null>(null);
   const [replyText, setReplyText] = useState('');
@@ -155,6 +158,22 @@ export default function Tickets() {
     () => buildTicketSections(tickets, groupMode, dateGroupFormatter, t),
     [dateGroupFormatter, groupMode, t, tickets],
   );
+
+  useEffect(() => {
+    const currentPageParam = searchParams.get('page');
+    const expectedPageParam = page > 1 ? String(page) : null;
+    if (currentPageParam === expectedPageParam || (!currentPageParam && page === 1)) {
+      return;
+    }
+
+    const nextSearchParams = new URLSearchParams(searchParams);
+    if (expectedPageParam) {
+      nextSearchParams.set('page', expectedPageParam);
+    } else {
+      nextSearchParams.delete('page');
+    }
+    setSearchParams(nextSearchParams, { replace: true });
+  }, [page, searchParams, setSearchParams]);
 
   useEffect(() => {
     if (groupMode === 'NONE') {

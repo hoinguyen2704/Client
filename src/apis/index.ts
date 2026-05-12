@@ -27,6 +27,7 @@ export { default as adminCmsService } from "./services/adminCmsService";
 export { default as adminCouponService } from "./services/adminCouponService";
 export { default as adminDashboardService } from "./services/adminDashboardService";
 export { default as adminFeedbackService } from "./services/adminFeedbackService";
+export { default as adminExportJobService } from "./services/adminExportJobService";
 export { default as adminOrderService } from "./services/adminOrderService";
 export { default as adminProductService } from "./services/adminProductService";
 export { default as adminTicketService } from "./services/adminTicketService";

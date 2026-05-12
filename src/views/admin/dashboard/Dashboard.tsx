@@ -27,7 +27,7 @@ import type {
   TopVariantItem,
 } from '@/types';
 import { downloadBlob } from '@/utils/download';
-import { formatDate, formatPrice } from '@/utils/format';
+import { formatDate, formatPrice, formatRating } from '@/utils/format';
 import { buildReportFilename } from '@/utils/reportExport';
 import { resolveVariantSalesMetrics } from '@/utils/variantSales';
 import DashboardStats from './DashboardStats';
@@ -746,13 +746,13 @@ export default function Dashboard() {
                       <div className="text-center">
                         <h2 className="text-5xl font-black text-yellow-500 sm:text-7xl">
                           {stats.totalFeedbacks > 0
-                            ? (
+                            ? formatRating(
                               Object.entries(stats.ratingDistribution || {}).reduce(
                                 (acc, [rating, count]) => acc + Number(rating) * count,
                                 0,
                               ) / stats.totalFeedbacks
-                            ).toFixed(1)
-                            : '5.0'}
+                            )
+                            : formatRating(5)}
                         </h2>
                         <div className="my-3 flex justify-center text-2xl text-yellow-400">★★★★★</div>
                         <p className="font-medium text-muted">{t('overview.reviewsSummary', { count: stats.totalFeedbacks })}</p>

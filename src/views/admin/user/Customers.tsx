@@ -1,6 +1,5 @@
-import { useDeferredValue, useMemo, useState, startTransition } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState, startTransition } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import { FiDownload, FiLock, FiPlus, FiUnlock } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -18,9 +17,8 @@ import {
   AdminTableScroll,
 } from '@/components/ui/AdminTable';
 import { PAGE_SIZE } from '@/constants/paginationConstants';
-import { useDebounce } from '@/hooks';
+import { useAsyncExportJob, useDebounce, usePageQueryParam } from '@/hooks';
 import type { PageResponse, UserResponse } from '@/types';
-import { downloadBlob } from '@/utils/download';
 import { getApiErrorMessage } from '@/utils/error';
 import { formatDate } from '@/utils/format';
 import { getPaginatedRowNumber } from '@/utils/helpers';
@@ -28,13 +26,14 @@ import { getPaginatedRowNumber } from '@/utils/helpers';
 export default function Customers() {
   const { t } = useTranslation(['adminCustomers', 'common']);
   const currentUserId = useAuthStore((state) => state.user?.id);
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchInput, setSearchInput] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
-  const [page, setPage] = useState(1);
+  const { initialPage, returnTo, syncPage } = usePageQueryParam();
+  const [page, setPage] = useState(initialPage);
   const [sortBy, setSortBy] = useState('fullName');
   const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('ASC');
+  const { isExporting, startExport } = useAsyncExportJob();
 
   const deferredSearchInput = useDeferredValue(searchInput);
   const debouncedSearchQuery = useDebounce(deferredSearchInput, 400);
@@ -55,6 +54,7 @@ export default function Customers() {
         sortDir,
       }, { signal }).then((res) => res.data),
     placeholderData: (previousData) => previousData,
+    refetchOnMount: 'always',
   });
 
   const toggleStatusMutation = useMutation({
@@ -95,6 +95,10 @@ export default function Customers() {
   const users = pageData?.data || [];
   const loading = usersQuery.isPending && !usersQuery.data;
 
+  useEffect(() => {
+    syncPage(page);
+  }, [page, syncPage]);
+
   const handleToggleStatus = async (id: string) => {
     await toggleStatusMutation.mutateAsync(id);
   };
@@ -112,16 +116,16 @@ export default function Customers() {
   };
 
   const handleExport = async () => {
-    try {
-      const blob = await adminUserService.export({
+    await startExport({
+      type: 'USERS',
+      params: {
         keyword: debouncedSearchQuery || undefined,
         role: roleFilter || undefined,
-      });
-      downloadBlob(blob, 'users.xlsx');
-      toast.success(t('adminCustomers:customers.toasts.exportSuccess'));
-    } catch (err) {
-      toast.error(getApiErrorMessage(err, t, 'adminCustomers:customers.toasts.exportFailed'));
-    }
+      },
+      fallbackFilename: `users_${new Date().toISOString().slice(0, 10)}.xlsx`,
+      successMessage: t('adminCustomers:customers.toasts.exportSuccess'),
+      failureMessage: t('adminCustomers:customers.toasts.exportFailed'),
+    });
   };
 
   return (
@@ -134,11 +138,13 @@ export default function Customers() {
             variant="success"
             size="md"
             icon={<FiDownload />}
+            loading={isExporting}
             >
             {t('adminCustomers:customers.export')}
           </Button>
           <Button
-            onClick={() => navigate('/admin/customers/new')}
+            href="/admin/customers/new"
+            state={{ returnTo }}
             variant="primary"
             size="md"
             icon={<FiPlus />}
@@ -299,6 +305,7 @@ export default function Customers() {
                             {
                               type: 'view',
                               href: `/admin/customers/${user.id}`,
+                              state: { returnTo },
                             },
                             {
                               type: user.status === 'ACTIVE' ? 'delete' : 'edit',

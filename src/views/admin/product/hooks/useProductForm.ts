@@ -5,8 +5,9 @@ import {
   useRef,
   useMemo,
 } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import adminProductService from "@/apis/services/adminProductService";
 import adminCategoryService from "@/apis/services/adminCategoryService";
 import adminBrandService from "@/apis/services/adminBrandService";
@@ -26,7 +27,12 @@ export default function useProductForm() {
   const { t } = useTranslation(["adminCatalog", "common"]);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryClient = useQueryClient();
   const isEditMode = Boolean(id);
+  const returnTo = typeof location.state?.returnTo === "string"
+    ? location.state.returnTo
+    : "/admin/products";
   const translate = useCallback(
     (key: string, options?: Record<string, unknown>) =>
       String(t(key, options as never)),
@@ -342,6 +348,7 @@ export default function useProductForm() {
         }
         toast.success(t("productForm.toasts.updateSuccess"));
         await fetchProduct();
+        await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       } else {
         const res = await adminProductService.createBasic(payload);
         const newProductId = res.data?.id;
@@ -350,8 +357,11 @@ export default function useProductForm() {
           setPendingFiles([]);
         }
         toast.success(t("productForm.toasts.createDraftSuccess"));
+        await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
         if (newProductId) {
-          navigate(`/admin/products/${newProductId}`);
+          navigate(`/admin/products/${newProductId}`, {
+            state: { returnTo: "/admin/products" },
+          });
         } else {
           navigate("/admin/products");
         }
@@ -367,6 +377,7 @@ export default function useProductForm() {
     id,
     isEditMode,
     navigate,
+    returnTo,
 
     name,
     setName,

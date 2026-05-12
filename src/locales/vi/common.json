@@ -44,6 +44,13 @@
   "loading": {
     "default": "Đang tải..."
   },
+  "export": {
+    "preparing": "Đang chuẩn bị file xuất...",
+    "running": "Đang tạo file xuất",
+    "ready": "File xuất đã sẵn sàng",
+    "download": "Tải file",
+    "downloading": "Đang tải file..."
+  },
   "errorBoundary": {
     "title": "Đã xảy ra lỗi",
     "description": "Ứng dụng gặp sự cố không mong đợi. Vui lòng thử tải lại trang.",

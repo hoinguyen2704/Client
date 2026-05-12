@@ -1,12 +1,17 @@
-import { FiLoader, FiSave } from "react-icons/fi";
-import { BackButton, Button, ConfirmDialog, PrimaryButton } from "@/components";
+import { FiLoader } from "react-icons/fi";
+import { BackButton, Button, ConfirmDialog } from "@/components";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import VariantSection from "./sections/VariantSection";
 import useProductVariantsForm from "./hooks/useProductVariantsForm";
 
 export default function ProductVariantsPage() {
   const { t } = useTranslation(["adminCatalog", "common"]);
+  const location = useLocation();
   const form = useProductVariantsForm();
+  const returnTo = typeof location.state?.returnTo === "string"
+    ? location.state.returnTo
+    : "/admin/products";
 
   if (form.loading) {
     return (
@@ -27,6 +32,7 @@ export default function ProductVariantsPage() {
         <div className="space-y-2">
           <BackButton
             to={`/admin/products/${form.id}`}
+            state={{ returnTo }}
             label={t("variantPage.backToProduct")}
             className="text-xl font-bold"
           />
@@ -45,20 +51,13 @@ export default function ProductVariantsPage() {
         <div className="flex w-full gap-2 sm:w-auto sm:gap-3">
           <Button
             href={`/admin/products/${form.id}`}
+            state={{ returnTo }}
             variant="outline"
             size="md"
             className="flex-1 sm:flex-none"
           >
             {t("variantPage.productInfo")}
           </Button>
-          <PrimaryButton
-            onClick={form.handleSubmit}
-            disabled={form.saving}
-            icon={form.saving ? <FiLoader className="animate-spin" /> : <FiSave />}
-            className="flex-1 sm:flex-none"
-          >
-            {t("variantPage.save")}
-          </PrimaryButton>
         </div>
       </div>
 
@@ -68,19 +67,16 @@ export default function ProductVariantsPage() {
         </div>
       )}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-muted shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        {t("variantPage.schemaHint")}
-      </div>
-
       <VariantSection
+        productName={form.productName}
         variants={form.variants}
         variantSchema={form.variantSchema}
+        saving={form.saving}
         uploadingVariantKeys={form.uploadingVariantKeys}
         creatingOptionByFieldKey={form.creatingOptionByFieldKey}
         creatingAttribute={form.creatingAttribute}
         variantFileInputRefs={form.variantFileInputRefs}
         addVariant={form.addVariant}
-        generateVariantCombinations={form.generateVariantCombinations}
         sortVariantsByLatestUpdated={form.sortVariantsByLatestUpdated}
         removeVariant={form.removeVariant}
         updateVariant={form.updateVariant}
@@ -94,6 +90,7 @@ export default function ProductVariantsPage() {
         handleVariantFilesSelected={form.handleVariantFilesSelected}
         removeVariantPendingFile={form.removeVariantPendingFile}
         deleteVariantImage={form.deleteVariantImage}
+        handleSubmit={form.handleSubmit}
       />
 
       <ConfirmDialog

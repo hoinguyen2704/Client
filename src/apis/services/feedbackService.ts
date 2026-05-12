@@ -8,6 +8,10 @@ import type {
 } from '@/types';
 
 const FEEDBACK_URL = '/feedbacks';
+const PRODUCT_FEEDBACK_PAGE_SIZE = 10;
+
+const normalizeProductFeedbackSize = (size?: number) =>
+  Math.min(Math.max(size ?? PRODUCT_FEEDBACK_PAGE_SIZE, 1), PRODUCT_FEEDBACK_PAGE_SIZE);
 
 const buildFeedbackFormData = (data: FeedbackRequest, imageFiles?: File[]) => {
   const formData = new FormData();
@@ -31,7 +35,7 @@ const feedbackService = {
     axios.get(`${FEEDBACK_URL}/product/${productSlug}`, {
       params: {
         page: params?.page ?? 1,
-        size: params?.size ?? 10,
+        size: normalizeProductFeedbackSize(params?.size),
         ...(params?.rating ? { rating: params.rating } : {}),
         ...(typeof params?.hasComment === 'boolean' ? { hasComment: params.hasComment } : {}),
       },
