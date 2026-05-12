@@ -10,11 +10,11 @@ import type { FlashSaleItemResponse, FlashSaleResponse, TimeLeft } from '@/types
 const FLASH_SALE_ITEM_PAGE_SIZE = 10;
 const FLASH_SALE_PAGE_SIZE = 2;
 
-type FlashSaleItemPageInfo = {
+interface FlashSaleItemPageInfo {
   page: number;
   lastPage: number;
   total: number;
-};
+}
 
 const mergeFlashSales = (
   current: FlashSaleResponse[],

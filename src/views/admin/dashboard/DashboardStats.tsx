@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { formatPrice } from '@/utils/format';
 import type { DashboardStatsProps } from './types';
 
-const FULL_GROUP_LIMIT = 3; // đơn vị, nghìn, triệu
+const FULL_GROUP_LIMIT = 3;
 const COMPACT_GROUP_LIMIT = 3;
 const GROUP_SUFFIXES = ['', 'K', 'M', 'B', 'T', 'P'] as const;
 
@@ -27,7 +27,7 @@ function formatDashboardMetric(value: number = 0) {
 export default function DashboardStats({ stats, onOpenModal }: DashboardStatsProps) {
   const { t } = useTranslation('adminDashboard');
   const fmt = (n: number = 0) => formatDashboardMetric(n);
-  const compactPrice = (n: number = 0) => `${formatDashboardMetric(n)} đ`;
+  const compactPrice = (n: number = 0) => `${formatDashboardMetric(n)} \u0111`;
 
   const cards = [
     { key: 'revenue', label: t('stats.revenue'), value: compactPrice(stats.totalRevenue ?? 0), title: formatPrice(stats.totalRevenue ?? 0), icon: FiDollarSign, color: 'blue' },

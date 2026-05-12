@@ -4,21 +4,22 @@ import { cn } from "@/utils/cn";
 export const ADMIN_TABLE_SURFACE_CLASS =
   "overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900";
 
-export const ADMIN_TABLE_CLASS = "w-full border-collapse text-left";
+export const ADMIN_TABLE_CLASS = "w-full border-separate border-spacing-0 text-left";
 
 export const ADMIN_TABLE_HEAD_ROW_CLASS =
-  "border-b border-slate-200 bg-slate-50/90 text-body dark:border-slate-700 dark:bg-slate-800/60 [&>th+th]:border-l [&>th+th]:border-slate-200 dark:[&>th+th]:border-slate-700";
+  "bg-slate-50/90 text-body dark:bg-slate-800/60 [&>th:last-child]:!border-r-0";
 
 export const ADMIN_TABLE_BODY_ROW_CLASS =
-  "border-b border-slate-200 transition-colors last:border-b-0 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800/30 [&>td+td]:border-l [&>td+td]:border-slate-200 dark:[&>td+td]:border-slate-700";
+  "transition-colors last:[&>td]:!border-b-0 hover:bg-slate-50 dark:hover:bg-slate-800/30 [&>td:last-child]:!border-r-0";
 
 export const ADMIN_TABLE_HEAD_CELL_CLASS =
-  "p-3 align-middle font-medium sm:p-4 whitespace-nowrap";
+  "border-b border-r border-slate-200 p-3 align-middle font-medium sm:p-4 whitespace-nowrap dark:border-slate-700";
 
-export const ADMIN_TABLE_CELL_CLASS = "p-3 align-middle sm:p-4 text-wrap";
+export const ADMIN_TABLE_CELL_CLASS =
+  "border-b border-r border-slate-200 p-3 align-middle sm:p-4 text-wrap dark:border-slate-700";
 
 export const ADMIN_TABLE_EMPTY_CELL_CLASS =
-  "p-10 text-center text-subtle sm:p-12";
+  "border-b border-slate-200 p-10 text-center text-subtle sm:p-12 dark:border-slate-700";
 
 export const ADMIN_GRID_TABLE_HEADER_BASE_CLASS =
   "grid gap-0 border-b border-slate-200 bg-slate-50/90 text-center text-body text-md font-semibold dark:border-slate-700 dark:bg-slate-800/60 divide-x divide-slate-200 dark:divide-slate-700 [&>*]:min-w-0";
@@ -106,7 +107,7 @@ export function AdminTableEmptyRow({
   colSpan,
 }: AdminTableEmptyRowProps) {
   return (
-    <tr>
+    <tr className={ADMIN_TABLE_BODY_ROW_CLASS}>
       <td
         className={cn(ADMIN_TABLE_EMPTY_CELL_CLASS, className)}
         colSpan={colSpan}

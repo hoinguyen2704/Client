@@ -11,7 +11,7 @@ import type { UserResponse } from '@/types';
 import { getApiErrorMessage } from '@/utils/error';
 import { formatDate } from '@/utils/format';
 
-type CustomerFormState = {
+interface CustomerFormState {
   fullName: string;
   email: string;
   phoneNumber: string;
@@ -22,7 +22,7 @@ type CustomerFormState = {
   password: string;
   confirmPassword: string;
   changeReason: string;
-};
+}
 
 const EMPTY_FORM: CustomerFormState = {
   fullName: '',

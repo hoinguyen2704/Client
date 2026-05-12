@@ -280,7 +280,7 @@ export default function ReviewComposerModal({
                       variant="outline"
                       size="sm"
                       icon={<FiUploadCloud />}
-                      className="border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-200"
+                      className="border-slate-300 text-body dark:border-slate-600"
                       onClick={() => fileInputRef.current?.click()}
                     >
                     </Button>

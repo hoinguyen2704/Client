@@ -280,7 +280,7 @@ export default function Brands() {
                 <AdminTableHeadCell className="text-center">
                   {t("brands.table.productCount")}
                 </AdminTableHeadCell>
-                <AdminTableHeadCell className="text-right">{t("brands.table.actions")}</AdminTableHeadCell>
+                <AdminTableHeadCell className="text-center">{t("brands.table.actions")}</AdminTableHeadCell>
               </AdminTableHeadRow>
             </thead>
             <tbody>

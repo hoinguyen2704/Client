@@ -268,7 +268,7 @@ function VariantSelector({
               const optionButtonClass = isActive
                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 shadow-[0_0_0_1px_rgba(59,130,246,0.25)]'
                 : isDisabled
-                  ? 'border-slate-300 bg-slate-100 text-slate-400 cursor-not-allowed opacity-80 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-500'
+                  ? 'border-slate-300 bg-slate-100 text-subtle cursor-not-allowed opacity-80 dark:border-slate-700 dark:bg-slate-800/70'
                   : 'border-slate-200 bg-white text-body hover:border-blue-300 hover:bg-blue-50/30 dark:border-slate-700 dark:bg-transparent dark:hover:border-blue-500/60 dark:hover:bg-blue-950/20';
 
               return (

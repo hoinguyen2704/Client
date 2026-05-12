@@ -175,7 +175,7 @@ export default function OrderItemsTable({
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-800/70">
-                    <div className="text-sm font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                    <div className="text-sm font-medium uppercase tracking-wide text-subtle">
                       {labels.unitPrice}
                     </div>
                     <div className="mt-1 text-lg font-semibold text-body tabular-nums">
@@ -183,7 +183,7 @@ export default function OrderItemsTable({
                     </div>
                   </div>
                   <div className="rounded-xl bg-slate-50 px-3 py-2 text-center dark:bg-slate-800/70">
-                    <div className="text-lg font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                    <div className="text-lg font-medium uppercase tracking-wide text-subtle">
                       {labels.quantity}
                     </div>
                     <div className="mt-1 text-lg font-semibold text-body tabular-nums">
@@ -196,7 +196,7 @@ export default function OrderItemsTable({
                     ) : null}
                   </div>
                   <div className="rounded-xl bg-slate-50 px-3 py-2 text-right dark:bg-slate-800/70">
-                    <div className="text-lg font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                    <div className="text-lg font-medium uppercase tracking-wide text-subtle">
                       {labels.lineTotal}
                     </div>
                     <div className="mt-1 text-lg font-semibold text-blue-600 tabular-nums">

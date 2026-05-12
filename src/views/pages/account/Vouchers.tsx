@@ -376,7 +376,7 @@ export default function Vouchers() {
                   className="h-full min-h-[160px] rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/30 flex items-center justify-center text-center px-6 text-muted"
                 >
                   <div>
-                    <p className="font-semibold text-slate-700 dark:text-slate-200">
+                    <p className="font-semibold text-body">
                       {t('account:vouchers.searchPlaceholder')}
                     </p>
                     <p className="mt-1 text-sm">

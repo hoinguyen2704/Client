@@ -14,10 +14,10 @@ import { getApiErrorMessage } from '@/utils/error';
 
 const MAX_RETURN_EVIDENCE_IMAGES = 5;
 
-type ReturnEvidenceFile = {
+interface ReturnEvidenceFile {
   file: File;
   previewUrl: string;
-};
+}
 export default function OrderTracking() {
   const { t, i18n } = useTranslation(['account', 'common']);
   const { orderNumber } = useParams<{ orderNumber: string }>();
@@ -381,7 +381,7 @@ export default function OrderTracking() {
                   variant="outline"
                   size="sm"
                   icon={<FiUploadCloud />}
-                  className="border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-200"
+                  className="border-slate-300 text-body dark:border-slate-600"
                   onClick={() => returnEvidenceInputRef.current?.click()}
                 >
                   {t('orderTracking.returnForm.chooseImages')}

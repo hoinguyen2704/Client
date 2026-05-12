@@ -9,7 +9,7 @@ export const SHOP = {
   email: 'hozinium@gmail.com',
   supportEmail: 'support@hozitech.com',
   hotline: '0828443833',
-  address: '132 Cầu Diễn, Hà Nội',
+  address: '132 C\u1ea7u Di\u1ec5n, H\u00e0 N\u1ed9i',
   website: 'https://hozitech.com',
   copyright: `© ${new Date().getFullYear()} Hozitech. All rights reserved.`,
 } as const;

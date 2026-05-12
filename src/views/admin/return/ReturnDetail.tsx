@@ -385,7 +385,7 @@ export default function ReturnDetail() {
                 <span
                   className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 ${item.approvedQuantity != null
                       ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-200'
-                      : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                      : 'bg-slate-100 text-subtle dark:bg-slate-800'
                     }`}
                 >
                   {t('returns.detail.table.approvedQty')}: {item.approvedQuantity ?? '-'}
@@ -475,16 +475,16 @@ export default function ReturnDetail() {
                       <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                         {sortedRefunds.map((tx) => (
                           <tr key={tx.id}>
-                            <td className="px-6 py-5 text-base font-semibold text-body dark:text-slate-100">
+                            <td className="px-6 py-5 text-base font-semibold text-body">
                               {formatDateTime(tx.createdAt)}
                             </td>
-                            <td className="border-l border-slate-200 px-6 py-5 text-base font-semibold text-body dark:border-slate-700 dark:text-slate-100">
+                            <td className="border-l border-slate-200 px-6 py-5 text-base font-semibold text-body dark:border-slate-700">
                               {tx.provider}
                             </td>
-                            <td className="border-l border-slate-200 px-6 py-5 text-base font-semibold text-body dark:border-slate-700 dark:text-slate-100">
+                            <td className="border-l border-slate-200 px-6 py-5 text-base font-semibold text-body dark:border-slate-700">
                               {tx.transactionId || '-'}
                             </td>
-                            <td className="border-l border-slate-200 px-6 py-5 text-right text-lg font-semibold text-body tabular-nums dark:border-slate-700 dark:text-slate-100">
+                            <td className="border-l border-slate-200 px-6 py-5 text-right text-lg font-semibold text-body tabular-nums dark:border-slate-700">
                               {formatPrice(Number(tx.amount || 0))} {tx.currency}
                             </td>
                             <td className="border-l border-slate-200 px-6 py-5 text-right dark:border-slate-700">
@@ -510,23 +510,23 @@ export default function ReturnDetail() {
 
                         <div className="grid gap-3 sm:grid-cols-3">
                           <div className="rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-800/70">
-                            <div className="text-sm font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            <div className="text-sm font-medium uppercase tracking-wide text-subtle">
                               {t('returns.detail.refundTransactionsTable.time')}
                             </div>
-                            <div className="mt-1 text-sm font-semibold text-body dark:text-slate-100 sm:text-base">
+                            <div className="mt-1 text-sm font-semibold text-body sm:text-base">
                               {formatDateTime(tx.createdAt)}
                             </div>
                           </div>
                           <div className="rounded-xl bg-slate-50 px-3 py-2 text-right dark:bg-slate-800/70">
-                            <div className="text-sm font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            <div className="text-sm font-medium uppercase tracking-wide text-subtle">
                               {t('returns.detail.refundTransactionsTable.amount')}
                             </div>
-                            <div className="mt-1 text-base font-semibold text-body tabular-nums dark:text-slate-100 sm:text-lg">
+                            <div className="mt-1 text-base font-semibold text-body tabular-nums sm:text-lg">
                               {formatPrice(Number(tx.amount || 0))} {tx.currency}
                             </div>
                           </div>
                           <div className="rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-800/70">
-                            <div className="text-sm font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            <div className="text-sm font-medium uppercase tracking-wide text-subtle">
                               {t('returns.detail.refundTransactionsTable.status')}
                             </div>
                             <div className="mt-2">

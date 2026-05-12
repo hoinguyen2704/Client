@@ -72,7 +72,7 @@ export default function Products() {
     loadFilters();
   }, []);
 
-  // Debounce keyword để tránh fetch mỗi keystroke
+  // Debounce keyword to avoid fetching on every keystroke.
   const debouncedKeyword = useDebounce(keyword, 400);
 
   //  Fetch products
@@ -418,9 +418,7 @@ export default function Products() {
                   onChange={(v) => handleSortChange(v)}
                   buttonClassName="w-44 sm:w-56 h-9 sm:h-10"
                   placeholder={t("products.sortOptions.popular")}
-                  searchPlaceholder={t("products.searchOptions", {
-                    defaultValue: "Tìm kiếm...",
-                  })}
+                  searchPlaceholder={t("products.searchOptions")}
                   allowClear={false}
                   items={[
                     { id: "popular", name: t("products.sortOptions.popular") },
