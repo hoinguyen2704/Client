@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useParams } from 'react-router-dom';
-import { FiDownload, FiUser, FiMapPin, FiPackage } from 'react-icons/fi';
+import { FiDownload, FiUser, FiMapPin, FiPackage, FiRotateCcw, FiSave } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
 import { Button, StatusBadge, CustomSelect, BackButton, OrderStatusTimeline, OrderAddressCard, OrderInfoCard, OrderItemsTable, OrderSummaryCard } from '@/components';
@@ -55,13 +55,19 @@ export default function OrderDetail() {
     [order, t],
   );
 
-  const handleUpdateStatus = async (newStatus: string) => {
-    if (!order || isUpdatingStatus || !newStatus || newStatus === order.orderStatus) return;
-    const previousStatus = order.orderStatus;
-    setEditStatus(newStatus);
+  const selectedStatus = editStatus || order?.orderStatus || '';
+  const hasStatusChange = !!order && !!selectedStatus && selectedStatus !== order.orderStatus;
+
+  const handleUndoStatusChange = () => {
+    if (!order || isUpdatingStatus) return;
+    setEditStatus(order.orderStatus);
+  };
+
+  const handleSaveStatusChange = async () => {
+    if (!order || isUpdatingStatus || !hasStatusChange) return;
     setIsUpdatingStatus(true);
     try {
-      const res = await adminOrderService.updateStatus(order.id, newStatus);
+      const res = await adminOrderService.updateStatus(order.id, selectedStatus);
       setOrder(res.data);
       setEditStatus(res.data.orderStatus);
       try {
@@ -73,7 +79,6 @@ export default function OrderDetail() {
       toast.success(t('orderDetail.toasts.statusUpdated'));
     } catch (err) {
       console.error(err);
-      setEditStatus(previousStatus);
       toast.error(t('orderDetail.toasts.statusFailed'));
     } finally {
       setIsUpdatingStatus(false);
@@ -125,12 +130,43 @@ export default function OrderDetail() {
             <div className="w-full sm:w-56">
               <label className="block text-sm font-semibold text-muted mb-1.5">{t('orderDetail.statusLabel')}</label>
               <CustomSelect
-                value={editStatus || order.orderStatus}
-                onChange={handleUpdateStatus}
+                value={selectedStatus}
+                onChange={setEditStatus}
                 options={orderStatusOptions}
                 className="w-full"
                 disabled={isUpdatingStatus || orderStatusOptions.length <= 1}
               />
+            </div>
+            <div className="w-full sm:w-auto">
+              <p
+                className="mb-1.5 flex h-5 items-end text-xs font-semibold text-amber-600 dark:text-amber-400"
+                aria-live="polite"
+              >
+                {hasStatusChange ? t('orderDetail.statusUnsaved') : ''}
+              </p>
+              <div className="grid grid-cols-2 sm:flex gap-2">
+                <Button
+                  onClick={handleUndoStatusChange}
+                  variant="secondary"
+                  size="md"
+                  icon={<FiRotateCcw />}
+                  disabled={!hasStatusChange || isUpdatingStatus}
+                  className="w-full sm:w-auto"
+                >
+                  {t('orderDetail.undoStatus')}
+                </Button>
+                <Button
+                  onClick={handleSaveStatusChange}
+                  variant="primary"
+                  size="md"
+                  icon={<FiSave />}
+                  loading={isUpdatingStatus}
+                  disabled={!hasStatusChange}
+                  className="w-full sm:w-auto"
+                >
+                  {t('orderDetail.saveStatus')}
+                </Button>
+              </div>
             </div>
             <Button onClick={handleExportInvoice} variant="success" size="md" icon={<FiDownload />} className="w-full sm:w-auto">
               {t('orderDetail.downloadInvoice')}
