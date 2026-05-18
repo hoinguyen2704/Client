@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useParams } from 'react-router-dom';
-import { FiDownload, FiUser, FiMapPin, FiPackage, FiRotateCcw, FiSave } from 'react-icons/fi';
+import { FiCheckCircle, FiDownload, FiUser, FiMapPin, FiPackage, FiRotateCcw, FiSave } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateTime as formatDate } from '@/utils/format';
 import { Button, StatusBadge, CustomSelect, BackButton, OrderStatusTimeline, OrderAddressCard, OrderInfoCard, OrderItemsTable, OrderSummaryCard } from '@/components';
@@ -22,6 +22,7 @@ export default function OrderDetail() {
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
   const [editStatus, setEditStatus] = useState('');
   const { shop, fetchShopInfo } = useShopStore();
 
@@ -57,6 +58,11 @@ export default function OrderDetail() {
 
   const selectedStatus = editStatus || order?.orderStatus || '';
   const hasStatusChange = !!order && !!selectedStatus && selectedStatus !== order.orderStatus;
+  const canConfirmBankTransferPayment = Boolean(order
+    && order.paymentMethod === 'BANK_TRANSFER'
+    && order.paymentStatus === 'PENDING'
+    && order.orderStatus !== 'CANCELLED'
+    && order.orderStatus !== 'RETURNED');
 
   const handleUndoStatusChange = () => {
     if (!order || isUpdatingStatus) return;
@@ -94,6 +100,23 @@ export default function OrderDetail() {
     } catch (err) {
       console.error(err);
       toast.error(t('orderDetail.toasts.invoiceFailed'));
+    }
+  };
+
+  const handleConfirmBankTransferPayment = async () => {
+    if (!order || isConfirmingPayment) return;
+    setIsConfirmingPayment(true);
+    try {
+      const res = await adminOrderService.markPaymentCompleted(order.id);
+      setOrder(res.data);
+      setEditStatus(res.data.orderStatus);
+      await queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      toast.success(t('orderDetail.toasts.paymentConfirmed'));
+    } catch (err) {
+      console.error(err);
+      toast.error(t('orderDetail.toasts.paymentConfirmFailed'));
+    } finally {
+      setIsConfirmingPayment(false);
     }
   };
   if (loading) {
@@ -168,6 +191,18 @@ export default function OrderDetail() {
                 </Button>
               </div>
             </div>
+            {canConfirmBankTransferPayment && (
+              <Button
+                onClick={handleConfirmBankTransferPayment}
+                variant="success"
+                size="md"
+                icon={<FiCheckCircle />}
+                loading={isConfirmingPayment}
+                className="w-full sm:w-auto"
+              >
+                {t('orderDetail.confirmBankTransferPayment')}
+              </Button>
+            )}
             <Button onClick={handleExportInvoice} variant="success" size="md" icon={<FiDownload />} className="w-full sm:w-auto">
               {t('orderDetail.downloadInvoice')}
             </Button>

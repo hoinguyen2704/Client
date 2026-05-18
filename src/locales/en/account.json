@@ -33,6 +33,9 @@
     "review": "Review",
     "total": "Total",
     "cancelOrder": "Cancel order",
+    "retryPayment": "Pay again",
+    "retryingPayment": "Creating payment...",
+    "bankTransferGuide": "Bank transfer details",
     "viewDetails": "View details",
     "empty": {
       "title": "No orders found",
@@ -58,6 +61,7 @@
     "toasts": {
       "cancelPendingOnly": "You can only cancel orders that are still pending",
       "cancelFailed": "Failed to cancel order!",
+      "retryPaymentFailed": "Unable to create a new payment link!",
       "reviewSuccess": "Thanks for reviewing this product!",
       "reviewFailed": "Failed to submit review!"
     },
@@ -139,6 +143,8 @@
     },
     "title": "Order details #{{orderNumber}}",
     "actions": {
+      "retryPayment": "Pay again",
+      "bankTransferGuide": "Bank transfer details",
       "requestReturn": "Request return"
     },
     "returnBanner": {
@@ -223,7 +229,8 @@
       "invalidEvidenceImageType": "Only image files are supported",
       "evidenceImageLimitExceeded": "You can upload up to {{max}} images",
       "createSuccess": "Return request submitted successfully",
-      "createFailed": "Failed to create return request"
+      "createFailed": "Failed to create return request",
+      "retryPaymentFailed": "Unable to create a new payment link"
     }
   },
   "profile": {
@@ -388,7 +395,7 @@
       "noReviewsTitle": "No reviews yet",
       "noReviewsDescription": "You have not written any reviews for purchased products."
     },
-    "adminReplyTitle": "Reply from Hozitech",
+    "adminReplyTitle": "Reply from Htech",
     "modal": {
       "reviewTitle": "Write review",
       "extraReviewTitle": "Additional review",

@@ -50,7 +50,22 @@
     "momo": "Thanh toán qua MoMo",
     "momoDesc": "Ví điện tử phổ biến tại Việt Nam",
     "bank": "Chuyển khoản ngân hàng",
-    "bankDesc": "Chuyển khoản trực tiếp qua ngân hàng"
+    "bankDesc": "Chuyển khoản trực tiếp qua ngân hàng",
+    "bankAccountTitle": "Tài khoản nhận chuyển khoản",
+    "bankAccountDesc": "Thông tin này sẽ hiển thị cho khách sau khi đặt đơn chuyển khoản.",
+    "bankName": "Tên ngân hàng",
+    "accountNumber": "Số tài khoản",
+    "accountName": "Tên chủ tài khoản",
+    "qrImage": "Ảnh QR chuyển khoản",
+    "uploadQr": "Upload ảnh QR",
+    "uploadingQr": "Đang upload...",
+    "qrPreviewAlt": "Ảnh QR chuyển khoản",
+    "qrHelper": "Hỗ trợ PNG, JPG, WebP. Sau khi upload, bấm Lưu cấu hình để áp dụng.",
+    "qrUploadInvalidType": "Vui lòng chọn file ảnh hợp lệ.",
+    "qrUploadMaxSize": "Ảnh QR không được vượt quá 5MB.",
+    "qrUploadSuccess": "Upload ảnh QR thành công. Vui lòng lưu cấu hình.",
+    "qrUploadFailed": "Upload ảnh QR thất bại.",
+    "instructions": "Ghi chú hướng dẫn"
   },
 
   "shipping": {

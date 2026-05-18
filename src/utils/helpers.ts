@@ -1,5 +1,5 @@
 export const setDocumentTitle = (title: string) => {
-  document.title = `${title} | Hozitech`;
+  document.title = `${title} | Htech`;
 };
 
 export const getPaginatedRowNumber = (page: number, size: number, index: number) =>

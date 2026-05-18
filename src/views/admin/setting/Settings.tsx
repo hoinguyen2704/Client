@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCpu, FiTrendingUp, FiMousePointer, FiShoppingCart, FiCheck, FiLoader } from 'react-icons/fi';
+import { FiSave, FiSettings, FiCreditCard, FiTruck, FiCheck, FiLoader, FiUploadCloud } from 'react-icons/fi';
 import { Button, CustomSelect, FormInput, Modal, ModalCancelButton, SectionCard, SwitchToggle } from '@/components';
 import { toast } from 'sonner';
 import adminSettingService from '@/apis/services/adminSettingService';
@@ -14,7 +14,9 @@ export default function Settings() {
   const [original, setOriginal] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingBankTransferQr, setUploadingBankTransferQr] = useState(false);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const bankTransferQrInputRef = useRef<HTMLInputElement>(null);
 
   const val = useCallback((key: string, fallback = '') => settings[key] ?? fallback, [settings]);
   const bool = useCallback((key: string) => val(key) === 'true', [val]);
@@ -40,6 +42,11 @@ export default function Settings() {
           TAX_ENABLED: flat.TAX_ENABLED ?? 'true',
           TAX_MODE: flat.TAX_MODE ?? 'INCLUDED',
           TAX_APPLY_ON_SHIPPING: flat.TAX_APPLY_ON_SHIPPING ?? 'true',
+          BANK_TRANSFER_BANK_NAME: flat.BANK_TRANSFER_BANK_NAME ?? '',
+          BANK_TRANSFER_ACCOUNT_NUMBER: flat.BANK_TRANSFER_ACCOUNT_NUMBER ?? '',
+          BANK_TRANSFER_ACCOUNT_NAME: flat.BANK_TRANSFER_ACCOUNT_NAME ?? '',
+          BANK_TRANSFER_QR_IMAGE_URL: flat.BANK_TRANSFER_QR_IMAGE_URL ?? '',
+          BANK_TRANSFER_INSTRUCTIONS: flat.BANK_TRANSFER_INSTRUCTIONS ?? '',
         };
         setSettings(withDefaults);
         setOriginal(withDefaults);
@@ -72,6 +79,34 @@ export default function Settings() {
       toast.error(t('saveError'));
     } finally {
       setSaving(false);
+    }
+  };
+
+  const validateBankTransferQrFile = (file: File | undefined) => {
+    if (!file) return false;
+    if (!file.type.startsWith('image/')) {
+      toast.error(t('payment.qrUploadInvalidType'));
+      return false;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(t('payment.qrUploadMaxSize'));
+      return false;
+    }
+    return true;
+  };
+
+  const handleBankTransferQrUpload = async (file: File | undefined) => {
+    if (!validateBankTransferQrFile(file)) return;
+
+    setUploadingBankTransferQr(true);
+    try {
+      const res = await adminSettingService.uploadBankTransferQr(file!);
+      set('BANK_TRANSFER_QR_IMAGE_URL', res.data.imageUrl);
+      toast.success(t('payment.qrUploadSuccess'));
+    } catch {
+      toast.error(t('payment.qrUploadFailed'));
+    } finally {
+      setUploadingBankTransferQr(false);
     }
   };
 
@@ -216,6 +251,69 @@ export default function Settings() {
                   {renderToggle(method.key)}
                 </div>
               ))}
+              {bool('BANK_TRANSFER_ENABLED') && (
+                <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-4 dark:border-blue-900/40 dark:bg-blue-950/20">
+                  <div className="mb-4">
+                    <h3 className="font-bold text-md text-blue-700 dark:text-blue-300">{t('payment.bankAccountTitle')}</h3>
+                    <p className="text-sm text-muted mt-1">{t('payment.bankAccountDesc')}</p>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <FormInput label={t('payment.bankName')} type="text" value={val('BANK_TRANSFER_BANK_NAME')} onChange={(e) => set('BANK_TRANSFER_BANK_NAME', e.target.value)} />
+                      <FormInput label={t('payment.accountNumber')} type="text" value={val('BANK_TRANSFER_ACCOUNT_NUMBER')} onChange={(e) => set('BANK_TRANSFER_ACCOUNT_NUMBER', e.target.value)} />
+                    </div>
+                    <FormInput label={t('payment.accountName')} type="text" value={val('BANK_TRANSFER_ACCOUNT_NAME')} onChange={(e) => set('BANK_TRANSFER_ACCOUNT_NAME', e.target.value)} />
+                    <div className="space-y-2">
+                      <label className="text-md font-medium text-body">{t('payment.qrImage')}</label>
+                      <input
+                        ref={bankTransferQrInputRef}
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp,image/jpg"
+                        className="hidden"
+                        onChange={(e) => {
+                          void handleBankTransferQrUpload(e.target.files?.[0]);
+                          e.target.value = '';
+                        }}
+                      />
+                      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900 sm:flex-row sm:items-center">
+                        {val('BANK_TRANSFER_QR_IMAGE_URL') ? (
+                          <img
+                            src={val('BANK_TRANSFER_QR_IMAGE_URL')}
+                            alt={t('payment.qrPreviewAlt')}
+                            className="h-28 w-28 rounded-lg border border-slate-100 object-contain p-2 dark:border-slate-800"
+                          />
+                        ) : (
+                          <div className="flex h-28 w-28 items-center justify-center rounded-lg border border-dashed border-slate-300 text-2xl text-subtle dark:border-slate-700"
+                            onClick={() => bankTransferQrInputRef.current?.click()}>
+                            <FiUploadCloud />
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => bankTransferQrInputRef.current?.click()}
+                            disabled={uploadingBankTransferQr}
+                            icon={uploadingBankTransferQr ? <FiLoader className="animate-spin" /> : <FiUploadCloud />}
+                          >
+                            {uploadingBankTransferQr ? t('payment.uploadingQr') : t('payment.uploadQr')}
+                          </Button>
+                          <p className="mt-2 text-sm text-muted">{t('payment.qrHelper')}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-md font-medium text-body">{t('payment.instructions')}</label>
+                      <textarea
+                        className="w-full min-h-24 rounded-xl border border-slate-200 bg-white px-4 py-3 text-md text-body outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900"
+                        value={val('BANK_TRANSFER_INSTRUCTIONS')}
+                        onChange={(e) => set('BANK_TRANSFER_INSTRUCTIONS', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </SectionCard>
 

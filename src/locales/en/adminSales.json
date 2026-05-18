@@ -45,6 +45,7 @@
     "statusUnsaved": "Unsaved status change",
     "undoStatus": "Undo",
     "saveStatus": "Save changes",
+    "confirmBankTransferPayment": "Bank transfer received",
     "downloadInvoice": "Download PDF invoice",
     "timelineDelivered": "Delivery completed",
     "timelineDeliveredDescription": "The order was delivered successfully",
@@ -99,6 +100,8 @@
     "toasts": {
       "statusUpdated": "Order status updated successfully!",
       "statusFailed": "Failed to update order status!",
+      "paymentConfirmed": "Bank transfer payment confirmed!",
+      "paymentConfirmFailed": "Failed to confirm payment!",
       "invoiceSuccess": "PDF invoice exported successfully!",
       "invoiceFailed": "Failed to export invoice!"
     }

@@ -50,7 +50,22 @@
     "momo": "MoMo Payment",
     "momoDesc": "Popular e-wallet in Vietnam",
     "bank": "Bank Transfer",
-    "bankDesc": "Direct bank transfer"
+    "bankDesc": "Direct bank transfer",
+    "bankAccountTitle": "Receiving bank account",
+    "bankAccountDesc": "These details are shown to customers after placing a bank transfer order.",
+    "bankName": "Bank name",
+    "accountNumber": "Account number",
+    "accountName": "Account holder",
+    "qrImage": "Transfer QR image",
+    "uploadQr": "Upload QR image",
+    "uploadingQr": "Uploading...",
+    "qrPreviewAlt": "Bank transfer QR image",
+    "qrHelper": "Supports PNG, JPG, WebP. Save settings after upload to apply it.",
+    "qrUploadInvalidType": "Please choose a valid image file.",
+    "qrUploadMaxSize": "QR image must not exceed 5MB.",
+    "qrUploadSuccess": "QR image uploaded. Please save settings.",
+    "qrUploadFailed": "Failed to upload QR image.",
+    "instructions": "Instructions"
   },
 
   "shipping": {

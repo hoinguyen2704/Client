@@ -26,7 +26,7 @@ export default function LogoIcon({
   const s = sizeMap[size];
 
   if (raw) {
-    return <img src="/logo.svg" alt="HoziTech Logo" className={cn(s.icon, className)} />;
+    return <img src="/logo.svg" alt="Htech Logo" className={cn(s.icon, className)} />;
   }
 
   return (
@@ -37,7 +37,7 @@ export default function LogoIcon({
         containerClassName
       )}
     >
-      <img src="/logo.svg" alt="HoziTech Logo" className={cn(s.icon, className)} />
+      <img src="/logo.svg" alt="Htech Logo" className={cn(s.icon, className)} />
     </div>
   );
 }

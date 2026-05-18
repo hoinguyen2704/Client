@@ -3,13 +3,13 @@
  * Update this file when the shop name or branding changes.
  */
 export const SHOP = {
-  name: 'Hozitech',
-  fullName: 'HoziTech',
+  name: 'Htech',
+  fullName: 'Htech',
   slogan: 'Leading tech store',
   email: 'hozinium@gmail.com',
-  supportEmail: 'support@hozitech.com',
+  supportEmail: 'support@htech.com',
   hotline: '0828443833',
   address: '132 C\u1ea7u Di\u1ec5n, H\u00e0 N\u1ed9i',
-  website: 'https://hozitech.com',
-  copyright: `© ${new Date().getFullYear()} Hozitech. All rights reserved.`,
+  website: 'https://htech.com',
+  copyright: `© ${new Date().getFullYear()} Htech. All rights reserved.`,
 } as const;

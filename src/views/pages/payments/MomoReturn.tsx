@@ -1,81 +1,99 @@
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useSearchParams, Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { FiCheck, FiAlertCircle, FiPackage } from 'react-icons/fi';
+import { FiAlertCircle, FiCheck, FiPackage } from 'react-icons/fi';
 import { Button } from '@/components';
-import paymentService from '@/apis/services/paymentService';
+import paymentService, { type MomoReturnPayload } from '@/apis/services/paymentService';
 import { formatPrice } from '@/utils/format';
 import { setDocumentTitle } from '@/utils/helpers';
 
-const buildVnpayReturnPayload = (searchParams: URLSearchParams) => (
-  Object.fromEntries(searchParams.entries()) as Record<string, string>
-);
+const parseNumberParam = (value: string | null) => {
+  if (!value) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
 
-export default function VnpayReturn() {
+const buildMomoReturnPayload = (searchParams: URLSearchParams): MomoReturnPayload => ({
+  partnerCode: searchParams.get('partnerCode'),
+  orderId: searchParams.get('orderId'),
+  requestId: searchParams.get('requestId'),
+  amount: parseNumberParam(searchParams.get('amount')),
+  orderInfo: searchParams.get('orderInfo'),
+  orderType: searchParams.get('orderType'),
+  transId: parseNumberParam(searchParams.get('transId')),
+  resultCode: parseNumberParam(searchParams.get('resultCode')),
+  message: searchParams.get('message'),
+  payType: searchParams.get('payType'),
+  responseTime: parseNumberParam(searchParams.get('responseTime')),
+  extraData: searchParams.get('extraData') || '',
+  signature: searchParams.get('signature'),
+  paymentOption: searchParams.get('paymentOption'),
+  userFee: parseNumberParam(searchParams.get('userFee')),
+});
+
+export default function MomoReturn() {
   const { t } = useTranslation('checkout');
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<'LOADING' | 'SUCCESS' | 'FAILED'>('LOADING');
   const [message, setMessage] = useState('');
 
   const searchKey = searchParams.toString();
-  const txnRef = searchParams.get('vnp_TxnRef');
-  const responseCode = searchParams.get('vnp_ResponseCode');
-  const bankCode = searchParams.get('vnp_BankCode');
-  const amountStr = searchParams.get('vnp_Amount');
-  const amount = amountStr ? parseInt(amountStr) / 100 : 0;
+  const orderId = searchParams.get('orderId');
+  const resultCode = searchParams.get('resultCode');
+  const payType = searchParams.get('payType');
+  const amountStr = searchParams.get('amount');
+  const amount = amountStr ? parseInt(amountStr, 10) : 0;
 
   useEffect(() => {
     let active = true;
     let callbackFailed = false;
-    setDocumentTitle(t('vnpayReturn.documentTitle'));
+    setDocumentTitle(t('momoReturn.documentTitle'));
 
     const finalizeDisplay = () => {
       if (!active) return;
-      if (!txnRef || !responseCode) {
+      if (!orderId || !resultCode) {
         setStatus('FAILED');
-        setMessage(t('vnpayReturn.errors.missingTransaction'));
+        setMessage(t('momoReturn.errors.missingTransaction'));
         return;
       }
 
-      if (responseCode === '00') {
+      if (resultCode === '0') {
         setStatus('SUCCESS');
-        setMessage(t('vnpayReturn.errors.success'));
+        setMessage(t('momoReturn.errors.success'));
         return;
       }
 
       setStatus('FAILED');
       if (callbackFailed) {
-        setMessage(t('vnpayReturn.errors.cancelFailed'));
-      } else if (responseCode === '24') {
-        setMessage(t('vnpayReturn.errors.cancelled'));
-      } else if (responseCode === '51') {
-        setMessage(t('vnpayReturn.errors.insufficientFunds'));
-      } else if (responseCode === '65') {
-        setMessage(t('vnpayReturn.errors.dailyLimitExceeded'));
+        setMessage(t('momoReturn.errors.cancelFailed'));
+      } else if (resultCode === '1006') {
+        setMessage(t('momoReturn.errors.cancelled'));
+      } else if (resultCode === '1005') {
+        setMessage(t('momoReturn.errors.expired'));
       } else {
-        setMessage(t('vnpayReturn.errors.failed'));
+        setMessage(t('momoReturn.errors.failed'));
       }
     };
 
-    if (!txnRef || !responseCode) {
+    if (!orderId || !resultCode) {
       finalizeDisplay();
       return () => { active = false; };
     }
 
-    paymentService.processVnpayReturn(buildVnpayReturnPayload(new URLSearchParams(searchKey)))
+    paymentService.processMomoReturn(buildMomoReturnPayload(new URLSearchParams(searchKey)))
       .catch(() => {
         callbackFailed = true;
       })
       .finally(finalizeDisplay);
 
     return () => { active = false; };
-  }, [txnRef, responseCode, searchKey, t]);
+  }, [orderId, resultCode, searchKey, t]);
 
   if (status === 'LOADING') {
     return (
       <div className="w-full flex justify-center items-center h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
       </div>
     );
   }
@@ -92,34 +110,34 @@ export default function VnpayReturn() {
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <FiCheck className="text-4xl sm:text-5xl text-emerald-500" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-ink">{t('vnpayReturn.success.title')}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-ink">{t('momoReturn.success.title')}</h1>
             <p className="text-md sm:text-base text-muted mb-2">
               <Trans
-                i18nKey="checkout:vnpayReturn.success.orderCode"
-                values={{ txnRef }}
+                i18nKey="checkout:momoReturn.success.orderCode"
+                values={{ orderId }}
                 components={{ strong: <span className="font-bold text-ink" /> }}
               />
             </p>
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-5 text-md text-left space-y-2 border border-slate-100 dark:border-slate-700 w-full inline-block">
               <div className="flex justify-between">
-                <span className="text-muted">{t('vnpayReturn.success.amount')}:</span>
+                <span className="text-muted">{t('momoReturn.success.amount')}:</span>
                 <span className="font-bold text-ink">{formatPrice(amount)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted">{t('vnpayReturn.success.bank')}:</span>
-                <span className="font-medium text-ink">{bankCode || 'VNPAY'}</span>
+                <span className="text-muted">{t('momoReturn.success.wallet')}:</span>
+                <span className="font-medium text-ink">{payType || 'MoMo'}</span>
               </div>
             </div>
             <Button
-              href={`/user/orders/${txnRef}`}
+              href={`/user/orders/${orderId}`}
               fullWidth
               size="lg"
-              className="mb-3 sm:mb-4 bg-blue-600 hover:bg-blue-700 text-white"
+              className="mb-3 sm:mb-4 bg-pink-600 hover:bg-pink-700 text-white"
             >
-              {t('vnpayReturn.success.trackOrder')}
+              {t('momoReturn.success.trackOrder')}
             </Button>
             <Link to="/" className="block w-full py-3.5 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-ink font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
-              {t('vnpayReturn.success.continueShopping')}
+              {t('momoReturn.success.continueShopping')}
             </Link>
           </>
         ) : (
@@ -127,31 +145,31 @@ export default function VnpayReturn() {
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <FiAlertCircle className="text-4xl sm:text-5xl text-red-500" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-ink">{t('vnpayReturn.failed.title')}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-ink">{t('momoReturn.failed.title')}</h1>
             <p className="text-md sm:text-base text-muted mb-5 sm:mb-6">
-              {t('vnpayReturn.failed.description', { message })}
+              {t('momoReturn.failed.description', { message })}
             </p>
-            {txnRef && (
+            {orderId && (
               <div className="bg-red-50 dark:bg-red-900/10 rounded-xl p-3 mb-5 text-md text-left space-y-1 border border-red-100 dark:border-red-900/50">
                 <div className="flex justify-between">
-                  <span className="text-red-500 font-medium whitespace-nowrap mr-2">{t('vnpayReturn.failed.orderCode')}:</span>
-                  <span className="font-mono text-body truncate">{txnRef}</span>
+                  <span className="text-red-500 font-medium whitespace-nowrap mr-2">{t('momoReturn.failed.orderCode')}:</span>
+                  <span className="font-mono text-body truncate">{orderId}</span>
                 </div>
               </div>
             )}
-            {txnRef && (
+            {orderId && (
               <Button
-                href={`/user/orders/${txnRef}`}
+                href={`/user/orders/${orderId}`}
                 fullWidth
                 size="lg"
                 icon={<FiPackage />}
                 className="mb-3 sm:mb-4 bg-slate-900 hover:bg-blue-600 text-white"
               >
-                {t('vnpayReturn.failed.viewOrder')}
+                {t('momoReturn.failed.viewOrder')}
               </Button>
             )}
             <Link to="/" className="block w-full py-3.5 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-ink font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
-              {t('vnpayReturn.failed.continueShopping')}
+              {t('momoReturn.failed.continueShopping')}
             </Link>
           </>
         )}

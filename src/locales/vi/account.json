@@ -33,6 +33,9 @@
     "review": "Đánh giá",
     "total": "Tổng tiền",
     "cancelOrder": "Hủy đơn",
+    "retryPayment": "Thanh toán lại",
+    "retryingPayment": "Đang tạo thanh toán...",
+    "bankTransferGuide": "Thông tin chuyển khoản",
     "viewDetails": "Xem chi tiết",
     "empty": {
       "title": "Không tìm thấy đơn hàng",
@@ -58,6 +61,7 @@
     "toasts": {
       "cancelPendingOnly": "Chỉ có thể hủy đơn khi đang ở trạng thái chờ xử lý",
       "cancelFailed": "Hủy đơn hàng thất bại!",
+      "retryPaymentFailed": "Không thể tạo lại liên kết thanh toán!",
       "reviewSuccess": "Cảm ơn bạn đã đánh giá sản phẩm!",
       "reviewFailed": "Gửi đánh giá thất bại!"
     },
@@ -139,6 +143,8 @@
     },
     "title": "Chi tiết đơn hàng #{{orderNumber}}",
     "actions": {
+      "retryPayment": "Thanh toán lại",
+      "bankTransferGuide": "Thông tin chuyển khoản",
       "requestReturn": "Yêu cầu trả hàng"
     },
     "returnBanner": {
@@ -223,7 +229,8 @@
       "invalidEvidenceImageType": "Chỉ hỗ trợ tải lên tệp hình ảnh",
       "evidenceImageLimitExceeded": "Bạn chỉ có thể tải tối đa {{max}} ảnh",
       "createSuccess": "Đã gửi yêu cầu trả hàng thành công",
-      "createFailed": "Tạo yêu cầu trả hàng thất bại"
+      "createFailed": "Tạo yêu cầu trả hàng thất bại",
+      "retryPaymentFailed": "Không thể tạo lại liên kết thanh toán"
     }
   },
   "profile": {
@@ -388,7 +395,7 @@
       "noReviewsTitle": "Chưa có đánh giá nào",
       "noReviewsDescription": "Bạn chưa viết đánh giá nào cho các sản phẩm đã mua."
     },
-    "adminReplyTitle": "Phản hồi từ Hozitech",
+    "adminReplyTitle": "Phản hồi từ Htech",
     "modal": {
       "reviewTitle": "Viết đánh giá",
       "extraReviewTitle": "Đánh giá bổ sung",

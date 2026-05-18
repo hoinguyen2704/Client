@@ -153,12 +153,47 @@
     "orderSuccess": "Đặt hàng thành công!",
     "orderFailed": "Đặt hàng thất bại!"
   },
+  "bankTransfer": {
+    "documentTitle": "Thanh toán chuyển khoản",
+    "pendingBadge": "Chờ chuyển khoản",
+    "title": "Thanh toán bằng chuyển khoản",
+    "description": "Đơn hàng đã được tạo. Vui lòng chuyển khoản đúng số tiền và nội dung để shop xác nhận thanh toán.",
+    "orderCode": "Mã đơn hàng",
+    "amount": "Số tiền cần chuyển",
+    "content": "Nội dung chuyển khoản",
+    "contentValue": "HOZ {{orderNumber}}",
+    "bankName": "Ngân hàng",
+    "accountNumber": "Số tài khoản",
+    "accountName": "Chủ tài khoản",
+    "copy": "Copy",
+    "copySuccess": "Đã copy thông tin chuyển khoản",
+    "copyFailed": "Không thể copy thông tin",
+    "instructionsFallback": "Đơn hàng sẽ được xác nhận sau khi shop kiểm tra giao dịch chuyển khoản.",
+    "qrTitle": "QR chuyển khoản",
+    "qrSubtitle": "Quét nhanh nếu shop đã cấu hình QR",
+    "qrAlt": "Mã QR chuyển khoản",
+    "qrMissing": "Chưa có ảnh QR. Vui lòng dùng thông tin tài khoản bên trái.",
+    "nextTitle": "Sau khi chuyển khoản",
+    "nextDescription": "Shop sẽ đối soát giao dịch và cập nhật trạng thái thanh toán cho đơn hàng.",
+    "viewOrder": "Xem đơn hàng",
+    "continueShopping": "Tiếp tục mua sắm",
+    "invalidOrder": {
+      "title": "Đơn hàng không dùng chuyển khoản",
+      "description": "Màn này chỉ áp dụng cho đơn hàng chọn phương thức chuyển khoản ngân hàng."
+    },
+    "notFound": {
+      "title": "Không tìm thấy đơn hàng",
+      "description": "Vui lòng kiểm tra lại mã đơn hoặc quay về danh sách đơn hàng.",
+      "action": "Về đơn hàng của tôi"
+    }
+  },
   "vnpayReturn": {
     "documentTitle": "Kết quả thanh toán VNPAY",
     "errors": {
       "missingTransaction": "Không tìm thấy thông tin giao dịch.",
       "success": "Giao dịch thanh toán VNPAY thành công.",
       "cancelled": "Bạn đã hủy giao dịch.",
+      "cancelFailed": "Thanh toán VNPAY thất bại, nhưng hệ thống chưa xác nhận hủy đơn. Vui lòng tải lại trang hoặc liên hệ hỗ trợ.",
       "insufficientFunds": "Tài khoản không đủ số dư để thực hiện giao dịch.",
       "dailyLimitExceeded": "Khách hàng vượt quá hạn mức giao dịch trong ngày.",
       "failed": "Thanh toán thất bại. Lỗi từ phía ngân hàng hoặc VNPAY."
@@ -173,10 +208,36 @@
     },
     "failed": {
       "title": "Thanh toán thất bại",
-      "description": "{{message}} Vui lòng thử lại hoặc chọn phương thức thanh toán khác.",
+      "description": "{{message}} Đơn hiện tại đã được đóng. Bạn có thể xem đơn hàng hoặc tiếp tục mua sắm.",
       "orderCode": "Mã đơn hàng",
-      "retry": "Thanh toán lại",
-      "backToCart": "Quay lại giỏ hàng"
+      "viewOrder": "Xem đơn hàng",
+      "continueShopping": "Tiếp tục mua sắm"
+    }
+  },
+  "momoReturn": {
+    "documentTitle": "Kết quả thanh toán MoMo",
+    "errors": {
+      "missingTransaction": "Không tìm thấy thông tin giao dịch MoMo.",
+      "success": "Giao dịch thanh toán MoMo thành công.",
+      "cancelled": "Bạn đã hủy giao dịch MoMo.",
+      "cancelFailed": "Thanh toán MoMo thất bại, nhưng hệ thống chưa xác nhận hủy đơn. Vui lòng tải lại trang hoặc liên hệ hỗ trợ.",
+      "expired": "Giao dịch MoMo đã hết hạn.",
+      "failed": "Thanh toán MoMo thất bại."
+    },
+    "success": {
+      "title": "Đặt hàng thành công!",
+      "orderCode": "Mã đơn hàng của bạn là <strong>#{{orderId}}</strong>.",
+      "amount": "Số tiền",
+      "wallet": "Ví thanh toán",
+      "trackOrder": "Theo dõi đơn hàng",
+      "continueShopping": "Tiếp tục mua sắm"
+    },
+    "failed": {
+      "title": "Thanh toán thất bại",
+      "description": "{{message}} Đơn hiện tại đã được đóng. Bạn có thể xem đơn hàng hoặc tiếp tục mua sắm.",
+      "orderCode": "Mã đơn hàng",
+      "viewOrder": "Xem đơn hàng",
+      "continueShopping": "Tiếp tục mua sắm"
     }
   }
 }

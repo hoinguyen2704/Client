@@ -34,6 +34,9 @@ const orderService = {
   cancel: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
     axios.patch(`${ORDER_URL}/${orderNumber}/cancel`),
 
+  retryPayment: (orderNumber: string): Promise<ApiResponse<OrderResponse>> =>
+    axios.post(`${ORDER_URL}/${orderNumber}/payment/retry`),
+
   //  Admin endpoints (admin/api/v1/orders)
   updateStatus: (
     orderId: string,

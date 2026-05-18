@@ -1,6 +1,6 @@
 import axios from '../axios';
 import type { ApiResponse } from '@/types';
-import type { ShippingConfig, PaymentMethodConfig, TaxConfig } from '@/types';
+import type { BankTransferConfig, ShippingConfig, PaymentMethodConfig, TaxConfig } from '@/types';
 
 const URL = '/settings';
 
@@ -12,6 +12,10 @@ const settingService = {
   /** Danh sách phương thức thanh toán (public) */
   getPaymentMethods: (): Promise<ApiResponse<PaymentMethodConfig[]>> =>
     axios.get(`${URL}/payment-methods`),
+
+  /** Thông tin tài khoản nhận chuyển khoản (public) */
+  getBankTransfer: (): Promise<ApiResponse<BankTransferConfig>> =>
+    axios.get(`${URL}/bank-transfer`),
 
   /** Cấu hình vận chuyển (public) */
   getShipping: (): Promise<ApiResponse<ShippingConfig>> =>

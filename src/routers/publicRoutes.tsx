@@ -17,7 +17,9 @@ const Terms = lazy(() => import('@/views/pages/about/Terms'));
 const Privacy = lazy(() => import('@/views/pages/about/Privacy'));
 const Cart = lazy(() => import('@/views/pages/cart/Cart'));
 const Checkout = lazy(() => import('@/views/pages/payments/Checkout'));
+const MomoReturn = lazy(() => import('@/views/pages/payments/MomoReturn'));
 const VnpayReturn = lazy(() => import('@/views/pages/payments/VnpayReturn'));
+const BankTransferPayment = lazy(() => import('@/views/pages/payments/BankTransferPayment'));
 const Login = lazy(() => import('@/views/pages/auth/Login'));
 const GoogleCallback = lazy(() => import('@/views/pages/auth/GoogleCallback'));
 const Register = lazy(() => import('@/views/pages/auth/Register'));
@@ -41,6 +43,8 @@ export const publicRoutes = (
     <Route path="privacy" element={<Privacy />} />
     <Route path="cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
     <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+    <Route path="payment/bank-transfer/:orderNumber" element={<ProtectedRoute><BankTransferPayment /></ProtectedRoute>} />
+    <Route path="payment/momo-return" element={<MomoReturn />} />
     <Route path="payment/vnpay-return" element={<VnpayReturn />} />
     <Route path="login" element={<Login />} />
     <Route path="auth/google/callback" element={<GoogleCallback />} />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiSearch, FiPackage, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiPackage, FiChevronRight, FiCreditCard } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDate, formatDateFull as formatDateTime } from '@/utils/format';
 import { Link } from 'react-router-dom';
@@ -33,6 +33,7 @@ export default function Orders() {
   const [oldFeedbacks, setOldFeedbacks] = useState<FeedbackResponse[]>([]);
   const [submittingReview, setSubmittingReview] = useState(false);
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
+  const [retryingPaymentOrder, setRetryingPaymentOrder] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -71,6 +72,35 @@ export default function Orders() {
       fetchOrders();
     } catch {
       toast.error(t('orders.toasts.cancelFailed'));
+    }
+  };
+
+  const canRetryPayment = (order: OrderResponse) => (
+    order.orderStatus === 'PENDING'
+    && order.paymentStatus === 'PENDING'
+    && order.paymentMethod !== 'COD'
+    && order.paymentMethod !== 'BANK_TRANSFER'
+  );
+
+  const canViewBankTransfer = (order: OrderResponse) => (
+    order.orderStatus === 'PENDING'
+    && order.paymentStatus === 'PENDING'
+    && order.paymentMethod === 'BANK_TRANSFER'
+  );
+
+  const handleRetryPayment = async (orderNumber: string) => {
+    setRetryingPaymentOrder(orderNumber);
+    try {
+      const res = await orderService.retryPayment(orderNumber);
+      if (res.data?.paymentUrl) {
+        window.location.href = res.data.paymentUrl;
+        return;
+      }
+      toast.error(t('orders.toasts.retryPaymentFailed'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t, 'account:orders.toasts.retryPaymentFailed'));
+    } finally {
+      setRetryingPaymentOrder(null);
     }
   };
 
@@ -204,6 +234,23 @@ export default function Orders() {
                   {t('orders.total')}: <span className="text-lg sm:text-xl font-bold text-blue-600 ml-2">{formatPrice(order.totalAmount)}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                  {canRetryPayment(order) && (
+                    <button
+                      onClick={() => handleRetryPayment(order.orderNumber)}
+                      disabled={retryingPaymentOrder === order.orderNumber}
+                      className="px-4 py-2 rounded-lg border border-blue-500 text-blue-600 font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors w-full sm:w-auto disabled:opacity-60"
+                    >
+                      {retryingPaymentOrder === order.orderNumber ? t('orders.retryingPayment') : t('orders.retryPayment')}
+                    </button>
+                  )}
+                  {canViewBankTransfer(order) && (
+                    <Link
+                      to={`/payment/bank-transfer/${order.orderNumber}`}
+                      className="px-4 py-2 rounded-lg border border-blue-500 text-blue-600 font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+                    >
+                      <FiCreditCard /> {t('orders.bankTransferGuide')}
+                    </Link>
+                  )}
                   {order.orderStatus === 'PENDING' && (
                     <button onClick={() => setCancelTarget(order.orderNumber)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full sm:w-auto">
                       {t('orders.cancelOrder')}

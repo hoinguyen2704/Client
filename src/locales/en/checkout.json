@@ -153,12 +153,47 @@
     "orderSuccess": "Order placed successfully!",
     "orderFailed": "Failed to place order!"
   },
+  "bankTransfer": {
+    "documentTitle": "Bank transfer payment",
+    "pendingBadge": "Awaiting transfer",
+    "title": "Pay by bank transfer",
+    "description": "Your order has been created. Please transfer the exact amount with the required content so the shop can confirm payment.",
+    "orderCode": "Order number",
+    "amount": "Amount to transfer",
+    "content": "Transfer content",
+    "contentValue": "HOZ {{orderNumber}}",
+    "bankName": "Bank",
+    "accountNumber": "Account number",
+    "accountName": "Account holder",
+    "copy": "Copy",
+    "copySuccess": "Bank transfer detail copied",
+    "copyFailed": "Unable to copy detail",
+    "instructionsFallback": "The order will be confirmed after the shop verifies the bank transfer.",
+    "qrTitle": "Transfer QR",
+    "qrSubtitle": "Scan if the shop has configured a QR image",
+    "qrAlt": "Bank transfer QR code",
+    "qrMissing": "No QR image configured. Use the account details on the left.",
+    "nextTitle": "After transferring",
+    "nextDescription": "The shop will reconcile the transaction and update the payment status for this order.",
+    "viewOrder": "View order",
+    "continueShopping": "Continue shopping",
+    "invalidOrder": {
+      "title": "This order does not use bank transfer",
+      "description": "This screen only applies to orders paid by bank transfer."
+    },
+    "notFound": {
+      "title": "Order not found",
+      "description": "Please check the order number or return to your order list.",
+      "action": "Back to my orders"
+    }
+  },
   "vnpayReturn": {
     "documentTitle": "VNPAY payment result",
     "errors": {
       "missingTransaction": "Transaction details were not found.",
       "success": "The VNPAY payment transaction was successful.",
       "cancelled": "You cancelled the transaction.",
+      "cancelFailed": "VNPAY payment failed, but the order cancellation was not confirmed. Please refresh or contact support.",
       "insufficientFunds": "Your account does not have sufficient balance for this transaction.",
       "dailyLimitExceeded": "The customer exceeded the daily transaction limit.",
       "failed": "Payment failed due to a banking or VNPAY error."
@@ -173,10 +208,36 @@
     },
     "failed": {
       "title": "Payment failed",
-      "description": "{{message}} Please try again or choose another payment method.",
+      "description": "{{message}} This order is now closed. You can view the order or continue shopping.",
       "orderCode": "Order number",
-      "retry": "Retry payment",
-      "backToCart": "Back to cart"
+      "viewOrder": "View order",
+      "continueShopping": "Continue shopping"
+    }
+  },
+  "momoReturn": {
+    "documentTitle": "MoMo payment result",
+    "errors": {
+      "missingTransaction": "MoMo transaction details were not found.",
+      "success": "The MoMo payment transaction was successful.",
+      "cancelled": "You cancelled the MoMo transaction.",
+      "cancelFailed": "MoMo payment failed, but the order cancellation was not confirmed. Please refresh or contact support.",
+      "expired": "The MoMo transaction expired.",
+      "failed": "MoMo payment failed."
+    },
+    "success": {
+      "title": "Order placed successfully!",
+      "orderCode": "Your order number is <strong>#{{orderId}}</strong>.",
+      "amount": "Amount",
+      "wallet": "Wallet",
+      "trackOrder": "Track order",
+      "continueShopping": "Continue shopping"
+    },
+    "failed": {
+      "title": "Payment failed",
+      "description": "{{message}} This order is now closed. You can view the order or continue shopping.",
+      "orderCode": "Order number",
+      "viewOrder": "View order",
+      "continueShopping": "Continue shopping"
     }
   }
 }

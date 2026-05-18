@@ -45,6 +45,7 @@
     "statusUnsaved": "Có thay đổi chưa lưu",
     "undoStatus": "Hoàn tác",
     "saveStatus": "Lưu thay đổi",
+    "confirmBankTransferPayment": "Đã nhận chuyển khoản",
     "downloadInvoice": "Tải hóa đơn PDF",
     "timelineDelivered": "Giao hàng thành công",
     "timelineDeliveredDescription": "Đơn hàng đã được giao thành công",
@@ -99,6 +100,8 @@
     "toasts": {
       "statusUpdated": "Cập nhật trạng thái đơn hàng thành công!",
       "statusFailed": "Cập nhật trạng thái đơn hàng thất bại!",
+      "paymentConfirmed": "Đã xác nhận thanh toán chuyển khoản!",
+      "paymentConfirmFailed": "Xác nhận thanh toán thất bại!",
       "invoiceSuccess": "Xuất hóa đơn PDF thành công!",
       "invoiceFailed": "Xuất hóa đơn thất bại!"
     }

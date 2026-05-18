@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiPackage, FiXCircle, FiTruck, FiTrash2, FiUploadCloud, FiMapPin } from 'react-icons/fi';
+import { FiCreditCard, FiPackage, FiXCircle, FiTruck, FiTrash2, FiUploadCloud, FiMapPin } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { formatPrice, formatDateFull as formatDate } from '@/utils/format';
 import orderService from '@/apis/services/orderService';
@@ -31,6 +31,7 @@ export default function OrderTracking() {
   const [returnItemQuantities, setReturnItemQuantities] = useState<Record<string, number>>({});
   const [selectedReturnItems, setSelectedReturnItems] = useState<Record<string, boolean>>({});
   const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
+  const [isRetryingPayment, setIsRetryingPayment] = useState(false);
   const [returnEvidenceFiles, setReturnEvidenceFiles] = useState<ReturnEvidenceFile[]>([]);
   const returnEvidenceFilesRef = useRef<ReturnEvidenceFile[]>([]);
   const returnEvidenceInputRef = useRef<HTMLInputElement>(null);
@@ -104,6 +105,36 @@ export default function OrderTracking() {
     setIsReturning(true);
     setReturnReason('');
     setReturnNote('');
+  };
+
+  const canRetryPayment = (order: OrderResponse) => (
+    order.orderStatus === 'PENDING'
+    && order.paymentStatus === 'PENDING'
+    && order.paymentMethod !== 'COD'
+    && order.paymentMethod !== 'BANK_TRANSFER'
+  );
+
+  const canViewBankTransfer = (order: OrderResponse) => (
+    order.orderStatus === 'PENDING'
+    && order.paymentStatus === 'PENDING'
+    && order.paymentMethod === 'BANK_TRANSFER'
+  );
+
+  const handleRetryPayment = async () => {
+    if (!order) return;
+    setIsRetryingPayment(true);
+    try {
+      const res = await orderService.retryPayment(order.orderNumber);
+      if (res.data?.paymentUrl) {
+        window.location.href = res.data.paymentUrl;
+        return;
+      }
+      toast.error(t('orderTracking.toasts.retryPaymentFailed'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, t, 'account:orderTracking.toasts.retryPaymentFailed'));
+    } finally {
+      setIsRetryingPayment(false);
+    }
   };
 
   const handleQuantityChange = (itemId: string, val: number) => {
@@ -234,6 +265,8 @@ export default function OrderTracking() {
   const locale = i18n.language === 'en' ? 'en-US' : 'vi-VN';
 
   const allowReturnBtn = order.orderStatus === 'SHIPPED' && order.paymentStatus === 'COMPLETED' && !activeReturn && !isReturning;
+  const allowRetryPaymentBtn = canRetryPayment(order);
+  const allowBankTransferBtn = canViewBankTransfer(order);
 
   return (
     <div className="space-y-6">
@@ -242,11 +275,34 @@ export default function OrderTracking() {
           <BackButton to="/user/orders" />
           <h1 className="text-lg sm:text-2xl font-bold">{t('orderTracking.title', { orderNumber: order.orderNumber })}</h1>
         </div>
-        {allowReturnBtn && (
-          <Button onClick={handleStartReturn} variant="outline" className="text-blue-600 border-blue-600 whitespace-nowrap">
-            {t('orderTracking.actions.requestReturn')}
-          </Button>
-        )}
+        <div className="flex flex-col sm:flex-row gap-2">
+          {allowRetryPaymentBtn && (
+            <Button
+              onClick={handleRetryPayment}
+              variant="outline"
+              icon={<FiCreditCard />}
+              loading={isRetryingPayment}
+              className="text-blue-600 border-blue-600 whitespace-nowrap"
+            >
+              {t('orderTracking.actions.retryPayment')}
+            </Button>
+          )}
+          {allowBankTransferBtn && (
+            <Button
+              href={`/payment/bank-transfer/${order.orderNumber}`}
+              variant="outline"
+              icon={<FiCreditCard />}
+              className="text-blue-600 border-blue-600 whitespace-nowrap"
+            >
+              {t('orderTracking.actions.bankTransferGuide')}
+            </Button>
+          )}
+          {allowReturnBtn && (
+            <Button onClick={handleStartReturn} variant="outline" className="text-blue-600 border-blue-600 whitespace-nowrap">
+              {t('orderTracking.actions.requestReturn')}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Return Active Banner */}

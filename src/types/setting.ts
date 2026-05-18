@@ -31,3 +31,12 @@ export interface PaymentMethodConfig {
   label: string;
   enabled: boolean;
 }
+
+export interface BankTransferConfig {
+  enabled: boolean;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  qrImageUrl?: string;
+  instructions?: string;
+}

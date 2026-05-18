@@ -33,6 +33,10 @@ class AdminOrderService extends BaseService<OrderResponse> {
     return this.http.patch(`${this.endpoint}/${id}/status`, data);
   }
 
+  async markPaymentCompleted(id: string): Promise<ApiResponse<OrderResponse>> {
+    return this.http.patch(`${this.endpoint}/${id}/payment/complete`);
+  }
+
   async export(params?: OrderExportParams): Promise<Blob> {
     return this.http.get(`${this.endpoint}/export`, { params, responseType: 'blob' });
   }

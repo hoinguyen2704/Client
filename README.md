@@ -1,6 +1,6 @@
-# Hozitech E-Commerce Client
+# Htech E-Commerce Client
 
-> Frontend của Hozitech: storefront, checkout, account, admin, chatbot và hỗ trợ đa ngôn ngữ.
+> Frontend của Htech: storefront, checkout, account, admin, chatbot và hỗ trợ đa ngôn ngữ.
 
 ## Tech Stack
 
