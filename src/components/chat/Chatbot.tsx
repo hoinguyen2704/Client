@@ -37,9 +37,9 @@ const DEFAULT_CONFIG: WidgetConfig = {
 };
 
 const HISTORY_LIMITS = {
-  maxMessages: 6,
-  maxCharsPerMessage: 280,
-  maxTotalChars: 1400,
+  maxMessages: 12,
+  maxCharsPerMessage: 520,
+  maxTotalChars: 4200,
 };
 
 function clipHistoryContent(input: string, maxChars: number): string {

@@ -13,8 +13,14 @@ import {
   getProductPublicStatusState,
   isProductStatusPurchasable,
 } from '@/utils/productAvailability';
+import { resolveVariantPricing } from '@/utils/pricing';
 
 const INITIAL_FLASH_TIME: TimeLeft = { hours: 2, minutes: 45, seconds: 12 };
+
+const toNumber = (value: unknown, fallback = 0): number => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
 
 function FlashSaleCountdown({ totalSold }: { totalSold: number }) {
   const { t } = useTranslation('catalog');
@@ -63,13 +69,30 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   const name: string = product.name || '';
   const slug: string = product.slug || '';
   const image: string = product.mainImageUrl || product.image || 'https://placehold.co/400x400/f1f5f9/94a3b8?text=No+Image';
-  const lowestVariantPrice = product.variants?.length
-    ? Math.min(...product.variants.map((v) => v.price))
+  const activeVariants = (product.variants || []).filter((variant) => variant.active !== false);
+  const lowestVariantPricing = activeVariants.length
+    ? activeVariants
+        .map((variant) => resolveVariantPricing({ product, variant }))
+        .filter((pricing) => pricing.salePrice > 0)
+        .reduce<ReturnType<typeof resolveVariantPricing> | null>(
+          (best, pricing) => (!best || pricing.salePrice < best.salePrice ? pricing : best),
+          null,
+        )
     : null;
-  const salePrice: number = product.lowestPrice || lowestVariantPrice || product.price || product.originPrice || 0;
-  const originPrice: number = product.originPrice || product.compareAtPrice || product.oldPrice || 0;
-  const hasDiscount = originPrice > 0 && salePrice > 0 && originPrice > salePrice;
-  const discount: number = product.discount || (hasDiscount ? Math.round((1 - salePrice / originPrice) * 100) : 0);
+  const fallbackPricing = lowestVariantPricing || resolveVariantPricing({ product });
+  const apiDisplayPrice = toNumber(product.price);
+  const salePrice: number = apiDisplayPrice > 0 ? apiDisplayPrice : fallbackPricing.salePrice;
+  const comparePriceCandidate = apiDisplayPrice > 0
+    ? Math.max(
+        toNumber(product.compareAtPrice),
+        toNumber(product.oldPrice),
+        toNumber(product.originPrice),
+      )
+    : fallbackPricing.originPrice;
+  const hasDiscount = comparePriceCandidate > 0 && salePrice > 0 && comparePriceCandidate > salePrice;
+  const originPrice: number = hasDiscount ? comparePriceCandidate : 0;
+  const computedDiscount = hasDiscount ? Math.round((1 - salePrice / comparePriceCandidate) * 100) : 0;
+  const discount: number = hasDiscount ? (toNumber(product.discount) || computedDiscount) : 0;
 
   // Rating
   const rating: number = product.averageRating || product.rating || 0;
@@ -77,7 +100,7 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
 
   // Badges
   const isNew: boolean = product.isNew ?? (product.createdAt ? (Date.now() - new Date(product.createdAt).getTime()) < 30 * 86400000 : false);
-  const isFlashSale: boolean = product.isFlashSale || false;
+  const isFlashSale: boolean = product.isFlashSale || fallbackPricing.isFlashSale || false;
   const totalSold: number = product.totalSold || product.sold || 0;
   const soldLabel = totalSold > 999 ? `${(totalSold / 1000).toFixed(1)}k` : totalSold;
 
@@ -85,7 +108,10 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
   const productStatusState = getProductPublicStatusState(product.status);
   const isOutOfStock = product.outOfStock === true || productStatusState === 'outOfStock';
 
-  const stock: number = isOutOfStock ? 0 : (product.stockQuantity ?? (product.variants?.reduce((acc: number, v) => acc + (v.stockQuantity || 0), 0)) ?? 10);
+  const variantStock = activeVariants.length > 0
+    ? activeVariants.reduce((acc: number, v) => acc + (v.stockQuantity || 0), 0)
+    : undefined;
+  const stock: number = isOutOfStock ? 0 : (product.stockQuantity ?? variantStock ?? 10);
 
   let statusText = t('productCard.status.available', { ns: 'catalog' }).toUpperCase();
   let isPurchasable = isProductStatusPurchasable(product.status) && stock > 0 && salePrice > 0;
@@ -181,9 +207,9 @@ function ProductCardComponent({ product }: { product: ProductResponse }) {
         )}
 
         <div className="mt-auto border-t border-slate-100 pt-1.5 dark:border-slate-800 sm:pt-2">
-          {originPrice > 0 && (
+          {hasDiscount && (
             <div className="mb-1 flex items-center flex-wrap gap-x-1.5 gap-y-0.5">
-              <span className={`text-10 sm:text-xs font-medium ${hasDiscount ? 'text-subtle line-through' : 'text-muted'}`}>
+              <span className="text-10 sm:text-xs font-medium text-subtle line-through">
                 {formatPrice(originPrice)}
               </span>
             </div>

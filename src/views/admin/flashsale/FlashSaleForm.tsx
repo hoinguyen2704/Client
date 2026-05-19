@@ -77,7 +77,7 @@ const FlashSaleItemRow = memo(function FlashSaleItemRow({
   const flashPrice = Number(item.flashPrice) || 0;
   const flashStock = Number(item.flashStock);
   const maxStock = resolveMaxFlashStock(item);
-  const hasPriceWarning = flashPrice <= 0 || flashPrice >= originalPrice;
+  const hasPriceWarning = flashPrice <= 0 || flashPrice > originalPrice;
   const hasStockWarning = flashStock <= 0 || (maxStock != null && flashStock > maxStock);
 
   return (
@@ -314,13 +314,25 @@ export default function FlashSaleForm() {
 
   const handleChangeFlashStock = useCallback((itemKey: string, rawValue: string) => {
     const parsedValue = parseRequiredIntegerInputValue(rawValue);
-    handleChangeItem(itemKey, 'flashStock', parsedValue);
-  }, [handleChangeItem]);
+    const item = form.items.find((entry) => getFlashSaleItemKey(entry) === itemKey);
+    const maxStock = item ? resolveMaxFlashStock(item) : undefined;
+    const nextValue = maxStock != null && parsedValue > maxStock ? maxStock : parsedValue;
+    if (maxStock != null && parsedValue > maxStock) {
+      toast.warning(t('flashSales.form.stockExceeded', { stock: maxStock.toLocaleString() }));
+    }
+    handleChangeItem(itemKey, 'flashStock', nextValue);
+  }, [form.items, handleChangeItem, t]);
 
   const handleChangeFlashPrice = useCallback((itemKey: string, rawValue: string) => {
     const parsedValue = parseRequiredIntegerInputValue(rawValue);
-    handleChangeItem(itemKey, 'flashPrice', parsedValue);
-  }, [handleChangeItem]);
+    const item = form.items.find((entry) => getFlashSaleItemKey(entry) === itemKey);
+    const originalPrice = Math.trunc(Number(item?.originalPrice) || 0);
+    const nextValue = originalPrice > 0 && parsedValue > originalPrice ? originalPrice : parsedValue;
+    if (originalPrice > 0 && parsedValue > originalPrice) {
+      toast.warning(t('flashSales.form.priceExceeded', { price: formatPrice(originalPrice) }));
+    }
+    handleChangeItem(itemKey, 'flashPrice', nextValue);
+  }, [form.items, handleChangeItem, t]);
 
   const handleSubmit = async () => {
     // Basic validation
@@ -334,6 +346,18 @@ export default function FlashSaleForm() {
     }
     if (form.items.length === 0) {
       toast.error(t('flashSales.toasts.itemsRequired'));
+      return;
+    }
+    if (invalidTimeRange) {
+      toast.error(t('flashSales.form.validationTime'));
+      return;
+    }
+    if (invalidPriceCount > 0) {
+      toast.error(t('flashSales.form.validationPrice', { count: invalidPriceCount }));
+      return;
+    }
+    if (invalidStockCount > 0) {
+      toast.error(t('flashSales.form.validationStock', { count: invalidStockCount }));
       return;
     }
 
@@ -396,7 +420,7 @@ export default function FlashSaleForm() {
       summary.totalStock += normalizedFlashStock;
       summary.totalOriginalValue += originalPrice * normalizedFlashStock;
       summary.totalFlashValue += flashPrice * normalizedFlashStock;
-      if (flashPrice <= 0 || flashPrice >= originalPrice) {
+      if (flashPrice <= 0 || flashPrice > originalPrice) {
         summary.invalidPriceCount += 1;
       }
       if (flashStock <= 0 || (maxStock != null && flashStock > maxStock)) {
@@ -506,7 +530,7 @@ export default function FlashSaleForm() {
           </Button>
           <PrimaryButton
             onClick={handleSubmit}
-            disabled={submitting}
+            disabled={submitting || hasWarnings}
             icon={isEditing ? <FiSave /> : <FiCheck />}
             className="flex-1 sm:flex-none"
           >

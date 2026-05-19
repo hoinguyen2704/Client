@@ -33,9 +33,9 @@ export default function ChartXAxisTick({
   // Reduce tick density for month/year to avoid overlap.
   let shouldRender = true;
   if (isMonthLabel && dayNumber !== null) {
-    shouldRender = isToday || dayNumber === 1 || dayNumber % 4 === 1;
+    shouldRender = isToday || [1, 5, 10, 15, 20, 25, 30, 31].includes(dayNumber);
   } else if (isYearLabel && monthNumber !== null) {
-    shouldRender = isToday || monthNumber % 2 === 1 || monthNumber === 12;
+    shouldRender = true;
   }
   if (!shouldRender) return null;
 

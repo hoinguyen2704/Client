@@ -85,7 +85,7 @@
           "provider": "AI provider",
           "model": "AI model",
           "temperature": "Temperature: {{value}}",
-          "systemPrompt": "System prompt (behavior rules)"
+          "systemPrompt": "Response rewrite rules"
         },
         "providerPlaceholder": "Select a provider",
         "providerSearchPlaceholder": "Search providers...",
@@ -101,8 +101,8 @@
         "modelCatalogFallback": "No model list was found, so the chatbot is using a safe fallback list.",
         "temperatureExact": "0 - Precise",
         "temperatureCreative": "1 - Creative",
-        "systemPromptPlaceholder": "Enter chatbot rules...",
-        "systemPromptHint": "Each line that starts with '-' is treated as a rule. Changes immediately affect how the bot responds."
+        "systemPromptPlaceholder": "Enter rules used when rewriting answers from trusted data...",
+        "systemPromptHint": "Applies to the response synthesis step when response rewriting is enabled. It does not change the planner, SQL, or product filtering logic."
       },
       "runtime": {
         "title": "Runtime parameters",

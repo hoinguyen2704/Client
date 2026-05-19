@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { FiZap, FiPlus } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiZap, FiPlus } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/error";
@@ -82,12 +82,29 @@ export default function FlashSales() {
     }
   };
 
+  const handleToggleHidden = async (sale: FlashSaleResponse) => {
+    const nextStatus = sale.status === "HIDDEN" ? "ACTIVE" : "HIDDEN";
+    try {
+      await adminFlashSaleService.updateStatus(sale.id, nextStatus);
+      toast.success(t("flashSales.list.toasts.statusSuccess"));
+      fetchSales({ silent: true });
+    } catch (err: unknown) {
+      console.error(err);
+      toast.error(
+        getApiErrorMessage(err, t("flashSales.list.toasts.statusFailed")),
+      );
+    }
+  };
+
   const getFlashSaleStatusMeta = (status: FlashSaleResponse["status"]) => {
     if (status === "ACTIVE") {
       return { badgeStatus: "active" as const, label: t("flashSales.list.status.active") };
     }
     if (status === "ENDED") {
       return { badgeStatus: "ended" as const, label: t("flashSales.list.status.ended") };
+    }
+    if (status === "HIDDEN") {
+      return { badgeStatus: "hidden" as const, label: t("flashSales.list.status.hidden") };
     }
     return { badgeStatus: "upcoming" as const, label: t("flashSales.list.status.scheduled") };
   };
@@ -185,6 +202,14 @@ export default function FlashSales() {
                             type: "edit",
                             onClick: () =>
                               navigate(`/admin/flash-sales/${sale.id}/edit`, { state: { returnTo } }),
+                          },
+                          {
+                            type: "more",
+                            icon: sale.status === "HIDDEN" ? <FiEye /> : <FiEyeOff />,
+                            title: sale.status === "HIDDEN"
+                              ? t("flashSales.list.actionLabels.show")
+                              : t("flashSales.list.actionLabels.hide"),
+                            onClick: () => handleToggleHidden(sale),
                           },
                           {
                             type: "delete",

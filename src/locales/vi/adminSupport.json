@@ -85,7 +85,7 @@
           "provider": "AI Provider",
           "model": "Model AI",
           "temperature": "Temperature: {{value}}",
-          "systemPrompt": "System Prompt (Quy tắc hành vi)"
+          "systemPrompt": "Quy tắc viết lại câu trả lời"
         },
         "providerPlaceholder": "Chọn provider",
         "providerSearchPlaceholder": "Tìm provider...",
@@ -101,8 +101,8 @@
         "modelCatalogFallback": "Không tìm thấy danh sách model, chatbot đang dùng danh sách dự phòng an toàn.",
         "temperatureExact": "0 - Chính xác",
         "temperatureCreative": "1 - Sáng tạo",
-        "systemPromptPlaceholder": "Nhập các quy tắc cho chatbot...",
-        "systemPromptHint": "Mỗi dòng bắt đầu bằng '-' là một quy tắc. Thay đổi sẽ ảnh hưởng trực tiếp đến cách bot trả lời."
+        "systemPromptPlaceholder": "Nhập quy tắc áp dụng khi bot viết lại câu trả lời từ dữ liệu...",
+        "systemPromptHint": "Áp dụng cho bước viết lại câu trả lời từ dữ liệu DB khi bật Viết lại phản hồi. Không thay đổi planner, SQL hoặc logic lọc sản phẩm."
       },
       "runtime": {
         "title": "Thông số vận hành",

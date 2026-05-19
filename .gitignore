@@ -49,3 +49,6 @@ pnpm-debug.log*
 .agent/
 .agents/
 .vite/
+AGENTS.md
+CLAUDE.md
+.claude/*

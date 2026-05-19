@@ -1,4 +1,4 @@
-export type FlashSaleStatus = 'SCHEDULED' | 'ACTIVE' | 'ENDED';
+export type FlashSaleStatus = 'SCHEDULED' | 'ACTIVE' | 'ENDED' | 'HIDDEN';
 
 //  FlashSale Response
 export interface FlashSaleResponse {

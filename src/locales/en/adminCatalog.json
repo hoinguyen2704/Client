@@ -539,17 +539,22 @@
       "status": {
         "scheduled": "Scheduled",
         "active": "Active",
-        "ended": "Ended"
+        "ended": "Ended",
+        "hidden": "Hidden"
       },
       "productsCount": "{{count}} products",
       "pagination": "flash sale campaigns",
+      "actionLabels": {
+        "hide": "Hide Flash Sale",
+        "show": "Show Flash Sale"
+      },
       "deleteDialog": {
         "title": "Delete Flash Sale",
-        "message": "Are you sure you want to delete this Flash Sale? This action cannot be undone.",
-        "confirm": "Delete"
+        "message": "Are you sure you want to delete this Flash Sale? If the campaign already has orders, it will be hidden instead of permanently deleted.",
+        "confirm": "Delete or hide"
       },
       "toasts": {
-        "deleteSuccess": "Flash Sale deleted successfully!",
+        "deleteSuccess": "Flash Sale deleted or hidden successfully!",
         "deleteFailed": "Failed to delete Flash Sale!",
         "statusSuccess": "Status updated successfully!",
         "statusFailed": "Failed to update status!"
@@ -598,8 +603,10 @@
       "validationTitle": "Validation",
       "validationValid": "Current data is valid and ready to save.",
       "validationTime": "End time must be after start time.",
-      "validationPrice": "{{count}} products have invalid Flash Sale prices (must be greater than 0 and less than the original price).",
+      "validationPrice": "{{count}} products have invalid Flash Sale prices (must be greater than 0 and must not exceed the original price).",
       "validationStock": "{{count}} products have invalid Flash Sale stock (must be greater than 0 and must not exceed the current stock).",
+      "priceExceeded": "Flash Sale price cannot exceed the original price. Filled {{price}} automatically.",
+      "stockExceeded": "Flash Sale stock cannot exceed current stock. Filled {{stock}} automatically.",
       "startAt": "Start: {{date}}",
       "endAt": "End: {{date}}",
       "schedule": {

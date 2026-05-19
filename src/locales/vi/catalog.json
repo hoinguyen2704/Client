@@ -149,7 +149,8 @@
       "chooseVariantToSeePrice": "Vui lòng chọn đầy đủ phân loại để xem giá.",
       "discountOff": "{{percent}}% giảm",
       "flashSale": "Flash Sale",
-      "flashSaleRemaining": "Còn {{count}} suất giá sốc"
+      "flashSaleRemaining": "Còn {{count}} suất giá sốc",
+      "flashSaleQuantityExceeded": "Số lượng đã vượt suất Flash Sale còn lại, giá thường sẽ được áp dụng."
     },
     "availability": {
       "inactive": "Sản phẩm này đang bị ẩn và hiện không thể mua.",

@@ -149,7 +149,8 @@
       "chooseVariantToSeePrice": "Please select all variant options to view the price.",
       "discountOff": "{{percent}}% off",
       "flashSale": "Flash Sale",
-      "flashSaleRemaining": "{{count}} deal slots left"
+      "flashSaleRemaining": "{{count}} deal slots left",
+      "flashSaleQuantityExceeded": "Quantity exceeds the remaining Flash Sale slots, so regular price applies."
     },
     "availability": {
       "inactive": "This product is hidden and cannot be purchased right now.",

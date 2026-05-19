@@ -27,6 +27,29 @@ export default function OrderChart({ stats }: DashboardChildProps) {
   // Find today's label for reference line
   const todayEntry = chartData.find((d) => d.name.includes('_TODAY'));
 
+  const standardTicks = chartData.filter((d) => {
+    const isToday = d.name.includes('|_TODAY');
+    if (isToday) return false;
+    const clean = d.name.replace('|_TODAY', '');
+    const parts = clean.split('|');
+    const isWeekLabel = parts.length >= 2;
+    if (isWeekLabel) return false;
+
+    const monthMatch = parts[0].match(/^(\d{1,2})\/(\d{1,2})$/);
+    if (monthMatch) {
+      const dayNumber = Number(monthMatch[1]);
+      return [1, 5, 10, 15, 20, 25, 30, 31].includes(dayNumber);
+    }
+
+    const yearMatch = parts[0].match(/(\d{1,2})$/);
+    if (yearMatch) {
+      const monthNumber = Number(yearMatch[1]);
+      return monthNumber >= 1 && monthNumber <= 12;
+    }
+
+    return false;
+  });
+
   return (
     <Card>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
@@ -108,13 +131,23 @@ export default function OrderChart({ stats }: DashboardChildProps) {
                   return parts.length > 1 ? `${parts[0]} - ${parts[1]}` : parts[0];
                 }}
               />
+              {standardTicks.map((d) => (
+                <ReferenceLine
+                  key={d.name}
+                  x={d.name}
+                  stroke="#94a3b8"
+                  strokeWidth={1}
+                  strokeDasharray="3 3"
+                  strokeOpacity={0.9}
+                />
+              ))}
               {todayEntry && (
                 <ReferenceLine
                   x={todayEntry.name}
                   stroke="#3b82f6"
                   strokeWidth={2}
                   strokeDasharray="4 4"
-                  strokeOpacity={0.5}
+                  strokeOpacity={0.8}
                 />
               )}
               <Area type="monotone" dataKey="orders" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorOrdersAPI)" dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />

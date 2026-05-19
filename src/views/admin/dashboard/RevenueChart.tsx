@@ -29,6 +29,29 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
   // Find today's label for reference line
   const todayEntry = chartData.find((d) => d.name.includes('_TODAY'));
 
+  const standardTicks = chartData.filter((d) => {
+    const isToday = d.name.includes('|_TODAY');
+    if (isToday) return false;
+    const clean = d.name.replace('|_TODAY', '');
+    const parts = clean.split('|');
+    const isWeekLabel = parts.length >= 2;
+    if (isWeekLabel) return false;
+
+    const monthMatch = parts[0].match(/^(\d{1,2})\/(\d{1,2})$/);
+    if (monthMatch) {
+      const dayNumber = Number(monthMatch[1]);
+      return [1, 5, 10, 15, 20, 25, 30, 31].includes(dayNumber);
+    }
+
+    const yearMatch = parts[0].match(/(\d{1,2})$/);
+    if (yearMatch) {
+      const monthNumber = Number(yearMatch[1]);
+      return monthNumber >= 1 && monthNumber <= 12;
+    }
+
+    return false;
+  });
+
   return (
     <Card>
       <h2 className="text-base sm:text-lg font-bold mb-4">{t('overview.charts.revenue.title')}</h2>
@@ -92,13 +115,23 @@ export default function RevenueChart({ stats }: DashboardChildProps) {
                   return parts.length > 1 ? `${parts[0]} - ${parts[1]}` : parts[0];
                 }}
               />
+              {standardTicks.map((d) => (
+                <ReferenceLine
+                  key={d.name}
+                  x={d.name}
+                  stroke="#94a3b8"
+                  strokeWidth={1}
+                  strokeDasharray="3 3"
+                  strokeOpacity={0.9}
+                />
+              ))}
               {todayEntry && (
                 <ReferenceLine
                   x={todayEntry.name}
                   stroke="#2563eb"
                   strokeWidth={2}
                   strokeDasharray="4 4"
-                  strokeOpacity={0.5}
+                  strokeOpacity={0.8}
                 />
               )}
               <Area type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorRevAPI)" dot={{ r: 4, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />

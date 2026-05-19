@@ -100,7 +100,8 @@ const FlashSaleItemCard = memo(function FlashSaleItemCard({ item }: { item: Flas
   const { t } = useTranslation('catalog');
   const safeFlashStock = Math.max(0, item.flashStock || 0);
   const safeSoldCount = Math.max(0, item.soldCount || 0);
-  const safeRemainingStock = Math.max(0, item.remainingStock || 0);
+  const safeAvailableStock = Math.max(0, item.stockQuantity ?? Number.MAX_SAFE_INTEGER);
+  const safeRemainingStock = Math.min(Math.max(0, item.remainingStock || 0), safeAvailableStock);
   const soldPercent = safeFlashStock > 0
     ? clampPercent(Math.round((safeSoldCount / safeFlashStock) * 100))
     : 0;

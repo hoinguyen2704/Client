@@ -539,17 +539,22 @@
       "status": {
         "scheduled": "Sắp diễn ra",
         "active": "Đang diễn ra",
-        "ended": "Đã kết thúc"
+        "ended": "Đã kết thúc",
+        "hidden": "Đã ẩn"
       },
       "productsCount": "{{count}} sản phẩm",
       "pagination": "flash sale",
+      "actionLabels": {
+        "hide": "Ẩn Flash Sale",
+        "show": "Hiện lại Flash Sale"
+      },
       "deleteDialog": {
         "title": "Xóa Flash Sale",
-        "message": "Bạn có chắc muốn xóa Flash Sale này? Thao tác này không thể hoàn tác.",
-        "confirm": "Xóa"
+        "message": "Bạn có chắc muốn xóa Flash Sale này? Nếu sự kiện đã có đơn hàng, hệ thống sẽ chuyển sang trạng thái ẩn thay vì xóa vĩnh viễn.",
+        "confirm": "Xóa hoặc ẩn"
       },
       "toasts": {
-        "deleteSuccess": "Xóa Flash Sale thành công!",
+        "deleteSuccess": "Xóa hoặc ẩn Flash Sale thành công!",
         "deleteFailed": "Xóa Flash Sale thất bại!",
         "statusSuccess": "Cập nhật trạng thái thành công!",
         "statusFailed": "Cập nhật trạng thái thất bại!"
@@ -598,8 +603,10 @@
       "validationTitle": "Kiểm tra dữ liệu",
       "validationValid": "Dữ liệu hiện tại hợp lệ để lưu sự kiện.",
       "validationTime": "Thời gian kết thúc phải sau thời gian bắt đầu.",
-      "validationPrice": "Có {{count}} sản phẩm có giá Flash Sale không hợp lệ (phải lớn hơn 0 và nhỏ hơn giá gốc).",
+      "validationPrice": "Có {{count}} sản phẩm có giá Flash Sale không hợp lệ (phải lớn hơn 0 và không vượt quá giá gốc).",
       "validationStock": "Có {{count}} sản phẩm có số lượng bán không hợp lệ (phải lớn hơn 0 và không vượt quá tồn kho hiện tại).",
+      "priceExceeded": "Giá Flash Sale không được vượt quá giá gốc. Đã tự điền {{price}}.",
+      "stockExceeded": "Số lượng Flash Sale không được vượt quá tồn kho hiện tại. Đã tự điền {{stock}}.",
       "startAt": "Bắt đầu: {{date}}",
       "endAt": "Kết thúc: {{date}}",
       "schedule": {

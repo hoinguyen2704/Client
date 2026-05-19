@@ -263,6 +263,11 @@ export default function ProductInfo({
   const pricing = activeVariant
     ? variantPricingMap[activeVariant.id]
     : (!isSelectionRequired ? fallbackPricing : null);
+  const regularPricing = activeVariant
+    ? resolveVariantPricing({ product, variant: activeVariant })
+    : fallbackVariant
+      ? resolveVariantPricing({ product, variant: fallbackVariant })
+      : resolveVariantPricing({ product });
   const canShowVariantPrice = pricing !== null && (!isSelectionRequired || isSelectionComplete);
   const productStatusState = getProductPublicStatusState(product.status);
   const isProductPurchasable = isProductStatusPurchasable(product.status);
@@ -280,22 +285,35 @@ export default function ProductInfo({
     && Boolean(activeVariant)
     && (!isSelectionRequired || isSelectionComplete);
 
-  const price = pricing?.salePrice ?? 0;
-  const comparePrice = pricing?.originPrice ?? 0;
-  const discountPercent = pricing?.discount ?? 0;
-  const activePriceClass = pricing?.isFlashSale
+  const stock = activeVariant?.stockQuantity ?? 0;
+  const flashSaleRemainingCount = activeFlashItem
+    ? Math.min(
+        Math.max(0, activeFlashItem.remainingStock ?? 0),
+        Math.max(0, stock),
+      )
+    : 0;
+  const flashSaleQuantityExceeded = Boolean(
+    canShowVariantPrice
+      && pricing?.isFlashSale
+      && quantity > flashSaleRemainingCount,
+  );
+  const displayPricing = flashSaleQuantityExceeded ? regularPricing : pricing;
+  const price = displayPricing?.salePrice ?? 0;
+  const comparePrice = displayPricing?.originPrice ?? 0;
+  const discountPercent = displayPricing?.discount ?? 0;
+  const activePriceClass = displayPricing?.isFlashSale
     ? 'text-rose-600 dark:text-rose-400'
     : comparePrice > price && price > 0
       ? 'text-blue-600 dark:text-blue-400'
       : 'text-blue-700 dark:text-blue-300';
   const rangePriceClass = 'text-blue-700 dark:text-blue-300';
   const showFlashSaleBadge = Boolean(canShowVariantPrice && pricing?.isFlashSale);
+  const flashDiscountPercent = pricing?.isFlashSale ? pricing.discount : 0;
   const flashSaleRemainingText = activeFlashItem
-    ? t('productDetail.pricing.flashSaleRemaining', { ns: 'catalog', count: activeFlashItem.remainingStock })
+    ? t('productDetail.pricing.flashSaleRemaining', { ns: 'catalog', count: flashSaleRemainingCount })
     : null;
   const rating = product.averageRating || 0;
   const reviews = product.totalReviews || 0;
-  const stock = activeVariant?.stockQuantity ?? 0;
   const totalSold = product.totalSold ?? 0;
 
   const syncFromServer = useCartStore((state) => state.syncFromServer);
@@ -531,9 +549,9 @@ export default function ProductInfo({
         >
           <FiZap className="shrink-0 text-base" />
           <span className="whitespace-nowrap">{t('productDetail.pricing.flashSale', { ns: 'catalog' })}</span>
-          {discountPercent > 0 && (
+          {flashDiscountPercent > 0 && (
             <span className="whitespace-nowrap rounded-full bg-rose-600 px-2 py-0.5 text-xs font-black uppercase tracking-[0.06em] text-white">
-              -{discountPercent}%
+              -{flashDiscountPercent}%
             </span>
           )}
           {flashSaleRemainingText && (
@@ -542,6 +560,11 @@ export default function ProductInfo({
             </span>
           )}
         </div>
+        {flashSaleQuantityExceeded && (
+          <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+            {t('productDetail.pricing.flashSaleQuantityExceeded', { ns: 'catalog' })}
+          </div>
+        )}
       </div>
 
       {highlightSpecs.length > 0 && (
